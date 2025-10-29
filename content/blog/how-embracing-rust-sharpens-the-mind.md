@@ -1,6 +1,6 @@
 +++
 title = "How Embracing Rust Sharpens the Mind — and Elevates Teams"
-date = 2025-10-29
+date = 2025-10-22
 description = "Rust develops focus, critical thinking, and responsible individualism that uplift individuals and teams."
 [taxonomies]
 categories = ["Programming"]
