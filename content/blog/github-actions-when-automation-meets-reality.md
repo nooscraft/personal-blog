@@ -13,6 +13,17 @@ I recently went through a journey with GitHub Actions that taught me a lot about
 
 ---
 
+## Background: Building with Zola
+
+For context, this blog is built using [Zola](https://www.getzola.org/), a static site generator written in Rust. Zola takes Markdown files and templates, processes them, and outputs a static HTML site. It's fast, simple, and doesn't require a runtime—just compile your site and serve the static files.
+
+The deployment process is straightforward:
+1. Write content in Markdown
+2. Run `zola build` to generate static HTML
+3. Deploy the generated files to a hosting service
+
+This makes Zola an ideal candidate for GitHub Pages: you build once, deploy the static files, and GitHub Pages serves them. The challenge comes when you want to automate this process with GitHub Actions.
+
 ## The Promise of Automation
 
 GitHub Actions promises a lot:
@@ -193,39 +204,9 @@ Don't get me wrong—GitHub Actions is powerful and useful. Use it when:
 - You want to understand every step
 - Debugging automation is slowing you down
 
-## Issue #5: Template Conflicts and Browser Caching
+## Issue #5: GitHub Pages Source Branch Mismatch
 
-Even after getting the deployment pipeline working, some issues only surfaced when viewing the site in production. These weren't build failures—they were rendering and caching problems.
-
-### The Duplicate Tag Problem
-
-**The Symptom:**
-The homepage showed duplicate content, a heading reading "Home =====", and some browsers displayed different content than others.
-
-**The Root Cause:**
-Zola uses a template hierarchy where templates in your project's `templates/` directory override theme templates. I had a custom `templates/index.html` that included its own `<main>` tag, while the base template (`_base.html`) also provided one. This created nested `<main>` tags, causing rendering issues.
-
-Additionally, the custom template was using `section.title` instead of `config.extra.radion_title`, which is why "Home" appeared instead of the intended site title.
-
-**The Fix:**
-1. **Removed duplicate tags:** Templates that extend `_base.html` shouldn't include their own `<main>` tag—the base template provides it.
-2. **Fixed title source:** Changed from `section.title` to `config.extra.radion_title` for the homepage.
-
-```html
-<!-- Before (wrong) -->
-{% block main %}
-<main>
-  <header><h1>{{ section.title }}</h1></header>
-  ...
-</main>
-{% endblock main %}
-
-<!-- After (correct) -->
-{% block main %}
-  <header><h1>{{ config.extra.radion_title }}</h1></header>
-  ...
-{% endblock main %}
-```
+Even after getting the deployment pipeline working, some issues only surfaced when viewing the site in production. These weren't build failures—they were configuration problems.
 
 ### The GitHub Pages Source Branch Mismatch
 
@@ -265,7 +246,6 @@ Different browsers cache differently. Chrome might show updated content while Fi
 5. Test in multiple browsers to rule out caching issues
 
 **What I Learned:**
-- Template inheritance can create subtle bugs that only appear in production
 - GitHub Pages configuration must match your deployment method
 - Always verify the deployment target matches the Pages source
 - Testing locally doesn't catch configuration mismatches
@@ -282,13 +262,11 @@ Different browsers cache differently. Chrome might show updated content while Fi
 
 4. **Inspect the output:** When something doesn't work, look at the actual generated files. HTML errors, missing assets, and broken links are often visible in the source.
 
-5. **Understand template inheritance:** When using SSGs like Zola, know how template overriding works. Custom templates in your `templates/` directory override theme templates, and you need to understand what the base template provides to avoid duplicating elements.
+5. **Verify GitHub Pages configuration matches deployment:** If your Actions workflow deploys to `gh-pages` branch, ensure GitHub Pages source is set to that branch. Configuration mismatches cause silent failures.
 
-6. **Verify GitHub Pages configuration matches deployment:** If your Actions workflow deploys to `gh-pages` branch, ensure GitHub Pages source is set to that branch. Configuration mismatches cause silent failures.
+6. **Test across browsers:** Different browsers cache differently. Always test in multiple browsers after deployment, and use hard refresh when debugging.
 
-7. **Test across browsers:** Different browsers cache differently. Always test in multiple browsers after deployment, and use hard refresh when debugging.
-
-8. **Document your process:** Whether you use automation or manual deployment, document it. Future you (and your team) will thank you.
+7. **Document your process:** Whether you use automation or manual deployment, document it. Future you (and your team) will thank you.
 
 ---
 
