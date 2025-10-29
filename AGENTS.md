@@ -29,7 +29,7 @@
 - Check the Actions tab in GitHub to see deployment status
 
 ## Content rules
-- All posts go under `content/blog/` as Markdown files with TOML front matter.
+- All posts go under `content/posts/` as Markdown files with TOML front matter.
 - Required front matter keys: `title`, `date`, optional: `tags`, `categories`, `draft=false`.
 - To hide non-post utility pages (like Tags/Categories) from homepage lists, set:
   - `extra.hide_from_list = true` in their front matter.

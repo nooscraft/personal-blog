@@ -16,7 +16,7 @@
     } else if (storedTheme) {
       theme = storedTheme;
     } else {
-      theme = "dark"; // fallback default
+      theme = "light"; // fallback default
     }
 
     // Apply theme class directly
@@ -32,7 +32,7 @@
     }
   } catch (e) {
     // In case localStorage access fails
-    document.documentElement.classList.add("dark");
-    document.body.classList.add("dark");
+    document.documentElement.classList.add("light");
+    document.body.classList.add("light");
   }
 })();

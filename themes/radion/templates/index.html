@@ -25,7 +25,7 @@
     {% endfor %}
     {{ index_macros::nav(paginator=paginator) }}
   {% else %}
-    {% set blog = get_section(path="blog/_index.md") %}
+    {% set blog = get_section(path="posts/_index.md") %}
     {% if blog and blog.pages %}
       {% for page in blog.pages %}
         {% if not page.extra.hide_from_list %}
