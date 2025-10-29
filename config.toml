@@ -58,3 +58,8 @@ codeblock = true
 
 # Enable MathJax support
 latex = true
+
+# Google Analytics (GA4)
+# Set your Measurement ID (format: G-XXXXXXXXXX) to enable tracking
+# Leave empty or omit to disable Google Analytics
+google_analytics_id = "G-54YK7R04LX"

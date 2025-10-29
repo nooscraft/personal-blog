@@ -239,6 +239,20 @@
     </script>
     {% endif %}
     {% endblock structured_data %}
+    
+    <!-- Google Analytics (GA4) -->
+    {% if config.extra.google_analytics_id and config.extra.google_analytics_id != "" %}
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ config.extra.google_analytics_id }}"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '{{ config.extra.google_analytics_id }}', {
+        'anonymize_ip': true,
+        'respect_dnt': true
+      });
+    </script>
+    {% endif %}
   </head>
 
   <!-- Body element (contents of the page) -->
