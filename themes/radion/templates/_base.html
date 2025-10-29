@@ -119,27 +119,27 @@
     <link
       rel="icon"
       type="image/png"
-      href="{{ config.base_url }}/icons/favicon/favicon-96x96.png?v={{ now() | date(format='%s') }}"
+      href="{{ config.base_url }}/icons/favicon/favicon-96x96.png"
       sizes="96x96"
     />
     <link
       rel="icon"
       type="image/svg+xml"
-      href="{{ config.base_url }}/icons/favicon/favicon.svg?v={{ now() | date(format='%s') }}"
+      href="{{ config.base_url }}/icons/favicon/favicon.svg"
     />
     <link
       rel="shortcut icon"
-      href="{{ config.base_url }}/icons/favicon/favicon.ico?v={{ now() | date(format='%s') }}"
+      href="{{ config.base_url }}/icons/favicon/favicon.ico"
     />
     <link
       rel="apple-touch-icon"
       sizes="180x180"
-      href="{{ config.base_url }}/icons/favicon/apple-touch-icon.png?v={{ now() | date(format='%s') }}"
+      href="{{ config.base_url }}/icons/favicon/apple-touch-icon.png"
     />
     <meta name="apple-mobile-web-app-title" content="{{ title }}" />
     <link
       rel="manifest"
-      href="{{ config.base_url }}/icons/favicon/site.webmanifest?v={{ now() | date(format='%s') }}"
+      href="{{ config.base_url }}/icons/favicon/site.webmanifest"
     />
     {% endif %}
 
@@ -165,7 +165,7 @@
     {% include "partials/fonts.html" %}
 
     <!-- Pass Theme Preference as Data Attribute -->
-    <script src="{{ get_url(path='js/init-theme.js', trailing_slash=false) | safe }}?v={{ now() | date(format='%s') }}"></script>
+    <script src="{{ get_url(path='js/init-theme.js', trailing_slash=false) | safe }}"></script>
 
     <!-- Reference return to click position script -->
     <script defer src="{{ get_url(path='js/reference-return.js', trailing_slash=false) | safe }}"></script>
@@ -175,9 +175,9 @@
       {% if config.extra.codeblock %}
         <script defer src="{{ get_url(path='js/codeblock.js', trailing_slash=false) | safe }}"></script>
       {% endif %}
-      {% if config.extra.theme_mode == "toggle" %}
-        <script defer src="{{ get_url(path='js/toggle-theme.js', trailing_slash=false) | safe }}?v={{ now() | date(format='%s') }}"></script>
-      {% endif %}
+            {% if config.extra.theme_mode == "toggle" %}
+              <script defer src="{{ get_url(path='js/toggle-theme.js', trailing_slash=false) | safe }}"></script>
+            {% endif %}
       {% include "partials/latex.html" %}
       {% include "partials/search.html" %}
     {% endblock scripts %}

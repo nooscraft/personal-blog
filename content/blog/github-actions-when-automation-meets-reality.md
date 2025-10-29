@@ -227,57 +227,48 @@ Additionally, the custom template was using `section.title` instead of `config.e
 {% endblock main %}
 ```
 
-### The Browser Caching Problem
+### The GitHub Pages Source Branch Mismatch
 
 **The Symptom:**
-After deploying fixes, some browsers still showed old content:
-- Favicon didn't update
-- Theme toggle didn't work
-- JavaScript files weren't loading
+After deploying fixes, the blog post updates weren't appearing on the live site. The build succeeded, GitHub Actions showed successful deployment, but visiting the site showed old content.
 
 **The Root Cause:**
-Browsers and CDNs aggressively cache static assets. Even after deploying new files, browsers might serve cached versions. This is especially problematic for:
-- Favicons (often cached for days or weeks)
-- JavaScript files (cached for performance)
-- CSS files
+GitHub Pages has two deployment methods:
+1. **GitHub Actions** - Pages builds from Actions workflow output
+2. **Branch-based** - Pages serves files directly from a branch (like `gh-pages`)
 
-**The Solution:**
-Add cache-busting query parameters to asset URLs. Zola templates can use `now()` to generate timestamps:
+The problem was a configuration mismatch: GitHub Pages was set to use "GitHub Actions" as the source, but our workflow was deploying to the `gh-pages` branch. GitHub Pages was trying to serve from the Actions output, not the branch we were deploying to.
 
-```html
-<!-- Cache-busting favicon -->
-<link rel="icon" type="image/svg+xml" 
-      href="{{ config.base_url }}/icons/favicon/favicon.svg?v={{ now() | date(format='%s') }}" />
+**The Fix:**
+Changed GitHub Pages source back to `gh-pages` branch in repository settings:
+1. Go to repository Settings → Pages
+2. Under "Source", select "Deploy from a branch"
+3. Choose `gh-pages` branch and `/ (root)` folder
+4. Save
 
-<!-- Cache-busting JavaScript -->
-<script defer src="{{ get_url(path='js/toggle-theme.js') | safe }}?v={{ now() | date(format='%s') }}"></script>
-```
-
-**Why This Works:**
-- Each deployment generates a new timestamp
-- Browsers see different URLs (`file.js?v=1234567890` vs `file.js?v=1234567891`)
-- They treat them as different files and fetch fresh versions
-- Old cached versions become irrelevant
+**Why This Happened:**
+When you first set up GitHub Actions, GitHub Pages might automatically switch to "GitHub Actions" mode. If your workflow deploys to `gh-pages` branch (which is common), you need to ensure the Pages source matches where you're deploying.
 
 **The Lesson:**
-Cache-busting isn't just for "production" sites—it's essential for any deployment where you want updates to be visible immediately. GitHub Pages is a CDN-backed service, so caching is aggressive by design.
+Always verify that your GitHub Pages source matches your deployment target. If your Actions workflow deploys to `gh-pages`, make sure Pages is configured to serve from that branch. Configuration mismatches can cause silent failures where everything appears to work but content doesn't update.
 
 ### Testing Across Browsers
 
 **The Problem:**
-Different browsers cache differently. Chrome might show updated content while Firefox shows old content, or vice versa.
+Different browsers cache differently. Chrome might show updated content while Firefox shows old content, or vice versa. However, in this case, the issue wasn't browser caching—it was a configuration mismatch.
 
 **The Solution:**
-1. Always test in multiple browsers after deployment
-2. Use cache-busting query parameters proactively
-3. Use hard refresh (Cmd+Shift+R / Ctrl+Shift+R) when testing
-4. Consider adding cache headers in your deployment if possible
+1. Always verify GitHub Pages source matches your deployment method
+2. Check GitHub Actions logs to confirm deployment succeeded
+3. Wait 2-5 minutes for GitHub Pages to rebuild after deployment
+4. Use hard refresh (Cmd+Shift+R / Ctrl+Shift+R) when testing
+5. Test in multiple browsers to rule out caching issues
 
 **What I Learned:**
 - Template inheritance can create subtle bugs that only appear in production
-- Browser caching is more aggressive than you might expect
-- Cache-busting should be part of your deployment strategy from the start
-- Testing locally doesn't always catch production rendering issues
+- GitHub Pages configuration must match your deployment method
+- Always verify the deployment target matches the Pages source
+- Testing locally doesn't catch configuration mismatches
 
 ---
 
@@ -293,7 +284,7 @@ Different browsers cache differently. Chrome might show updated content while Fi
 
 5. **Understand template inheritance:** When using SSGs like Zola, know how template overriding works. Custom templates in your `templates/` directory override theme templates, and you need to understand what the base template provides to avoid duplicating elements.
 
-6. **Plan for caching:** Browser and CDN caching can mask deployment issues. Use cache-busting query parameters from the start, especially for assets that change frequently (favicons, JavaScript, CSS).
+6. **Verify GitHub Pages configuration matches deployment:** If your Actions workflow deploys to `gh-pages` branch, ensure GitHub Pages source is set to that branch. Configuration mismatches cause silent failures.
 
 7. **Test across browsers:** Different browsers cache differently. Always test in multiple browsers after deployment, and use hard refresh when debugging.
 
