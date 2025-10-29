@@ -187,23 +187,6 @@ The feedback loop is faster, and you understand every step.
 
 ---
 
-## When to Use GitHub Actions
-
-Don't get me wrong—GitHub Actions is powerful and useful. Use it when:
-
-- You need automated testing on every commit
-- You want consistent build environments
-- Multiple people are deploying
-- You need to run expensive operations (like building large projects)
-- You want to enforce code quality checks
-
-**But consider manual deployment when:**
-- Your build process is simple
-- You want full control
-- You're deploying infrequently
-- You want to understand every step
-- Debugging automation is slowing you down
-
 ## Issue #5: GitHub Pages Source Branch Mismatch
 
 Even after getting the deployment pipeline working, some issues only surfaced when viewing the site in production. These weren't build failures—they were configuration problems.
@@ -249,6 +232,25 @@ Different browsers cache differently. Chrome might show updated content while Fi
 - GitHub Pages configuration must match your deployment method
 - Always verify the deployment target matches the Pages source
 - Testing locally doesn't catch configuration mismatches
+
+---
+
+## When to Use GitHub Actions
+
+Don't get me wrong—GitHub Actions is powerful and useful. Use it when:
+
+- You need automated testing on every commit
+- You want consistent build environments
+- Multiple people are deploying
+- You need to run expensive operations (like building large projects)
+- You want to enforce code quality checks
+
+**But consider manual deployment when:**
+- Your build process is simple
+- You want full control
+- You're deploying infrequently
+- You want to understand every step
+- Debugging automation is slowing you down
 
 ---
 
