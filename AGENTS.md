@@ -30,6 +30,7 @@
 
 ## Content rules
 - All posts go under `content/posts/` as Markdown files with TOML front matter.
+- Post URLs will be `/posts/{slug}/` (not `/blog/`).
 - Required front matter keys: `title`, `date`, optional: `tags`, `categories`, `draft=false`.
 - To hide non-post utility pages (like Tags/Categories) from homepage lists, set:
   - `extra.hide_from_list = true` in their front matter.
@@ -57,8 +58,10 @@
 - Run `zola build` and confirm it prints `Creating N pages and M sections` without errors.
 - Verify locally:
   - Homepage lists recent posts; does not list Tags/Categories.
+  - `public/posts/` directory exists with all posts.
   - `public/categories/` and `public/tags/` exist and are styled.
   - Random post renders and links work.
+  - Post URLs use `/posts/` path (not `/blog/`).
 
 ## Rollback
 - If deployment breaks, you can:
