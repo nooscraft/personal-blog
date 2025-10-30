@@ -86,7 +86,7 @@
           {% set p = page.permalink | trim_end_matches(pat='/') %}
           {% set parts = p | split(pat='/') %}
           {% set slug_from_url = parts | last %}
-          {% set_global img_url = get_url(path="images/covers/" ~ slug_from_url ~ ".png", trailing_slash=false) %}
+          {% set_global img_url = "/images/covers/" ~ slug_from_url ~ ".png" %}
         {% endif %}
         {% if img_url %}
         <figure class="post-cover" style="margin: 1.25rem 0;">
