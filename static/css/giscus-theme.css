@@ -13,12 +13,12 @@
 
 /* Light mode */
 :root {
-  --color-canvas-default: #ffffff;          /* main background */
-  --color-canvas-subtle:  #f8fafc;          /* subtle areas/cards */
+  --color-canvas-default: #ffffff;          /* iframe body background */
+  --color-canvas-subtle:  #f6f7f4;          /* card/background per brand */
   --color-fg-default:     #111827;          /* main text */
   --color-fg-muted:       #6b7280;          /* secondary text */
-  --color-border-default: #e5e7eb;          /* borders */
-  --color-accent-fg:      #b7005d;          /* links / accents (brand) */
+  --color-border-default: #e3e5de;          /* border tuned for #f6f7f4 */
+  --color-accent-fg:      #d64a48;          /* links / accents (brand) */
   --color-neutral-muted:  rgba(175,184,193,0.2);
 }
 
