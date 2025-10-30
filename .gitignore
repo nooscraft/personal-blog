@@ -11,3 +11,16 @@ public/
 .vscode/
 .idea/
 
+# Node (local tooling for generators)
+node_modules/
+package-lock.json
+npm-debug.log*
+
+# Generated cover images (created during CI/local run; not tracked on main)
+static/images/covers/*.png
+static/images/covers/*.jpg
+
+# Local env files (API keys)
+.env
+.env.*
+
