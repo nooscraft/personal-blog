@@ -126,7 +126,8 @@ async function saveCover(slug, buf) {
 
 async function generateFor({ slug, tags, title, desc }) {
   // Do NOT regenerate if already present
-  if (await imageExists(slug)) return false;
+  const force = process.env.FORCE_REGENERATE_COVERS === '1' || process.env.FORCE_REGENERATE_COVERS === 'true';
+  if (!force && (await imageExists(slug))) return false;
   const prompt = buildPrompt({ tags, title, desc });
   try {
     if (!(REPLICATE_TOKEN && REPLICATE_MODEL_VERSION)) {
