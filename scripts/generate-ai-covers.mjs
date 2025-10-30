@@ -124,7 +124,7 @@ async function saveCover(slug, buf) {
   await fs.writeFile(path.join(OUT_DIR, `${slug}.png`), out);
 }
 
-async function generateFor(slug, tags) {
+async function generateFor({ slug, tags, title, desc }) {
   // Do NOT regenerate if already present
   if (await imageExists(slug)) return false;
   const prompt = buildPrompt({ tags, title, desc });
@@ -148,9 +148,9 @@ async function main() {
   await ensureOut();
   const POSTS = await discoverPosts();
   let count = 0;
-  for (const { slug, tags } of POSTS) {
+  for (const post of POSTS) {
     if (count >= 6) break; // budget safety
-    const changed = await generateFor(slug, tags);
+    const changed = await generateFor(post);
     if (changed) count++;
   }
 }
