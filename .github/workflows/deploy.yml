@@ -37,42 +37,17 @@ jobs:
             npm install --no-audit --no-fund
           fi
 
-      - name: Generate AI covers (Replicate preferred)
+      - name: Generate AI covers (Replicate)
         env:
           REPLICATE_API_TOKEN: ${{ secrets.REPLICATE_API_TOKEN }}
           REPLICATE_MODEL_VERSION: ${{ secrets.REPLICATE_MODEL_VERSION }}
-          HORDE_API_KEY: ${{ secrets.HORDE_API_KEY }}
         run: |
           if [ -f scripts/generate-ai-covers.mjs ]; then
-            echo "Generating AI covers (Replicate preferred, Horde fallback)"
-            npm run generate:ai || echo "AI cover generation skipped/fallback"
+            echo "Generating AI covers via Replicate (missing only)"
+            npm run generate:ai || echo "AI cover generation skipped"
           fi
 
-      - name: Generate social cover images
-        run: |
-          if [ -f scripts/generate-covers.mjs ]; then
-            mkdir -p static/images/covers
-            missing=false
-            for slug in \
-              rust-serde-datetime-deserialization-error \
-              cursor-payments-confusion \
-              how-embracing-rust-sharpens-the-mind \
-              github-actions-when-automation-meets-reality \
-              why-rust-makes-you-better-engineer \
-              how-my-terminal-looks; do
-              if [ ! -f "static/images/covers/${slug}.png" ]; then
-                echo "Missing cover for: ${slug}"
-                missing=true
-              fi
-            done
-            if [ "$missing" = true ]; then
-              npm run generate:covers
-              echo "Generated covers:"
-              ls -la static/images/covers || true
-            else
-              echo "All cover images already exist; skipping generation."
-            fi
-          fi
+      # Removed social/icon-based cover generator – AI only now
 
       # (Removed favicon regeneration step)
       
