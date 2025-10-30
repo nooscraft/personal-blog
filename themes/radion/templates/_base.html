@@ -120,33 +120,18 @@
 
 
     <!-- Favicons -->
-    {% if config.extra.favicon | default (value="true") %}
-    <link
-      rel="icon"
-      type="image/png"
-      href="{{ config.base_url }}/icons/favicon/favicon-96x96.png"
-      sizes="96x96"
-    />
-    <link
-      rel="icon"
-      type="image/svg+xml"
-      href="{{ config.base_url }}/icons/favicon/favicon.svg"
-    />
-    <link
-      rel="shortcut icon"
-      href="{{ config.base_url }}/icons/favicon/favicon.ico"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="{{ config.base_url }}/icons/favicon/apple-touch-icon.png"
-    />
-    <meta name="apple-mobile-web-app-title" content="{{ title }}" />
-    <link
-      rel="manifest"
-      href="{{ config.base_url }}/icons/favicon/site.webmanifest"
-    />
-    {% endif %}
+           {% if config.extra.favicon | default (value="true") %}
+           <!-- Minimal, cache-busted favicons (drop legacy PNG/manifest to avoid stale icons) -->
+           <link
+             rel="icon"
+             type="image/svg+xml"
+             href="{{ config.base_url }}/icons/favicon/favicon.svg?v=2"
+           />
+           <link
+             rel="shortcut icon"
+             href="{{ config.base_url }}/icons/favicon/favicon.ico?v=2"
+           />
+           {% endif %}
 
     <!-- RSS Feed -->
     {% if config.generate_feeds %}
