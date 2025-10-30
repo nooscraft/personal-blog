@@ -92,7 +92,7 @@ async function replicateRequest(prompt) {
     },
     body: JSON.stringify(body)
   });
-  if (!res.ok) throw new Error(`replicate request failed: ${res.status}`);
+  if (!res.ok) throw new Error(`replicate_request:${res.status}`);
   const data = await res.json();
   return data.id;
 }
@@ -109,10 +109,33 @@ async function replicateFetch(id, maxMs = 300000) {
       const img = await fetch(url);
       return Buffer.from(await img.arrayBuffer());
     }
-    if (data.status === 'failed' || data.status === 'canceled') throw new Error(`replicate ${data.status}`);
+    if (data.status === 'failed' || data.status === 'canceled') throw new Error(`replicate_${data.status}`);
     await new Promise(r => setTimeout(r, 4000));
   }
   throw new Error('replicate timeout');
+}
+
+async function generateWithRetries(prompt, retries = 3) {
+  let attempt = 0;
+  let lastErr;
+  while (attempt < retries) {
+    try {
+      const id = await replicateRequest(prompt);
+      return await replicateFetch(id);
+    } catch (e) {
+      lastErr = e;
+      const msg = String(e.message || e);
+      if (msg.includes('replicate_request:402') || msg.includes('replicate_request:400')) break;
+      if (msg.includes('replicate_request:429')) {
+        const waitMs = 8000 * (attempt + 1);
+        await new Promise(r => setTimeout(r, waitMs));
+      } else {
+        await new Promise(r => setTimeout(r, 3000));
+      }
+    }
+    attempt++;
+  }
+  throw lastErr || new Error('replicate failed');
 }
 
 async function saveCover(slug, buf) {
@@ -134,8 +157,7 @@ async function generateFor({ slug, tags, title, desc }) {
       console.log('Replicate not configured; skipping');
       return false;
     }
-    const id = await replicateRequest(prompt);
-    const img = await replicateFetch(id);
+    const img = await generateWithRetries(prompt, 3);
     await saveCover(slug, img);
     console.log('AI cover saved:', slug);
     return true;

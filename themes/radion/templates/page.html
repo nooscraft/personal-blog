@@ -82,7 +82,11 @@
         {# As a convenience, if no cover set but a generated one exists under /images/covers/{slug}.png,
            attempt to use it. If the image is missing the browser will hide it via onerror. #}
         {% if not img_url %}
-          {% set_global img_url = get_url(path="images/covers/" ~ page.slug ~ ".png", trailing_slash=false) %}
+          {# Derive slug robustly from permalink to match filename of generated cover #}
+          {% set p = page.permalink | trim_end_matches(pat='/') %}
+          {% set parts = p | split(pat='/') %}
+          {% set slug_from_url = parts | last %}
+          {% set_global img_url = get_url(path="images/covers/" ~ slug_from_url ~ ".png", trailing_slash=false) %}
         {% endif %}
         {% if img_url %}
         <figure class="post-cover" style="margin: 1.25rem 0;">
