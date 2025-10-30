@@ -34,15 +34,33 @@ jobs:
       - name: Install cover generator deps
         run: |
           if [ -f package.json ]; then
-            npm ci
+            npm install --no-audit --no-fund
           fi
 
       - name: Generate social cover images
         run: |
           if [ -f scripts/generate-covers.mjs ]; then
-            npm run generate:covers
-            echo "Generated covers:"
-            ls -la static/images/covers || true
+            mkdir -p static/images/covers
+            missing=false
+            for slug in \
+              rust-serde-datetime-deserialization-error \
+              cursor-payments-confusion \
+              how-embracing-rust-sharpens-the-mind \
+              github-actions-when-automation-meets-reality \
+              why-rust-makes-you-better-engineer \
+              how-my-terminal-looks; do
+              if [ ! -f "static/images/covers/${slug}.png" ]; then
+                echo "Missing cover for: ${slug}"
+                missing=true
+              fi
+            done
+            if [ "$missing" = true ]; then
+              npm run generate:covers
+              echo "Generated covers:"
+              ls -la static/images/covers || true
+            else
+              echo "All cover images already exist; skipping generation."
+            fi
           fi
       
       - name: Build site
