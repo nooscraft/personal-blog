@@ -3,7 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "generate:covers": "node scripts/generate-covers.mjs"
+    "generate:covers": "node scripts/generate-covers.mjs",
+    "favicons": "node scripts/update-favicons.mjs"
   },
   "dependencies": {
     "sharp": "^0.33.3",

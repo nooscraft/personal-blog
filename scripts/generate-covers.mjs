@@ -54,32 +54,13 @@ async function iconsFor(slug) {
   return (map[slug] || ['terminal']).slice(0,4);
 }
 
-function wrapTitle(title, maxCharsPerLine = 26) {
-  const words = title.split(/\s+/);
-  const lines = [];
-  let line = '';
-  for (const w of words) {
-    if ((line + ' ' + w).trim().length > maxCharsPerLine && line.length > 0) {
-      lines.push(line.trim());
-      line = w;
-    } else {
-      line = (line + ' ' + w).trim();
-    }
-  }
-  if (line) lines.push(line.trim());
-  return lines;
-}
+// No title text on covers (abstract logo composition)
 
-function buildSVG({ title, logoB64, iconsB64 }) {
-  const lines = wrapTitle(title, 26).map(l => l
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;'));
+function buildSVG({ logoB64, iconsB64 }) {
   return `<?xml version="1.0" encoding="UTF-8"?>
   <svg width="${WIDTH}" height="${HEIGHT}" viewBox="0 0 ${WIDTH} ${HEIGHT}" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <style type="text/css"><![CDATA[
-        .title { font: 700 68px 'JetBrains Mono', monospace; fill: #111827; }
         .subtitle { font: 400 36px 'JetBrains Mono', monospace; fill: ${ACCENT}; }
       ]]></style>
     </defs>
@@ -87,16 +68,19 @@ function buildSVG({ title, logoB64, iconsB64 }) {
     <g transform="translate(72, 120)">
       <image href="data:image/svg+xml;base64,${logoB64}" x="0" y="0" width="96" height="96"/>
       <text x="120" y="64" class="subtitle">${SITE}</text>
-      <text x="0" y="180" class="title">
-        ${lines.map((line, i) => `<tspan x="0" dy="${i === 0 ? 0 : 76}">${line}</tspan>`).join('')}
-      </text>
     </g>
     <!-- Icons grid -->
-    <g transform="translate(820, 80)">
+    <g transform="translate(650, 90)">
       ${iconsB64.map((b64, idx) => {
-        const col = idx % 2; const row = Math.floor(idx/2);
-        const x = col * 180; const y = row * 180;
-        return `<image href="data:image/svg+xml;base64,${b64}" x="${x}" y="${y}" width="160" height="160"/>`;
+        const cols = 3; const gap = 24; const size = 140;
+        const col = idx % cols; const row = Math.floor(idx/cols);
+        const x = col * (size + gap); const y = row * (size + gap);
+        return `
+          <g transform='translate(${x}, ${y})'>
+            <rect x='-12' y='-12' width='${size+24}' height='${size+24}' rx='20' fill='white' stroke='${ACCENT}' stroke-width='4'/>
+            <image href="data:image/svg+xml;base64,${b64}" x="0" y="0" width="${size}" height="${size}"/>
+          </g>
+        `;
       }).join('')}
     </g>
     <rect x="0" y="0" width="100%" height="100%" fill="none" stroke="${ACCENT}" stroke-width="8"/>
@@ -107,13 +91,13 @@ async function main() {
   await ensureOut();
   const logoB64 = await getLogoBase64();
 
-  for (const { slug, title } of POSTS) {
+  for (const { slug } of POSTS) {
     const names = await iconsFor(slug);
     const iconsB64 = [];
     for (const n of names) {
       try { iconsB64.push(await getIconB64(n)); } catch (_) {}
     }
-    const svg = buildSVG({ title, logoB64, iconsB64 });
+    const svg = buildSVG({ logoB64, iconsB64 });
     const png = await sharp(Buffer.from(svg)).png({ quality: 90 }).toBuffer();
     const outPath = path.join(OUT_DIR, `${slug}.png`);
     await fs.writeFile(outPath, png);

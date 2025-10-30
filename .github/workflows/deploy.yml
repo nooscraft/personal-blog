@@ -62,6 +62,13 @@ jobs:
               echo "All cover images already exist; skipping generation."
             fi
           fi
+
+      - name: Update favicons from SVG
+        run: |
+          if [ -f scripts/update-favicons.mjs ]; then
+            npm run favicons
+            ls -la themes/radion/static/icons/favicon | sed -n '1,50p'
+          fi
       
       - name: Build site
         run: |
