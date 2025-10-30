@@ -68,3 +68,54 @@
   - Revert the commit on `main`: `git revert <commit_sha>` and push
   - Or fix the issue and push a new commit - GitHub Actions will redeploy automatically
   - Check GitHub Actions logs if deployment fails: Go to Actions tab → Failed workflow → View logs
+
+## AI cover images (Replicate)
+
+Overview
+- Covers are generated automatically for posts missing a PNG at `static/images/covers/{slug}.png`.
+- Provider: Replicate (SDXL). Stable Horde and icon-based fallback were removed.
+- Output: 1200×630 PNG (SEO/social-friendly aspect ratio).
+
+Where
+- Generator: `scripts/generate-ai-covers.mjs`
+- CI step: job “Generate AI covers (Replicate)” in `.github/workflows/deploy.yml`
+- Embedding: `themes/radion/templates/page.html` automatically tries:
+  1) `page.extra.cover_image_url`
+  2) `page.extra.cover_image_static`
+  3) page asset reference
+  4) fallback to `/images/covers/{slug-from-permalink}.png`
+
+Secrets / config
+- `REPLICATE_API_TOKEN` – API token from replicate.com
+- `REPLICATE_MODEL_VERSION` – SDXL version hash
+- Optional manual trigger: `force_regenerate` input on the workflow (true/false)
+  - When true: sets `FORCE_REGENERATE_COVERS=1` to ignore the exists check once
+
+Prompting (context-aware)
+- The script scans `content/posts/*.md` and extracts:
+  - tags (from `[taxonomies] tags = [..]` or top-level `tags`)
+  - `title` and optional `description`; if description missing, uses a short summary from body
+- Prompt template (simplified):
+  - “Abstract, minimal illustration for a tech blog cover. Topic tags: {tags}. Title: {title}. Context: {summary}. Vector-like, clean geometric shapes, high contrast, brand accent #d64a48 on subtle background #f6f7f4, no text, no watermark, crisp edges, SDXL.”
+- Negative prompt: `text, watermark, signature, lowres, blurry, noisy`
+- Request size: 1024×576, then downscale to exactly 1200×630.
+
+Skip logic and caching
+- The generator skips a post if `static/images/covers/{slug}.png` already exists unless `FORCE_REGENERATE_COVERS=1`.
+- CI restores a cache of `static/images/covers` keyed to `content/posts/**/*.md` so existing covers persist across runs.
+
+Manual full refresh (one time)
+1) Actions → Build and Deploy → Run workflow
+2) Set `force_regenerate` to `true` and run
+3) The job ignores existing PNGs and regenerates all
+
+Troubleshooting
+- “AI cover saved: …” repeats every run → cache miss
+  - Confirm cache steps restore/save; ensure key uses only `content/posts/**/*.md`
+- PNG exists but not embedded → slug mismatch
+  - Template derives slug from `page.permalink`; filename must be `{slug-from-permalink}.png`
+- Replicate 402/429 errors
+  - 402: credits exhausted; 429: rate limits. Script retries with backoff; missing posts will fill on the next run.
+
+Verification
+- CI prints available covers in `public/images/covers` and checks each post HTML for `/images/covers/{slug}.png`.
