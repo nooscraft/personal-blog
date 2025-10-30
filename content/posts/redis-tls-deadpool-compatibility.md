@@ -1,6 +1,6 @@
 +++
 title = "Redis, TLS, and Deadpool: When Dependency Versions Collide"
-date = 2025-11-01
+date = 2025-10-30
 description = "A deep dive into version compatibility issues between redis, deadpool-redis, and TLS support in Rust—and why sometimes you need to stick with an older version."
 [taxonomies]
 categories = ["Programming"]
