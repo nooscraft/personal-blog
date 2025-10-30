@@ -39,8 +39,8 @@ async function requestGeneration(prompt) {
       cfg_scale: 6.5,
       denoising_strength: 0.7,
       seed_variation: 1,
-      width: 1216,
-      height: 704,
+      width: 1024,
+      height: 576,
       steps: 28,
       n: 1,
     },
@@ -52,7 +52,11 @@ async function requestGeneration(prompt) {
   };
   const res = await fetch(`${API}/generate/async`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'apikey': API_KEY || '0000000000' },
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': API_KEY || '0000000000',
+      'Client-Agent': 'noos.blog:1.0 (github.com/RockyRx/personal-blog)'
+    },
     body: JSON.stringify(body),
   });
   if (!res.ok) throw new Error(`horde request failed: ${res.status}`);
