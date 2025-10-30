@@ -169,6 +169,36 @@ jobs:
           find public -name "index.html" -type f | wc -l
           echo "Total blog posts:"
           find public/posts -name "index.html" -type f 2>/dev/null | wc -l
+
+      - name: Verify covers embedded
+        run: |
+          echo "=== Post cover verification ==="
+          echo "Available covers in public/images/covers:"
+          ls -la public/images/covers 2>/dev/null || echo "No covers copied"
+          check() {
+            POST_SLUG=$1
+            HTML=public/posts/$POST_SLUG/index.html
+            PNG=public/images/covers/$POST_SLUG.png
+            if [ -f "$PNG" ]; then echo "✓ PNG exists: $POST_SLUG"; else echo "✗ PNG missing: $POST_SLUG"; fi
+            if [ -f "$HTML" ]; then
+              if grep -q "images/covers/$POST_SLUG.png" "$HTML"; then
+                echo "✓ Embedded in HTML: $POST_SLUG"
+              else
+                echo "✗ Not embedded: $POST_SLUG"
+              fi
+            else
+              echo "✗ Post HTML missing: $HTML"
+            fi
+          }
+          for s in \
+            rust-serde-datetime-deserialization-error \
+            cursor-payments-confusion \
+            how-embracing-rust-sharpens-the-mind \
+            github-actions-when-automation-meets-reality \
+            why-rust-makes-you-better-engineer \
+            how-my-terminal-looks; do
+            check "$s"
+          done
       
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v3
