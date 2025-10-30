@@ -13,14 +13,31 @@ const REPLICATE_MODEL_VERSION = process.env.REPLICATE_MODEL_VERSION || '';
 const BRAND_BG = '#f6f7f4';
 const BRAND_ACCENT = '#d64a48';
 
-const POSTS = [
-  { slug: 'rust-serde-datetime-deserialization-error', tags: ['rust','serde','datetime'] },
-  { slug: 'cursor-payments-confusion', tags: ['cursor','pricing','payments'] },
-  { slug: 'how-embracing-rust-sharpens-the-mind', tags: ['rust','mindset'] },
-  { slug: 'github-actions-when-automation-meets-reality', tags: ['github','actions','ci'] },
-  { slug: 'why-rust-makes-you-better-engineer', tags: ['rust','engineering'] },
-  { slug: 'how-my-terminal-looks', tags: ['terminal','zsh','tmux'] },
-];
+async function discoverPosts() {
+  const dir = path.join(ROOT, 'content', 'posts');
+  const files = (await fs.readdir(dir)).filter(f => f.endsWith('.md') && f !== '_index.md');
+  const posts = [];
+  for (const f of files) {
+    const slug = f.replace(/\.md$/, '');
+    const src = await fs.readFile(path.join(dir, f), 'utf8');
+    const fm = src.split('+++'); // TOML front matter delimited by +++ at top
+    let tags = [];
+    if (fm.length > 1) {
+      const header = fm[1];
+      // Try to read [taxonomies] tags = [ ... ] or tags = [ ... ]
+      const m1 = header.match(/\[taxonomies\][\s\S]*?tags\s*=\s*\[(.*?)\]/);
+      const m2 = header.match(/\ntags\s*=\s*\[(.*?)\]/);
+      const raw = (m1 && m1[1]) || (m2 && m2[1]) || '';
+      tags = raw
+        .split(',')
+        .map(s => s.replace(/['"\s]/g, ''))
+        .filter(Boolean)
+        .slice(0, 6);
+    }
+    posts.push({ slug, tags });
+  }
+  return posts;
+}
 
 function buildPrompt(tags) {
   const tagText = tags.join(', ');
@@ -169,6 +186,7 @@ async function generateFor(slug, tags) {
 
 async function main() {
   await ensureOut();
+  const POSTS = await discoverPosts();
   let count = 0;
   for (const { slug, tags } of POSTS) {
     if (count >= 6) break; // budget safety

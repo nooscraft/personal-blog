@@ -79,9 +79,14 @@
             {% endif %}
           {% endfor %}
         {% endif %}
+        {# As a convenience, if no cover set but a generated one exists under /images/covers/{slug}.png,
+           attempt to use it. If the image is missing the browser will hide it via onerror. #}
+        {% if not img_url %}
+          {% set_global img_url = get_url(path="images/covers/" ~ page.slug ~ ".png", trailing_slash=false) %}
+        {% endif %}
         {% if img_url %}
         <figure class="post-cover" style="margin: 1.25rem 0;">
-          <img src="{{ img_url }}" alt="{{ page.title }} cover" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--color-border-default, #e5e7eb);" />
+          <img src="{{ img_url }}" alt="{{ page.title }} cover" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--color-border-default, #e5e7eb);" onerror="this.parentNode.style.display='none'" />
         </figure>
         {% endif %}
     </header>
