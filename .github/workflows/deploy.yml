@@ -42,7 +42,9 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: static/images/covers
-          key: covers-${{ runner.os }}-${{ hashFiles('content/posts/**','scripts/generate-ai-covers.mjs','package.json') }}
+          key: covers-${{ runner.os }}-${{ hashFiles('content/posts/**/*.md') }}
+          restore-keys: |
+            covers-${{ runner.os }}-
 
       - name: Install cover generator deps
         run: |
@@ -67,7 +69,7 @@ jobs:
         if: steps.covers-cache.outputs.cache-hit != 'true'
         with:
           path: static/images/covers
-          key: covers-${{ runner.os }}-${{ hashFiles('content/posts/**','scripts/generate-ai-covers.mjs','package.json') }}
+          key: covers-${{ runner.os }}-${{ hashFiles('content/posts/**/*.md') }}
 
       # Removed social/icon-based cover generator – AI only now
 
