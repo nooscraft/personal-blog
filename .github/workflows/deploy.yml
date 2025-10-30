@@ -63,13 +63,7 @@ jobs:
             fi
           fi
 
-      # Temporarily skip favicon PNG regeneration to avoid SVG->PNG CI issues
-      # - name: Update favicons from SVG
-      #   run: |
-      #     if [ -f scripts/update-favicons.mjs ]; then
-      #       npm run favicons
-      #       ls -la themes/radion/static/icons/favicon | sed -n '1,50p'
-      #     fi
+      # (Removed favicon regeneration step)
       
       - name: Build site
         run: |
