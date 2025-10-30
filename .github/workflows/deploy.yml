@@ -48,6 +48,7 @@ jobs:
           REPLICATE_API_TOKEN: ${{ secrets.REPLICATE_API_TOKEN }}
           REPLICATE_MODEL_VERSION: ${{ secrets.REPLICATE_MODEL_VERSION }}
           FORCE_REGENERATE_COVERS: ${{ inputs.force_regenerate }}
+          MAX_AI_COVERS: 999
         run: |
           if [ -f scripts/generate-ai-covers.mjs ]; then
             echo "Generating AI covers via Replicate (missing only)"

@@ -170,12 +170,14 @@ async function generateFor({ slug, tags, title, desc }) {
 async function main() {
   await ensureOut();
   const POSTS = await discoverPosts();
+  const MAX = parseInt(process.env.MAX_AI_COVERS || '999', 10);
   let count = 0;
   for (const post of POSTS) {
-    if (count >= 6) break; // budget safety
+    if (count >= MAX) break;
     const changed = await generateFor(post);
     if (changed) count++;
   }
+  console.log(`AI generation completed: ${count} cover(s) created`);
 }
 
 main().catch(err => { console.error(err); process.exit(1); });
