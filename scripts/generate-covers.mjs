@@ -35,8 +35,27 @@ async function getLogoBase64() {
   }
 }
 
+function wrapTitle(title, maxCharsPerLine = 26) {
+  const words = title.split(/\s+/);
+  const lines = [];
+  let line = '';
+  for (const w of words) {
+    if ((line + ' ' + w).trim().length > maxCharsPerLine && line.length > 0) {
+      lines.push(line.trim());
+      line = w;
+    } else {
+      line = (line + ' ' + w).trim();
+    }
+  }
+  if (line) lines.push(line.trim());
+  return lines;
+}
+
 function buildSVG({ title, logoB64 }) {
-  const safeTitle = title.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const lines = wrapTitle(title, 26).map(l => l
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;'));
   return `<?xml version="1.0" encoding="UTF-8"?>
   <svg width="${WIDTH}" height="${HEIGHT}" viewBox="0 0 ${WIDTH} ${HEIGHT}" xmlns="http://www.w3.org/2000/svg">
     <defs>
@@ -49,11 +68,9 @@ function buildSVG({ title, logoB64 }) {
     <g transform="translate(72, 120)">
       <image href="data:image/svg+xml;base64,${logoB64}" x="0" y="0" width="96" height="96"/>
       <text x="120" y="64" class="subtitle">${SITE}</text>
-      <foreignObject x="0" y="140" width="1056" height="400">
-        <div xmlns="http://www.w3.org/1999/xhtml" style="font: 700 68px 'JetBrains Mono', monospace; color:#111827; line-height:1.2;">
-          ${safeTitle}
-        </div>
-      </foreignObject>
+      <text x="0" y="180" class="title">
+        ${lines.map((line, i) => `<tspan x="0" dy="${i === 0 ? 0 : 76}">${line}</tspan>`).join('')}
+      </text>
     </g>
     <rect x="0" y="0" width="100%" height="100%" fill="none" stroke="${ACCENT}" stroke-width="8"/>
   </svg>`;
