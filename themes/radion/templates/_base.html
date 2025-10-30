@@ -92,8 +92,13 @@
     <meta name="twitter:title" content="{% block twitter_title %}{{ title }}{% endblock twitter_title %}" />
 
     <!-- Cover images -->
-    {% set cover_image = config.base_url ~ "/icons/favicon/web-app-manifest-512x512.png" %}
-    {% if page and page.extra.cover_image and page.assets %}
+           {% set cover_image = config.base_url ~ "/icons/favicon/web-app-manifest-512x512.png" %}
+           {# Prefer explicit cover image URL, then static path, then page-local asset #}
+           {% if page and page.extra.cover_image_url %}
+             {% set_global cover_image = page.extra.cover_image_url %}
+           {% elif page and page.extra.cover_image_static %}
+             {% set_global cover_image = config.base_url ~ "/" ~ page.extra.cover_image_static | trim_start_matches(pat='/') %}
+           {% elif page and page.extra.cover_image and page.assets %}
       {% for asset in page.assets %}
         {% if asset is ending_with(page.extra.cover_image) %}
           {% set_global cover_image = config.base_url ~ asset %}

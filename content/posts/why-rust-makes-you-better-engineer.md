@@ -6,6 +6,8 @@ draft = false
 [taxonomies]
 tags = ["rust", "programming", "systems-programming", "memory-safety", "concurrency"]
 categories = ["Programming"]
+[extra]
+cover_image_static = "images/covers/why-rust-makes-you-better-engineer.png"
 +++
 
 If you've ever tried learning Rust, chances are the compiler pushed back at you—hard. It may feel relentless at times, especially compared to more permissive languages like Python, JavaScript, or even Java. But here's the key: that friction is the point. Rust doesn't just run your code safely—it teaches you to **think differently** about correctness, safety, and performance.

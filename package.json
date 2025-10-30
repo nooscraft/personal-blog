@@ -1,0 +1,13 @@
+{
+  "name": "noos-blog-cover-generator",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate:covers": "node scripts/generate-covers.mjs"
+  },
+  "dependencies": {
+    "sharp": "^0.33.3",
+    "node-fetch": "^3.3.2"
+  }
+}
+

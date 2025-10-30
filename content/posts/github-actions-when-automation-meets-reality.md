@@ -5,6 +5,8 @@ description = "Lessons learned from wrestling with GitHub Actions: submodules, d
 [taxonomies]
 categories = ["DevOps"]
 tags = ["github-actions", "ci-cd", "automation", "deployment", "lessons-learned"]
+[extra]
+cover_image_static = "images/covers/github-actions-when-automation-meets-reality.png"
 +++
 
 When you first set up GitHub Actions for a project, it feels like magic. Push your code, and the CI/CD pipeline takes care of everything—building, testing, deploying. But sometimes, the magic breaks. And when it does, you learn things you never expected to learn.

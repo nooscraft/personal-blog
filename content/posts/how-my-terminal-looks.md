@@ -5,6 +5,8 @@ date = 2025-10-13
 [taxonomies]
 categories = ["Tools"]
 tags = ["terminal", "zsh", "oh-my-zsh", "tmux", "productivity", "linux"]
+[extra]
+cover_image_static = "images/covers/how-my-terminal-looks.png"
 +++
 
 ### Background

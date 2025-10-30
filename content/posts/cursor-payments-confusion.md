@@ -5,6 +5,8 @@ description = "Navigating the unclear pricing and payment model for Cursor IDEâ€
 [taxonomies]
 categories = ["Tools"]
 tags = ["cursor", "ide", "payments", "pricing"]
+[extra]
+cover_image_static = "images/covers/cursor-payments-confusion.png"
 +++
 
 [Cursor](https://cursor.sh/) is a powerful AI-powered code editor that many developers are excited about. However, one aspect that consistently causes confusion is its payment and pricing model. This post attempts to document some of these confusions based on recent experiences.

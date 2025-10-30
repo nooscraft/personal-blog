@@ -5,6 +5,8 @@ description = "A common Rust Serde error when deserializing DateTime from JSON t
 [taxonomies]
 categories = ["Programming"]
 tags = ["rust", "serde", "datetime", "json", "error-handling"]
+[extra]
+cover_image_static = "images/covers/rust-serde-datetime-deserialization-error.png"
 +++
 
 I recently hit this error while working with a Rust application that reads from a database:

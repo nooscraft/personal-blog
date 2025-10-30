@@ -5,6 +5,8 @@ description = "Rust develops focus, critical thinking, and responsible individua
 [taxonomies]
 categories = ["Programming"]
 tags = ["rust", "craftsmanship", "mindset", "productivity", "engineering", "teamwork"]
+[extra]
+cover_image_static = "images/covers/how-embracing-rust-sharpens-the-mind.png"
 +++
 
 When you decide to work in Rust, something subtle begins to shift. It’s not just about learning a new syntax or mastering memory safety. It’s about engaging a mode of thinking that demands attention, clarity, and responsibility. In doing so, you develop stronger focus, sharpened critical thinking, and what might best be called responsible individualism. And when one person grows in that way, the ripple effects can touch an entire team or organization.
