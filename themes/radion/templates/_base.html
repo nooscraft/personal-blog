@@ -92,7 +92,8 @@
     <meta name="twitter:title" content="{% block twitter_title %}{{ title }}{% endblock twitter_title %}" />
 
     <!-- Cover images -->
-           {% set cover_image = config.base_url ~ "/icons/favicon/web-app-manifest-512x512.png" %}
+           {# Default to apple-touch (brand O), not the old webmanifest #}
+           {% set cover_image = config.base_url ~ "/icons/favicon/apple-touch-icon.png?v=3" %}
            {# Prefer explicit cover image URL, then static path, then page-local asset #}
            {% if page and page.extra.cover_image_url %}
              {% set_global cover_image = page.extra.cover_image_url %}
@@ -105,6 +106,12 @@
           {% break %}
         {% endif %}
       {% endfor %}
+    {% elif page %}
+      {# Fallback to generated cover: /images/covers/{slug-from-permalink}.png #}
+      {% set p = page.permalink | trim_end_matches(pat='/') %}
+      {% set parts = p | split(pat='/') %}
+      {% set slug_from_url = parts | last %}
+      {% set_global cover_image = config.base_url ~ "/images/covers/" ~ slug_from_url ~ ".png" %}
     {% endif %}
 
     <meta
