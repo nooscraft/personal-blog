@@ -6,28 +6,32 @@
   Reference: https://giscus.app
 */
 
+/*
+  Giscus expects GitHub design token variables. Define the most impactful ones.
+  Reference: https://giscus.app (Custom theme section)
+*/
+
 /* Light mode */
 :root {
-  --giscus-font-size: 16px;
-  --giscus-body-background: #ffffff;
-  --giscus-body-text: #222222;
-  --giscus-highlight-text: #111111;
-  --giscus-accent-color: #b7005d; /* brand */
-  --giscus-muted-text: #6b7280; /* gray-500 */
-  --giscus-border-color: #e5e7eb; /* gray-200 */
-  --giscus-input-background: #ffffff;
+  --color-canvas-default: #ffffff;          /* main background */
+  --color-canvas-subtle:  #f8fafc;          /* subtle areas/cards */
+  --color-fg-default:     #111827;          /* main text */
+  --color-fg-muted:       #6b7280;          /* secondary text */
+  --color-border-default: #e5e7eb;          /* borders */
+  --color-accent-fg:      #b7005d;          /* links / accents (brand) */
+  --color-neutral-muted:  rgba(175,184,193,0.2);
 }
 
 /* Dark mode */
 @media (prefers-color-scheme: dark) {
   :root {
-    --giscus-body-background: #0b0b0d;
-    --giscus-body-text: #e5e7eb;
-    --giscus-highlight-text: #f3f4f6;
-    --giscus-accent-color: #ff2a86; /* brighter brand in dark */
-    --giscus-muted-text: #9ca3af;
-    --giscus-border-color: #1f2937;
-    --giscus-input-background: #111114;
+    --color-canvas-default: #0b0b0d;
+    --color-canvas-subtle:  #111114;
+    --color-fg-default:     #e5e7eb;
+    --color-fg-muted:       #9ca3af;
+    --color-border-default: #1f2937;
+    --color-accent-fg:      #ff2a86;        /* brighter brand in dark */
+    --color-neutral-muted:  rgba(110,118,129,0.4);
   }
 }
 
