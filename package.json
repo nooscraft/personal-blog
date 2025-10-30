@@ -3,11 +3,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "generate:covers": "node scripts/generate-covers.mjs"
+    "generate:covers": "node scripts/generate-covers.mjs",
+    "generate:ai": "node scripts/generate-ai-covers.mjs"
   },
   "dependencies": {
     "sharp": "^0.33.3",
-    "node-fetch": "^3.3.2"
+    "node-fetch": "^3.3.2",
+    "png-to-ico": "^2.1.8"
   }
 }
 
