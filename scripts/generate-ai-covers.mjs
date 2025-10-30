@@ -6,8 +6,10 @@ import sharp from 'sharp';
 
 const ROOT = path.resolve(process.cwd());
 const OUT_DIR = path.join(ROOT, 'static', 'images', 'covers');
-const API = 'https://stablehorde.net/api/v2';
-const API_KEY = process.env.HORDE_API_KEY || '';
+const HORDE_API = 'https://stablehorde.net/api/v2';
+const HORDE_API_KEY = process.env.HORDE_API_KEY || '';
+const REPLICATE_TOKEN = process.env.REPLICATE_API_TOKEN || '';
+const REPLICATE_MODEL_VERSION = process.env.REPLICATE_MODEL_VERSION || '';
 const BRAND_BG = '#f6f7f4';
 const BRAND_ACCENT = '#d64a48';
 
@@ -31,7 +33,8 @@ async function imageExists(slug) {
   try { await fs.stat(path.join(OUT_DIR, `${slug}.png`)); return true; } catch { return false; }
 }
 
-async function requestGeneration(prompt) {
+// ---------------- Stable Horde -----------------
+async function hordeRequest(prompt) {
   const body = {
     prompt,
     params: {
@@ -50,11 +53,11 @@ async function requestGeneration(prompt) {
     workers: 1,
     models: ['SDXL 1.0'],
   };
-  const res = await fetch(`${API}/generate/async`, {
+  const res = await fetch(`${HORDE_API}/generate/async`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'apikey': API_KEY || '0000000000',
+      'apikey': HORDE_API_KEY || '0000000000',
       'Client-Agent': 'noos.blog:1.0 (github.com/RockyRx/personal-blog)'
     },
     body: JSON.stringify(body),
@@ -64,10 +67,10 @@ async function requestGeneration(prompt) {
   return data.id;
 }
 
-async function waitFor(id, maxMs = 240000) {
+async function hordeWait(id, maxMs = 240000) {
   const start = Date.now();
   while (Date.now() - start < maxMs) {
-    const res = await fetch(`${API}/generate/check/${id}`);
+    const res = await fetch(`${HORDE_API}/generate/check/${id}`);
     const data = await res.json();
     if (data.done) return true;
     await new Promise(r => setTimeout(r, 4000));
@@ -75,13 +78,57 @@ async function waitFor(id, maxMs = 240000) {
   return false;
 }
 
-async function fetchResult(id) {
-  const res = await fetch(`${API}/generate/status/${id}`);
+async function hordeFetchResult(id) {
+  const res = await fetch(`${HORDE_API}/generate/status/${id}`);
   const data = await res.json();
   const gen = data?.generations?.[0];
   if (!gen || !gen.img) throw new Error('no image in generation');
   const b64 = gen.img.startsWith('data:image') ? gen.img.split(',')[1] : gen.img;
   return Buffer.from(b64, 'base64');
+}
+
+// ---------------- Replicate -----------------
+async function replicateRequest(prompt) {
+  const body = {
+    version: REPLICATE_MODEL_VERSION,
+    input: {
+      prompt,
+      negative_prompt: 'text, watermark, signature, lowres, blurry, noisy',
+      width: 1024,
+      height: 576,
+      guidance_scale: 6,
+      num_inference_steps: 28
+    }
+  };
+  const res = await fetch('https://api.replicate.com/v1/predictions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Token ${REPLICATE_TOKEN}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) throw new Error(`replicate request failed: ${res.status}`);
+  const data = await res.json();
+  return data.id;
+}
+
+async function replicateFetch(id, maxMs = 300000) {
+  const start = Date.now();
+  while (Date.now() - start < maxMs) {
+    const res = await fetch(`https://api.replicate.com/v1/predictions/${id}`, {
+      headers: { 'Authorization': `Token ${REPLICATE_TOKEN}` }
+    });
+    const data = await res.json();
+    if (data.status === 'succeeded') {
+      const url = Array.isArray(data.output) ? data.output[0] : data.output;
+      const img = await fetch(url);
+      return Buffer.from(await img.arrayBuffer());
+    }
+    if (data.status === 'failed' || data.status === 'canceled') throw new Error(`replicate ${data.status}`);
+    await new Promise(r => setTimeout(r, 4000));
+  }
+  throw new Error('replicate timeout');
 }
 
 async function saveCover(slug, buf) {
@@ -94,15 +141,23 @@ async function saveCover(slug, buf) {
 }
 
 async function generateFor(slug, tags) {
-  if (!API_KEY) { console.log('HORDE_API_KEY missing; skipping AI generation'); return false; }
   const exists = await imageExists(slug);
   if (exists) return false;
   const prompt = buildPrompt(tags);
   try {
-    const id = await requestGeneration(prompt);
-    const ok = await waitFor(id);
-    if (!ok) throw new Error('timeout');
-    const img = await fetchResult(id);
+    let img;
+    if (REPLICATE_TOKEN && REPLICATE_MODEL_VERSION) {
+      const id = await replicateRequest(prompt);
+      img = await replicateFetch(id);
+    } else if (HORDE_API_KEY) {
+      const id = await hordeRequest(prompt);
+      const ok = await hordeWait(id);
+      if (!ok) throw new Error('timeout');
+      img = await hordeFetchResult(id);
+    } else {
+      console.log('No AI provider configured; skipping');
+      return false;
+    }
     await saveCover(slug, img);
     console.log('AI cover saved:', slug);
     return true;
