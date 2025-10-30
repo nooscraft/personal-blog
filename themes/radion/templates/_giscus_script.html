@@ -10,7 +10,11 @@
   data-emit-metadata="0"
   data-input-position="bottom"
 
-  {% if config.extra.theme_mode == "light" %}
+  {% if config.extra.giscus_theme_url %}
+  data-theme="{{ config.extra.giscus_theme_url }}"
+  {% elif config.extra.giscus_theme %}
+  data-theme="{{ config.extra.giscus_theme }}"
+  {% elif config.extra.theme_mode == "light" %}
   data-theme="light"
   {% elif config.extra.theme_mode == "dark" %}
   data-theme="dark"

@@ -1,0 +1,40 @@
+/*
+  Custom Giscus theme starter for noos.blog
+  - Based on brand color #b7005d
+  - Light/dark variants via prefers-color-scheme
+  - Only CSS variables used by Giscus iframe are defined
+  Reference: https://giscus.app
+*/
+
+/* Light mode */
+:root {
+  --giscus-font-size: 16px;
+  --giscus-body-background: #ffffff;
+  --giscus-body-text: #222222;
+  --giscus-highlight-text: #111111;
+  --giscus-accent-color: #b7005d; /* brand */
+  --giscus-muted-text: #6b7280; /* gray-500 */
+  --giscus-border-color: #e5e7eb; /* gray-200 */
+  --giscus-input-background: #ffffff;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --giscus-body-background: #0b0b0d;
+    --giscus-body-text: #e5e7eb;
+    --giscus-highlight-text: #f3f4f6;
+    --giscus-accent-color: #ff2a86; /* brighter brand in dark */
+    --giscus-muted-text: #9ca3af;
+    --giscus-border-color: #1f2937;
+    --giscus-input-background: #111114;
+  }
+}
+
+/* Optional: container spacing outside the iframe */
+.giscus {
+  margin-top: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+

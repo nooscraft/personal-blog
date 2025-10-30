@@ -53,6 +53,12 @@ giscus_data_category_id = "DIC_kwDOQJ_XNs4CxOmG"
 # Light/Dark Mode set
 theme_mode = "light" # options: {light, dark, auto, toggle}
 
+# Giscus theme control
+# Built-in options include: preferred_color_scheme, light, dark, transparent_dark, github_light, github_dark, dark_dimmed, etc.
+# To use a custom CSS theme, set giscus_theme_url to an absolute URL (we publish to /css/giscus-theme.css)
+giscus_theme = "preferred_color_scheme"
+giscus_theme_url = "https://noos.blog/css/giscus-theme.css"
+
 # Whether to display favicon
 favicon = true
 
