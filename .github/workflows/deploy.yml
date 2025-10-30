@@ -37,6 +37,13 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Restore covers cache
+        id: covers-cache
+        uses: actions/cache/restore@v3
+        with:
+          path: static/images/covers
+          key: covers-${{ runner.os }}-${{ hashFiles('content/posts/**','scripts/generate-ai-covers.mjs','package.json') }}
+
       - name: Install cover generator deps
         run: |
           if [ -f package.json ]; then
@@ -48,12 +55,19 @@ jobs:
           REPLICATE_API_TOKEN: ${{ secrets.REPLICATE_API_TOKEN }}
           REPLICATE_MODEL_VERSION: ${{ secrets.REPLICATE_MODEL_VERSION }}
           FORCE_REGENERATE_COVERS: ${{ inputs.force_regenerate }}
-          MAX_AI_COVERS: 999
+          MAX_AI_COVERS:
         run: |
           if [ -f scripts/generate-ai-covers.mjs ]; then
-            echo "Generating AI covers via Replicate (missing only)"
+            echo "Generating AI covers via Replicate (skip if PNG exists in static/images/covers)"
             npm run generate:ai || echo "AI cover generation skipped"
           fi
+
+      - name: Save covers cache (if new)
+        uses: actions/cache/save@v3
+        if: steps.covers-cache.outputs.cache-hit != 'true'
+        with:
+          path: static/images/covers
+          key: covers-${{ runner.os }}-${{ hashFiles('content/posts/**','scripts/generate-ai-covers.mjs','package.json') }}
 
       # Removed social/icon-based cover generator – AI only now
 
