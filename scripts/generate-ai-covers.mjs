@@ -11,6 +11,18 @@ const REPLICATE_MODEL_VERSION = process.env.REPLICATE_MODEL_VERSION || '';
 const BRAND_BG = '#f6f7f4';
 const BRAND_ACCENT = '#d64a48';
 
+function stripMd(s) {
+  return s
+    .replace(/`{3}[\s\S]*?`{3}/g, '')
+    .replace(/`[^`]*`/g, '')
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, '')
+    .replace(/\[[^\]]*\]\([^)]*\)/g, '')
+    .replace(/^#+\s+/gm, '')
+    .replace(/[*_~>#\-]/g, '')
+    .replace(/\s+/g, ' ') // collapse
+    .trim();
+}
+
 async function discoverPosts() {
   const dir = path.join(ROOT, 'content', 'posts');
   const files = (await fs.readdir(dir)).filter(f => f.endsWith('.md') && f !== '_index.md');
@@ -20,6 +32,8 @@ async function discoverPosts() {
     const src = await fs.readFile(path.join(dir, f), 'utf8');
     const fm = src.split('+++'); // TOML front matter delimited by +++ at top
     let tags = [];
+    let title = slug.replace(/-/g, ' ');
+    let desc = '';
     if (fm.length > 1) {
       const header = fm[1];
       // Try to read [taxonomies] tags = [ ... ] or tags = [ ... ]
@@ -31,15 +45,24 @@ async function discoverPosts() {
         .map(s => s.replace(/['"\s]/g, ''))
         .filter(Boolean)
         .slice(0, 6);
+      const t = header.match(/\ntitle\s*=\s*"([^"]+)"/);
+      if (t) title = t[1];
+      const d = header.match(/\ndescription\s*=\s*"([^"]+)"/);
+      if (d) desc = d[1];
     }
-    posts.push({ slug, tags });
+    if (!desc && fm.length > 2) {
+      const body = fm.slice(2).join('+++');
+      desc = stripMd(body).slice(0, 240);
+    }
+    posts.push({ slug, tags, title, desc });
   }
   return posts;
 }
 
-function buildPrompt(tags) {
+function buildPrompt({ tags, title, desc }) {
   const tagText = tags.join(', ');
-  return `Abstract, minimal illustration related to ${tagText}; modern tech blog cover; vector style; clean geometric shapes; high contrast; brand accent ${BRAND_ACCENT} on subtle background ${BRAND_BG}; no text; no watermark; crisp edges; SDXL`;
+  const context = (desc || '').replace(/"/g, '').slice(0, 240);
+  return `Abstract, minimal illustration for a tech blog cover. Topic tags: ${tagText}. Title: ${title}. Context: ${context}. Vector-like, clean geometric shapes, high contrast, brand accent ${BRAND_ACCENT} on subtle background ${BRAND_BG}, no text, no watermark, crisp edges, SDXL`;
 }
 
 async function ensureOut() { await fs.mkdir(OUT_DIR, { recursive: true }); }
@@ -104,7 +127,7 @@ async function saveCover(slug, buf) {
 async function generateFor(slug, tags) {
   // Do NOT regenerate if already present
   if (await imageExists(slug)) return false;
-  const prompt = buildPrompt(tags);
+  const prompt = buildPrompt({ tags, title, desc });
   try {
     if (!(REPLICATE_TOKEN && REPLICATE_MODEL_VERSION)) {
       console.log('Replicate not configured; skipping');
