@@ -10,6 +10,7 @@ const HEIGHT = 630;
 const BG = '#f6f7f4';
 const ACCENT = '#d64a48';
 const SITE = 'noos.blog';
+const LOGO_DIR = path.join(ROOT, 'static', 'images', 'cover-logos');
 
 const POSTS = [
   { slug: 'rust-serde-datetime-deserialization-error', title: 'When Rust Expects a String But Gets a Map' },
@@ -35,6 +36,24 @@ async function getLogoBase64() {
   }
 }
 
+async function getIconB64(name) {
+  const p = path.join(LOGO_DIR, `${name}.svg`);
+  const svg = await fs.readFile(p, 'utf8');
+  return Buffer.from(svg).toString('base64');
+}
+
+async function iconsFor(slug) {
+  const map = {
+    'rust-serde-datetime-deserialization-error': ['rust','json'],
+    'cursor-payments-confusion': ['terminal','github'],
+    'how-embracing-rust-sharpens-the-mind': ['rust'],
+    'github-actions-when-automation-meets-reality': ['github','terminal'],
+    'why-rust-makes-you-better-engineer': ['rust'],
+    'how-my-terminal-looks': ['terminal','zsh','tmux'],
+  };
+  return (map[slug] || ['terminal']).slice(0,4);
+}
+
 function wrapTitle(title, maxCharsPerLine = 26) {
   const words = title.split(/\s+/);
   const lines = [];
@@ -51,7 +70,7 @@ function wrapTitle(title, maxCharsPerLine = 26) {
   return lines;
 }
 
-function buildSVG({ title, logoB64 }) {
+function buildSVG({ title, logoB64, iconsB64 }) {
   const lines = wrapTitle(title, 26).map(l => l
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -72,6 +91,14 @@ function buildSVG({ title, logoB64 }) {
         ${lines.map((line, i) => `<tspan x="0" dy="${i === 0 ? 0 : 76}">${line}</tspan>`).join('')}
       </text>
     </g>
+    <!-- Icons grid -->
+    <g transform="translate(820, 80)">
+      ${iconsB64.map((b64, idx) => {
+        const col = idx % 2; const row = Math.floor(idx/2);
+        const x = col * 180; const y = row * 180;
+        return `<image href="data:image/svg+xml;base64,${b64}" x="${x}" y="${y}" width="160" height="160"/>`;
+      }).join('')}
+    </g>
     <rect x="0" y="0" width="100%" height="100%" fill="none" stroke="${ACCENT}" stroke-width="8"/>
   </svg>`;
 }
@@ -81,7 +108,12 @@ async function main() {
   const logoB64 = await getLogoBase64();
 
   for (const { slug, title } of POSTS) {
-    const svg = buildSVG({ title, logoB64 });
+    const names = await iconsFor(slug);
+    const iconsB64 = [];
+    for (const n of names) {
+      try { iconsB64.push(await getIconB64(n)); } catch (_) {}
+    }
+    const svg = buildSVG({ title, logoB64, iconsB64 });
     const png = await sharp(Buffer.from(svg)).png({ quality: 90 }).toBuffer();
     const outPath = path.join(OUT_DIR, `${slug}.png`);
     await fs.writeFile(outPath, png);
