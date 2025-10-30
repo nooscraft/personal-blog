@@ -121,15 +121,21 @@
 
     <!-- Favicons -->
            {% if config.extra.favicon | default (value="true") %}
-           <!-- Minimal, cache-busted favicons (drop legacy PNG/manifest to avoid stale icons) -->
+           <!-- PNG + ICO (some clients ignore SVG favicons) -->
            <link
              rel="icon"
-             type="image/svg+xml"
-             href="{{ config.base_url }}/icons/favicon/favicon.svg?v=2"
+             type="image/png"
+             sizes="96x96"
+             href="{{ config.base_url }}/icons/favicon/favicon-96x96.png?v=3"
+           />
+           <link
+             rel="apple-touch-icon"
+             sizes="180x180"
+             href="{{ config.base_url }}/icons/favicon/apple-touch-icon.png?v=3"
            />
            <link
              rel="shortcut icon"
-             href="{{ config.base_url }}/icons/favicon/favicon.ico?v=2"
+             href="{{ config.base_url }}/icons/favicon/favicon.ico?v=3"
            />
            {% endif %}
 
