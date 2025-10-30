@@ -18,6 +18,8 @@ build_search_index = true
 
 # Generate sitemap for SEO
 generate_sitemap = true
+# Generate Atom/RSS feeds
+generate_feeds = true
 
 # The site theme to use.
 theme = "radion"

@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Crawl-delay can be added if needed per engine
+
+Sitemap: {{ config.base_url }}/sitemap.xml
+
