@@ -65,6 +65,25 @@
     <header>
         <h1 itemprop="headline">{{ page.title }}</h1>
         <data class="muted">{{ post_macros::meta(page=page) }}</data>
+        {# Optional cover/hero image #}
+        {% set img_url = false %}
+        {% if page.extra.cover_image_url %}
+          {% set_global img_url = page.extra.cover_image_url %}
+        {% elif page.extra.cover_image_static %}
+          {% set_global img_url = get_url(path=page.extra.cover_image_static, trailing_slash=false) %}
+        {% elif page.extra.cover_image and page.assets %}
+          {% for asset in page.assets %}
+            {% if asset is ending_with(page.extra.cover_image) %}
+              {% set_global img_url = asset | safe %}
+              {% break %}
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+        {% if img_url %}
+        <figure class="post-cover" style="margin: 1.25rem 0;">
+          <img src="{{ img_url }}" alt="{{ page.title }} cover" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--color-border-default, #e5e7eb);" />
+        </figure>
+        {% endif %}
     </header>
 
     <article itemprop="articleBody">
