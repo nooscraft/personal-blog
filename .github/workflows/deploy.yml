@@ -25,10 +25,31 @@ jobs:
           tar -xzf zola.tar.gz
           sudo mv zola /usr/local/bin/
           zola --version
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install cover generator deps
+        run: |
+          if [ -f package.json ]; then
+            npm ci
+          fi
+
+      - name: Generate social cover images
+        run: |
+          if [ -f scripts/generate-covers.mjs ]; then
+            npm run generate:covers
+            echo "Generated covers:"
+            ls -la static/images/covers || true
+          fi
       
       - name: Build site
         run: |
           echo "Building site..."
+          echo "Verifying covers before build..."
+          ls -la static/images/covers || echo "No covers directory yet"
           zola build --output-dir public
           echo "Build complete"
           echo ""
