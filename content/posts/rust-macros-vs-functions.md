@@ -1,6 +1,6 @@
 +++
 title = "Rust Macros vs Functions: What Java and Python Developers Should Know"
-date = 2025-10-28
+date = 2025-11-01
 description = "A quick guide to understanding Rust macros, with comparisons to Java and Python concepts for developers new to the language."
 [taxonomies]
 categories = ["Programming"]
