@@ -119,3 +119,33 @@ Troubleshooting
 
 Verification
 - CI prints available covers in `public/images/covers` and checks each post HTML for `/images/covers/{slug}.png`.
+
+## Theme Features (Radion)
+
+The blog uses the [Radion theme](https://github.com/aaranxu/radion) with customizations. Key features:
+
+### External Link Icons
+- **Part of theme aesthetic**: External link icons (orange square with arrow) appear on all links containing `://`
+- This includes: navigation links (Home, Categories, Tags), pagination links (Next/Previous), and blog post titles
+- Only removed from: feed icons (RSS) and figure/image links
+- CSS rule: `a[href*="://"]::after` adds the icon automatically
+
+### Post Descriptions on Homepage
+- Posts on the homepage show a short description/summary below the title
+- Priority order:
+  1. `page.summary` (if defined in front matter)
+  2. `page.description` (fallback if summary not available)
+- Each listing includes a "Read More »" link
+- Template: `themes/radion/templates/macros/post_macros.html` → `page_in_list` macro
+
+### Dark/Light Mode Toggle
+- Theme mode is set to `"toggle"` in `config.toml` (`extra.theme_mode`)
+- Toggle button appears in the header next to search and RSS icons
+- Users can switch between light and dark themes
+- Preference is stored in localStorage
+- Default theme is light mode (set in `themes/radion/static/js/init-theme.js`)
+
+### Navigation Spacing
+- Desktop: Navigation links have `gap: 12px` between them
+- Mobile: Navigation wraps and centers with appropriate spacing
+- CSS: `themes/radion/sass/_theme.scss` → `.nav-links` styling
