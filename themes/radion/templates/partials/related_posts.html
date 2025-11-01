@@ -1,0 +1,56 @@
+{% if page.taxonomies.tags %}
+  {% set tags = page.taxonomies.tags %}
+  {% set all_posts = get_section(path="posts/_index.md") %}
+  {% set related = [] %}
+  
+  {# Find posts with at least one matching tag, excluding current post #}
+  {% for other_post in all_posts.pages %}
+    {% if other_post.permalink != page.permalink and not other_post.extra.hide_from_list %}
+      {% if other_post.taxonomies.tags %}
+        {% for tag in tags %}
+          {% if tag in other_post.taxonomies.tags %}
+            {% set_global related = related | concat(with=[other_post]) %}
+            {% break %}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+  
+  {# Limit to 3 most recent related posts #}
+  {% if related | length > 0 %}
+    {% set related_sorted = related | sort(attribute="date") | reverse %}
+    {% set related_limited = related_sorted | slice(end=3) %}
+    
+    <section class="related-posts" style="margin: 3rem 0; padding: 2rem 0; border-top: 1px solid var(--color-border-default, #e5e7eb);">
+      <h2>Related Posts</h2>
+      <div style="margin-top: 1.5rem;">
+        {% for related_post in related_limited %}
+          <article style="margin-bottom: 1.5rem;">
+            <h3 style="margin-bottom: 0.5rem;">
+              <a href="{{ related_post.permalink }}">{{ related_post.title }}</a>
+            </h3>
+            {% if related_post.description %}
+              <p style="margin-bottom: 0.5rem; color: var(--color-fg-muted, #6b7280);">{{ related_post.description | truncate(length=120) }}</p>
+            {% endif %}
+            <data class="muted">
+              <svg class="icon i-clock" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+                <circle cx="16" cy="16" r="14"/>
+                <path d="M16 8 L16 16 20 20"/>
+              </svg>
+              <data>{{ related_post.reading_time }} minute read</data>
+              <svg class="icon i-calendar" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+                <rect x="3" y="6" width="26" height="23" rx="2" ry="2"/>
+                <line x1="10" y1="3" x2="10" y2="9"/>
+                <line x1="22" y1="3" x2="22" y2="9"/>
+                <line x1="3" y1="12" x2="29" y2="12"/>
+              </svg>
+              {% if related_post.date %}Published: {{ related_post.date | date(format="%F") }}{% endif %}
+            </data>
+          </article>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+{% endif %}
+
