@@ -53,7 +53,7 @@ giscus_data_category = "General"
 giscus_data_category_id = "DIC_kwDOQJ_XNs4CxOmG"
 
 # Light/Dark Mode set
-theme_mode = "light" # options: {light, dark, auto, toggle}
+theme_mode = "toggle" # options: {light, dark, auto, toggle}
 
 # Giscus theme control
 # Built-in options include: preferred_color_scheme, light, dark, transparent_dark, github_light, github_dark, dark_dimmed, etc.

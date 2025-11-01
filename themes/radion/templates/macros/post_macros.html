@@ -34,6 +34,12 @@
                 {{ page.summary | safe }}
                 <nav class="readmore"><a itemprop="url" href="{{ page.permalink | safe }}">Read More&nbsp;&raquo;</a></nav>
             </section>
+        {% elif page.description %}
+            {# Fallback to description if no summary is defined #}
+            <section itemprop="summary">
+                <p>{{ page.description }}</p>
+                <nav class="readmore"><a itemprop="url" href="{{ page.permalink | safe }}">Read More&nbsp;&raquo;</a></nav>
+            </section>
         {% endif %}
     </article>
 {% endmacro page_in_list %}
