@@ -92,7 +92,9 @@ struct Person {
 
 The `derive` macro generates `Debug` and `Clone` implementations automatically.
 
-**3. Domain-Specific Languages**
+**3. Domain-Specific Languages (DSL)**
+
+A DSL is a miniature language tailored to a specific problem domain. Think of SQL—it's not a general-purpose language, but a specialized one for databases.
 
 You can create custom syntax with macros:
 ```rust
@@ -103,7 +105,7 @@ html! {
 }
 ```
 
-This isn't valid Rust code—it's a DSL that the macro converts into valid Rust.
+This isn't valid Rust code—it's an HTML-like DSL that the macro converts into valid Rust. It lets you write HTML templates directly in your Rust code, which the macro transforms into function calls and data structures at compile time.
 
 ### Mental Model for Java/Python Developers
 
@@ -125,4 +127,13 @@ Think of macros as **super-powered annotations**. In Java, annotations can gener
 Macros are Rust's way of reducing repetition and enabling metaprogramming. They run before compilation and rewrite your code. If you're coming from Java or Python, think of them as annotations or decorators on steroids—but they can do much more.
 
 For most beginners, you don't need to write macros. The standard library macros like `println!`, `vec!`, and `format!` will carry you far. But understanding *what* they are helps when you read Rust code and wonder why you see `!` everywhere.
+
+---
+
+### Further Reading
+
+- [The Little Book of Rust Macros](https://veykril.github.io/tlborm/) — A practical guide to writing macros in Rust.
+- [The Rust Programming Language: Macros](https://doc.rust-lang.org/book/ch19-06-macros.html) — Official Rust book chapter on macros.
+- [Rust by Example: Macros](https://doc.rust-lang.org/rust-by-example/macros.html) — Interactive examples to learn macros.
+- [Domain-Specific Language (DSL)](https://en.wikipedia.org/wiki/Domain-specific_language) — Wikipedia article explaining the concept.
 
