@@ -114,9 +114,6 @@
         {% endif %}
     </article>
 
-    <!-- Related Posts -->
-    {% include "partials/related_posts.html" %}
-
     <!-- Comment section -->
     {% block comments %}
       {% if config.extra.comments | default(value="false") %}
