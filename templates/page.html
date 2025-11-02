@@ -1,0 +1,149 @@
+{% extends "index.html" %}
+{% import "macros/post_macros.html" as post_macros %}
+
+{% block title %}
+    {% if page.title %}
+    {{ page.title }} | {{ config.title }}
+    {% else %}
+    {{ super() }}
+    {% endif %}
+{% endblock title %}
+
+{% block structured_data %}
+{% if page.permalink == "/about/" %}
+{# About page gets AboutPage schema #}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  "headline": "{{ page.title }}",
+  "description": "{{ page.description }}",
+  "url": "{{ page.permalink }}",
+  "inLanguage": "{{ config.default_language | default(value='en') }}"
+}
+</script>
+{% else %}
+{# Blog posts get BlogPosting schema #}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "{{ page.title }}",
+  {% if page.description %}
+  "description": "{{ page.description }}",
+  {% elif page.summary %}
+  "description": "{{ page.summary | striptags | truncate(length=200) }}",
+  {% else %}
+  "description": "{{ config.description }}",
+  {% endif %}
+  {% if page.date %}
+  "datePublished": "{{ page.date | date(format='%+') }}",
+  {% endif %}
+  {% if page.updated %}
+  "dateModified": "{{ page.updated | date(format='%+') }}",
+  {% endif %}
+  "author": {
+    "@type": "Person",
+    "name": "{{ config.extra.author | default(value='Oshadha G') }}"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "{{ config.title }}",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "{{ config.base_url }}/icons/favicon/web-app-manifest-512x512.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{ page.permalink }}"
+  },
+  "url": "{{ page.permalink }}",
+  {% if page.taxonomies.keywords %}
+  "keywords": "{{ page.taxonomies.keywords | join(sep=', ') }}",
+  {% elif page.taxonomies.tags %}
+  "keywords": "{{ page.taxonomies.tags | join(sep=', ') }}",
+  {% endif %}
+  "inLanguage": "{{ config.default_language | default(value='en') }}"
+}
+</script>
+{% endif %}
+{% endblock structured_data %}
+
+{% block header %}
+    {{ super() }}
+{% endblock header %}
+
+{% block main %}
+
+<article {% if page.permalink != "/about/" %}itemscope itemtype="http://schema.org/BlogPosting"{% endif %}>
+    <header>
+        <h1 {% if page.permalink != "/about/" %}itemprop="headline"{% endif %}>{{ page.title }}</h1>
+        {% if page.permalink != "/about/" %}
+        <data class="muted">{{ post_macros::meta(page=page) }}</data>
+        {% endif %}
+        {# Optional cover/hero image #}
+        {% set img_url = false %}
+        {% if page.extra.cover_image_url %}
+          {% set_global img_url = page.extra.cover_image_url %}
+        {% elif page.extra.cover_image_static %}
+          {% set_global img_url = get_url(path=page.extra.cover_image_static, trailing_slash=false) %}
+        {% elif page.extra.cover_image and page.assets %}
+          {% for asset in page.assets %}
+            {% if asset is ending_with(page.extra.cover_image) %}
+              {% set_global img_url = asset | safe %}
+              {% break %}
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+        {# As a convenience, if no cover set but a generated one exists under /images/covers/{slug}.png,
+           attempt to use it. If the image is missing the browser will hide it via onerror. #}
+        {% if not img_url %}
+          {# Derive slug robustly from permalink to match filename of generated cover #}
+          {% set p = page.permalink | trim_end_matches(pat='/') %}
+          {% set parts = p | split(pat='/') %}
+          {% set slug_from_url = parts | last %}
+          {% set_global img_url = "/images/covers/" ~ slug_from_url ~ ".png" %}
+        {% endif %}
+        {% if img_url %}
+        <figure class="post-cover" style="margin: 1.25rem 0;">
+          <img src="{{ img_url }}" alt="{{ page.title }} cover" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--color-border-default, #e5e7eb);" onerror="this.parentNode.style.display='none'" />
+        </figure>
+        {% endif %}
+    </header>
+
+    <article {% if page.permalink != "/about/" %}itemprop="articleBody"{% endif %}>
+        {% if page.summary and page.summary != page.content %}
+            {{ page.summary | safe }}
+
+            {% if page.extra.toc | default(value=false) and page.toc %}
+              {% include "partials/toc.html" %}
+            {% endif %}
+
+            <!-- Render the rest of the content after removing the summary portion -->
+            {{ page.content | replace(from=page.summary, to="") | safe }}
+
+            <!-- TODO: change to this if #3001 is merged: https://github.com/getzola/zola/pull/3001 -->
+            <!-- {{ page.content | safe }} -->
+        {% else %}
+            <!-- If no summary separate from content, just render content -->
+            {{ page.content | safe }}
+        {% endif %}
+    </article>
+
+    <!-- Comment section -->
+    {% block comments %}
+      {% if config.extra.comments | default(value="false") %}
+        {% if page.extra.comments | default(value="true")%}
+          {% include "_giscus_script.html" %}
+        {% endif %}
+      {% endif %}
+    {% endblock comments %}
+
+
+    <!-- Page footer -->
+    {% include "partials/footer.html" %}
+</article>
+
+{% endblock main %}
+
