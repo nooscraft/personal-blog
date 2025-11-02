@@ -46,7 +46,11 @@ This is documented behavior, but it's easy to miss when you're just trying to ad
 
 ### The Solution
 
-The fix was simple: give the About page a `date` field. Since the root section uses `sort_by = "date"`, all pages need a date—even non-post pages.
+The fix had two parts:
+
+**Step 1**: Add a `date` field to the About page. Since the root section uses `sort_by = "date"`, all pages need a date—even non-post pages.
+
+**Step 2**: Hide the date from displaying on the About page using `show_date = false` in the front matter.
 
 **Before:**
 ```toml
@@ -72,16 +76,23 @@ weight = 1
 [extra]
 hide_from_list = true
 comments = false
+show_date = false  # Hide the awkward date from displaying
 +++
 ```
 
-Now the About page builds correctly, and the homepage still paginates posts properly sorted by date.
+I also had to create a custom `templates/macros/post_macros.html` to override the theme's default meta macro and respect the `show_date` flag. But the front matter solution is the important part.
+
+Now the About page builds correctly, appears in the correct order for pagination, but doesn't display the awkward "Published: 2025-01-01" meta.
 
 ### The Lesson
 
 Root-level sections in Zola behave differently than you might think. If you set `sort_by = "date"` in a section, **all** pages in that section must have a date field—even non-post pages like About pages.
 
-While Zola's docs mention this behavior, it's the kind of detail that's easy to gloss over when you're focused on building features. The solution is straightforward: if your section sorts by date, give every page a date. For static pages like About, I just use an arbitrary date like `2025-01-01`.
+While Zola's docs mention this behavior, it's the kind of detail that's easy to gloss over when you're focused on building features. The solution is straightforward:
+1. Give every page a date if your section sorts by date (I use `2025-01-01` for static pages)
+2. Use a custom macro override to conditionally hide dates where they don't make sense
+
+For static pages like About, seeing "Published: 2025-01-01" is awkward, so the `show_date = false` flag was essential.
 
 ### Quick Check
 
@@ -89,7 +100,8 @@ If you're having similar issues with Zola pages not building:
 
 1. Check your section's `_index.md` for `sort_by` directives
 2. Make sure all pages in that section have the required fields
-3. Consider moving sorted content to a dedicated subsection
+3. Use `show_date = false` in front matter if you want to hide dates on static pages
+4. Consider moving sorted content to a dedicated subsection
 
-Sometimes the simplest fixes are the most unexpected.
+Sometimes the simplest fixes are the most unexpected. And sometimes you need two fixes instead of one.
 

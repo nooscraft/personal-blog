@@ -7,6 +7,7 @@ weight = 1
 [extra]
 hide_from_list = true
 comments = false
+show_date = false
 +++
 
 ## Who I Am
