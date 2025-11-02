@@ -46,36 +46,42 @@ This is documented behavior, but it's easy to miss when you're just trying to ad
 
 ### The Solution
 
-The fix was simple: remove `sort_by = "date"` from the root section. The homepage doesn't actually need it—the posts section has its own `_index.md` that handles post sorting.
+The fix was simple: give the About page a `date` field. Since the root section uses `sort_by = "date"`, all pages need a date—even non-post pages.
 
 **Before:**
 ```toml
 +++
-title = "Home"
-paginate_by = 5
-sort_by = "date"  # This breaks non-post pages
-transparent = true
-template = "index.html"
+title = "About"
+description = "Learn about Oshadha G..."
+template = "page.html"
+weight = 1
+[extra]
+hide_from_list = true
+comments = false
 +++
 ```
 
 **After:**
 ```toml
 +++
-title = "Home"
-paginate_by = 5
-transparent = true
-template = "index.html"
+title = "About"
+description = "Learn about Oshadha G..."
+template = "page.html"
+date = 2025-01-01  # Required because root section uses sort_by = "date"
+weight = 1
+[extra]
+hide_from_list = true
+comments = false
 +++
 ```
 
-Now the About page builds correctly, and the homepage still paginates posts just fine.
+Now the About page builds correctly, and the homepage still paginates posts properly sorted by date.
 
 ### The Lesson
 
-Root-level sections in Zola behave differently than you might think. If you mix blog posts and regular pages in the same section, be careful with `sort_by`—it applies to **all** pages in that section, not just the posts.
+Root-level sections in Zola behave differently than you might think. If you set `sort_by = "date"` in a section, **all** pages in that section must have a date field—even non-post pages like About pages.
 
-While Zola's docs mention this behavior, it's the kind of detail that's easy to gloss over when you're focused on building features. For my setup, the solution was to let the `posts/` section handle its own sorting, and keep the root section simple.
+While Zola's docs mention this behavior, it's the kind of detail that's easy to gloss over when you're focused on building features. The solution is straightforward: if your section sorts by date, give every page a date. For static pages like About, I just use an arbitrary date like `2025-01-01`.
 
 ### Quick Check
 

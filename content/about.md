@@ -2,6 +2,7 @@
 title = "About"
 description = "Learn about Oshadha G, a senior engineer passionate about Rust, DevOps, and building reliable systems."
 template = "page.html"
+date = 2025-01-01
 weight = 1
 [extra]
 hide_from_list = true
