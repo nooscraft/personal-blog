@@ -18,7 +18,7 @@ Let's see how to get it to work (I have altered the original script from the boo
 
 - First you need an account in *dictionaryapi.com* - [http://www.dictionaryapi.com/register/index.htm](http://www.dictionaryapi.com/register/index.htm)
   - API key for the *learners* API would be enough for the time being
-- Get the script from [here](https://gist.github.com/RockyRx/1fe12ee85074e361836a)
+- Get the script from [here](https://gist.github.com/nooscraft/1fe12ee85074e361836a)
 - Assign your API key to the variable **apikey**
 - Make it executable ```chmod +x define```
 - Optional: if you want to make it available system wide add the script to ```/usr/local/bin```

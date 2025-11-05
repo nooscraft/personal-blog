@@ -45,7 +45,7 @@ The only difference is the language they're written in.
 - Mixed content with embedded structures
 - Real-world technical documentation
 
-You can find the full comparison project on [GitHub](https://github.com/RockyRx/rouge-l-comparison).
+You can find the full comparison project on [GitHub](https://github.com/nooscraft/rouge-l-comparison).
 
 ### The Results
 
@@ -114,9 +114,9 @@ Neither is "better" in absolute terms. They have different tradeoffs. Understand
 
 - [Lin, C.-Y. (2004). ROUGE: A Package for Automatic Evaluation of Summaries](https://aclanthology.org/W04-1013/) - The original paper introducing ROUGE metrics
 - [ROUGE Metrics Documentation](https://en.wikipedia.org/wiki/ROUGE_(metric)) - Wikipedia overview of ROUGE evaluation metrics  
-- [Comparison Project on GitHub](https://github.com/RockyRx/rouge-l-comparison) - Full source code and benchmarks
+- [Comparison Project on GitHub](https://github.com/nooscraft/rouge-l-comparison) - Full source code and benchmarks
 
 ---
 
-The code is [available on GitHub](https://github.com/RockyRx/rouge-l-comparison) if you want to run your own benchmarks. Same algorithm, same results, different performance characteristics. Sometimes the fun experiments teach you the most.
+The code is [available on GitHub](https://github.com/nooscraft/rouge-l-comparison) if you want to run your own benchmarks. Same algorithm, same results, different performance characteristics. Sometimes the fun experiments teach you the most.
 
