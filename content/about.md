@@ -47,7 +47,7 @@ Here's what I work with:
 
 You can find me on:
 - **LinkedIn**: [Oshadha Gunawardena](https://www.linkedin.com/in/oshadhagunawardena/)
-- **GitHub**: [RockyRx](https://github.com/RockyRx)
+- **GitHub**: [nooscraft](https://github.com/nooscraft)
 - **Blog**: [noos.blog](https://noos.blog)
 
 ---

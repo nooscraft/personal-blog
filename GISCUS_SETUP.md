@@ -4,12 +4,12 @@
 Giscus uses GitHub Discussions to power comments on your blog. Each blog post will have its own discussion thread.
 
 ## Prerequisites
-- Your repository must be public (✅ `RockyRx/personal-blog` is public)
+- Your repository must be public (✅ `nooscraft/personal-blog` is public)
 - GitHub Discussions must be enabled on your repository
 
 ## Step 1: Enable GitHub Discussions
 
-1. Go to your repository: https://github.com/RockyRx/personal-blog
+1. Go to your repository: https://github.com/nooscraft/personal-blog
 2. Click **Settings** tab
 3. Scroll down to **Features** section
 4. Check **Discussions** checkbox
@@ -20,7 +20,7 @@ Giscus uses GitHub Discussions to power comments on your blog. Each blog post wi
 1. Go to [Giscus.app](https://giscus.app/)
 2. Fill in the configuration:
 
-   **Repository**: `RockyRx/personal-blog`
+   **Repository**: `nooscraft/personal-blog`
    
    **Repository ID**: (will be auto-filled after selecting repo)
    
@@ -44,7 +44,7 @@ Replace the empty values in `config.toml`:
 
 ```toml
 # Giscus configuration
-giscus_repo = "RockyRx/personal-blog"
+giscus_repo = "nooscraft/personal-blog"
 giscus_repo_id = "R_kgDOKxxxxxxxx"  # From Giscus setup
 giscus_data_category = "General"
 giscus_data_category_id = "DIC_kwDOKxxxxxxxx"  # From Giscus setup

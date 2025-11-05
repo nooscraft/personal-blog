@@ -48,7 +48,7 @@ radion_menu = [
 comments = true
 
 # Giscus configuration
-giscus_repo = "RockyRx/personal-blog"
+giscus_repo = "nooscraft/personal-blog"
 giscus_repo_id = "R_kgDOQJ_XNg"
 giscus_data_category = "General"
 giscus_data_category_id = "DIC_kwDOQJ_XNs4CxOmG"

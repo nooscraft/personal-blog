@@ -1,6 +1,6 @@
 # Noos Blog
 
-[![Build and Deploy](https://github.com/RockyRx/personal-blog/actions/workflows/deploy.yml/badge.svg)](https://github.com/RockyRx/personal-blog/actions/workflows/deploy.yml)
+[![Build and Deploy](https://github.com/nooscraft/personal-blog/actions/workflows/deploy.yml/badge.svg)](https://github.com/nooscraft/personal-blog/actions/workflows/deploy.yml)
 
 > **Where Thought, Code, and Craft Converge**
 
@@ -45,7 +45,7 @@ Personal blog about programming, technology, and engineering insights. Topics in
 
 ```bash
 # Clone the repository
-git clone git@github.com:RockyRx/personal-blog.git
+git clone git@github.com:nooscraft/personal-blog.git
 cd personal-blog
 
 # Start the development server
@@ -173,7 +173,7 @@ Comments powered by Giscus (GitHub Discussions). Configured in `config.toml`:
 ```toml
 [extra]
 comments = true
-giscus_repo = "RockyRx/personal-blog"
+giscus_repo = "nooscraft/personal-blog"
 giscus_repo_id = "R_kgDOQJ_XNg"
 # ... more config
 ```
@@ -201,7 +201,7 @@ This project is open source and available under the [MIT License](LICENSE).
 **Oshadha G**
 
 - Blog: [noos.blog](https://noos.blog)
-- GitHub: [@RockyRx](https://github.com/RockyRx)
+- GitHub: [@nooscraft](https://github.com/nooscraft)
 
 ---
 
