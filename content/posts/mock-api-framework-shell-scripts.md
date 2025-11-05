@@ -1,6 +1,6 @@
 +++
 title = "mock: Build APIs with Shell Scripts, Not Frameworks"
-date = 2025-01-28
+date = 2025-11-05
 description = "mock is a lightweight API framework that lets you build endpoints using shell scripts—perfect for prototyping, testing, and quick integrations."
 [taxonomies]
 categories = ["Tools"]
