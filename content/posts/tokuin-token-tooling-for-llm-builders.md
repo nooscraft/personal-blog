@@ -52,7 +52,7 @@ Tokuin ships with a modular core: `tokenizers/`, `models/`, `providers/`, and `o
 
 ## From Experiment to Community Tooling
 
-Tokuin grew out of practical late-night benchmarking, budget vetting, and the need for predictable tooling across teams. The vibe-coding spirit still informs how we collaborate: if you like pairing with models or humans and want to shape how we design for LLMs, the door is open.
+Tokuin grew out of practical late-night benchmarking, budget vetting, and the need for predictable tooling across teams. We still welcome that vibe-coding energy—if you sketch solutions with AI co-pilots or riff on ideas in flow, there’s room here to help shape how we build for LLMs.
 
 ### How to Get Involved
 
