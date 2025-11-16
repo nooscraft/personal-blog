@@ -1,4 +1,3 @@
-++ 
 +++
 title = "Hieratic Prompt Compression: Ambitious Prototype or Tokuin’s Next Superpower?"
 date = 2025-11-16
