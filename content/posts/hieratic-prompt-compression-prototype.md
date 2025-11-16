@@ -1,5 +1,5 @@
 +++
-title = "Hieratic Prompt Compression: Ambitious Prototype or Tokuin’s Next Superpower?"
+title = "Hieratic Prompt Compression: Ambitious Prototype or Superpower?"
 date = 2025-11-16
 description = "A proposal-style exploration of a rule-based, structure-aware prompt compression engine for Tokuin—and a call for expert feedback."
 
