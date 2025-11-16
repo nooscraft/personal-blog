@@ -19,7 +19,7 @@ If you’ve ever tried to stuff a serious extraction spec, a few pages of dense 
 - Latency creeps up.
 - And the “just add more context” strategy quietly stops scaling.
 
-**Hieratic Prompt Compression** is my attempt to push back on that—without spinning up yet another LLM just to shrink prompts.
+**Hieratic Prompt Compression** is my attempt to push back on that—without spinning up yet another LLM just to shrink prompts. It’s being explored as an experimental feature for **Tokuin**, my CLI for token estimation and provider-aware load testing ([GitHub](https://github.com/nooscraft/tokuin)).
 
 **The core question of this post**:  
 Can we build a *deterministic*, structure-aware compression layer that shrinks prompts by 50–80% while preserving downstream task fidelity?  
