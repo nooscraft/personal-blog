@@ -107,13 +107,12 @@ Being honest about the risks:
 
 1. **We silently destroy task fidelity**  
    - The dangerous failure mode is not “the model throws an error”, it’s “the model quietly stops extracting certain fields.”
-   - Under aggressive compression, subtle but important constraints and corner cases can just…disappear.
+   - Under aggressive compression, subtle but important constraints and corner cases can just, disappear.
    - Research like **500xCompressor** reports retaining ~62–73% of performance under heavy compression; that may be fine for some tasks, terrifying for others.
 
 2. **We overfit to a narrow prompt shape**  
    - The early design assumes prompts that look like:
-     - a long instruction block  
-       +  
+     - a long instruction block, plus
      - a structured document (tables, configs, schemas, etc.).
    - If your prompts are mostly conversational, mostly code, or heavily multimodal, these strategies may not transfer well.
 
