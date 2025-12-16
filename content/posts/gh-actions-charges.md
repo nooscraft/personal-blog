@@ -1,6 +1,6 @@
 +++
 title = "GitHub Actions Won't Charge You (Probably): Making Sense of the Pricing Update"
-date = 2025-01-15
+date = 2025-12-16
 description = "Breaking down GitHub's 2026 pricing changes for Actions—what's free, what's changing, and what it means for your projects."
 [taxonomies]
 categories = ["DevOps"]
