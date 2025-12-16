@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Noos - Where Thought, Code, and Craft Converge - shell</title>
+    <subtitle>Personal blog about programming, technology, and engineering insights. Topics include Rust, DevOps, Linux, and software craftsmanship.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://noos.blog/tags/shell/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://noos.blog"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2025-11-05T00:00:00+00:00</updated>
+    <id>https://noos.blog/tags/shell/atom.xml</id>
+    <entry xml:lang="en">
+        <title>mock: Build APIs with Shell Scripts, Not Frameworks</title>
+        <published>2025-11-05T00:00:00+00:00</published>
+        <updated>2025-11-05T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/mock-api-framework-shell-scripts/"/>
+        <id>https://noos.blog/posts/mock-api-framework-shell-scripts/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/mock-api-framework-shell-scripts/">&lt;p&gt;Sometimes you need an API endpoint fast. Not a full framework, not a production service, just something that responds to HTTP requests. &lt;a href=&quot;https:&#x2F;&#x2F;dhuan.github.io&#x2F;mock&#x2F;&quot;&gt;mock&lt;&#x2F;a&gt; is exactly that—a lightweight tool that turns shell scripts into HTTP endpoints.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-concept&quot;&gt;The Concept&lt;&#x2F;h2&gt;
+&lt;p&gt;Instead of spinning up Express, Flask, or any other framework, mock lets you define endpoints with simple shell scripts:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; mock serve \
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;  --route &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;users&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; \
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;  --method &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;GET&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; \
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;  --shell-script &lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;get_users.sh&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Your shell script becomes the response handler. Inside it, you use mock&#x27;s utilities to build HTTP responses: &lt;code&gt;mock write&lt;&#x2F;code&gt; to send data, &lt;code&gt;mock set-header&lt;&#x2F;code&gt; to add headers, and access to the full shell environment.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;why-this-matters&quot;&gt;Why This Matters&lt;&#x2F;h2&gt;
+&lt;p&gt;This approach shines for:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Prototyping&lt;&#x2F;strong&gt;: Mock external APIs you&#x27;re integrating with&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Testing&lt;&#x2F;strong&gt;: Create test fixtures without setting up databases&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Quick integrations&lt;&#x2F;strong&gt;: Bridge gaps between services using familiar shell tools&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;DevOps scripts&lt;&#x2F;strong&gt;: Expose your automation scripts as HTTP endpoints&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;You get all the power of shell (&lt;code&gt;grep&lt;&#x2F;code&gt;, &lt;code&gt;awk&lt;&#x2F;code&gt;, &lt;code&gt;curl&lt;&#x2F;code&gt;, databases, file systems) wrapped in HTTP. No dependencies beyond what&#x27;s already on your system.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-details&quot;&gt;The Details&lt;&#x2F;h2&gt;
+&lt;p&gt;Mock supports JSON config files or command-line parameters. You can set response headers, status codes, route parameters, conditional responses, and even serve static files. It&#x27;s comprehensive enough for complex scenarios while staying dead simple.&lt;&#x2F;p&gt;
+&lt;p&gt;If you&#x27;ve ever thought &quot;I wish I could just write a bash script and expose it as an API,&quot; mock is that tool.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;Documentation&lt;&#x2F;strong&gt;: &lt;a href=&quot;https:&#x2F;&#x2F;dhuan.github.io&#x2F;mock&#x2F;latest&#x2F;getting_started.html&quot;&gt;dhuan.github.io&#x2F;mock&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+</feed>

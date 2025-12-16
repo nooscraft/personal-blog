@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Noos - Where Thought, Code, and Craft Converge - pricing</title>
+    <subtitle>Personal blog about programming, technology, and engineering insights. Topics include Rust, DevOps, Linux, and software craftsmanship.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://noos.blog/tags/pricing/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://noos.blog"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2025-12-16T00:00:00+00:00</updated>
+    <id>https://noos.blog/tags/pricing/atom.xml</id>
+    <entry xml:lang="en">
+        <title>GitHub Actions Won&#x27;t Charge You (Probably)</title>
+        <published>2025-12-16T00:00:00+00:00</published>
+        <updated>2025-12-16T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/gh-actions-charges/"/>
+        <id>https://noos.blog/posts/gh-actions-charges/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/gh-actions-charges/">&lt;p&gt;If you received an email from GitHub about upcoming pricing changes for GitHub Actions, you might be wondering: &quot;Are they going to start charging me for something that was free?&quot; The short answer: &lt;strong&gt;It depends on what you&#x27;re using, but for most people, the news is actually good.&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Let me break down what&#x27;s changing in plain language, so you can understand how it affects your projects.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;the-big-question-is-github-actions-still-free&quot;&gt;The Big Question: Is GitHub Actions Still Free?&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;strong&gt;Yes—for public repositories, GitHub Actions remains completely free.&lt;&#x2F;strong&gt; If you&#x27;re using GitHub Actions in public repositories (like open-source projects), nothing changes. You can continue using it without any charges.&lt;&#x2F;p&gt;
+&lt;p&gt;This is important because many developers and organizations rely on GitHub Actions for open-source projects, and GitHub has committed to keeping that free.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;what-s-actually-changing&quot;&gt;What&#x27;s Actually Changing?&lt;&#x2F;h2&gt;
+&lt;p&gt;GitHub is making two main changes, both scheduled for 2026:&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;1-price-reductions-january-1-2026&quot;&gt;1. Price Reductions (January 1, 2026)&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;strong&gt;Good news:&lt;&#x2F;strong&gt; GitHub is reducing prices for GitHub-hosted runners in private repositories by up to 39%, depending on the machine type you use.&lt;&#x2F;p&gt;
+&lt;p&gt;If you&#x27;re currently paying for GitHub Actions in private repositories, your costs will go down. This is a straightforward price cut—no catch.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;2-new-platform-charge-for-self-hosted-runners-march-1-2026&quot;&gt;2. New Platform Charge for Self-Hosted Runners (March 1, 2026)&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;strong&gt;This is the one that might affect you:&lt;&#x2F;strong&gt; GitHub will introduce a new $0.002 per-minute &quot;cloud platform&quot; charge for self-hosted runners.&lt;&#x2F;p&gt;
+&lt;p&gt;Wait—what&#x27;s a self-hosted runner? If you&#x27;re using your own servers or machines to run GitHub Actions (instead of GitHub&#x27;s cloud infrastructure), those are self-hosted runners. Most individual developers and small teams use GitHub-hosted runners, so this won&#x27;t affect them.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;Important details:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;This charge only applies to self-hosted runners (your own machines)&lt;&#x2F;li&gt;
+&lt;li&gt;The charge is $0.002 per minute (that&#x27;s 0.2 cents per minute)&lt;&#x2F;li&gt;
+&lt;li&gt;Even with this charge, it still counts against the minutes already included in your GitHub plan&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;strong&gt;What does that last point mean?&lt;&#x2F;strong&gt; If you have a GitHub plan that includes 2,000 minutes per month, and you use 500 minutes on self-hosted runners, you&#x27;ll pay the $0.002&#x2F;minute charge, but those 500 minutes still count toward your 2,000-minute allowance. You&#x27;re not being double-charged.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;quick-reference-pricing-summary&quot;&gt;Quick Reference: Pricing Summary&lt;&#x2F;h2&gt;
+&lt;p&gt;Here&#x27;s a simple breakdown of what&#x27;s changing:&lt;&#x2F;p&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Type&lt;&#x2F;th&gt;&lt;th&gt;Status After Update&lt;&#x2F;th&gt;&lt;&#x2F;tr&gt;&lt;&#x2F;thead&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;&lt;strong&gt;Public repo GitHub-hosted&lt;&#x2F;strong&gt;&lt;&#x2F;td&gt;&lt;td&gt;✅ Still free&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;strong&gt;Private repo GitHub-hosted&lt;&#x2F;strong&gt;&lt;&#x2F;td&gt;&lt;td&gt;🔻 Price reduced (up to 39%)&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;strong&gt;Self-hosted runners&lt;&#x2F;strong&gt;&lt;&#x2F;td&gt;&lt;td&gt;💲 $0.002&#x2F;min platform charge&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;strong&gt;Enterprise Server customers&lt;&#x2F;strong&gt;&lt;&#x2F;td&gt;&lt;td&gt;✅ No change&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;&#x2F;tbody&gt;&lt;&#x2F;table&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;what-this-means-for-you&quot;&gt;What This Means for You&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Public repositories:&lt;&#x2F;strong&gt; No change—still free&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Private repositories (GitHub-hosted):&lt;&#x2F;strong&gt; You&#x27;ll pay less—prices dropping up to 39%&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Self-hosted runners:&lt;&#x2F;strong&gt; New $0.002&#x2F;min charge (~$0.12&#x2F;hour). Calculate based on your usage&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Enterprise Server:&lt;&#x2F;strong&gt; No changes&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;why-the-change&quot;&gt;Why the Change?&lt;&#x2F;h2&gt;
+&lt;p&gt;GitHub hasn&#x27;t provided detailed reasoning, but the new charge for self-hosted runners likely reflects the infrastructure costs of managing the platform, security, and integration features that make self-hosted runners work seamlessly with GitHub Actions—even when the actual compute happens on your machines.&lt;&#x2F;p&gt;
+&lt;p&gt;The price reduction for GitHub-hosted runners suggests GitHub is optimizing their infrastructure and passing those savings to customers.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;what-should-you-do&quot;&gt;What Should You Do?&lt;&#x2F;h2&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Check your usage:&lt;&#x2F;strong&gt; If you&#x27;re using self-hosted runners, review how many minutes you typically use per month to estimate the new cost.&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Review your plan:&lt;&#x2F;strong&gt; Make sure you understand what&#x27;s included in your current GitHub plan (free, Pro, Team, or Enterprise).&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Calculate impact:&lt;&#x2F;strong&gt; For self-hosted runners, multiply your monthly minutes by $0.002 to see the additional cost. For example:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;1,000 minutes&#x2F;month = $2.00&#x2F;month&lt;&#x2F;li&gt;
+&lt;li&gt;5,000 minutes&#x2F;month = $10.00&#x2F;month&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Consider alternatives:&lt;&#x2F;strong&gt; If the new charge significantly impacts your costs, you might want to evaluate whether self-hosted runners are still the best option, or if GitHub-hosted runners (which are getting cheaper) might work for your needs.&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;the-bottom-line&quot;&gt;The Bottom Line&lt;&#x2F;h2&gt;
+&lt;p&gt;For most users, these changes are either neutral (public repos stay free) or positive (private repo prices go down). The only group that will see new charges is those using self-hosted runners, and even then, the charge is relatively small.&lt;&#x2F;p&gt;
+&lt;p&gt;The key takeaway: &lt;strong&gt;GitHub Actions isn&#x27;t going away, and it&#x27;s not suddenly becoming expensive.&lt;&#x2F;strong&gt; The changes are targeted and mostly beneficial. If you&#x27;re concerned about costs, take some time to review your usage patterns and plan accordingly before the changes take effect in 2026.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h3 id=&quot;further-reading&quot;&gt;Further Reading&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;docs.github.com&#x2F;en&#x2F;billing&#x2F;managing-billing-for-github-actions&#x2F;about-billing-for-github-actions&quot;&gt;GitHub Actions Pricing&lt;&#x2F;a&gt; – Official pricing documentation&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;docs.github.com&#x2F;en&#x2F;billing&#x2F;managing-billing-for-github-actions&#x2F;about-billing-for-github-actions#usage-limits&quot;&gt;GitHub Actions Usage Limits&lt;&#x2F;a&gt; – Understanding included minutes and limits&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>The Confusing World of Cursor Payments</title>
+        <published>2025-10-25T00:00:00+00:00</published>
+        <updated>2025-10-25T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/cursor-payments-confusion/"/>
+        <id>https://noos.blog/posts/cursor-payments-confusion/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/cursor-payments-confusion/">&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;cursor.sh&#x2F;&quot;&gt;Cursor&lt;&#x2F;a&gt; is a powerful AI-powered code editor that many developers are excited about. However, one aspect that consistently causes confusion is its payment and pricing model. This post attempts to document some of these confusions based on recent experiences.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-confusion&quot;&gt;The Confusion&lt;&#x2F;h2&gt;
+&lt;p&gt;The payment structure for Cursor can be unclear in several ways:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Free tier limits&lt;&#x2F;strong&gt;: What exactly counts toward your monthly quota? Is it AI completions, chat requests, or something else?&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Billing cycles&lt;&#x2F;strong&gt;: When does your quota reset? Is it calendar month, or from when you first started using the service?&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Payment methods&lt;&#x2F;strong&gt;: What payment options are available, and how are they processed?&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Usage tracking&lt;&#x2F;strong&gt;: How can you monitor your usage to avoid unexpected charges or hitting limits?&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;These ambiguities can lead to surprises—either unexpected charges or finding yourself blocked when you thought you had quota remaining.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;why-this-matters&quot;&gt;Why This Matters&lt;&#x2F;h2&gt;
+&lt;p&gt;For developers evaluating whether to adopt Cursor, understanding the cost and payment structure is important. Unclear pricing creates friction and can be a barrier to adoption, especially for individual developers or small teams on tight budgets.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;what-to-do&quot;&gt;What to Do&lt;&#x2F;h2&gt;
+&lt;p&gt;If you&#x27;re considering Cursor:&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Check the official pricing page&lt;&#x2F;strong&gt; (&lt;a href=&quot;https:&#x2F;&#x2F;cursor.sh&#x2F;pricing&quot;&gt;cursor.sh&#x2F;pricing&lt;&#x2F;a&gt;) for current information&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Monitor your usage&lt;&#x2F;strong&gt; if there&#x27;s a dashboard or settings page that shows quota&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Reach out to support&lt;&#x2F;strong&gt; if you&#x27;re confused about billing or limits&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Document what you learn&lt;&#x2F;strong&gt; since this information may not be clearly documented&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;h2 id=&quot;important-disclaimer&quot;&gt;Important Disclaimer&lt;&#x2F;h2&gt;
+&lt;p&gt;⚠️ &lt;strong&gt;Please note&lt;&#x2F;strong&gt;: Pricing, payment structures, and feature availability for Cursor are subject to change. The information in this post reflects experiences at the time of writing and may be outdated by the time you read this. Always refer to Cursor&#x27;s official documentation and pricing pages for the most current information.&lt;&#x2F;p&gt;
+&lt;p&gt;The goal of this post is to highlight that these aspects can be confusing, not to provide definitive answers that may become incorrect over time.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;If you&#x27;ve experienced similar confusion with Cursor&#x27;s pricing or payment model, you&#x27;re not alone. Hopefully, this clarity improves as the platform matures.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+</feed>

@@ -1,0 +1,850 @@
+<!doctype html>
+<html lang="en" data-theme="toggle">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <!-- Enable responsiveness on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;hieratic-prompt-compression-prototype&#x2F;" />
+    
+    <!-- Robots meta -->
+    
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    
+
+    
+      
+        <meta name="description" content="A proposal-style exploration of a rule-based, structure-aware prompt compression engine for Tokuin—and a call for expert feedback." />
+        <meta property="og:description" content="A proposal-style exploration of a rule-based, structure-aware prompt compression engine for Tokuin—and a call for expert feedback." />
+        <meta property="twitter:description" content="A proposal-style exploration of a rule-based, structure-aware prompt compression engine for Tokuin—and a call for expert feedback." />
+      
+    
+
+    <!-- Title -->
+    
+      
+    
+    <title>
+    
+    Hieratic Prompt Compression: Ambitious Prototype or Superpower? | Noos - Where Thought, Code, and Craft Converge
+    
+</title>
+    
+    <!-- Author -->
+    
+    <meta name="author" content="Oshadha G" />
+    
+    
+    <!-- Article specific meta tags -->
+    
+    
+    <meta property="article:published_time" content="2025-11-16T00:00:00+00:00" />
+    
+    
+    
+    
+    <meta property="article:tag" content="llm" />
+    
+    <meta property="article:tag" content="prompt-engineering" />
+    
+    <meta property="article:tag" content="compression" />
+    
+    <meta property="article:tag" content="tokuin" />
+    
+    
+    
+    
+    <meta property="article:section" content="Engineering" />
+    
+    
+    
+
+    <!-- Additional Facebook Meta Tags -->
+    <meta property="og:site_name" content="Noos - Where Thought, Code, and Craft Converge" />
+    <meta
+      property="og:url"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;hieratic-prompt-compression-prototype&#x2F;"
+    />
+    <meta
+      property="og:type"
+      content="article"
+    />
+    <meta property="og:title" content="Hieratic Prompt Compression: Ambitious Prototype or Superpower? | Noos - Where Thought, Code, and Craft Converge" />
+
+    <!-- Additional Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      property="twitter:url"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;hieratic-prompt-compression-prototype&#x2F;"
+    />
+    <meta name="twitter:title" content="Hieratic Prompt Compression: Ambitious Prototype or Superpower? | Noos - Where Thought, Code, and Craft Converge" />
+
+    <!-- Cover images -->
+           
+           
+           
+           
+      
+      
+      
+      
+      
+    
+
+    <meta
+      property="og:image"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;hieratic-prompt-compression-prototype.png"
+    />
+
+    <meta
+      name="twitter:image"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;hieratic-prompt-compression-prototype.png"
+    />
+
+
+
+    <!-- Favicons -->
+           
+           <!-- PNG + ICO (some clients ignore SVG favicons) -->
+           <link
+             rel="icon"
+             type="image/png"
+             sizes="96x96"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/favicon-96x96.png?v=3"
+           />
+           <link
+             rel="apple-touch-icon"
+             sizes="180x180"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/apple-touch-icon.png?v=3"
+           />
+           <link
+             rel="shortcut icon"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/favicon.ico?v=3"
+           />
+           
+
+    <!-- RSS Feed -->
+    
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      title="RSS"
+      href="https://noos.blog/atom.xml"
+    />
+    
+
+    <!-- Load Styles -->
+    
+      <link
+        rel="stylesheet"
+        href="https://noos.blog/site.css"
+      />
+    
+
+    <!-- Load Fonts -->
+    
+
+  
+
+
+
+
+
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+  
+
+
+
+<!-- Forcing Font -->
+<style>
+body {
+  font-family:
+    "JetBrains Mono", Menlo, Monaco, Lucida Console, Liberation Mono,
+    DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New,
+    monospace, serif !important;
+}
+</style>
+
+
+    <!-- Pass Theme Preference as Data Attribute -->
+    <script src="https://noos.blog/js/init-theme.js"></script>
+
+    <!-- Reference return to click position script -->
+    <script defer src="https://noos.blog/js/reference-return.js"></script>
+
+    <!-- Additional scripts -->
+    
+      
+        <script defer src="https://noos.blog/js/codeblock.js"></script>
+      
+            
+              <script defer src="https://noos.blog/js/toggle-theme.js"></script>
+            
+      
+<!-- MathJax script for rendering LaTeX math equations -->
+<script src="https://noos.blog/js/mathjax-config.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+  async
+></script>
+
+
+      
+<script type="text/javascript" src="https://noos.blog/elasticlunr.min.js"></script>
+<script type="text/javascript" src="https://noos.blog/js/search.js"></script>
+
+    
+    
+    <!-- Structured Data (JSON-LD) -->
+    
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Hieratic Prompt Compression: Ambitious Prototype or Superpower?",
+  
+  "description": "A proposal-style exploration of a rule-based, structure-aware prompt compression engine for Tokuin—and a call for expert feedback.",
+  
+  
+  "datePublished": "2025-11-16T00:00:00+00:00",
+  
+  
+  "author": {
+    "@type": "Person",
+    "name": "Oshadha G"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Noos - Where Thought, Code, and Craft Converge",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https:&#x2F;&#x2F;noos.blog/icons/favicon/web-app-manifest-512x512.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;hieratic-prompt-compression-prototype&#x2F;"
+  },
+  "url": "https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;hieratic-prompt-compression-prototype&#x2F;",
+  
+  "keywords": "llm, prompt-engineering, compression, tokuin",
+  
+  "inLanguage": "en"
+}
+</script>
+
+
+    
+    <!-- Google Analytics (GA4) -->
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-54YK7R04LX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-54YK7R04LX', {
+        'anonymize_ip': true,
+        'respect_dnt': true
+      });
+    </script>
+    
+  </head>
+
+  <!-- Body element (contents of the page) -->
+  <body class="hack main container">
+    
+  
+    
+    
+      
+  
+  <section class="nav-header">
+    <nav
+      itemscope
+      itemtype="http://schema.org/SiteNavigationElement"
+      class="navbar"
+    >
+      <section class="nav-links">
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/"
+        >
+          <span itemprop="name">Home</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/about"
+        >
+          <span itemprop="name">About</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/categories"
+        >
+          <span itemprop="name">Categories</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/tags"
+        >
+          <span itemprop="name">Tags</span>
+        </a>
+        
+      </section>
+    </nav>
+    <aside class="user-actions-container">
+      
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        class="search-icon"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+        />
+      </svg>
+      <input type="text" id="search" placeholder="Search..." />
+      <section class="search-results" aria-live="polite">
+        <article class="search-results__items" role="list"></article>
+      </section>
+       
+      <a id="dark-mode-toggle" href="#">
+        <img
+          src="https://noos.blog/icons/sun.svg"
+          id="sun-icon"
+          style="filter: invert(1)"
+          alt="Light mode"
+        />
+        <img
+          src="https://noos.blog/icons/moon.svg"
+          id="moon-icon"
+          alt="Dark mode"
+        />
+      </a>
+       
+      <a
+        href="https://noos.blog/atom.xml"
+        class="feed-icon"
+        rel="noopener noreferrer"
+      >
+        <img
+          src="https://noos.blog/icons/rss.svg"
+          id="rss-icon"
+          alt="RSS feed"
+          class="social-icon"
+        />
+      </a>
+       
+    </aside>
+  </section>
+  
+
+    
+
+
+    <main>
+      
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">Hieratic Prompt Compression: Ambitious Prototype or Superpower?</h1>
+        
+        <data class="muted">
+    <svg class="icon i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <data>9 minute read</data>
+    
+    
+    <svg class="icon i-calendar" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <!-- Calendar outline -->
+        <rect x="3" y="6" width="26" height="23" rx="2" ry="2"/>
+        <!-- Binding rings -->
+        <line x1="10" y1="3" x2="10" y2="9"/>
+        <line x1="22" y1="3" x2="22" y2="9"/>
+        <!-- Top separator -->
+        <line x1="3" y1="12" x2="29" y2="12"/>
+    </svg>
+
+    Published: 2025-11-16
+    
+</data>
+        
+        
+        
+        
+        
+        
+          
+          
+          
+          
+          
+        
+        
+        <figure class="post-cover" style="margin: 1.25rem 0;">
+          <img src="&#x2F;images&#x2F;covers&#x2F;hieratic-prompt-compression-prototype.png" alt="Hieratic Prompt Compression: Ambitious Prototype or Superpower? cover" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--color-border-default, #e5e7eb);" onerror="this.parentNode.style.display='none'" />
+        </figure>
+        
+    </header>
+
+    <article itemprop="articleBody">
+        
+            <!-- If no summary separate from content, just render content -->
+            <h2 id="why-even-bother-compressing-prompts">Why Even Bother Compressing Prompts?</h2>
+<p>Large prompts are the new monoliths.</p>
+<p>If you’ve ever tried to stuff a serious extraction spec, a few pages of dense tables or configs, and long-running conversation history into a single LLM call, you already know the pain:</p>
+<ul>
+<li>Context windows get cramped.</li>
+<li>Tokens get expensive.</li>
+<li>Latency creeps up.</li>
+<li>And the “just add more context” strategy quietly stops scaling.</li>
+</ul>
+<p><strong>Hieratic Prompt Compression</strong> is my attempt to push back on that—without spinning up yet another LLM just to shrink prompts. It’s being explored as an experimental feature for <strong>Tokuin</strong>, my CLI for token estimation and provider-aware load testing (<a href="https://github.com/nooscraft/tokuin">GitHub</a>).</p>
+<p><strong>The core question of this post</strong>:<br />
+Can we build a <em>deterministic</em>, structure-aware compression layer that shrinks prompts by 50–80% while preserving downstream task fidelity?<br />
+And maybe more importantly: <strong>is it worth doing</strong>, or is this just an over-engineered curiosity?</p>
+<p>This is not a feature announcement. It’s a proposal in public, and I’d like your help pressure-testing it.</p>
+<hr />
+<h2 id="why-hieratic">Why “Hieratic”?</h2>
+<p>The name “Hieratic” comes from the <strong>hieratic script</strong> used in ancient Egypt: a <strong>compact, scribal shorthand</strong> for hieroglyphs that preserved meaning while being much faster to write.</p>
+<p>That’s roughly the spirit here:</p>
+<ul>
+<li>We want a <strong>compact, structured shorthand</strong> for long prompts.</li>
+<li>We care about <strong>preserving the semantic load</strong>, not the surface form.</li>
+<li>We want something a “scribal” system can produce deterministically, instead of asking another model to improvise a summary.</li>
+</ul>
+<p>Hieratic is meant to be that shorthand: a structured, compressed representation of your original prompt that an LLM can still “read” effectively.</p>
+<hr />
+<h2 id="what-i-m-proposing-in-plain-terms">What I’m Proposing (in Plain Terms)</h2>
+<p>The rough sketch is:</p>
+<blockquote>
+<p>A <strong>non-LLM, structure-aware compression pipeline</strong> that:</p>
+<ul>
+<li>treats instructions and structured documents differently,</li>
+<li>aggressively removes boilerplate,</li>
+<li>reuses repeated snippets via a context library,</li>
+<li>and supports incremental compression over long histories.</li>
+</ul>
+</blockquote>
+<p>More concretely:</p>
+<ul>
+<li>
+<p><strong>Extractive, not generative</strong><br />
+We’re not asking another model to “summarize” the prompt. We’re <strong>selectively dropping</strong> low-value text and keeping the high-signal bits intact.</p>
+</li>
+<li>
+<p><strong>Structure-aware</strong><br />
+JSON, HTML tables, and BNF-like grammars are treated as <em>verbatim</em> document blocks. Only the natural language <em>instructions</em> around them get compressed.</p>
+</li>
+<li>
+<p><strong>Library-driven boilerplate removal</strong><br />
+Repeated extraction instructions, legal boilerplate, or scaffolding can be recognized and replaced by compact references using a reusable <strong>context library</strong>.</p>
+</li>
+<li>
+<p><strong>Incremental compression</strong><br />
+For long-running flows, only the <strong>newly dropped</strong> parts of the conversation get compressed into anchored summaries. We don’t re-summarize the entire history on every call.</p>
+</li>
+</ul>
+<p>The output is a “Hieratic” prompt: a compact, structured representation that the application can expand or feed directly into an LLM.</p>
+<hr />
+<h2 id="why-this-might-be-worth-doing">Why This Might Be Worth Doing</h2>
+<p>From a product and engineering standpoint, a feature like this could unlock some real benefits:</p>
+<ul>
+<li>
+<p><strong>Token savings at scale</strong><br />
+If you’re sending the same extraction spec or long policy docs over and over, shaving 50–80% of that cost starts to matter.</p>
+</li>
+<li>
+<p><strong>Longer, richer prompts</strong><br />
+A smaller prompt budget per call means:</p>
+<ul>
+<li>More examples,</li>
+<li>More “why this matters” context,</li>
+<li>More system-level constraints,
+<strong>without</strong> immediately slamming into context window limits.</li>
+</ul>
+</li>
+<li>
+<p><strong>Latency and stability</strong><br />
+Fewer tokens → lower latency, more predictable runtime, fewer timeouts and retries.</p>
+</li>
+<li>
+<p><strong>Determinism &amp; debuggability</strong><br />
+Compression is <strong>rule-based</strong>:</p>
+<ul>
+<li>Same input → same compressed output.</li>
+<li>Easy to diff and inspect what was kept vs dropped.</li>
+<li>Failure modes can be reasoned about and tested explicitly.</li>
+</ul>
+</li>
+<li>
+<p><strong>Better fit for structured tasks</strong><br />
+Many real-world prompts mix instructions with structured data (tables, JSON, etc.). A structure-aware compressor is a more natural fit than a generic summarizer.</p>
+</li>
+</ul>
+<p>If this works even moderately well, Hieratic could become a <strong>core building block</strong> for workflows where prompts—not models—are the main bottleneck.</p>
+<hr />
+<h2 id="why-this-might-be-a-terrible-idea">Why This Might Be a Terrible Idea</h2>
+<p>Being honest about the risks:</p>
+<ol>
+<li>
+<p><strong>We silently destroy task fidelity</strong></p>
+<ul>
+<li>The dangerous failure mode is not “the model throws an error”, it’s “the model quietly stops extracting certain fields.”</li>
+<li>Under aggressive compression, subtle but important constraints and corner cases can just, disappear.</li>
+<li>Research like <strong>500xCompressor</strong> reports retaining ~62–73% of performance under heavy compression; that may be fine for some tasks, terrifying for others.</li>
+</ul>
+</li>
+<li>
+<p><strong>We overfit to a narrow prompt shape</strong></p>
+<ul>
+<li>The early design assumes prompts that look like:
+<ul>
+<li>a long instruction block, plus</li>
+<li>a structured document (tables, configs, schemas, etc.).</li>
+</ul>
+</li>
+<li>If your prompts are mostly conversational, mostly code, or heavily multimodal, these strategies may not transfer well.</li>
+</ul>
+</li>
+<li>
+<p><strong>Evaluation is non-trivial</strong></p>
+<ul>
+<li>To take this seriously, we’ll need:
+<ul>
+<li>a proper “before vs after compression” benchmark,</li>
+<li>real extraction and reasoning tasks, not toy examples,</li>
+<li>and metrics beyond “tokens saved” (precision/recall on fields, calibration of failure modes, etc.).</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p>If we’re not disciplined, we’ll end up with a fancy <strong>token counter</strong> that quietly degrades the very tasks this was supposed to help with.</p>
+<hr />
+<h2 id="a-bit-of-research-backing">A Bit of Research Backing</h2>
+<p>This idea borrows from existing work rather than inventing everything from scratch:</p>
+<ul>
+<li>
+<p><strong>500xCompressor: Generalized Prompt Compression for Large Language Models</strong><br />
+Shows that prompts are <strong>highly compressible</strong> (6×–480×) by learning a compressed “language” while retaining 62–73% of task performance. Key takeaways:</p>
+<ul>
+<li>Prompts contain a lot of low-information redundancy.</li>
+<li>You can compress aggressively if you protect information-bearing tokens.<br />
+→ <a href="https://arxiv.org/abs/2408.03094?utm_source=chatgpt.com">500xCompressor: Generalized Prompt Compression for Large Language Models</a></li>
+</ul>
+</li>
+<li>
+<p><strong>NAACL 2025 survey on prompt compression</strong><br />
+Surveys extractive vs. abstractive compression and token-pruning strategies, emphasizing:</p>
+<ul>
+<li>trade-offs between compression ratio and task fidelity,</li>
+<li>the importance of preserving structure for technical prompts.<br />
+→ <a href="https://aclanthology.org/2025.naacl-long.368.pdf?utm_source=chatgpt.com">NAACL 2025 prompt compression survey (PDF)</a></li>
+</ul>
+</li>
+<li>
+<p><strong>Factory.ai – “Compressing Context”</strong><br />
+Describes a production-ready strategy for <strong>incremental, anchored summaries</strong>:</p>
+<ul>
+<li>maintain a persistent conversation state,</li>
+<li>compress only the span that’s about to fall out of context,</li>
+<li>avoid repeatedly re-summarizing old history.<br />
+→ <a href="https://factory.ai/news/compressing-context?utm_source=chatgpt.com">Factory.ai: “Compressing Context”</a></li>
+</ul>
+</li>
+</ul>
+<p>Where Hieratic diverges is in deliberately <strong>not</strong> adding another model to the loop. The goal is a deterministic, rule-based compressor that plays nicely with structured prompts and long-running pipelines.</p>
+<hr />
+<h2 id="rough-shape-of-the-system">Rough Shape of the System</h2>
+<p>Here’s the high-level architecture I’m exploring.</p>
+<h3 id="1-split-instructions-vs-document">1. Split instructions vs document</h3>
+<p>Before we drop any tokens:</p>
+<ul>
+<li><strong>Instruction block</strong>: natural-language instructions and commentary.</li>
+<li><strong>Document block</strong>: structured tables, JSON payloads, grammars, etc.</li>
+</ul>
+<p><strong>Only the instruction block is compressed.</strong><br />
+Document blocks are treated as <strong>verbatim</strong> and left untouched.</p>
+<h3 id="2-pattern-extraction-context-library-optional">2. Pattern extraction &amp; context library (optional)</h3>
+<p>Given a corpus of prompts, a pattern extractor:</p>
+<ul>
+<li>scans for <strong>frequently repeated fragments</strong> (boilerplate instructions, shared scaffolding),</li>
+<li>builds a reusable <strong>context library</strong>,</li>
+<li>allows future prompts to reference those snippets instead of inlining them.</li>
+</ul>
+<p>This is similar in spirit to a learned codebook (as in research like 500xCompressor), but done in a deterministic, human-auditable way.</p>
+<h3 id="3-extractive-compression-over-instruction-blocks">3. Extractive compression over instruction blocks</h3>
+<p>For instruction text, the compressor:</p>
+<ul>
+<li>Sets a <strong>token budget</strong> based on a compression level (<code>Light</code>, <code>Medium</code>, <code>Aggressive</code>) or explicit target ratio.</li>
+<li>Segments text using structure-aware heuristics:
+<ul>
+<li>headings (<code>#</code>, <code>##</code>),</li>
+<li>“Definition:”, “Location:”, “Response Format:” markers,</li>
+<li>parameter blocks (<code>Extracted_Value</code>, <code>Doc_Page_Number</code>, etc.).</li>
+</ul>
+</li>
+<li>Scores segments such that:
+<ul>
+<li>hard constraints and response formats are <strong>hard-kept</strong>,</li>
+<li>explanatory text and examples are more compressible.</li>
+</ul>
+</li>
+<li>Implements a greedy selection: keep highest-scoring segments until the budget is spent.</li>
+</ul>
+<p>The intent is to preserve the “spine” of the instructions while trimming repetition and soft context.</p>
+<h3 id="4-encode-as-a-hieratic-prompt">4. Encode as a Hieratic prompt</h3>
+<p>The compressed result is organized into a <strong>Hieratic</strong> structure, with sections like:</p>
+<ul>
+<li><code>@ROLE</code> – who the model is supposed to be,</li>
+<li><code>@TASK</code> – what it’s supposed to do,</li>
+<li><code>@FOCUS</code> – which fields / behaviors matter most,</li>
+<li><code>@EXAMPLES</code> – optionally compressed or referenced,</li>
+<li><code>@RECENT</code> – most recent interaction span,</li>
+<li><code>@ANCHOR[...]</code> – anchored summaries of older context.</li>
+</ul>
+<p>It’s essentially a compact, structured representation of your original prompt.</p>
+<h3 id="5-incremental-mode-for-long-histories">5. Incremental mode for long histories</h3>
+<p>In incremental mode, the compressor:</p>
+<ul>
+<li>loads a previous compression state,</li>
+<li>identifies the “oldest” span that’s about to be evicted from context,</li>
+<li>compresses that span into a new <code>@ANCHOR[...]</code>,</li>
+<li>keeps the most recent N tokens uncompressed.</li>
+</ul>
+<p>Over time, you get a stack of anchors plus a fresh <code>@RECENT</code> tail, keeping context current without growing linearly with the full history.</p>
+<hr />
+<h2 id="what-i-d-love-feedback-on">What I’d Love Feedback On</h2>
+<p>This is the experimental part. I’d love to hear from people who:</p>
+<ul>
+<li>run LLMs in production with big prompts,</li>
+<li>have tried prompt compression in anger,</li>
+<li>or have opinions on where this kind of feature should live in a system like Tokuin.</li>
+</ul>
+<p>A few specific questions:</p>
+<ol>
+<li>
+<p><strong>Evaluation</strong></p>
+<ul>
+<li>How would you design a <em>real</em> benchmark for this?</li>
+<li>Which tasks / datasets would you use to prove that we’re not quietly breaking critical behaviors?</li>
+</ul>
+</li>
+<li>
+<p><strong>Failure modes</strong></p>
+<ul>
+<li>Where have compression strategies bitten you before?</li>
+<li>Are there patterns or structures you’d mark as “never compress this”?</li>
+</ul>
+</li>
+<li>
+<p><strong>Integration into a stack like Tokuin</strong></p>
+<ul>
+<li>At what layer would you expect to see a feature like this?
+<ul>
+<li>Right before the LLM call?</li>
+<li>As part of a prompt-building pipeline?</li>
+<li>As a standalone preprocessor with its own cache?</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Alternatives &amp; trade-offs</strong></p>
+<ul>
+<li>Would you lean towards learned compressors instead?</li>
+<li>Are there simpler heuristics that get most of the benefit without this level of complexity?</li>
+</ul>
+</li>
+<li>
+<p><strong>Product shaping</strong></p>
+<ul>
+<li>Should this live as:
+<ul>
+<li>a first-class Tokuin feature,</li>
+<li>an “experimental / power user” option,</li>
+<li>or a separate library that Tokuin can plug into?</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p>If you have opinions—positive or negative—I’d genuinely appreciate hearing them.</p>
+<hr />
+<h2 id="how-this-fits-into-tokuin-right-now">How This Fits Into Tokuin (Right Now)</h2>
+<p>As of today, <strong>Hieratic Prompt Compression is experimental and aspirational</strong>:</p>
+<ul>
+<li>It’s being explored as a potential <strong>feature for Tokuin</strong>, not a locked-in roadmap item.</li>
+<li>Any implementation will start as:
+<ul>
+<li>an opt-in, feature-flagged module,</li>
+<li>with clear disclaimers about the risks,</li>
+<li>and tooling to inspect exactly what was compressed.</li>
+</ul>
+</li>
+</ul>
+<p>Long term, if the idea survives scrutiny, I could imagine:</p>
+<ul>
+<li>per-project <strong>compression profiles</strong>,</li>
+<li>UI/CLI tools for inspecting “before vs after” prompts,</li>
+<li>and tighter integration with context management and retrieval strategies.</li>
+</ul>
+<p>But we’re not there yet. For now, I’m trying to answer a simpler question:</p>
+<blockquote>
+<p><strong>Can a Hieratic-style, rule-based compressor earn its place inside Tokuin, or should we keep prompts uncompressed and invest elsewhere?</strong></p>
+</blockquote>
+<p>If you’ve navigated similar trade-offs—or you’re just curious and want to poke holes in this idea—I’d love to hear from you.</p>
+<hr />
+<h2 id="references">References</h2>
+<ul>
+<li>
+<p><strong>500xCompressor: Generalized Prompt Compression for Large Language Models</strong><br />
+<a href="https://arxiv.org/abs/2408.03094?utm_source=chatgpt.com">https://arxiv.org/abs/2408.03094</a></p>
+</li>
+<li>
+<p><strong>NAACL 2025 Prompt Compression Survey</strong><br />
+<a href="https://aclanthology.org/2025.naacl-long.368.pdf?utm_source=chatgpt.com">https://aclanthology.org/2025.naacl-long.368.pdf</a></p>
+</li>
+<li>
+<p><strong>Factory.ai – “Compressing Context”</strong><br />
+<a href="https://factory.ai/news/compressing-context?utm_source=chatgpt.com">https://factory.ai/news/compressing-context</a></p>
+</li>
+</ul>
+
+        
+    </article>
+
+    <!-- Comment section -->
+    
+      
+        
+          <script
+  src="https://giscus.app/client.js"
+  data-repo="nooscraft&#x2F;personal-blog"
+  data-repo-id="R_kgDOQJ_XNg"
+  data-category="General"
+  data-category-id="DIC_kwDOQJ_XNs4CxOmG"
+  data-mapping="pathname"
+  data-strict="0"
+  data-reactions-enabled="1"
+  data-emit-metadata="0"
+  data-input-position="bottom"
+
+  
+  data-theme="https:&#x2F;&#x2F;noos.blog&#x2F;css&#x2F;giscus-theme.css"
+  
+
+  data-lang="en"
+  data-loading="lazy"
+  crossorigin="anonymous"
+  async
+></script>
+
+        
+      
+    
+
+
+    <!-- Page footer -->
+    
+    <footer>
+        <hr>
+        <p>
+            
+            
+                
+                in <a href="https://noos.blog/categories/engineering/">Engineering</a>
+            
+            
+                and
+                tagged
+                
+                    <a href="https://noos.blog/tags/llm/">llm</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/prompt-engineering/">prompt-engineering</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/compression/">compression</a>
+                    
+                        
+                            
+                                and
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/tokuin/">tokuin</a>
+                    
+                        
+                    
+                
+            
+        </p>
+
+        <!-- Revision history (optional) -->
+        
+          
+            
+              
+            
+          
+        
+
+        
+        
+    </footer>
+
+
+</article>
+
+
+    </main>
+    
+
+  </body>
+</html>

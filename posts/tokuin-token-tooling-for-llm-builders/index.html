@@ -1,0 +1,601 @@
+<!doctype html>
+<html lang="en" data-theme="toggle">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <!-- Enable responsiveness on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;tokuin-token-tooling-for-llm-builders&#x2F;" />
+    
+    <!-- Robots meta -->
+    
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    
+
+    
+      
+        <meta name="description" content="A look at Tokuin, a ground-up token analysis and load-testing CLI for LLM prompts, why it exists, what it offers today, and where it&#x27;s headed next." />
+        <meta property="og:description" content="A look at Tokuin, a ground-up token analysis and load-testing CLI for LLM prompts, why it exists, what it offers today, and where it&#x27;s headed next." />
+        <meta property="twitter:description" content="A look at Tokuin, a ground-up token analysis and load-testing CLI for LLM prompts, why it exists, what it offers today, and where it&#x27;s headed next." />
+      
+    
+
+    <!-- Title -->
+    
+      
+    
+    <title>
+    
+    Tokuin: Token Intelligence for LLM Developers | Noos - Where Thought, Code, and Craft Converge
+    
+</title>
+    
+    <!-- Author -->
+    
+    <meta name="author" content="Oshadha G" />
+    
+    
+    <!-- Article specific meta tags -->
+    
+    
+    <meta property="article:published_time" content="2025-11-07T00:00:00+00:00" />
+    
+    
+    
+    
+    <meta property="article:tag" content="tokuin" />
+    
+    <meta property="article:tag" content="llm" />
+    
+    <meta property="article:tag" content="cli" />
+    
+    <meta property="article:tag" content="tokenization" />
+    
+    <meta property="article:tag" content="load-testing" />
+    
+    <meta property="article:tag" content="rust" />
+    
+    
+    
+    
+    <meta property="article:section" content="Tools" />
+    
+    
+    
+
+    <!-- Additional Facebook Meta Tags -->
+    <meta property="og:site_name" content="Noos - Where Thought, Code, and Craft Converge" />
+    <meta
+      property="og:url"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;tokuin-token-tooling-for-llm-builders&#x2F;"
+    />
+    <meta
+      property="og:type"
+      content="article"
+    />
+    <meta property="og:title" content="Tokuin: Token Intelligence for LLM Developers | Noos - Where Thought, Code, and Craft Converge" />
+
+    <!-- Additional Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      property="twitter:url"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;tokuin-token-tooling-for-llm-builders&#x2F;"
+    />
+    <meta name="twitter:title" content="Tokuin: Token Intelligence for LLM Developers | Noos - Where Thought, Code, and Craft Converge" />
+
+    <!-- Cover images -->
+           
+           
+           
+           
+      
+      
+      
+      
+      
+    
+
+    <meta
+      property="og:image"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;tokuin-token-tooling-for-llm-builders.png"
+    />
+
+    <meta
+      name="twitter:image"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;tokuin-token-tooling-for-llm-builders.png"
+    />
+
+
+
+    <!-- Favicons -->
+           
+           <!-- PNG + ICO (some clients ignore SVG favicons) -->
+           <link
+             rel="icon"
+             type="image/png"
+             sizes="96x96"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/favicon-96x96.png?v=3"
+           />
+           <link
+             rel="apple-touch-icon"
+             sizes="180x180"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/apple-touch-icon.png?v=3"
+           />
+           <link
+             rel="shortcut icon"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/favicon.ico?v=3"
+           />
+           
+
+    <!-- RSS Feed -->
+    
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      title="RSS"
+      href="https://noos.blog/atom.xml"
+    />
+    
+
+    <!-- Load Styles -->
+    
+      <link
+        rel="stylesheet"
+        href="https://noos.blog/site.css"
+      />
+    
+
+    <!-- Load Fonts -->
+    
+
+  
+
+
+
+
+
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+  
+
+
+
+<!-- Forcing Font -->
+<style>
+body {
+  font-family:
+    "JetBrains Mono", Menlo, Monaco, Lucida Console, Liberation Mono,
+    DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New,
+    monospace, serif !important;
+}
+</style>
+
+
+    <!-- Pass Theme Preference as Data Attribute -->
+    <script src="https://noos.blog/js/init-theme.js"></script>
+
+    <!-- Reference return to click position script -->
+    <script defer src="https://noos.blog/js/reference-return.js"></script>
+
+    <!-- Additional scripts -->
+    
+      
+        <script defer src="https://noos.blog/js/codeblock.js"></script>
+      
+            
+              <script defer src="https://noos.blog/js/toggle-theme.js"></script>
+            
+      
+<!-- MathJax script for rendering LaTeX math equations -->
+<script src="https://noos.blog/js/mathjax-config.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+  async
+></script>
+
+
+      
+<script type="text/javascript" src="https://noos.blog/elasticlunr.min.js"></script>
+<script type="text/javascript" src="https://noos.blog/js/search.js"></script>
+
+    
+    
+    <!-- Structured Data (JSON-LD) -->
+    
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Tokuin: Token Intelligence for LLM Developers",
+  
+  "description": "A look at Tokuin, a ground-up token analysis and load-testing CLI for LLM prompts, why it exists, what it offers today, and where it&#x27;s headed next.",
+  
+  
+  "datePublished": "2025-11-07T00:00:00+00:00",
+  
+  
+  "author": {
+    "@type": "Person",
+    "name": "Oshadha G"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Noos - Where Thought, Code, and Craft Converge",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https:&#x2F;&#x2F;noos.blog/icons/favicon/web-app-manifest-512x512.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;tokuin-token-tooling-for-llm-builders&#x2F;"
+  },
+  "url": "https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;tokuin-token-tooling-for-llm-builders&#x2F;",
+  
+  "keywords": "tokuin, llm, cli, tokenization, load-testing, rust",
+  
+  "inLanguage": "en"
+}
+</script>
+
+
+    
+    <!-- Google Analytics (GA4) -->
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-54YK7R04LX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-54YK7R04LX', {
+        'anonymize_ip': true,
+        'respect_dnt': true
+      });
+    </script>
+    
+  </head>
+
+  <!-- Body element (contents of the page) -->
+  <body class="hack main container">
+    
+  
+    
+    
+      
+  
+  <section class="nav-header">
+    <nav
+      itemscope
+      itemtype="http://schema.org/SiteNavigationElement"
+      class="navbar"
+    >
+      <section class="nav-links">
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/"
+        >
+          <span itemprop="name">Home</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/about"
+        >
+          <span itemprop="name">About</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/categories"
+        >
+          <span itemprop="name">Categories</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/tags"
+        >
+          <span itemprop="name">Tags</span>
+        </a>
+        
+      </section>
+    </nav>
+    <aside class="user-actions-container">
+      
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        class="search-icon"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+        />
+      </svg>
+      <input type="text" id="search" placeholder="Search..." />
+      <section class="search-results" aria-live="polite">
+        <article class="search-results__items" role="list"></article>
+      </section>
+       
+      <a id="dark-mode-toggle" href="#">
+        <img
+          src="https://noos.blog/icons/sun.svg"
+          id="sun-icon"
+          style="filter: invert(1)"
+          alt="Light mode"
+        />
+        <img
+          src="https://noos.blog/icons/moon.svg"
+          id="moon-icon"
+          alt="Dark mode"
+        />
+      </a>
+       
+      <a
+        href="https://noos.blog/atom.xml"
+        class="feed-icon"
+        rel="noopener noreferrer"
+      >
+        <img
+          src="https://noos.blog/icons/rss.svg"
+          id="rss-icon"
+          alt="RSS feed"
+          class="social-icon"
+        />
+      </a>
+       
+    </aside>
+  </section>
+  
+
+    
+
+
+    <main>
+      
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">Tokuin: Token Intelligence for LLM Developers</h1>
+        
+        <data class="muted">
+    <svg class="icon i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <data>4 minute read</data>
+    
+    
+    <svg class="icon i-calendar" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <!-- Calendar outline -->
+        <rect x="3" y="6" width="26" height="23" rx="2" ry="2"/>
+        <!-- Binding rings -->
+        <line x1="10" y1="3" x2="10" y2="9"/>
+        <line x1="22" y1="3" x2="22" y2="9"/>
+        <!-- Top separator -->
+        <line x1="3" y1="12" x2="29" y2="12"/>
+    </svg>
+
+    Published: 2025-11-07
+    
+</data>
+        
+        
+        
+        
+        
+        
+          
+          
+          
+          
+          
+        
+        
+        <figure class="post-cover" style="margin: 1.25rem 0;">
+          <img src="&#x2F;images&#x2F;covers&#x2F;tokuin-token-tooling-for-llm-builders.png" alt="Tokuin: Token Intelligence for LLM Developers cover" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--color-border-default, #e5e7eb);" onerror="this.parentNode.style.display='none'" />
+        </figure>
+        
+    </header>
+
+    <article itemprop="articleBody">
+        
+            <!-- If no summary separate from content, just render content -->
+            <p>I built <a href="https://github.com/nooscraft/tokuin">Tokuin</a> because the tooling around prompt design still feels like guesswork. We scribble system prompts in scratchpads, retry endpoints until rate limits scream, and only know what the bill looks like after the invoice arrives. Tokuin changes that. It gives you <strong>reliable token estimates, cost projections, and synthetic load tests</strong>—all packaged in a Rust CLI you can trust.</p>
+<h2 id="why-another-cli">Why Another CLI?</h2>
+<p>Prompts have become product surfaces. Teams iterate on them like code, but the support tooling still feels like duct tape. I wanted something that:</p>
+<ul>
+<li>Reads prompts from files, stdin, or watch mode</li>
+<li>Targets multiple providers without juggling SDKs</li>
+<li>Surfaces pricing before you ever hit “Send”</li>
+<li>Scales up to load tests when you need to know how a model behaves across 1,000 requests</li>
+</ul>
+<p>Tokuin is the result: a <strong>ground-up build in Rust</strong> with a modular architecture for tokenizers, providers, and output formats. It’s fast, predictable, and stays out of your way while you experiment.</p>
+<h2 id="feature-highlights">Feature Highlights</h2>
+<ul>
+<li><strong>Token estimation that understands context</strong>: Supply raw text, chat transcripts, or JSON payloads and Tokuin breaks down system/user/assistant roles with optional markdown minification.</li>
+<li><strong>Multi-model comparisons</strong>: Pass <code>--compare</code> with OpenAI, Anthropic, or OpenRouter models to see how token counts and costs differ.</li>
+<li><strong>Pricing awareness</strong>: Add <code>--price</code> or <code>--estimate-cost</code> to forecast spend per prompt, per run, or across a load test.</li>
+<li><strong>Watch mode</strong>: Keep Tokuin running with <code>--watch</code> and it re-computes every time you save a file. Perfect for prompt gardening.</li>
+<li><strong>Load testing (feature flag)</strong>: Enable the <code>load-test</code> feature to hammer APIs with controlled concurrency, think times, retry logic, and automatic latency/cost reports.</li>
+<li><strong>Format-flexible output</strong>: Emit human-friendly text, JSON for scripts, Markdown for docs, CSV for spreadsheets, or Prometheus metrics when you need dashboards.</li>
+<li><strong>Provider-ready</strong>: OpenAI and OpenRouter work out of the box, Gemini is one flag away, and new providers plug into the registry without rewriting the CLI surface.<sup class="footnote-reference"><a href="#tokuin">1</a></sup></li>
+</ul>
+<div class="footnote-definition" id="tokuin"><sup class="footnote-definition-label">1</sup>
+<p>Feature set sourced from the project README.<a href="https://github.com/nooscraft/tokuin">tokuin</a></p>
+</div>
+<h2 id="advantages-for-developers">Advantages for Developers</h2>
+<ul>
+<li><strong>Budget confidence</strong>: Know input/output token counts and projected cost before you ship or run a batch job.</li>
+<li><strong>Faster iteration</strong>: Swap “test, wait, pray” with a tight loop; piping prompts through Tokuin becomes muscle memory.</li>
+<li><strong>CI-friendly</strong>: Because it’s a single binary, you can run token checks in CI to guard against prompt bloat before merge.</li>
+<li><strong>Team alignment</strong>: Comparing multiple models is now a line of CLI flags, not a spreadsheet of stitched-together data.</li>
+<li><strong>Infra visibility</strong>: Load tests surface latency cliffs, provider throttling, and cost ceilings before your users do.</li>
+</ul>
+<h2 id="built-for-growth">Built for Growth</h2>
+<p>Tokuin ships with a modular core: <code>tokenizers/</code>, <code>models/</code>, <code>providers/</code>, and <code>output/</code> live in separate crates so we can grow the ecosystem without tangling the CLI.<sup class="footnote-reference"><a href="#tokuin">1</a></sup> Near-term roadmap items include:</p>
+<ol>
+<li><strong>Provider expansion</strong>: Native Anthropic, Mistral, and Cohere support (work already outlined in <code>PROVIDERS_PLAN.md</code>).</li>
+<li><strong>Scenario scripts</strong>: Define multi-turn conversations and replay them in load tests.</li>
+<li><strong>Cost guardrails</strong>: Abort long runs automatically when reaching a user-defined budget ceiling.</li>
+<li><strong>Prompt linting</strong>: Surface style and structure issues before they hit production pipelines.</li>
+<li><strong>Plugin hooks</strong>: Let users contribute tokenizers or pricing sources without forking the repo.</li>
+</ol>
+<h2 id="from-experiment-to-community-tooling">From Experiment to Community Tooling</h2>
+<p>Tokuin grew out of practical late-night benchmarking, budget vetting, and the need for predictable tooling across teams. We still welcome that vibe-coding energy—if you sketch solutions with AI co-pilots or riff on ideas in flow, there’s room here to help shape how we build for LLMs.</p>
+<h3 id="how-to-get-involved">How to Get Involved</h3>
+<ul>
+<li><strong>Run it</strong>: <code>cargo install tokuin</code> or build from source and kick the tires.</li>
+<li><strong>Share prompts</strong>: If you discover funky edge cases in tokenization or pricing, capture them as regression fixtures.</li>
+<li><strong>Open a PR</strong>: Contributions are welcome whether you’re adding providers, tightening error messages, or documenting workflows. Mention any vibe-coding sessions in your PR so we can trace the creative path.</li>
+<li><strong>Join the roadmap</strong>: Drop ideas in issues, especially if you’re working on multi-provider tooling—the more weird setups we test, the better Tokuin gets.</li>
+</ul>
+<p>Thanks for trying it out. Tokuin exists to remove guesswork, save budgets, and let prompt engineers stay in flow. If you ship something with it, I’d love to hear the story.</p>
+
+        
+    </article>
+
+    <!-- Comment section -->
+    
+      
+        
+          <script
+  src="https://giscus.app/client.js"
+  data-repo="nooscraft&#x2F;personal-blog"
+  data-repo-id="R_kgDOQJ_XNg"
+  data-category="General"
+  data-category-id="DIC_kwDOQJ_XNs4CxOmG"
+  data-mapping="pathname"
+  data-strict="0"
+  data-reactions-enabled="1"
+  data-emit-metadata="0"
+  data-input-position="bottom"
+
+  
+  data-theme="https:&#x2F;&#x2F;noos.blog&#x2F;css&#x2F;giscus-theme.css"
+  
+
+  data-lang="en"
+  data-loading="lazy"
+  crossorigin="anonymous"
+  async
+></script>
+
+        
+      
+    
+
+
+    <!-- Page footer -->
+    
+    <footer>
+        <hr>
+        <p>
+            
+            
+                
+                in <a href="https://noos.blog/categories/tools/">Tools</a>
+            
+            
+                and
+                tagged
+                
+                    <a href="https://noos.blog/tags/tokuin/">tokuin</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/llm/">llm</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/cli/">cli</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/tokenization/">tokenization</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/load-testing/">load-testing</a>
+                    
+                        
+                            
+                                and
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/rust/">rust</a>
+                    
+                        
+                    
+                
+            
+        </p>
+
+        <!-- Revision history (optional) -->
+        
+          
+            
+              
+            
+          
+        
+
+        
+        
+    </footer>
+
+
+</article>
+
+
+    </main>
+    
+
+  </body>
+</html>

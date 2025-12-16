@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Noos - Where Thought, Code, and Craft Converge - llm</title>
+    <subtitle>Personal blog about programming, technology, and engineering insights. Topics include Rust, DevOps, Linux, and software craftsmanship.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://noos.blog/tags/llm/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://noos.blog"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2025-11-16T00:00:00+00:00</updated>
+    <id>https://noos.blog/tags/llm/atom.xml</id>
+    <entry xml:lang="en">
+        <title>Hieratic Prompt Compression: Ambitious Prototype or Superpower?</title>
+        <published>2025-11-16T00:00:00+00:00</published>
+        <updated>2025-11-16T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/hieratic-prompt-compression-prototype/"/>
+        <id>https://noos.blog/posts/hieratic-prompt-compression-prototype/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/hieratic-prompt-compression-prototype/">&lt;h2 id=&quot;why-even-bother-compressing-prompts&quot;&gt;Why Even Bother Compressing Prompts?&lt;&#x2F;h2&gt;
+&lt;p&gt;Large prompts are the new monoliths.&lt;&#x2F;p&gt;
+&lt;p&gt;If you’ve ever tried to stuff a serious extraction spec, a few pages of dense tables or configs, and long-running conversation history into a single LLM call, you already know the pain:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Context windows get cramped.&lt;&#x2F;li&gt;
+&lt;li&gt;Tokens get expensive.&lt;&#x2F;li&gt;
+&lt;li&gt;Latency creeps up.&lt;&#x2F;li&gt;
+&lt;li&gt;And the “just add more context” strategy quietly stops scaling.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;strong&gt;Hieratic Prompt Compression&lt;&#x2F;strong&gt; is my attempt to push back on that—without spinning up yet another LLM just to shrink prompts. It’s being explored as an experimental feature for &lt;strong&gt;Tokuin&lt;&#x2F;strong&gt;, my CLI for token estimation and provider-aware load testing (&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;nooscraft&#x2F;tokuin&quot;&gt;GitHub&lt;&#x2F;a&gt;).&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;The core question of this post&lt;&#x2F;strong&gt;:&lt;br &#x2F;&gt;
+Can we build a &lt;em&gt;deterministic&lt;&#x2F;em&gt;, structure-aware compression layer that shrinks prompts by 50–80% while preserving downstream task fidelity?&lt;br &#x2F;&gt;
+And maybe more importantly: &lt;strong&gt;is it worth doing&lt;&#x2F;strong&gt;, or is this just an over-engineered curiosity?&lt;&#x2F;p&gt;
+&lt;p&gt;This is not a feature announcement. It’s a proposal in public, and I’d like your help pressure-testing it.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;why-hieratic&quot;&gt;Why “Hieratic”?&lt;&#x2F;h2&gt;
+&lt;p&gt;The name “Hieratic” comes from the &lt;strong&gt;hieratic script&lt;&#x2F;strong&gt; used in ancient Egypt: a &lt;strong&gt;compact, scribal shorthand&lt;&#x2F;strong&gt; for hieroglyphs that preserved meaning while being much faster to write.&lt;&#x2F;p&gt;
+&lt;p&gt;That’s roughly the spirit here:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;We want a &lt;strong&gt;compact, structured shorthand&lt;&#x2F;strong&gt; for long prompts.&lt;&#x2F;li&gt;
+&lt;li&gt;We care about &lt;strong&gt;preserving the semantic load&lt;&#x2F;strong&gt;, not the surface form.&lt;&#x2F;li&gt;
+&lt;li&gt;We want something a “scribal” system can produce deterministically, instead of asking another model to improvise a summary.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Hieratic is meant to be that shorthand: a structured, compressed representation of your original prompt that an LLM can still “read” effectively.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;what-i-m-proposing-in-plain-terms&quot;&gt;What I’m Proposing (in Plain Terms)&lt;&#x2F;h2&gt;
+&lt;p&gt;The rough sketch is:&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;A &lt;strong&gt;non-LLM, structure-aware compression pipeline&lt;&#x2F;strong&gt; that:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;treats instructions and structured documents differently,&lt;&#x2F;li&gt;
+&lt;li&gt;aggressively removes boilerplate,&lt;&#x2F;li&gt;
+&lt;li&gt;reuses repeated snippets via a context library,&lt;&#x2F;li&gt;
+&lt;li&gt;and supports incremental compression over long histories.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;More concretely:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Extractive, not generative&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
+We’re not asking another model to “summarize” the prompt. We’re &lt;strong&gt;selectively dropping&lt;&#x2F;strong&gt; low-value text and keeping the high-signal bits intact.&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Structure-aware&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
+JSON, HTML tables, and BNF-like grammars are treated as &lt;em&gt;verbatim&lt;&#x2F;em&gt; document blocks. Only the natural language &lt;em&gt;instructions&lt;&#x2F;em&gt; around them get compressed.&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Library-driven boilerplate removal&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
+Repeated extraction instructions, legal boilerplate, or scaffolding can be recognized and replaced by compact references using a reusable &lt;strong&gt;context library&lt;&#x2F;strong&gt;.&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Incremental compression&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
+For long-running flows, only the &lt;strong&gt;newly dropped&lt;&#x2F;strong&gt; parts of the conversation get compressed into anchored summaries. We don’t re-summarize the entire history on every call.&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;The output is a “Hieratic” prompt: a compact, structured representation that the application can expand or feed directly into an LLM.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;why-this-might-be-worth-doing&quot;&gt;Why This Might Be Worth Doing&lt;&#x2F;h2&gt;
+&lt;p&gt;From a product and engineering standpoint, a feature like this could unlock some real benefits:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Token savings at scale&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
+If you’re sending the same extraction spec or long policy docs over and over, shaving 50–80% of that cost starts to matter.&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Longer, richer prompts&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
+A smaller prompt budget per call means:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;More examples,&lt;&#x2F;li&gt;
+&lt;li&gt;More “why this matters” context,&lt;&#x2F;li&gt;
+&lt;li&gt;More system-level constraints,
+&lt;strong&gt;without&lt;&#x2F;strong&gt; immediately slamming into context window limits.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Latency and stability&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
+Fewer tokens → lower latency, more predictable runtime, fewer timeouts and retries.&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Determinism &amp;amp; debuggability&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
+Compression is &lt;strong&gt;rule-based&lt;&#x2F;strong&gt;:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Same input → same compressed output.&lt;&#x2F;li&gt;
+&lt;li&gt;Easy to diff and inspect what was kept vs dropped.&lt;&#x2F;li&gt;
+&lt;li&gt;Failure modes can be reasoned about and tested explicitly.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Better fit for structured tasks&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
+Many real-world prompts mix instructions with structured data (tables, JSON, etc.). A structure-aware compressor is a more natural fit than a generic summarizer.&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;If this works even moderately well, Hieratic could become a &lt;strong&gt;core building block&lt;&#x2F;strong&gt; for workflows where prompts—not models—are the main bottleneck.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;why-this-might-be-a-terrible-idea&quot;&gt;Why This Might Be a Terrible Idea&lt;&#x2F;h2&gt;
+&lt;p&gt;Being honest about the risks:&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;We silently destroy task fidelity&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;The dangerous failure mode is not “the model throws an error”, it’s “the model quietly stops extracting certain fields.”&lt;&#x2F;li&gt;
+&lt;li&gt;Under aggressive compression, subtle but important constraints and corner cases can just, disappear.&lt;&#x2F;li&gt;
+&lt;li&gt;Research like &lt;strong&gt;500xCompressor&lt;&#x2F;strong&gt; reports retaining ~62–73% of performance under heavy compression; that may be fine for some tasks, terrifying for others.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;We overfit to a narrow prompt shape&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;The early design assumes prompts that look like:
+&lt;ul&gt;
+&lt;li&gt;a long instruction block, plus&lt;&#x2F;li&gt;
+&lt;li&gt;a structured document (tables, configs, schemas, etc.).&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;If your prompts are mostly conversational, mostly code, or heavily multimodal, these strategies may not transfer well.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Evaluation is non-trivial&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;To take this seriously, we’ll need:
+&lt;ul&gt;
+&lt;li&gt;a proper “before vs after compression” benchmark,&lt;&#x2F;li&gt;
+&lt;li&gt;real extraction and reasoning tasks, not toy examples,&lt;&#x2F;li&gt;
+&lt;li&gt;and metrics beyond “tokens saved” (precision&#x2F;recall on fields, calibration of failure modes, etc.).&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;If we’re not disciplined, we’ll end up with a fancy &lt;strong&gt;token counter&lt;&#x2F;strong&gt; that quietly degrades the very tasks this was supposed to help with.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;a-bit-of-research-backing&quot;&gt;A Bit of Research Backing&lt;&#x2F;h2&gt;
+&lt;p&gt;This idea borrows from existing work rather than inventing everything from scratch:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;500xCompressor: Generalized Prompt Compression for Large Language Models&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
+Shows that prompts are &lt;strong&gt;highly compressible&lt;&#x2F;strong&gt; (6×–480×) by learning a compressed “language” while retaining 62–73% of task performance. Key takeaways:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Prompts contain a lot of low-information redundancy.&lt;&#x2F;li&gt;
+&lt;li&gt;You can compress aggressively if you protect information-bearing tokens.&lt;br &#x2F;&gt;
+→ &lt;a href=&quot;https:&#x2F;&#x2F;arxiv.org&#x2F;abs&#x2F;2408.03094?utm_source=chatgpt.com&quot;&gt;500xCompressor: Generalized Prompt Compression for Large Language Models&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;NAACL 2025 survey on prompt compression&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
+Surveys extractive vs. abstractive compression and token-pruning strategies, emphasizing:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;trade-offs between compression ratio and task fidelity,&lt;&#x2F;li&gt;
+&lt;li&gt;the importance of preserving structure for technical prompts.&lt;br &#x2F;&gt;
+→ &lt;a href=&quot;https:&#x2F;&#x2F;aclanthology.org&#x2F;2025.naacl-long.368.pdf?utm_source=chatgpt.com&quot;&gt;NAACL 2025 prompt compression survey (PDF)&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Factory.ai – “Compressing Context”&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
+Describes a production-ready strategy for &lt;strong&gt;incremental, anchored summaries&lt;&#x2F;strong&gt;:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;maintain a persistent conversation state,&lt;&#x2F;li&gt;
+&lt;li&gt;compress only the span that’s about to fall out of context,&lt;&#x2F;li&gt;
+&lt;li&gt;avoid repeatedly re-summarizing old history.&lt;br &#x2F;&gt;
+→ &lt;a href=&quot;https:&#x2F;&#x2F;factory.ai&#x2F;news&#x2F;compressing-context?utm_source=chatgpt.com&quot;&gt;Factory.ai: “Compressing Context”&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Where Hieratic diverges is in deliberately &lt;strong&gt;not&lt;&#x2F;strong&gt; adding another model to the loop. The goal is a deterministic, rule-based compressor that plays nicely with structured prompts and long-running pipelines.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;rough-shape-of-the-system&quot;&gt;Rough Shape of the System&lt;&#x2F;h2&gt;
+&lt;p&gt;Here’s the high-level architecture I’m exploring.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;1-split-instructions-vs-document&quot;&gt;1. Split instructions vs document&lt;&#x2F;h3&gt;
+&lt;p&gt;Before we drop any tokens:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Instruction block&lt;&#x2F;strong&gt;: natural-language instructions and commentary.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Document block&lt;&#x2F;strong&gt;: structured tables, JSON payloads, grammars, etc.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;strong&gt;Only the instruction block is compressed.&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
+Document blocks are treated as &lt;strong&gt;verbatim&lt;&#x2F;strong&gt; and left untouched.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;2-pattern-extraction-context-library-optional&quot;&gt;2. Pattern extraction &amp;amp; context library (optional)&lt;&#x2F;h3&gt;
+&lt;p&gt;Given a corpus of prompts, a pattern extractor:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;scans for &lt;strong&gt;frequently repeated fragments&lt;&#x2F;strong&gt; (boilerplate instructions, shared scaffolding),&lt;&#x2F;li&gt;
+&lt;li&gt;builds a reusable &lt;strong&gt;context library&lt;&#x2F;strong&gt;,&lt;&#x2F;li&gt;
+&lt;li&gt;allows future prompts to reference those snippets instead of inlining them.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;This is similar in spirit to a learned codebook (as in research like 500xCompressor), but done in a deterministic, human-auditable way.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;3-extractive-compression-over-instruction-blocks&quot;&gt;3. Extractive compression over instruction blocks&lt;&#x2F;h3&gt;
+&lt;p&gt;For instruction text, the compressor:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Sets a &lt;strong&gt;token budget&lt;&#x2F;strong&gt; based on a compression level (&lt;code&gt;Light&lt;&#x2F;code&gt;, &lt;code&gt;Medium&lt;&#x2F;code&gt;, &lt;code&gt;Aggressive&lt;&#x2F;code&gt;) or explicit target ratio.&lt;&#x2F;li&gt;
+&lt;li&gt;Segments text using structure-aware heuristics:
+&lt;ul&gt;
+&lt;li&gt;headings (&lt;code&gt;#&lt;&#x2F;code&gt;, &lt;code&gt;##&lt;&#x2F;code&gt;),&lt;&#x2F;li&gt;
+&lt;li&gt;“Definition:”, “Location:”, “Response Format:” markers,&lt;&#x2F;li&gt;
+&lt;li&gt;parameter blocks (&lt;code&gt;Extracted_Value&lt;&#x2F;code&gt;, &lt;code&gt;Doc_Page_Number&lt;&#x2F;code&gt;, etc.).&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;Scores segments such that:
+&lt;ul&gt;
+&lt;li&gt;hard constraints and response formats are &lt;strong&gt;hard-kept&lt;&#x2F;strong&gt;,&lt;&#x2F;li&gt;
+&lt;li&gt;explanatory text and examples are more compressible.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;Implements a greedy selection: keep highest-scoring segments until the budget is spent.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;The intent is to preserve the “spine” of the instructions while trimming repetition and soft context.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;4-encode-as-a-hieratic-prompt&quot;&gt;4. Encode as a Hieratic prompt&lt;&#x2F;h3&gt;
+&lt;p&gt;The compressed result is organized into a &lt;strong&gt;Hieratic&lt;&#x2F;strong&gt; structure, with sections like:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;@ROLE&lt;&#x2F;code&gt; – who the model is supposed to be,&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;@TASK&lt;&#x2F;code&gt; – what it’s supposed to do,&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;@FOCUS&lt;&#x2F;code&gt; – which fields &#x2F; behaviors matter most,&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;@EXAMPLES&lt;&#x2F;code&gt; – optionally compressed or referenced,&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;@RECENT&lt;&#x2F;code&gt; – most recent interaction span,&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;@ANCHOR[...]&lt;&#x2F;code&gt; – anchored summaries of older context.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;It’s essentially a compact, structured representation of your original prompt.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;5-incremental-mode-for-long-histories&quot;&gt;5. Incremental mode for long histories&lt;&#x2F;h3&gt;
+&lt;p&gt;In incremental mode, the compressor:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;loads a previous compression state,&lt;&#x2F;li&gt;
+&lt;li&gt;identifies the “oldest” span that’s about to be evicted from context,&lt;&#x2F;li&gt;
+&lt;li&gt;compresses that span into a new &lt;code&gt;@ANCHOR[...]&lt;&#x2F;code&gt;,&lt;&#x2F;li&gt;
+&lt;li&gt;keeps the most recent N tokens uncompressed.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Over time, you get a stack of anchors plus a fresh &lt;code&gt;@RECENT&lt;&#x2F;code&gt; tail, keeping context current without growing linearly with the full history.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;what-i-d-love-feedback-on&quot;&gt;What I’d Love Feedback On&lt;&#x2F;h2&gt;
+&lt;p&gt;This is the experimental part. I’d love to hear from people who:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;run LLMs in production with big prompts,&lt;&#x2F;li&gt;
+&lt;li&gt;have tried prompt compression in anger,&lt;&#x2F;li&gt;
+&lt;li&gt;or have opinions on where this kind of feature should live in a system like Tokuin.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;A few specific questions:&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Evaluation&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;How would you design a &lt;em&gt;real&lt;&#x2F;em&gt; benchmark for this?&lt;&#x2F;li&gt;
+&lt;li&gt;Which tasks &#x2F; datasets would you use to prove that we’re not quietly breaking critical behaviors?&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Failure modes&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Where have compression strategies bitten you before?&lt;&#x2F;li&gt;
+&lt;li&gt;Are there patterns or structures you’d mark as “never compress this”?&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Integration into a stack like Tokuin&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;At what layer would you expect to see a feature like this?
+&lt;ul&gt;
+&lt;li&gt;Right before the LLM call?&lt;&#x2F;li&gt;
+&lt;li&gt;As part of a prompt-building pipeline?&lt;&#x2F;li&gt;
+&lt;li&gt;As a standalone preprocessor with its own cache?&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Alternatives &amp;amp; trade-offs&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Would you lean towards learned compressors instead?&lt;&#x2F;li&gt;
+&lt;li&gt;Are there simpler heuristics that get most of the benefit without this level of complexity?&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Product shaping&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Should this live as:
+&lt;ul&gt;
+&lt;li&gt;a first-class Tokuin feature,&lt;&#x2F;li&gt;
+&lt;li&gt;an “experimental &#x2F; power user” option,&lt;&#x2F;li&gt;
+&lt;li&gt;or a separate library that Tokuin can plug into?&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;If you have opinions—positive or negative—I’d genuinely appreciate hearing them.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;how-this-fits-into-tokuin-right-now&quot;&gt;How This Fits Into Tokuin (Right Now)&lt;&#x2F;h2&gt;
+&lt;p&gt;As of today, &lt;strong&gt;Hieratic Prompt Compression is experimental and aspirational&lt;&#x2F;strong&gt;:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;It’s being explored as a potential &lt;strong&gt;feature for Tokuin&lt;&#x2F;strong&gt;, not a locked-in roadmap item.&lt;&#x2F;li&gt;
+&lt;li&gt;Any implementation will start as:
+&lt;ul&gt;
+&lt;li&gt;an opt-in, feature-flagged module,&lt;&#x2F;li&gt;
+&lt;li&gt;with clear disclaimers about the risks,&lt;&#x2F;li&gt;
+&lt;li&gt;and tooling to inspect exactly what was compressed.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Long term, if the idea survives scrutiny, I could imagine:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;per-project &lt;strong&gt;compression profiles&lt;&#x2F;strong&gt;,&lt;&#x2F;li&gt;
+&lt;li&gt;UI&#x2F;CLI tools for inspecting “before vs after” prompts,&lt;&#x2F;li&gt;
+&lt;li&gt;and tighter integration with context management and retrieval strategies.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;But we’re not there yet. For now, I’m trying to answer a simpler question:&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Can a Hieratic-style, rule-based compressor earn its place inside Tokuin, or should we keep prompts uncompressed and invest elsewhere?&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;If you’ve navigated similar trade-offs—or you’re just curious and want to poke holes in this idea—I’d love to hear from you.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;references&quot;&gt;References&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;500xCompressor: Generalized Prompt Compression for Large Language Models&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
+&lt;a href=&quot;https:&#x2F;&#x2F;arxiv.org&#x2F;abs&#x2F;2408.03094?utm_source=chatgpt.com&quot;&gt;https:&#x2F;&#x2F;arxiv.org&#x2F;abs&#x2F;2408.03094&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;NAACL 2025 Prompt Compression Survey&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
+&lt;a href=&quot;https:&#x2F;&#x2F;aclanthology.org&#x2F;2025.naacl-long.368.pdf?utm_source=chatgpt.com&quot;&gt;https:&#x2F;&#x2F;aclanthology.org&#x2F;2025.naacl-long.368.pdf&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Factory.ai – “Compressing Context”&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
+&lt;a href=&quot;https:&#x2F;&#x2F;factory.ai&#x2F;news&#x2F;compressing-context?utm_source=chatgpt.com&quot;&gt;https:&#x2F;&#x2F;factory.ai&#x2F;news&#x2F;compressing-context&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Tokuin: Token Intelligence for LLM Developers</title>
+        <published>2025-11-07T00:00:00+00:00</published>
+        <updated>2025-11-07T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/tokuin-token-tooling-for-llm-builders/"/>
+        <id>https://noos.blog/posts/tokuin-token-tooling-for-llm-builders/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/tokuin-token-tooling-for-llm-builders/">&lt;p&gt;I built &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;nooscraft&#x2F;tokuin&quot;&gt;Tokuin&lt;&#x2F;a&gt; because the tooling around prompt design still feels like guesswork. We scribble system prompts in scratchpads, retry endpoints until rate limits scream, and only know what the bill looks like after the invoice arrives. Tokuin changes that. It gives you &lt;strong&gt;reliable token estimates, cost projections, and synthetic load tests&lt;&#x2F;strong&gt;—all packaged in a Rust CLI you can trust.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;why-another-cli&quot;&gt;Why Another CLI?&lt;&#x2F;h2&gt;
+&lt;p&gt;Prompts have become product surfaces. Teams iterate on them like code, but the support tooling still feels like duct tape. I wanted something that:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Reads prompts from files, stdin, or watch mode&lt;&#x2F;li&gt;
+&lt;li&gt;Targets multiple providers without juggling SDKs&lt;&#x2F;li&gt;
+&lt;li&gt;Surfaces pricing before you ever hit “Send”&lt;&#x2F;li&gt;
+&lt;li&gt;Scales up to load tests when you need to know how a model behaves across 1,000 requests&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Tokuin is the result: a &lt;strong&gt;ground-up build in Rust&lt;&#x2F;strong&gt; with a modular architecture for tokenizers, providers, and output formats. It’s fast, predictable, and stays out of your way while you experiment.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;feature-highlights&quot;&gt;Feature Highlights&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Token estimation that understands context&lt;&#x2F;strong&gt;: Supply raw text, chat transcripts, or JSON payloads and Tokuin breaks down system&#x2F;user&#x2F;assistant roles with optional markdown minification.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Multi-model comparisons&lt;&#x2F;strong&gt;: Pass &lt;code&gt;--compare&lt;&#x2F;code&gt; with OpenAI, Anthropic, or OpenRouter models to see how token counts and costs differ.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Pricing awareness&lt;&#x2F;strong&gt;: Add &lt;code&gt;--price&lt;&#x2F;code&gt; or &lt;code&gt;--estimate-cost&lt;&#x2F;code&gt; to forecast spend per prompt, per run, or across a load test.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Watch mode&lt;&#x2F;strong&gt;: Keep Tokuin running with &lt;code&gt;--watch&lt;&#x2F;code&gt; and it re-computes every time you save a file. Perfect for prompt gardening.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Load testing (feature flag)&lt;&#x2F;strong&gt;: Enable the &lt;code&gt;load-test&lt;&#x2F;code&gt; feature to hammer APIs with controlled concurrency, think times, retry logic, and automatic latency&#x2F;cost reports.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Format-flexible output&lt;&#x2F;strong&gt;: Emit human-friendly text, JSON for scripts, Markdown for docs, CSV for spreadsheets, or Prometheus metrics when you need dashboards.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Provider-ready&lt;&#x2F;strong&gt;: OpenAI and OpenRouter work out of the box, Gemini is one flag away, and new providers plug into the registry without rewriting the CLI surface.&lt;sup class=&quot;footnote-reference&quot;&gt;&lt;a href=&quot;#tokuin&quot;&gt;1&lt;&#x2F;a&gt;&lt;&#x2F;sup&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;div class=&quot;footnote-definition&quot; id=&quot;tokuin&quot;&gt;&lt;sup class=&quot;footnote-definition-label&quot;&gt;1&lt;&#x2F;sup&gt;
+&lt;p&gt;Feature set sourced from the project README.&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;nooscraft&#x2F;tokuin&quot;&gt;tokuin&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;div&gt;
+&lt;h2 id=&quot;advantages-for-developers&quot;&gt;Advantages for Developers&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Budget confidence&lt;&#x2F;strong&gt;: Know input&#x2F;output token counts and projected cost before you ship or run a batch job.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Faster iteration&lt;&#x2F;strong&gt;: Swap “test, wait, pray” with a tight loop; piping prompts through Tokuin becomes muscle memory.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;CI-friendly&lt;&#x2F;strong&gt;: Because it’s a single binary, you can run token checks in CI to guard against prompt bloat before merge.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Team alignment&lt;&#x2F;strong&gt;: Comparing multiple models is now a line of CLI flags, not a spreadsheet of stitched-together data.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Infra visibility&lt;&#x2F;strong&gt;: Load tests surface latency cliffs, provider throttling, and cost ceilings before your users do.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;built-for-growth&quot;&gt;Built for Growth&lt;&#x2F;h2&gt;
+&lt;p&gt;Tokuin ships with a modular core: &lt;code&gt;tokenizers&#x2F;&lt;&#x2F;code&gt;, &lt;code&gt;models&#x2F;&lt;&#x2F;code&gt;, &lt;code&gt;providers&#x2F;&lt;&#x2F;code&gt;, and &lt;code&gt;output&#x2F;&lt;&#x2F;code&gt; live in separate crates so we can grow the ecosystem without tangling the CLI.&lt;sup class=&quot;footnote-reference&quot;&gt;&lt;a href=&quot;#tokuin&quot;&gt;1&lt;&#x2F;a&gt;&lt;&#x2F;sup&gt; Near-term roadmap items include:&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Provider expansion&lt;&#x2F;strong&gt;: Native Anthropic, Mistral, and Cohere support (work already outlined in &lt;code&gt;PROVIDERS_PLAN.md&lt;&#x2F;code&gt;).&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Scenario scripts&lt;&#x2F;strong&gt;: Define multi-turn conversations and replay them in load tests.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Cost guardrails&lt;&#x2F;strong&gt;: Abort long runs automatically when reaching a user-defined budget ceiling.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Prompt linting&lt;&#x2F;strong&gt;: Surface style and structure issues before they hit production pipelines.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Plugin hooks&lt;&#x2F;strong&gt;: Let users contribute tokenizers or pricing sources without forking the repo.&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;h2 id=&quot;from-experiment-to-community-tooling&quot;&gt;From Experiment to Community Tooling&lt;&#x2F;h2&gt;
+&lt;p&gt;Tokuin grew out of practical late-night benchmarking, budget vetting, and the need for predictable tooling across teams. We still welcome that vibe-coding energy—if you sketch solutions with AI co-pilots or riff on ideas in flow, there’s room here to help shape how we build for LLMs.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;how-to-get-involved&quot;&gt;How to Get Involved&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Run it&lt;&#x2F;strong&gt;: &lt;code&gt;cargo install tokuin&lt;&#x2F;code&gt; or build from source and kick the tires.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Share prompts&lt;&#x2F;strong&gt;: If you discover funky edge cases in tokenization or pricing, capture them as regression fixtures.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Open a PR&lt;&#x2F;strong&gt;: Contributions are welcome whether you’re adding providers, tightening error messages, or documenting workflows. Mention any vibe-coding sessions in your PR so we can trace the creative path.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Join the roadmap&lt;&#x2F;strong&gt;: Drop ideas in issues, especially if you’re working on multi-provider tooling—the more weird setups we test, the better Tokuin gets.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Thanks for trying it out. Tokuin exists to remove guesswork, save budgets, and let prompt engineers stay in flow. If you ship something with it, I’d love to hear the story.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+</feed>

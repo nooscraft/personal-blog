@@ -1,0 +1,622 @@
+<!doctype html>
+<html lang="en" data-theme="toggle">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <!-- Enable responsiveness on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;ai-covers-on-autopilot&#x2F;" />
+    
+    <!-- Robots meta -->
+    
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    
+
+    
+      
+        <meta name="description" content="A small, stubborn problem (blog covers) turned into a simple, reliable pipeline: prompt, generate, embed. Notes on the choices, the bumps, and the GitHub Actions that make it all work." />
+        <meta property="og:description" content="A small, stubborn problem (blog covers) turned into a simple, reliable pipeline: prompt, generate, embed. Notes on the choices, the bumps, and the GitHub Actions that make it all work." />
+        <meta property="twitter:description" content="A small, stubborn problem (blog covers) turned into a simple, reliable pipeline: prompt, generate, embed. Notes on the choices, the bumps, and the GitHub Actions that make it all work." />
+      
+    
+
+    <!-- Title -->
+    
+      
+    
+    <title>
+    
+    Covers on Autopilot — Why I Let AI Paint the Edges | Noos - Where Thought, Code, and Craft Converge
+    
+</title>
+    
+    <!-- Author -->
+    
+    <meta name="author" content="Oshadha G" />
+    
+    
+    <!-- Article specific meta tags -->
+    
+    
+    <meta property="article:published_time" content="2025-10-30T00:00:00+00:00" />
+    
+    
+    
+    
+    <meta property="article:tag" content="ai" />
+    
+    <meta property="article:tag" content="covers" />
+    
+    <meta property="article:tag" content="replicate" />
+    
+    <meta property="article:tag" content="github-actions" />
+    
+    <meta property="article:tag" content="zola" />
+    
+    
+    
+    
+    <meta property="article:section" content="Automation" />
+    
+    
+    
+
+    <!-- Additional Facebook Meta Tags -->
+    <meta property="og:site_name" content="Noos - Where Thought, Code, and Craft Converge" />
+    <meta
+      property="og:url"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;ai-covers-on-autopilot&#x2F;"
+    />
+    <meta
+      property="og:type"
+      content="article"
+    />
+    <meta property="og:title" content="Covers on Autopilot — Why I Let AI Paint the Edges | Noos - Where Thought, Code, and Craft Converge" />
+
+    <!-- Additional Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      property="twitter:url"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;ai-covers-on-autopilot&#x2F;"
+    />
+    <meta name="twitter:title" content="Covers on Autopilot — Why I Let AI Paint the Edges | Noos - Where Thought, Code, and Craft Converge" />
+
+    <!-- Cover images -->
+           
+           
+           
+           
+      
+      
+      
+      
+      
+    
+
+    <meta
+      property="og:image"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;ai-covers-on-autopilot.png"
+    />
+
+    <meta
+      name="twitter:image"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;ai-covers-on-autopilot.png"
+    />
+
+
+
+    <!-- Favicons -->
+           
+           <!-- PNG + ICO (some clients ignore SVG favicons) -->
+           <link
+             rel="icon"
+             type="image/png"
+             sizes="96x96"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/favicon-96x96.png?v=3"
+           />
+           <link
+             rel="apple-touch-icon"
+             sizes="180x180"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/apple-touch-icon.png?v=3"
+           />
+           <link
+             rel="shortcut icon"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/favicon.ico?v=3"
+           />
+           
+
+    <!-- RSS Feed -->
+    
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      title="RSS"
+      href="https://noos.blog/atom.xml"
+    />
+    
+
+    <!-- Load Styles -->
+    
+      <link
+        rel="stylesheet"
+        href="https://noos.blog/site.css"
+      />
+    
+
+    <!-- Load Fonts -->
+    
+
+  
+
+
+
+
+
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+  
+
+
+
+<!-- Forcing Font -->
+<style>
+body {
+  font-family:
+    "JetBrains Mono", Menlo, Monaco, Lucida Console, Liberation Mono,
+    DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New,
+    monospace, serif !important;
+}
+</style>
+
+
+    <!-- Pass Theme Preference as Data Attribute -->
+    <script src="https://noos.blog/js/init-theme.js"></script>
+
+    <!-- Reference return to click position script -->
+    <script defer src="https://noos.blog/js/reference-return.js"></script>
+
+    <!-- Additional scripts -->
+    
+      
+        <script defer src="https://noos.blog/js/codeblock.js"></script>
+      
+            
+              <script defer src="https://noos.blog/js/toggle-theme.js"></script>
+            
+      
+<!-- MathJax script for rendering LaTeX math equations -->
+<script src="https://noos.blog/js/mathjax-config.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+  async
+></script>
+
+
+      
+<script type="text/javascript" src="https://noos.blog/elasticlunr.min.js"></script>
+<script type="text/javascript" src="https://noos.blog/js/search.js"></script>
+
+    
+    
+    <!-- Structured Data (JSON-LD) -->
+    
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Covers on Autopilot — Why I Let AI Paint the Edges",
+  
+  "description": "A small, stubborn problem (blog covers) turned into a simple, reliable pipeline: prompt, generate, embed. Notes on the choices, the bumps, and the GitHub Actions that make it all work.",
+  
+  
+  "datePublished": "2025-10-30T00:00:00+00:00",
+  
+  
+  "author": {
+    "@type": "Person",
+    "name": "Oshadha G"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Noos - Where Thought, Code, and Craft Converge",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https:&#x2F;&#x2F;noos.blog/icons/favicon/web-app-manifest-512x512.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;ai-covers-on-autopilot&#x2F;"
+  },
+  "url": "https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;ai-covers-on-autopilot&#x2F;",
+  
+  "keywords": "ai, covers, replicate, github-actions, zola",
+  
+  "inLanguage": "en"
+}
+</script>
+
+
+    
+    <!-- Google Analytics (GA4) -->
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-54YK7R04LX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-54YK7R04LX', {
+        'anonymize_ip': true,
+        'respect_dnt': true
+      });
+    </script>
+    
+  </head>
+
+  <!-- Body element (contents of the page) -->
+  <body class="hack main container">
+    
+  
+    
+    
+      
+  
+  <section class="nav-header">
+    <nav
+      itemscope
+      itemtype="http://schema.org/SiteNavigationElement"
+      class="navbar"
+    >
+      <section class="nav-links">
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/"
+        >
+          <span itemprop="name">Home</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/about"
+        >
+          <span itemprop="name">About</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/categories"
+        >
+          <span itemprop="name">Categories</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/tags"
+        >
+          <span itemprop="name">Tags</span>
+        </a>
+        
+      </section>
+    </nav>
+    <aside class="user-actions-container">
+      
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        class="search-icon"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+        />
+      </svg>
+      <input type="text" id="search" placeholder="Search..." />
+      <section class="search-results" aria-live="polite">
+        <article class="search-results__items" role="list"></article>
+      </section>
+       
+      <a id="dark-mode-toggle" href="#">
+        <img
+          src="https://noos.blog/icons/sun.svg"
+          id="sun-icon"
+          style="filter: invert(1)"
+          alt="Light mode"
+        />
+        <img
+          src="https://noos.blog/icons/moon.svg"
+          id="moon-icon"
+          alt="Dark mode"
+        />
+      </a>
+       
+      <a
+        href="https://noos.blog/atom.xml"
+        class="feed-icon"
+        rel="noopener noreferrer"
+      >
+        <img
+          src="https://noos.blog/icons/rss.svg"
+          id="rss-icon"
+          alt="RSS feed"
+          class="social-icon"
+        />
+      </a>
+       
+    </aside>
+  </section>
+  
+
+    
+
+
+    <main>
+      
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">Covers on Autopilot — Why I Let AI Paint the Edges</h1>
+        
+        <data class="muted">
+    <svg class="icon i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <data>4 minute read</data>
+    
+    
+    <svg class="icon i-calendar" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <!-- Calendar outline -->
+        <rect x="3" y="6" width="26" height="23" rx="2" ry="2"/>
+        <!-- Binding rings -->
+        <line x1="10" y1="3" x2="10" y2="9"/>
+        <line x1="22" y1="3" x2="22" y2="9"/>
+        <!-- Top separator -->
+        <line x1="3" y1="12" x2="29" y2="12"/>
+    </svg>
+
+    Published: 2025-10-30
+    
+</data>
+        
+        
+        
+        
+        
+        
+          
+          
+          
+          
+          
+        
+        
+        <figure class="post-cover" style="margin: 1.25rem 0;">
+          <img src="&#x2F;images&#x2F;covers&#x2F;ai-covers-on-autopilot.png" alt="Covers on Autopilot — Why I Let AI Paint the Edges cover" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--color-border-default, #e5e7eb);" onerror="this.parentNode.style.display='none'" />
+        </figure>
+        
+    </header>
+
+    <article itemprop="articleBody">
+        
+            <!-- If no summary separate from content, just render content -->
+            <p>There are jobs you can do by hand for years and never notice the drag. For me it was cover images. Each new post: open a design tool, stare at a blank canvas, export a PNG, wire it to the post. Not hard, just enough friction to make publishing feel heavier than it should.</p>
+<p>This is a short note about shaving that yak with a tiny toolchain: a context‑aware prompt, an image model, and some guardrails in CI. No heroics—just removing a repeated decision so the writing flows.</p>
+<h2 id="why-automate-covers">Why automate covers</h2>
+<ul>
+<li>Consistency: 1200×630 every time. No more odd crops in link unfurls.</li>
+<li>Momentum: publishing shouldn’t wait for “design time”.</li>
+<li>Style: light background, a single accent, abstract shapes. Enough personality, zero fuss.</li>
+</ul>
+<p>Over time the manual step was turning into a speed bump. That was the whole motivation.</p>
+<h2 id="the-bumps-along-the-road-the-important-part">The bumps along the road (the important part)</h2>
+<p>I didn’t get it right on the first try. Here are the lessons that actually mattered.</p>
+<ol>
+<li>Model and limits</li>
+</ol>
+<p>At first I used Stable Horde for SDXL. It’s great and free, but CI doesn’t love queues. I kept seeing 400/429s in the logs (invalid payload or rate‑limited). Switched to Replicate with an API token; still got rate limits sometimes, but at least the errors were predictable.</p>
+<ol start="2">
+<li>Exact sizing</li>
+</ol>
+<p>SDXL likes multiples of 64. I request 1024×576, then downscale to 1200×630 with Sharp. Crisp edges, correct aspect for social cards.</p>
+<ol start="3">
+<li>Slugs vs. filenames</li>
+</ol>
+<p>My fallback logic assumed <code>page.slug</code> exactly matched the filename. It didn’t—some posts derive the slug from the permalink. I fixed the template to compute <code>slug-from-permalink</code> and look for <code>/images/covers/{slug}.png</code>. Simple, but that bug cost the most time.</p>
+<ol start="4">
+<li>“Why is it regenerating?”</li>
+</ol>
+<p>CI starts from a clean checkout. If covers aren’t in Git, they disappear each run. I added a cache step that restores <code>static/images/covers</code> keyed to <code>content/posts/**/*.md</code>. Now the generator truly skips when a PNG already exists.</p>
+<ol start="5">
+<li>Context in prompts</li>
+</ol>
+<p>Pure tags produced vague images. I added a little context: title + ~240 chars of summary (description if present, otherwise a clean slice of the body). Still abstract, just more grounded.</p>
+<ol start="6">
+<li>One‑time resets</li>
+</ol>
+<p>Sometimes you do want a full refresh. There’s a manual “Run workflow” input (<code>force_regenerate=true</code>) that bypasses the “file exists” check once. Good for style changes or a model upgrade.</p>
+<h2 id="how-we-decided-on-ai-at-all">How we decided on AI at all</h2>
+<p>I tried three options in order:</p>
+<ul>
+<li>Hand‑made banners (historically): high quality, low velocity.</li>
+<li>Programmatic shapes: reliable, but too repetitive.</li>
+<li>AI with guardrails: abstract, brand‑aware, hands‑off once it’s set.</li>
+</ul>
+<p>The third option hit the balance. The prompt constrains style; the model supplies variation. It’s not “art direction”, but it serves the post—and that’s the only job here.</p>
+<h2 id="the-pipeline-nuts-and-bolts">The pipeline (nuts and bolts)</h2>
+<ul>
+<li>
+<p>Script: <code>scripts/generate-ai-covers.mjs</code></p>
+<ul>
+<li>Scans <code>content/posts/*.md</code>, pulls <code>tags</code>, <code>title</code>, and a short summary.</li>
+<li>Prompt (simplified):
+<blockquote>
+<p>Abstract, minimal illustration. Tags: {tags}. Title: {title}. Context: {summary}. Vector‑like, clean geometric shapes, high contrast, brand accent #d64a48 on #f6f7f4. No text.</p>
+</blockquote>
+</li>
+<li>Calls Replicate SDXL (model version from a secret), requests 1024×576, saves 1200×630 as <code>static/images/covers/{slug}.png</code>.</li>
+<li>Skips generation if the PNG already exists (unless <code>FORCE_REGENERATE_COVERS=1</code>).</li>
+</ul>
+</li>
+<li>
+<p>Template: <code>themes/radion/templates/page.html</code></p>
+<ul>
+<li>If a post doesn’t specify a cover, it tries <code>/images/covers/{slug-from-permalink}.png</code> and hides the figure if missing.</li>
+</ul>
+</li>
+<li>
+<p>CI: <code>.github/workflows/deploy.yml</code></p>
+<ul>
+<li>Restores a covers cache before generation; saves it after.</li>
+<li>Optional manual input <code>force_regenerate</code> for a one‑time refresh.</li>
+</ul>
+</li>
+</ul>
+<h2 id="what-github-actions-brings">What GitHub Actions brings</h2>
+<p>The boring kind of power: reliability.</p>
+<ul>
+<li>Every run restores the previous covers, generates only what’s missing, and embeds without a front‑matter tweak.</li>
+<li>When rate‑limited, the post still publishes—missing images pick up on the next run.</li>
+<li>A small verification stage lists the covers in <code>public/images/covers</code> and checks that posts actually reference them.</li>
+</ul>
+<h2 id="closing-the-loop">Closing the loop</h2>
+<p>This wasn’t about making the site “AI‑powered”. It was about removing a tiny friction point that kept breaking the flow. The rule of thumb I keep coming back to: automate anything that steals attention from writing. Covers were stealing attention. Now they aren’t.</p>
+<p>And if the art ever needs a new feel? I flip the model or tweak the prompt, hit “Run workflow”, and let the pipeline repaint the edges while I get back to words.</p>
+
+        
+    </article>
+
+    <!-- Comment section -->
+    
+      
+        
+          <script
+  src="https://giscus.app/client.js"
+  data-repo="nooscraft&#x2F;personal-blog"
+  data-repo-id="R_kgDOQJ_XNg"
+  data-category="General"
+  data-category-id="DIC_kwDOQJ_XNs4CxOmG"
+  data-mapping="pathname"
+  data-strict="0"
+  data-reactions-enabled="1"
+  data-emit-metadata="0"
+  data-input-position="bottom"
+
+  
+  data-theme="https:&#x2F;&#x2F;noos.blog&#x2F;css&#x2F;giscus-theme.css"
+  
+
+  data-lang="en"
+  data-loading="lazy"
+  crossorigin="anonymous"
+  async
+></script>
+
+        
+      
+    
+
+
+    <!-- Page footer -->
+    
+    <footer>
+        <hr>
+        <p>
+            
+            
+                
+                in <a href="https://noos.blog/categories/automation/">Automation</a>
+            
+            
+                and
+                tagged
+                
+                    <a href="https://noos.blog/tags/ai/">ai</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/covers/">covers</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/replicate/">replicate</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/github-actions/">github-actions</a>
+                    
+                        
+                            
+                                and
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/zola/">zola</a>
+                    
+                        
+                    
+                
+            
+        </p>
+
+        <!-- Revision history (optional) -->
+        
+          
+            
+              
+            
+          
+        
+
+        
+        
+    </footer>
+
+
+</article>
+
+
+    </main>
+    
+
+  </body>
+</html>

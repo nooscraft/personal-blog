@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="en" data-theme="toggle">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <!-- Enable responsiveness on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;how-my-terminal-looks&#x2F;" />
+    
+    <!-- Robots meta -->
+    
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    
+
+    
+      
+        <meta name="description" content="My terminal setup: zsh + oh-my-zsh, tmux, a clean theme, and plugins for a faster, more productive workflow." />
+        <meta property="og:description" content="My terminal setup: zsh + oh-my-zsh, tmux, a clean theme, and plugins for a faster, more productive workflow." />
+        <meta property="twitter:description" content="My terminal setup: zsh + oh-my-zsh, tmux, a clean theme, and plugins for a faster, more productive workflow." />
+      
+    
+
+    <!-- Title -->
+    
+      
+    
+    <title>
+    
+    How my terminal looks | Noos - Where Thought, Code, and Craft Converge
+    
+</title>
+    
+    <!-- Author -->
+    
+    <meta name="author" content="Oshadha G" />
+    
+    
+    <!-- Article specific meta tags -->
+    
+    
+    <meta property="article:published_time" content="2025-10-13T00:00:00+00:00" />
+    
+    
+    
+    
+    <meta property="article:tag" content="terminal" />
+    
+    <meta property="article:tag" content="zsh" />
+    
+    <meta property="article:tag" content="oh-my-zsh" />
+    
+    <meta property="article:tag" content="tmux" />
+    
+    <meta property="article:tag" content="productivity" />
+    
+    <meta property="article:tag" content="linux" />
+    
+    
+    
+    
+    <meta property="article:section" content="Tools" />
+    
+    
+    
+
+    <!-- Additional Facebook Meta Tags -->
+    <meta property="og:site_name" content="Noos - Where Thought, Code, and Craft Converge" />
+    <meta
+      property="og:url"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;how-my-terminal-looks&#x2F;"
+    />
+    <meta
+      property="og:type"
+      content="article"
+    />
+    <meta property="og:title" content="How my terminal looks | Noos - Where Thought, Code, and Craft Converge" />
+
+    <!-- Additional Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      property="twitter:url"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;how-my-terminal-looks&#x2F;"
+    />
+    <meta name="twitter:title" content="How my terminal looks | Noos - Where Thought, Code, and Craft Converge" />
+
+    <!-- Cover images -->
+           
+           
+           
+           
+             
+           
+
+    <meta
+      property="og:image"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;how-my-terminal-looks.png"
+    />
+
+    <meta
+      name="twitter:image"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;how-my-terminal-looks.png"
+    />
+
+
+
+    <!-- Favicons -->
+           
+           <!-- PNG + ICO (some clients ignore SVG favicons) -->
+           <link
+             rel="icon"
+             type="image/png"
+             sizes="96x96"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/favicon-96x96.png?v=3"
+           />
+           <link
+             rel="apple-touch-icon"
+             sizes="180x180"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/apple-touch-icon.png?v=3"
+           />
+           <link
+             rel="shortcut icon"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/favicon.ico?v=3"
+           />
+           
+
+    <!-- RSS Feed -->
+    
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      title="RSS"
+      href="https://noos.blog/atom.xml"
+    />
+    
+
+    <!-- Load Styles -->
+    
+      <link
+        rel="stylesheet"
+        href="https://noos.blog/site.css"
+      />
+    
+
+    <!-- Load Fonts -->
+    
+
+  
+
+
+
+
+
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+  
+
+
+
+<!-- Forcing Font -->
+<style>
+body {
+  font-family:
+    "JetBrains Mono", Menlo, Monaco, Lucida Console, Liberation Mono,
+    DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New,
+    monospace, serif !important;
+}
+</style>
+
+
+    <!-- Pass Theme Preference as Data Attribute -->
+    <script src="https://noos.blog/js/init-theme.js"></script>
+
+    <!-- Reference return to click position script -->
+    <script defer src="https://noos.blog/js/reference-return.js"></script>
+
+    <!-- Additional scripts -->
+    
+      
+        <script defer src="https://noos.blog/js/codeblock.js"></script>
+      
+            
+              <script defer src="https://noos.blog/js/toggle-theme.js"></script>
+            
+      
+<!-- MathJax script for rendering LaTeX math equations -->
+<script src="https://noos.blog/js/mathjax-config.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+  async
+></script>
+
+
+      
+<script type="text/javascript" src="https://noos.blog/elasticlunr.min.js"></script>
+<script type="text/javascript" src="https://noos.blog/js/search.js"></script>
+
+    
+    
+    <!-- Structured Data (JSON-LD) -->
+    
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "How my terminal looks",
+  
+  "description": "My terminal setup: zsh + oh-my-zsh, tmux, a clean theme, and plugins for a faster, more productive workflow.",
+  
+  
+  "datePublished": "2025-10-13T00:00:00+00:00",
+  
+  
+  "author": {
+    "@type": "Person",
+    "name": "Oshadha G"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Noos - Where Thought, Code, and Craft Converge",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https:&#x2F;&#x2F;noos.blog/icons/favicon/web-app-manifest-512x512.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;how-my-terminal-looks&#x2F;"
+  },
+  "url": "https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;how-my-terminal-looks&#x2F;",
+  
+  "keywords": "terminal, zsh, oh-my-zsh, tmux, productivity, linux",
+  
+  "inLanguage": "en"
+}
+</script>
+
+
+    
+    <!-- Google Analytics (GA4) -->
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-54YK7R04LX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-54YK7R04LX', {
+        'anonymize_ip': true,
+        'respect_dnt': true
+      });
+    </script>
+    
+  </head>
+
+  <!-- Body element (contents of the page) -->
+  <body class="hack main container">
+    
+  
+    
+    
+      
+  
+  <section class="nav-header">
+    <nav
+      itemscope
+      itemtype="http://schema.org/SiteNavigationElement"
+      class="navbar"
+    >
+      <section class="nav-links">
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/"
+        >
+          <span itemprop="name">Home</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/about"
+        >
+          <span itemprop="name">About</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/categories"
+        >
+          <span itemprop="name">Categories</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/tags"
+        >
+          <span itemprop="name">Tags</span>
+        </a>
+        
+      </section>
+    </nav>
+    <aside class="user-actions-container">
+      
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        class="search-icon"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+        />
+      </svg>
+      <input type="text" id="search" placeholder="Search..." />
+      <section class="search-results" aria-live="polite">
+        <article class="search-results__items" role="list"></article>
+      </section>
+       
+      <a id="dark-mode-toggle" href="#">
+        <img
+          src="https://noos.blog/icons/sun.svg"
+          id="sun-icon"
+          style="filter: invert(1)"
+          alt="Light mode"
+        />
+        <img
+          src="https://noos.blog/icons/moon.svg"
+          id="moon-icon"
+          alt="Dark mode"
+        />
+      </a>
+       
+      <a
+        href="https://noos.blog/atom.xml"
+        class="feed-icon"
+        rel="noopener noreferrer"
+      >
+        <img
+          src="https://noos.blog/icons/rss.svg"
+          id="rss-icon"
+          alt="RSS feed"
+          class="social-icon"
+        />
+      </a>
+       
+    </aside>
+  </section>
+  
+
+    
+
+
+    <main>
+      
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">How my terminal looks</h1>
+        
+        <data class="muted">
+    <svg class="icon i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <data>3 minute read</data>
+    
+    
+    <svg class="icon i-calendar" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <!-- Calendar outline -->
+        <rect x="3" y="6" width="26" height="23" rx="2" ry="2"/>
+        <!-- Binding rings -->
+        <line x1="10" y1="3" x2="10" y2="9"/>
+        <line x1="22" y1="3" x2="22" y2="9"/>
+        <!-- Top separator -->
+        <line x1="3" y1="12" x2="29" y2="12"/>
+    </svg>
+
+    Published: 2025-10-13
+    
+</data>
+        
+        
+        
+        
+          
+        
+        
+        
+        
+        <figure class="post-cover" style="margin: 1.25rem 0;">
+          <img src="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;how-my-terminal-looks.png" alt="How my terminal looks cover" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--color-border-default, #e5e7eb);" onerror="this.parentNode.style.display='none'" />
+        </figure>
+        
+    </header>
+
+    <article itemprop="articleBody">
+        
+            <!-- If no summary separate from content, just render content -->
+            <h3 id="background">Background</h3>
+<p>I think everyone of you geeks would like if your terminal looks cool and productive. And yes, I'm talking here about terminals in POSIX-compliant OS's, more specifically terminal in a Linux environment.</p>
+<p>Anyhow I will share you the details of my customized terminal configurations so you could get an idea of what it is really capable of doing and perhaps you would start applying the changes to your own terminal.</p>
+<p>So to make it all happen I had to give up on <code>bash</code> and start using <code>zsh</code>. Because <code>zsh</code> provides some extensive support to terminal users and it is certainly feature rich, customizable  and cooler than <code>bash</code>. So all the customizations I made are based on <code>zsh</code> and <a href="https://github.com/robbyrussell/oh-my-zsh">oh-my-zsh</a> (a really cool community driven project for managing <code>zsh</code> configurations)</p>
+<h3 id="looks">Looks</h3>
+<p>If looking at theming <code>oh-my-zsh</code> provides some cool and nice looking themes out of the box. But the theme that I'm using is an external theme and needs little bit more configurations before using it.</p>
+<p>It's call <a href="https://github.com/caiogondim/bullet-train-oh-my-zsh-theme">bullet-train</a> and to make it look right I had to install some fonts from <a href="https://github.com/powerline/fonts">Vim-Powerline</a>. I also had to change the color scheme of my terminal to use <strong>Solarized (dark)</strong>. Here I'm using xfce4-terminal that comes with Xubuntu, so I can easily change the color scheme from the preferences menu. I also make it a bit transparent to make it even more cooler.</p>
+<h3 id="productivity">Productivity</h3>
+<p>Enough of the looks. Lets see how is it when it comes the productivity. Here again <code>oh-my-zsh</code> provides some nice <a href="https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins">plugins</a> that you can use to increase your productivity. I'll list down the plugins that I'm using</p>
+<h4 id="plugins">Plugins</h4>
+<ul>
+<li><a href="https://github.com/robbyrussell/oh-my-zsh/wiki/Plugin:git">git</a> - A very comprehensive plugin for <code>git</code> with lots of aliases for easy usage</li>
+<li><a href="https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins/history-substring-search">history-substring-search</a> - Very useful plugin that will get you through your <code>zsh</code> history backwards-forwards via up and down arrow keys</li>
+<li><a href="https://github.com/zsh-users/zsh-syntax-highlighting">zsh-syntax-highlighting</a> - this will highlight the commands we use inside the terminal</li>
+<li><a href="https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins/command-not-found">command-not-found</a> - will suggest alternative/correct commands instead of just command not found error</li>
+<li><a href="https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins/colorize">colorize</a> - this will colorize the syntaxes for almost every popular sciprting/programing language</li>
+<li><a href="https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins/colored-man-pages">colored-man-pages</a> - syntax highlight in man pages for easy reading</li>
+<li><a href="https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins/python">python</a> - provides lots of useful aliases to Python</li>
+<li><a href="https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins/sudo">sudo</a> - hit ESC twice and boom! <code>sudo</code> will added to your command</li>
+<li><a href="https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins/web-search">web-search</a> - simply opens up your browser with the search query of yours in desired search engine i.e <code>google whats the weather like today</code></li>
+<li><a href="https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins/chucknorris">chucknorris</a> - this plugin isn't particularly meant for productivity but it can get really humorous.</li>
+<li><a href="https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins/ubuntu">ubuntu</a> - this particular plugin provides lot of Ubuntu specific aliases to ease up the day-to-day work</li>
+</ul>
+<p>Once put these all together this is how it looks</p>
+<img src="/public/images/how_my_t_looks_01.gif" alt="img" class="inline"/>
+<img src="/public/images/how_my_t_looks_02.gif" alt="img" class="inline"/>
+
+        
+    </article>
+
+    <!-- Comment section -->
+    
+      
+        
+          <script
+  src="https://giscus.app/client.js"
+  data-repo="nooscraft&#x2F;personal-blog"
+  data-repo-id="R_kgDOQJ_XNg"
+  data-category="General"
+  data-category-id="DIC_kwDOQJ_XNs4CxOmG"
+  data-mapping="pathname"
+  data-strict="0"
+  data-reactions-enabled="1"
+  data-emit-metadata="0"
+  data-input-position="bottom"
+
+  
+  data-theme="https:&#x2F;&#x2F;noos.blog&#x2F;css&#x2F;giscus-theme.css"
+  
+
+  data-lang="en"
+  data-loading="lazy"
+  crossorigin="anonymous"
+  async
+></script>
+
+        
+      
+    
+
+
+    <!-- Page footer -->
+    
+    <footer>
+        <hr>
+        <p>
+            
+            
+                
+                in <a href="https://noos.blog/categories/tools/">Tools</a>
+            
+            
+                and
+                tagged
+                
+                    <a href="https://noos.blog/tags/terminal/">terminal</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/zsh/">zsh</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/oh-my-zsh/">oh-my-zsh</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/tmux/">tmux</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/productivity/">productivity</a>
+                    
+                        
+                            
+                                and
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/linux/">linux</a>
+                    
+                        
+                    
+                
+            
+        </p>
+
+        <!-- Revision history (optional) -->
+        
+          
+            
+              
+            
+          
+        
+
+        
+        
+    </footer>
+
+
+</article>
+
+
+    </main>
+    
+
+  </body>
+</html>

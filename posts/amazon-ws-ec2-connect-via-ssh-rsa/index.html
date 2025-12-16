@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="en" data-theme="toggle">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <!-- Enable responsiveness on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;amazon-ws-ec2-connect-via-ssh-rsa&#x2F;" />
+    
+    <!-- Robots meta -->
+    
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    
+
+    
+      
+        <meta name="description" content="Personal blog about programming, technology, and engineering insights. Topics include Rust, DevOps, Linux, and software craftsmanship." />
+        <meta property="og:description" content="Personal blog about programming, technology, and engineering insights. Topics include Rust, DevOps, Linux, and software craftsmanship." />
+        <meta property="twitter:description" content="Personal blog about programming, technology, and engineering insights. Topics include Rust, DevOps, Linux, and software craftsmanship." />
+      
+    
+
+    <!-- Title -->
+    
+      
+    
+    <title>
+    
+    Amazon WS EC2 – connect via SSH RSA | Noos - Where Thought, Code, and Craft Converge
+    
+</title>
+    
+    <!-- Author -->
+    
+    <meta name="author" content="Oshadha G" />
+    
+    
+    <!-- Article specific meta tags -->
+    
+    
+    <meta property="article:published_time" content="2013-09-15T00:00:00+00:00" />
+    
+    
+    
+    
+    <meta property="article:tag" content="aws" />
+    
+    <meta property="article:tag" content="ec2" />
+    
+    <meta property="article:tag" content="ssh" />
+    
+    <meta property="article:tag" content="cloud" />
+    
+    
+    
+    
+    <meta property="article:section" content="Cloud" />
+    
+    
+    
+
+    <!-- Additional Facebook Meta Tags -->
+    <meta property="og:site_name" content="Noos - Where Thought, Code, and Craft Converge" />
+    <meta
+      property="og:url"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;amazon-ws-ec2-connect-via-ssh-rsa&#x2F;"
+    />
+    <meta
+      property="og:type"
+      content="article"
+    />
+    <meta property="og:title" content="Amazon WS EC2 – connect via SSH RSA | Noos - Where Thought, Code, and Craft Converge" />
+
+    <!-- Additional Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      property="twitter:url"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;amazon-ws-ec2-connect-via-ssh-rsa&#x2F;"
+    />
+    <meta name="twitter:title" content="Amazon WS EC2 – connect via SSH RSA | Noos - Where Thought, Code, and Craft Converge" />
+
+    <!-- Cover images -->
+           
+           
+           
+           
+      
+      
+      
+      
+      
+    
+
+    <meta
+      property="og:image"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;amazon-ws-ec2-connect-via-ssh-rsa.png"
+    />
+
+    <meta
+      name="twitter:image"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;amazon-ws-ec2-connect-via-ssh-rsa.png"
+    />
+
+
+
+    <!-- Favicons -->
+           
+           <!-- PNG + ICO (some clients ignore SVG favicons) -->
+           <link
+             rel="icon"
+             type="image/png"
+             sizes="96x96"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/favicon-96x96.png?v=3"
+           />
+           <link
+             rel="apple-touch-icon"
+             sizes="180x180"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/apple-touch-icon.png?v=3"
+           />
+           <link
+             rel="shortcut icon"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/favicon.ico?v=3"
+           />
+           
+
+    <!-- RSS Feed -->
+    
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      title="RSS"
+      href="https://noos.blog/atom.xml"
+    />
+    
+
+    <!-- Load Styles -->
+    
+      <link
+        rel="stylesheet"
+        href="https://noos.blog/site.css"
+      />
+    
+
+    <!-- Load Fonts -->
+    
+
+  
+
+
+
+
+
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+  
+
+
+
+<!-- Forcing Font -->
+<style>
+body {
+  font-family:
+    "JetBrains Mono", Menlo, Monaco, Lucida Console, Liberation Mono,
+    DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New,
+    monospace, serif !important;
+}
+</style>
+
+
+    <!-- Pass Theme Preference as Data Attribute -->
+    <script src="https://noos.blog/js/init-theme.js"></script>
+
+    <!-- Reference return to click position script -->
+    <script defer src="https://noos.blog/js/reference-return.js"></script>
+
+    <!-- Additional scripts -->
+    
+      
+        <script defer src="https://noos.blog/js/codeblock.js"></script>
+      
+            
+              <script defer src="https://noos.blog/js/toggle-theme.js"></script>
+            
+      
+<!-- MathJax script for rendering LaTeX math equations -->
+<script src="https://noos.blog/js/mathjax-config.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+  async
+></script>
+
+
+      
+<script type="text/javascript" src="https://noos.blog/elasticlunr.min.js"></script>
+<script type="text/javascript" src="https://noos.blog/js/search.js"></script>
+
+    
+    
+    <!-- Structured Data (JSON-LD) -->
+    
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Amazon WS EC2 – connect via SSH RSA",
+  
+  "description": "Personal blog about programming, technology, and engineering insights. Topics include Rust, DevOps, Linux, and software craftsmanship.",
+  
+  
+  "datePublished": "2013-09-15T00:00:00+00:00",
+  
+  
+  "author": {
+    "@type": "Person",
+    "name": "Oshadha G"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Noos - Where Thought, Code, and Craft Converge",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https:&#x2F;&#x2F;noos.blog/icons/favicon/web-app-manifest-512x512.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;amazon-ws-ec2-connect-via-ssh-rsa&#x2F;"
+  },
+  "url": "https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;amazon-ws-ec2-connect-via-ssh-rsa&#x2F;",
+  
+  "keywords": "aws, ec2, ssh, cloud",
+  
+  "inLanguage": "en"
+}
+</script>
+
+
+    
+    <!-- Google Analytics (GA4) -->
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-54YK7R04LX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-54YK7R04LX', {
+        'anonymize_ip': true,
+        'respect_dnt': true
+      });
+    </script>
+    
+  </head>
+
+  <!-- Body element (contents of the page) -->
+  <body class="hack main container">
+    
+  
+    
+    
+      
+  
+  <section class="nav-header">
+    <nav
+      itemscope
+      itemtype="http://schema.org/SiteNavigationElement"
+      class="navbar"
+    >
+      <section class="nav-links">
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/"
+        >
+          <span itemprop="name">Home</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/about"
+        >
+          <span itemprop="name">About</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/categories"
+        >
+          <span itemprop="name">Categories</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/tags"
+        >
+          <span itemprop="name">Tags</span>
+        </a>
+        
+      </section>
+    </nav>
+    <aside class="user-actions-container">
+      
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        class="search-icon"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+        />
+      </svg>
+      <input type="text" id="search" placeholder="Search..." />
+      <section class="search-results" aria-live="polite">
+        <article class="search-results__items" role="list"></article>
+      </section>
+       
+      <a id="dark-mode-toggle" href="#">
+        <img
+          src="https://noos.blog/icons/sun.svg"
+          id="sun-icon"
+          style="filter: invert(1)"
+          alt="Light mode"
+        />
+        <img
+          src="https://noos.blog/icons/moon.svg"
+          id="moon-icon"
+          alt="Dark mode"
+        />
+      </a>
+       
+      <a
+        href="https://noos.blog/atom.xml"
+        class="feed-icon"
+        rel="noopener noreferrer"
+      >
+        <img
+          src="https://noos.blog/icons/rss.svg"
+          id="rss-icon"
+          alt="RSS feed"
+          class="social-icon"
+        />
+      </a>
+       
+    </aside>
+  </section>
+  
+
+    
+
+
+    <main>
+      
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">Amazon WS EC2 – connect via SSH RSA</h1>
+        
+        <data class="muted">
+    <svg class="icon i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <data>3 minute read</data>
+    
+    
+    <svg class="icon i-calendar" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <!-- Calendar outline -->
+        <rect x="3" y="6" width="26" height="23" rx="2" ry="2"/>
+        <!-- Binding rings -->
+        <line x1="10" y1="3" x2="10" y2="9"/>
+        <line x1="22" y1="3" x2="22" y2="9"/>
+        <!-- Top separator -->
+        <line x1="3" y1="12" x2="29" y2="12"/>
+    </svg>
+
+    Published: 2013-09-15
+    
+</data>
+        
+        
+        
+        
+        
+        
+          
+          
+          
+          
+          
+        
+        
+        <figure class="post-cover" style="margin: 1.25rem 0;">
+          <img src="&#x2F;images&#x2F;covers&#x2F;amazon-ws-ec2-connect-via-ssh-rsa.png" alt="Amazon WS EC2 – connect via SSH RSA cover" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--color-border-default, #e5e7eb);" onerror="this.parentNode.style.display='none'" />
+        </figure>
+        
+    </header>
+
+    <article itemprop="articleBody">
+        
+            <!-- If no summary separate from content, just render content -->
+            <h3 id="intro">Intro</h3>
+<p>So you own an up and running Amazon EC2 instance. And you want it to access via hassle free way. This guided post will describe on how you can do it with few steps.</p>
+<p><strong>Note:</strong> Just for the convenience I'm referring some steps from this blog <a href="http://thekeesh.com/2011/05/setting-up-user-accounts-password-authentication-and-ssh-keys-on-a-new-ec2-instance/">here</a></p>
+<p>OK before I start assume you have an up and running EC2 instance. If so grab the public DNS from your AWS management console</p>
+<img src="/public/images/ec2-management-console-2013-09-15-15-54-28.png" alt="img" class="inline"/>
+<p>It will be probably something like</p>
+<p><code>ec2-#############.compute-1.amazonaws.com</code></p>
+<p>Once that is acquired I again assume you have already made your Key-pair and saved it while you are in the process of creating a new instance</p>
+<img src="/public/images/ec2-management-console-2013-09-15-16-01-07.png" alt="img" class="inline"/>
+<p>Once that is also in place go to your terminal and CD to the location you saved your Key [your-key-pair.pem] and try to do <strong>SSH</strong>.</p>
+<p><code>$ ssh -i your-key-pair.pem ubuntu@ec2-#############.compute-1.amazonaws.com</code></p>
+<p>[the default user will be ubuntu for <a href="http://memoverkill.com/2013/09/15/Amazon%20Machine%20Images%20(AMIs)">Amazon Machine Images (AMIs)</a>]</p>
+<p>Now you should be inside the AMS terminal</p>
+<img src="/public/images/aws-terminal1.png" alt="img" class="inline"/>
+<p>Ok now you have to do is add your self up as a new user and give the root privileges (sudoers). Simply follow execute the following commands on to the AWS terminal</p>
+<p>Adding yourself as a user:</p>
+<p><code>$ adduser yourself</code></p>
+<p>granting privileges</p>
+<p><code>$ sudo visudo</code></p>
+<p>find the line root  <code>ALL=(ALL:ALL) ALL</code> and the line yourself <code>ALL=(ALL) ALL</code> under it.</p>
+<p>Then enable password authentication via (I used the nano editor)</p>
+<p><code>$ sudo nano /etc/ssh/sshd_config</code></p>
+<p><code>PasswordAuthentication no to PasswordAuthentication yes</code></p>
+<p>Afterward reload the ssh configuration</p>
+<p><code>$ sudo /etc/init.d/ssh reload</code></p>
+<p>OK now logout from the current session and log back as yourself</p>
+<p><code>$ ssh yourself@ec2-#############.compute-1.amazonaws.com</code></p>
+<p>And to make sure everything is working just fine, execute following</p>
+<p><code>$ sudo -v</code></p>
+<p>You will be promted to enter the password you have provided while creating the user(yourself). Enter that and if everything went well you will get no output on terminal.</p>
+<p>Now lets remove this troublesome password authentication replacing SSH RSA public key authentication</p>
+<p>To do that first you need to create a SSH RSA public key</p>
+<p>So logout from the AWS terminal and from your local terminal execute the following command (Just press return for all the steps)</p>
+<p><code>local-host$ ssh-keygen -t rsa</code></p>
+<p>And you will be promted as below</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">Enter</span><span> file in which to save the key (/home/yourself/.ssh/id_rsa)</span><span style="color:#96b5b4;">:
+</span><span style="color:#bf616a;">Created</span><span> directory &#39;</span><span style="color:#a3be8c;">/home/yourself/.ssh</span><span>&#39;.
+</span><span style="color:#bf616a;">Enter</span><span> passphrase (empty for no passphrase)</span><span style="color:#96b5b4;">:
+</span><span style="color:#bf616a;">Enter</span><span> same passphrase again:
+</span><span style="color:#bf616a;">Your</span><span> identification has been saved in /home/yourself/.ssh/id_rsa.
+</span><span style="color:#bf616a;">Your</span><span> public key has been saved in /home/yourself/.ssh/id_rsa.pub.
+</span><span style="color:#bf616a;">The</span><span> key fingerprint is:
+</span><span style="color:#bf616a;">58:3a:80:a5:df:17:b0:af:4f:90:07:c5:3c:01:50:c2</span><span> yourself@inux-cc6a
+</span><span style="color:#bf616a;">Your</span><span> public key will be stored in /home/yourself/.ssh/
+</span></code></pre>
+<p>Now what you have to do is add that key to AWS in order to identify yourself as authorize user.</p>
+<p><code>local-host$ scp ~/.ssh/id_rsa.pub yourself@ec2-#############..compute-1.amazonaws.com:/home/yourself</code></p>
+<p>Then again login to the AWS</p>
+<p><code>local-host$ ssh yourself@ec2-#############..compute-1.amazonaws.com:/home/yourself</code></p>
+<p>And place the key file in right place</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>$ mkdir .ssh
+</span><span>$ mv id_rsa.pub .ssh/authorized_keys
+</span><span>$ chmod 700 .ssh
+</span><span>$ chmod 600 .ssh/authorized_keys
+</span></code></pre>
+<p>Now you should be able to login without using a password</p>
+<p><code>local-host$ ssh yourself@ec2-#############.compute-1.amazonaws.com</code></p>
+<p>Finally remove the password authentication and root user access</p>
+<p><code>$ sudo vim /etc/ssh/sshd_config</code></p>
+<p>Find the line <code>PasswordAuthentication yes</code> and change it to <code>PasswordAuthentication no</code></p>
+<p>Also <code>PermitRootLogin yes</code> to <code>PermitRootLogin no</code></p>
+<p>Finally reload the SSH configurations again</p>
+<p><code>$ sudo /etc/init.d/ssh reload</code></p>
+<p>That's all you need for crating a new user account and allowing authentication via SSH RSA.</p>
+<p>If you are still lazy enough to type that long public DNS you can simply assign it to an alias and place it in the <code>~/.bash_proflle</code>  or <code>~/.bashrc</code> to make it permanent.</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>amazon cloud ssh
+</span><span>alias connect-amazon=&#39;ssh yourself@ec2-#############..compute-1.amazonaws.com&#39;
+</span></code></pre>
+<p><code>$ connect-amazon</code></p>
+
+        
+    </article>
+
+    <!-- Comment section -->
+    
+      
+        
+          <script
+  src="https://giscus.app/client.js"
+  data-repo="nooscraft&#x2F;personal-blog"
+  data-repo-id="R_kgDOQJ_XNg"
+  data-category="General"
+  data-category-id="DIC_kwDOQJ_XNs4CxOmG"
+  data-mapping="pathname"
+  data-strict="0"
+  data-reactions-enabled="1"
+  data-emit-metadata="0"
+  data-input-position="bottom"
+
+  
+  data-theme="https:&#x2F;&#x2F;noos.blog&#x2F;css&#x2F;giscus-theme.css"
+  
+
+  data-lang="en"
+  data-loading="lazy"
+  crossorigin="anonymous"
+  async
+></script>
+
+        
+      
+    
+
+
+    <!-- Page footer -->
+    
+    <footer>
+        <hr>
+        <p>
+            
+            
+                
+                in <a href="https://noos.blog/categories/cloud/">Cloud</a>
+            
+            
+                and
+                tagged
+                
+                    <a href="https://noos.blog/tags/aws/">aws</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/ec2/">ec2</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/ssh/">ssh</a>
+                    
+                        
+                            
+                                and
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/cloud/">cloud</a>
+                    
+                        
+                    
+                
+            
+        </p>
+
+        <!-- Revision history (optional) -->
+        
+          
+            
+              
+            
+          
+        
+
+        
+        
+    </footer>
+
+
+</article>
+
+
+    </main>
+    
+
+  </body>
+</html>

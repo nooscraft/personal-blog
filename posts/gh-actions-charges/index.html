@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="en" data-theme="toggle">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <!-- Enable responsiveness on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;gh-actions-charges&#x2F;" />
+    
+    <!-- Robots meta -->
+    
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    
+
+    
+      
+        <meta name="description" content="Breaking down GitHub&#x27;s 2026 pricing changes for Actions—what&#x27;s free, what&#x27;s changing, and what it means for your projects." />
+        <meta property="og:description" content="Breaking down GitHub&#x27;s 2026 pricing changes for Actions—what&#x27;s free, what&#x27;s changing, and what it means for your projects." />
+        <meta property="twitter:description" content="Breaking down GitHub&#x27;s 2026 pricing changes for Actions—what&#x27;s free, what&#x27;s changing, and what it means for your projects." />
+      
+    
+
+    <!-- Title -->
+    
+      
+    
+    <title>
+    
+    GitHub Actions Won&#x27;t Charge You (Probably) | Noos - Where Thought, Code, and Craft Converge
+    
+</title>
+    
+    <!-- Author -->
+    
+    <meta name="author" content="Oshadha G" />
+    
+    
+    <!-- Article specific meta tags -->
+    
+    
+    <meta property="article:published_time" content="2025-12-16T00:00:00+00:00" />
+    
+    
+    
+    
+    <meta property="article:tag" content="github-actions" />
+    
+    <meta property="article:tag" content="pricing" />
+    
+    <meta property="article:tag" content="ci-cd" />
+    
+    <meta property="article:tag" content="automation" />
+    
+    
+    
+    
+    <meta property="article:section" content="DevOps" />
+    
+    
+    
+
+    <!-- Additional Facebook Meta Tags -->
+    <meta property="og:site_name" content="Noos - Where Thought, Code, and Craft Converge" />
+    <meta
+      property="og:url"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;gh-actions-charges&#x2F;"
+    />
+    <meta
+      property="og:type"
+      content="article"
+    />
+    <meta property="og:title" content="GitHub Actions Won&#x27;t Charge You (Probably) | Noos - Where Thought, Code, and Craft Converge" />
+
+    <!-- Additional Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      property="twitter:url"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;gh-actions-charges&#x2F;"
+    />
+    <meta name="twitter:title" content="GitHub Actions Won&#x27;t Charge You (Probably) | Noos - Where Thought, Code, and Craft Converge" />
+
+    <!-- Cover images -->
+           
+           
+           
+           
+      
+      
+      
+      
+      
+    
+
+    <meta
+      property="og:image"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;gh-actions-charges.png"
+    />
+
+    <meta
+      name="twitter:image"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;gh-actions-charges.png"
+    />
+
+
+
+    <!-- Favicons -->
+           
+           <!-- PNG + ICO (some clients ignore SVG favicons) -->
+           <link
+             rel="icon"
+             type="image/png"
+             sizes="96x96"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/favicon-96x96.png?v=3"
+           />
+           <link
+             rel="apple-touch-icon"
+             sizes="180x180"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/apple-touch-icon.png?v=3"
+           />
+           <link
+             rel="shortcut icon"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/favicon.ico?v=3"
+           />
+           
+
+    <!-- RSS Feed -->
+    
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      title="RSS"
+      href="https://noos.blog/atom.xml"
+    />
+    
+
+    <!-- Load Styles -->
+    
+      <link
+        rel="stylesheet"
+        href="https://noos.blog/site.css"
+      />
+    
+
+    <!-- Load Fonts -->
+    
+
+  
+
+
+
+
+
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+  
+
+
+
+<!-- Forcing Font -->
+<style>
+body {
+  font-family:
+    "JetBrains Mono", Menlo, Monaco, Lucida Console, Liberation Mono,
+    DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New,
+    monospace, serif !important;
+}
+</style>
+
+
+    <!-- Pass Theme Preference as Data Attribute -->
+    <script src="https://noos.blog/js/init-theme.js"></script>
+
+    <!-- Reference return to click position script -->
+    <script defer src="https://noos.blog/js/reference-return.js"></script>
+
+    <!-- Additional scripts -->
+    
+      
+        <script defer src="https://noos.blog/js/codeblock.js"></script>
+      
+            
+              <script defer src="https://noos.blog/js/toggle-theme.js"></script>
+            
+      
+<!-- MathJax script for rendering LaTeX math equations -->
+<script src="https://noos.blog/js/mathjax-config.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+  async
+></script>
+
+
+      
+<script type="text/javascript" src="https://noos.blog/elasticlunr.min.js"></script>
+<script type="text/javascript" src="https://noos.blog/js/search.js"></script>
+
+    
+    
+    <!-- Structured Data (JSON-LD) -->
+    
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "GitHub Actions Won&#x27;t Charge You (Probably)",
+  
+  "description": "Breaking down GitHub&#x27;s 2026 pricing changes for Actions—what&#x27;s free, what&#x27;s changing, and what it means for your projects.",
+  
+  
+  "datePublished": "2025-12-16T00:00:00+00:00",
+  
+  
+  "author": {
+    "@type": "Person",
+    "name": "Oshadha G"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Noos - Where Thought, Code, and Craft Converge",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https:&#x2F;&#x2F;noos.blog/icons/favicon/web-app-manifest-512x512.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;gh-actions-charges&#x2F;"
+  },
+  "url": "https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;gh-actions-charges&#x2F;",
+  
+  "keywords": "github-actions, pricing, ci-cd, automation",
+  
+  "inLanguage": "en"
+}
+</script>
+
+
+    
+    <!-- Google Analytics (GA4) -->
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-54YK7R04LX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-54YK7R04LX', {
+        'anonymize_ip': true,
+        'respect_dnt': true
+      });
+    </script>
+    
+  </head>
+
+  <!-- Body element (contents of the page) -->
+  <body class="hack main container">
+    
+  
+    
+    
+      
+  
+  <section class="nav-header">
+    <nav
+      itemscope
+      itemtype="http://schema.org/SiteNavigationElement"
+      class="navbar"
+    >
+      <section class="nav-links">
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/"
+        >
+          <span itemprop="name">Home</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/about"
+        >
+          <span itemprop="name">About</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/categories"
+        >
+          <span itemprop="name">Categories</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/tags"
+        >
+          <span itemprop="name">Tags</span>
+        </a>
+        
+      </section>
+    </nav>
+    <aside class="user-actions-container">
+      
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        class="search-icon"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+        />
+      </svg>
+      <input type="text" id="search" placeholder="Search..." />
+      <section class="search-results" aria-live="polite">
+        <article class="search-results__items" role="list"></article>
+      </section>
+       
+      <a id="dark-mode-toggle" href="#">
+        <img
+          src="https://noos.blog/icons/sun.svg"
+          id="sun-icon"
+          style="filter: invert(1)"
+          alt="Light mode"
+        />
+        <img
+          src="https://noos.blog/icons/moon.svg"
+          id="moon-icon"
+          alt="Dark mode"
+        />
+      </a>
+       
+      <a
+        href="https://noos.blog/atom.xml"
+        class="feed-icon"
+        rel="noopener noreferrer"
+      >
+        <img
+          src="https://noos.blog/icons/rss.svg"
+          id="rss-icon"
+          alt="RSS feed"
+          class="social-icon"
+        />
+      </a>
+       
+    </aside>
+  </section>
+  
+
+    
+
+
+    <main>
+      
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">GitHub Actions Won&#x27;t Charge You (Probably)</h1>
+        
+        <data class="muted">
+    <svg class="icon i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <data>4 minute read</data>
+    
+    
+    <svg class="icon i-calendar" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <!-- Calendar outline -->
+        <rect x="3" y="6" width="26" height="23" rx="2" ry="2"/>
+        <!-- Binding rings -->
+        <line x1="10" y1="3" x2="10" y2="9"/>
+        <line x1="22" y1="3" x2="22" y2="9"/>
+        <!-- Top separator -->
+        <line x1="3" y1="12" x2="29" y2="12"/>
+    </svg>
+
+    Published: 2025-12-16
+    
+</data>
+        
+        
+        
+        
+        
+        
+          
+          
+          
+          
+          
+        
+        
+        <figure class="post-cover" style="margin: 1.25rem 0;">
+          <img src="&#x2F;images&#x2F;covers&#x2F;gh-actions-charges.png" alt="GitHub Actions Won&#x27;t Charge You (Probably) cover" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--color-border-default, #e5e7eb);" onerror="this.parentNode.style.display='none'" />
+        </figure>
+        
+    </header>
+
+    <article itemprop="articleBody">
+        
+            <!-- If no summary separate from content, just render content -->
+            <p>If you received an email from GitHub about upcoming pricing changes for GitHub Actions, you might be wondering: "Are they going to start charging me for something that was free?" The short answer: <strong>It depends on what you're using, but for most people, the news is actually good.</strong></p>
+<p>Let me break down what's changing in plain language, so you can understand how it affects your projects.</p>
+<hr />
+<h2 id="the-big-question-is-github-actions-still-free">The Big Question: Is GitHub Actions Still Free?</h2>
+<p><strong>Yes—for public repositories, GitHub Actions remains completely free.</strong> If you're using GitHub Actions in public repositories (like open-source projects), nothing changes. You can continue using it without any charges.</p>
+<p>This is important because many developers and organizations rely on GitHub Actions for open-source projects, and GitHub has committed to keeping that free.</p>
+<hr />
+<h2 id="what-s-actually-changing">What's Actually Changing?</h2>
+<p>GitHub is making two main changes, both scheduled for 2026:</p>
+<h3 id="1-price-reductions-january-1-2026">1. Price Reductions (January 1, 2026)</h3>
+<p><strong>Good news:</strong> GitHub is reducing prices for GitHub-hosted runners in private repositories by up to 39%, depending on the machine type you use.</p>
+<p>If you're currently paying for GitHub Actions in private repositories, your costs will go down. This is a straightforward price cut—no catch.</p>
+<h3 id="2-new-platform-charge-for-self-hosted-runners-march-1-2026">2. New Platform Charge for Self-Hosted Runners (March 1, 2026)</h3>
+<p><strong>This is the one that might affect you:</strong> GitHub will introduce a new $0.002 per-minute "cloud platform" charge for self-hosted runners.</p>
+<p>Wait—what's a self-hosted runner? If you're using your own servers or machines to run GitHub Actions (instead of GitHub's cloud infrastructure), those are self-hosted runners. Most individual developers and small teams use GitHub-hosted runners, so this won't affect them.</p>
+<p><strong>Important details:</strong></p>
+<ul>
+<li>This charge only applies to self-hosted runners (your own machines)</li>
+<li>The charge is $0.002 per minute (that's 0.2 cents per minute)</li>
+<li>Even with this charge, it still counts against the minutes already included in your GitHub plan</li>
+</ul>
+<p><strong>What does that last point mean?</strong> If you have a GitHub plan that includes 2,000 minutes per month, and you use 500 minutes on self-hosted runners, you'll pay the $0.002/minute charge, but those 500 minutes still count toward your 2,000-minute allowance. You're not being double-charged.</p>
+<hr />
+<h2 id="quick-reference-pricing-summary">Quick Reference: Pricing Summary</h2>
+<p>Here's a simple breakdown of what's changing:</p>
+<table><thead><tr><th>Type</th><th>Status After Update</th></tr></thead><tbody>
+<tr><td><strong>Public repo GitHub-hosted</strong></td><td>✅ Still free</td></tr>
+<tr><td><strong>Private repo GitHub-hosted</strong></td><td>🔻 Price reduced (up to 39%)</td></tr>
+<tr><td><strong>Self-hosted runners</strong></td><td>💲 $0.002/min platform charge</td></tr>
+<tr><td><strong>Enterprise Server customers</strong></td><td>✅ No change</td></tr>
+</tbody></table>
+<hr />
+<h2 id="what-this-means-for-you">What This Means for You</h2>
+<ul>
+<li><strong>Public repositories:</strong> No change—still free</li>
+<li><strong>Private repositories (GitHub-hosted):</strong> You'll pay less—prices dropping up to 39%</li>
+<li><strong>Self-hosted runners:</strong> New $0.002/min charge (~$0.12/hour). Calculate based on your usage</li>
+<li><strong>Enterprise Server:</strong> No changes</li>
+</ul>
+<hr />
+<h2 id="why-the-change">Why the Change?</h2>
+<p>GitHub hasn't provided detailed reasoning, but the new charge for self-hosted runners likely reflects the infrastructure costs of managing the platform, security, and integration features that make self-hosted runners work seamlessly with GitHub Actions—even when the actual compute happens on your machines.</p>
+<p>The price reduction for GitHub-hosted runners suggests GitHub is optimizing their infrastructure and passing those savings to customers.</p>
+<hr />
+<h2 id="what-should-you-do">What Should You Do?</h2>
+<ol>
+<li>
+<p><strong>Check your usage:</strong> If you're using self-hosted runners, review how many minutes you typically use per month to estimate the new cost.</p>
+</li>
+<li>
+<p><strong>Review your plan:</strong> Make sure you understand what's included in your current GitHub plan (free, Pro, Team, or Enterprise).</p>
+</li>
+<li>
+<p><strong>Calculate impact:</strong> For self-hosted runners, multiply your monthly minutes by $0.002 to see the additional cost. For example:</p>
+<ul>
+<li>1,000 minutes/month = $2.00/month</li>
+<li>5,000 minutes/month = $10.00/month</li>
+</ul>
+</li>
+<li>
+<p><strong>Consider alternatives:</strong> If the new charge significantly impacts your costs, you might want to evaluate whether self-hosted runners are still the best option, or if GitHub-hosted runners (which are getting cheaper) might work for your needs.</p>
+</li>
+</ol>
+<hr />
+<h2 id="the-bottom-line">The Bottom Line</h2>
+<p>For most users, these changes are either neutral (public repos stay free) or positive (private repo prices go down). The only group that will see new charges is those using self-hosted runners, and even then, the charge is relatively small.</p>
+<p>The key takeaway: <strong>GitHub Actions isn't going away, and it's not suddenly becoming expensive.</strong> The changes are targeted and mostly beneficial. If you're concerned about costs, take some time to review your usage patterns and plan accordingly before the changes take effect in 2026.</p>
+<hr />
+<h3 id="further-reading">Further Reading</h3>
+<ul>
+<li><a href="https://docs.github.com/en/billing/managing-billing-for-github-actions/about-billing-for-github-actions">GitHub Actions Pricing</a> – Official pricing documentation</li>
+<li><a href="https://docs.github.com/en/billing/managing-billing-for-github-actions/about-billing-for-github-actions#usage-limits">GitHub Actions Usage Limits</a> – Understanding included minutes and limits</li>
+</ul>
+
+        
+    </article>
+
+    <!-- Comment section -->
+    
+      
+        
+          <script
+  src="https://giscus.app/client.js"
+  data-repo="nooscraft&#x2F;personal-blog"
+  data-repo-id="R_kgDOQJ_XNg"
+  data-category="General"
+  data-category-id="DIC_kwDOQJ_XNs4CxOmG"
+  data-mapping="pathname"
+  data-strict="0"
+  data-reactions-enabled="1"
+  data-emit-metadata="0"
+  data-input-position="bottom"
+
+  
+  data-theme="https:&#x2F;&#x2F;noos.blog&#x2F;css&#x2F;giscus-theme.css"
+  
+
+  data-lang="en"
+  data-loading="lazy"
+  crossorigin="anonymous"
+  async
+></script>
+
+        
+      
+    
+
+
+    <!-- Page footer -->
+    
+    <footer>
+        <hr>
+        <p>
+            
+            
+                
+                in <a href="https://noos.blog/categories/devops/">DevOps</a>
+            
+            
+                and
+                tagged
+                
+                    <a href="https://noos.blog/tags/github-actions/">github-actions</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/pricing/">pricing</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/ci-cd/">ci-cd</a>
+                    
+                        
+                            
+                                and
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/automation/">automation</a>
+                    
+                        
+                    
+                
+            
+        </p>
+
+        <!-- Revision history (optional) -->
+        
+          
+            
+              
+            
+          
+        
+
+        
+        
+    </footer>
+
+
+</article>
+
+
+    </main>
+    
+
+  </body>
+</html>

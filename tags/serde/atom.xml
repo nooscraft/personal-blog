@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Noos - Where Thought, Code, and Craft Converge - serde</title>
+    <subtitle>Personal blog about programming, technology, and engineering insights. Topics include Rust, DevOps, Linux, and software craftsmanship.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://noos.blog/tags/serde/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://noos.blog"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2025-10-29T00:00:00+00:00</updated>
+    <id>https://noos.blog/tags/serde/atom.xml</id>
+    <entry xml:lang="en">
+        <title>When Rust Expects a String But Gets a Map</title>
+        <published>2025-10-29T00:00:00+00:00</published>
+        <updated>2025-10-29T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/rust-serde-datetime-deserialization-error/"/>
+        <id>https://noos.blog/posts/rust-serde-datetime-deserialization-error/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/rust-serde-datetime-deserialization-error/">&lt;p&gt;I recently hit this error while working with a Rust application that reads from a database:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;Database(&amp;quot;Kind: invalid type: map, expected an RFC 3339 formatted date and time string, labels: {}&amp;quot;)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;At first glance, it&#x27;s a bit cryptic. But the error message actually tells you exactly what&#x27;s wrong.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-problem&quot;&gt;The Problem&lt;&#x2F;h2&gt;
+&lt;p&gt;When you have a Rust struct with a &lt;code&gt;DateTime&amp;lt;Utc&amp;gt;&lt;&#x2F;code&gt; field, Serde expects the JSON to contain an RFC 3339 formatted string like:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;json&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-json &quot;&gt;&lt;code class=&quot;language-json&quot; data-lang=&quot;json&quot;&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;2025-09-15T01:36:19Z&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;But instead, your database (or JSON source) is storing it as a map&#x2F;object:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;json&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-json &quot;&gt;&lt;code class=&quot;language-json&quot; data-lang=&quot;json&quot;&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;  &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;sec&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1694733379&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;  &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;nsec&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;199610000
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Serde can&#x27;t automatically convert a map into a &lt;code&gt;DateTime&lt;&#x2F;code&gt;—it needs a string it can parse.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;why-this-happens&quot;&gt;Why This Happens&lt;&#x2F;h2&gt;
+&lt;p&gt;Different systems store timestamps differently:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Some databases store timestamps as Unix time objects with separate seconds and nanoseconds&lt;&#x2F;li&gt;
+&lt;li&gt;Some JSON APIs return timestamps as nested objects&lt;&#x2F;li&gt;
+&lt;li&gt;Other sources might use different date formats&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;But Rust&#x27;s &lt;code&gt;DateTime&amp;lt;Utc&amp;gt;&lt;&#x2F;code&gt; with Serde defaults expects the standard RFC 3339 string format.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-fix&quot;&gt;The Fix&lt;&#x2F;h2&gt;
+&lt;p&gt;You have two options:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;Option 1: Fix the data source&lt;&#x2F;strong&gt; (if you control it)
+Make sure your database or JSON source stores timestamps as RFC 3339 strings:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;json&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-json &quot;&gt;&lt;code class=&quot;language-json&quot; data-lang=&quot;json&quot;&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;created_at&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;2025-09-15T01:36:19Z&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;strong&gt;Option 2: Use a custom deserializer&lt;&#x2F;strong&gt; (if you can&#x27;t change the source)
+Write a custom Serde deserializer to handle the map format:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;use &lt;&#x2F;span&gt;&lt;span&gt;chrono::{DateTime, Utc};
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;use &lt;&#x2F;span&gt;&lt;span&gt;serde::{Deserialize, Deserializer};
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;from_timestamp_map&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;&amp;#39;de&lt;&#x2F;span&gt;&lt;span&gt;, D&amp;gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;deserializer&lt;&#x2F;span&gt;&lt;span&gt;: D) -&amp;gt; Result&amp;lt;DateTime&amp;lt;Utc&amp;gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;D::&lt;&#x2F;span&gt;&lt;span&gt;Error&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;where
+&lt;&#x2F;span&gt;&lt;span&gt;    D: Deserializer&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;&amp;#39;de&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    #[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;derive&lt;&#x2F;span&gt;&lt;span&gt;(Deserialize)]
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct &lt;&#x2F;span&gt;&lt;span&gt;Timestamp {
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sec&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;i64&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;nsec&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;u32&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;    
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; ts = Timestamp::deserialize(deserializer)?;
+&lt;&#x2F;span&gt;&lt;span&gt;    DateTime::from_timestamp(ts.sec, ts.nsec)
+&lt;&#x2F;span&gt;&lt;span&gt;        .&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;ok_or_else&lt;&#x2F;span&gt;&lt;span&gt;(|| serde::de::Error::custom(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Invalid timestamp&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;))
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;#[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;derive&lt;&#x2F;span&gt;&lt;span&gt;(Deserialize)]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct &lt;&#x2F;span&gt;&lt;span&gt;ModelSelection {
+&lt;&#x2F;span&gt;&lt;span&gt;    #[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;serde&lt;&#x2F;span&gt;&lt;span&gt;(deserialize_with = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;from_timestamp_map&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)]
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;created_at&lt;&#x2F;span&gt;&lt;span&gt;: DateTime&amp;lt;Utc&amp;gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The custom deserializer reads the &lt;code&gt;sec&lt;&#x2F;code&gt; and &lt;code&gt;nsec&lt;&#x2F;code&gt; fields from the map and constructs a &lt;code&gt;DateTime&amp;lt;Utc&amp;gt;&lt;&#x2F;code&gt; from them.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;bottom-line&quot;&gt;Bottom Line&lt;&#x2F;h2&gt;
+&lt;p&gt;When Serde complains about expecting a string but getting a map for a &lt;code&gt;DateTime&lt;&#x2F;code&gt; field, your data source is storing timestamps in a format Serde doesn&#x27;t recognize. Either standardize on RFC 3339 strings, or write a deserializer to handle your specific format.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+</feed>

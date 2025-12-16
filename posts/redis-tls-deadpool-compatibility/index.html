@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="en" data-theme="toggle">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <!-- Enable responsiveness on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;redis-tls-deadpool-compatibility&#x2F;" />
+    
+    <!-- Robots meta -->
+    
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    
+
+    
+      
+        <meta name="description" content="A deep dive into version compatibility issues between redis, deadpool-redis, and TLS support in Rust—and why sometimes you need to stick with an older version." />
+        <meta property="og:description" content="A deep dive into version compatibility issues between redis, deadpool-redis, and TLS support in Rust—and why sometimes you need to stick with an older version." />
+        <meta property="twitter:description" content="A deep dive into version compatibility issues between redis, deadpool-redis, and TLS support in Rust—and why sometimes you need to stick with an older version." />
+      
+    
+
+    <!-- Title -->
+    
+      
+    
+    <title>
+    
+    Redis, TLS, and Deadpool: When Dependency Versions Collide | Noos - Where Thought, Code, and Craft Converge
+    
+</title>
+    
+    <!-- Author -->
+    
+    <meta name="author" content="Oshadha G" />
+    
+    
+    <!-- Article specific meta tags -->
+    
+    
+    <meta property="article:published_time" content="2025-10-30T00:00:00+00:00" />
+    
+    
+    
+    
+    <meta property="article:tag" content="rust" />
+    
+    <meta property="article:tag" content="redis" />
+    
+    <meta property="article:tag" content="deadpool" />
+    
+    <meta property="article:tag" content="tls" />
+    
+    <meta property="article:tag" content="dependency-management" />
+    
+    <meta property="article:tag" content="compatibility" />
+    
+    
+    
+    
+    <meta property="article:section" content="Programming" />
+    
+    
+    
+
+    <!-- Additional Facebook Meta Tags -->
+    <meta property="og:site_name" content="Noos - Where Thought, Code, and Craft Converge" />
+    <meta
+      property="og:url"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;redis-tls-deadpool-compatibility&#x2F;"
+    />
+    <meta
+      property="og:type"
+      content="article"
+    />
+    <meta property="og:title" content="Redis, TLS, and Deadpool: When Dependency Versions Collide | Noos - Where Thought, Code, and Craft Converge" />
+
+    <!-- Additional Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      property="twitter:url"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;redis-tls-deadpool-compatibility&#x2F;"
+    />
+    <meta name="twitter:title" content="Redis, TLS, and Deadpool: When Dependency Versions Collide | Noos - Where Thought, Code, and Craft Converge" />
+
+    <!-- Cover images -->
+           
+           
+           
+           
+             
+           
+
+    <meta
+      property="og:image"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;redis-tls-deadpool-compatibility.png"
+    />
+
+    <meta
+      name="twitter:image"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;redis-tls-deadpool-compatibility.png"
+    />
+
+
+
+    <!-- Favicons -->
+           
+           <!-- PNG + ICO (some clients ignore SVG favicons) -->
+           <link
+             rel="icon"
+             type="image/png"
+             sizes="96x96"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/favicon-96x96.png?v=3"
+           />
+           <link
+             rel="apple-touch-icon"
+             sizes="180x180"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/apple-touch-icon.png?v=3"
+           />
+           <link
+             rel="shortcut icon"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/favicon.ico?v=3"
+           />
+           
+
+    <!-- RSS Feed -->
+    
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      title="RSS"
+      href="https://noos.blog/atom.xml"
+    />
+    
+
+    <!-- Load Styles -->
+    
+      <link
+        rel="stylesheet"
+        href="https://noos.blog/site.css"
+      />
+    
+
+    <!-- Load Fonts -->
+    
+
+  
+
+
+
+
+
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+  
+
+
+
+<!-- Forcing Font -->
+<style>
+body {
+  font-family:
+    "JetBrains Mono", Menlo, Monaco, Lucida Console, Liberation Mono,
+    DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New,
+    monospace, serif !important;
+}
+</style>
+
+
+    <!-- Pass Theme Preference as Data Attribute -->
+    <script src="https://noos.blog/js/init-theme.js"></script>
+
+    <!-- Reference return to click position script -->
+    <script defer src="https://noos.blog/js/reference-return.js"></script>
+
+    <!-- Additional scripts -->
+    
+      
+        <script defer src="https://noos.blog/js/codeblock.js"></script>
+      
+            
+              <script defer src="https://noos.blog/js/toggle-theme.js"></script>
+            
+      
+<!-- MathJax script for rendering LaTeX math equations -->
+<script src="https://noos.blog/js/mathjax-config.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+  async
+></script>
+
+
+      
+<script type="text/javascript" src="https://noos.blog/elasticlunr.min.js"></script>
+<script type="text/javascript" src="https://noos.blog/js/search.js"></script>
+
+    
+    
+    <!-- Structured Data (JSON-LD) -->
+    
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Redis, TLS, and Deadpool: When Dependency Versions Collide",
+  
+  "description": "A deep dive into version compatibility issues between redis, deadpool-redis, and TLS support in Rust—and why sometimes you need to stick with an older version.",
+  
+  
+  "datePublished": "2025-10-30T00:00:00+00:00",
+  
+  
+  "author": {
+    "@type": "Person",
+    "name": "Oshadha G"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Noos - Where Thought, Code, and Craft Converge",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https:&#x2F;&#x2F;noos.blog/icons/favicon/web-app-manifest-512x512.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;redis-tls-deadpool-compatibility&#x2F;"
+  },
+  "url": "https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;redis-tls-deadpool-compatibility&#x2F;",
+  
+  "keywords": "rust, redis, deadpool, tls, dependency-management, compatibility",
+  
+  "inLanguage": "en"
+}
+</script>
+
+
+    
+    <!-- Google Analytics (GA4) -->
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-54YK7R04LX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-54YK7R04LX', {
+        'anonymize_ip': true,
+        'respect_dnt': true
+      });
+    </script>
+    
+  </head>
+
+  <!-- Body element (contents of the page) -->
+  <body class="hack main container">
+    
+  
+    
+    
+      
+  
+  <section class="nav-header">
+    <nav
+      itemscope
+      itemtype="http://schema.org/SiteNavigationElement"
+      class="navbar"
+    >
+      <section class="nav-links">
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/"
+        >
+          <span itemprop="name">Home</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/about"
+        >
+          <span itemprop="name">About</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/categories"
+        >
+          <span itemprop="name">Categories</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/tags"
+        >
+          <span itemprop="name">Tags</span>
+        </a>
+        
+      </section>
+    </nav>
+    <aside class="user-actions-container">
+      
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        class="search-icon"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+        />
+      </svg>
+      <input type="text" id="search" placeholder="Search..." />
+      <section class="search-results" aria-live="polite">
+        <article class="search-results__items" role="list"></article>
+      </section>
+       
+      <a id="dark-mode-toggle" href="#">
+        <img
+          src="https://noos.blog/icons/sun.svg"
+          id="sun-icon"
+          style="filter: invert(1)"
+          alt="Light mode"
+        />
+        <img
+          src="https://noos.blog/icons/moon.svg"
+          id="moon-icon"
+          alt="Dark mode"
+        />
+      </a>
+       
+      <a
+        href="https://noos.blog/atom.xml"
+        class="feed-icon"
+        rel="noopener noreferrer"
+      >
+        <img
+          src="https://noos.blog/icons/rss.svg"
+          id="rss-icon"
+          alt="RSS feed"
+          class="social-icon"
+        />
+      </a>
+       
+    </aside>
+  </section>
+  
+
+    
+
+
+    <main>
+      
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">Redis, TLS, and Deadpool: When Dependency Versions Collide</h1>
+        
+        <data class="muted">
+    <svg class="icon i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <data>4 minute read</data>
+    
+    
+    <svg class="icon i-calendar" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <!-- Calendar outline -->
+        <rect x="3" y="6" width="26" height="23" rx="2" ry="2"/>
+        <!-- Binding rings -->
+        <line x1="10" y1="3" x2="10" y2="9"/>
+        <line x1="22" y1="3" x2="22" y2="9"/>
+        <!-- Top separator -->
+        <line x1="3" y1="12" x2="29" y2="12"/>
+    </svg>
+
+    Published: 2025-10-30
+    
+</data>
+        
+        
+        
+        
+          
+        
+        
+        
+        
+        <figure class="post-cover" style="margin: 1.25rem 0;">
+          <img src="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;redis-tls-deadpool-compatibility.png" alt="Redis, TLS, and Deadpool: When Dependency Versions Collide cover" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--color-border-default, #e5e7eb);" onerror="this.parentNode.style.display='none'" />
+        </figure>
+        
+    </header>
+
+    <article itemprop="articleBody">
+        
+            <!-- If no summary separate from content, just render content -->
+            <h3 id="the-problem">The Problem</h3>
+<p>I was working on a Rust project that uses Redis with TLS connections and a connection pool via <code>deadpool-redis</code>. Everything was working fine until I ran <code>cargo check</code> and saw this warning:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>warning: the following packages contain code that will be rejected by a future version of Rust: redis v0.25.4
+</span></code></pre>
+<p>That's not something you want to see. It suggests your code will break in future Rust versions. So naturally, I tried to upgrade the <code>redis</code> crate to a newer version.</p>
+<p>But here's where things got interesting—every single attempt to upgrade past <code>v0.25.4</code> broke the build. Not just small errors, but fundamental incompatibilities between the <code>redis</code> crate and <code>deadpool-redis</code>.</p>
+<h3 id="what-i-tried">What I Tried</h3>
+<p>I went through the versions systematically, testing each major release:</p>
+<ul>
+<li><strong>v0.26.x</strong>: Broke immediately. Missing <code>TcpTls</code> variant in the <code>Tokio</code> enum, internal TLS types incomplete.</li>
+<li><strong>v0.27.x</strong>: Same issues as v0.26.x. TLS support partially broken.</li>
+<li><strong>v0.28.x</strong>: TLS types like <code>TlsConnParams</code> and <code>TcpTls</code> were still broken internally.</li>
+<li><strong>v0.29.x</strong>: Now it requires a <code>connect_tcp_tls</code> trait that <code>deadpool-redis</code> doesn't implement.</li>
+<li><strong>v0.30.x, v0.31.x, v0.32.x</strong>: All require the same <code>connect_tcp_tls</code> trait.</li>
+</ul>
+<p>The pattern became clear: somewhere between v0.25.4 and v0.29.0, the <code>redis</code> crate changed how it handles TLS connections, and <code>deadpool-redis</code> hasn't caught up yet.</p>
+<h3 id="the-root-cause">The Root Cause</h3>
+<p>The issue is that <code>redis</code> v0.25.4 is the last version before <code>connect_tcp_tls</code> was introduced. This new trait-based approach is cleaner architecturally, but it requires connection pool libraries to implement this trait. <code>deadpool-redis</code> v0.14.0 was built against the older API and doesn't have this implementation.</p>
+<p>Versions between v0.25.4 and v0.29.0 are in a transitional state—they have some TLS support but it's incomplete or broken.</p>
+<h3 id="current-status">Current Status</h3>
+<p>After testing all these versions, I ended up staying with <code>redis v0.25.4</code>. Here's the working configuration:</p>
+<p><strong>Cargo.toml:</strong></p>
+<pre data-lang="toml" style="background-color:#2b303b;color:#c0c5ce;" class="language-toml "><code class="language-toml" data-lang="toml"><span>[dependencies]
+</span><span style="color:#bf616a;">redis </span><span>= { </span><span style="color:#bf616a;">version </span><span>= &quot;</span><span style="color:#a3be8c;">=0.25.4</span><span>&quot;, </span><span style="color:#bf616a;">features </span><span>= [&quot;</span><span style="color:#a3be8c;">tokio-comp</span><span>&quot;, &quot;</span><span style="color:#a3be8c;">tls-rustls</span><span>&quot;, &quot;</span><span style="color:#a3be8c;">connection-manager</span><span>&quot;] }
+</span><span style="color:#bf616a;">deadpool-redis </span><span>= &quot;</span><span style="color:#a3be8c;">0.14.0</span><span>&quot;
+</span><span style="color:#bf616a;">tokio </span><span>= { </span><span style="color:#bf616a;">version </span><span>= &quot;</span><span style="color:#a3be8c;">1</span><span>&quot;, </span><span style="color:#bf616a;">features </span><span>= [&quot;</span><span style="color:#a3be8c;">full</span><span>&quot;] }
+</span><span style="color:#bf616a;">tokio-rustls </span><span>= &quot;</span><span style="color:#a3be8c;">0.23.4</span><span>&quot;
+</span><span style="color:#bf616a;">rustls </span><span>= &quot;</span><span style="color:#a3be8c;">0.20.8</span><span>&quot;
+</span></code></pre>
+<p><strong>rust-toolchain.toml:</strong></p>
+<pre data-lang="toml" style="background-color:#2b303b;color:#c0c5ce;" class="language-toml "><code class="language-toml" data-lang="toml"><span>[toolchain]
+</span><span style="color:#bf616a;">channel </span><span>= &quot;</span><span style="color:#a3be8c;">1.74.1</span><span>&quot;
+</span></code></pre>
+<p>The <code>=</code> prefix on the redis version pins it exactly to v0.25.4, preventing accidental upgrades. And pinning Rust to <code>1.74.1</code> helps avoid future compatibility warnings.</p>
+<p>This setup works reliably:</p>
+<ul>
+<li>TLS over <code>rediss://</code> connections work with <code>tokio-rustls</code></li>
+<li>Connection pooling via <code>deadpool-redis</code> functions correctly</li>
+<li>No compilation warnings or errors</li>
+<li>Stable and predictable behavior</li>
+</ul>
+<h3 id="what-to-avoid">What to Avoid</h3>
+<p>If you're in a similar situation, avoid these version combinations:</p>
+<ul>
+<li><strong>redis v0.26.x–v0.28.x</strong>: TLS support is broken or incomplete. You'll get compilation errors related to missing enum variants or broken TLS types.</li>
+<li><strong>redis &gt;= v0.29.0 with deadpool-redis</strong>: Won't compile because <code>deadpool-redis</code> doesn't implement the required <code>connect_tcp_tls</code> trait.</li>
+<li><strong>deadpool-redis v0.15+</strong>: Currently not compatible with stable <code>redis</code> versions due to the same trait mismatch.</li>
+</ul>
+<h3 id="alternative-approach">Alternative Approach</h3>
+<p>If you really need a newer <code>redis</code> version, you have one option: drop <code>deadpool-redis</code> and use <code>redis</code>'s built-in <code>ConnectionManager</code> or switch to a different pooling library like <code>bb8</code>. But this means rewriting your connection pool code, which might not be worth it for most projects.</p>
+<h3 id="the-future">The Future</h3>
+<p>The situation is temporary, but it's unclear when it will be resolved. The <code>deadpool-redis</code> maintainers need to either:</p>
+<ol>
+<li>Implement the <code>connect_tcp_tls</code> trait for newer <code>redis</code> versions, or</li>
+<li>Update their API to work with the new connection model</li>
+</ol>
+<p>Until then, staying with <code>redis v0.25.4</code> and <code>deadpool-redis v0.14.0</code> is the most stable path forward. Yes, you'll see that deprecation warning, but it's better than having broken code.</p>
+<h3 id="bottom-line">Bottom Line</h3>
+<p>Sometimes upgrading dependencies isn't the right move. In this case, the ecosystem has a compatibility gap between <code>redis</code> and <code>deadpool-redis</code>, and staying on the older version is the pragmatic choice. The warning is annoying, but it's not breaking anything right now—and when the ecosystem catches up, you can upgrade then.</p>
+<p>If you're building a new project and need Redis with TLS and pooling, consider whether you can use <code>redis</code>'s built-in <code>ConnectionManager</code> instead of <code>deadpool-redis</code>. If you're maintaining an existing project, stick with what works: <code>redis v0.25.4</code> and <code>deadpool-redis v0.14.0</code>.</p>
+
+        
+    </article>
+
+    <!-- Comment section -->
+    
+      
+        
+          <script
+  src="https://giscus.app/client.js"
+  data-repo="nooscraft&#x2F;personal-blog"
+  data-repo-id="R_kgDOQJ_XNg"
+  data-category="General"
+  data-category-id="DIC_kwDOQJ_XNs4CxOmG"
+  data-mapping="pathname"
+  data-strict="0"
+  data-reactions-enabled="1"
+  data-emit-metadata="0"
+  data-input-position="bottom"
+
+  
+  data-theme="https:&#x2F;&#x2F;noos.blog&#x2F;css&#x2F;giscus-theme.css"
+  
+
+  data-lang="en"
+  data-loading="lazy"
+  crossorigin="anonymous"
+  async
+></script>
+
+        
+      
+    
+
+
+    <!-- Page footer -->
+    
+    <footer>
+        <hr>
+        <p>
+            
+            
+                
+                in <a href="https://noos.blog/categories/programming/">Programming</a>
+            
+            
+                and
+                tagged
+                
+                    <a href="https://noos.blog/tags/rust/">rust</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/redis/">redis</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/deadpool/">deadpool</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/tls/">tls</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/dependency-management/">dependency-management</a>
+                    
+                        
+                            
+                                and
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/compatibility/">compatibility</a>
+                    
+                        
+                    
+                
+            
+        </p>
+
+        <!-- Revision history (optional) -->
+        
+          
+            
+              
+            
+          
+        
+
+        
+        
+    </footer>
+
+
+</article>
+
+
+    </main>
+    
+
+  </body>
+</html>

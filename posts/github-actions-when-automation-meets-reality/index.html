@@ -1,0 +1,791 @@
+<!doctype html>
+<html lang="en" data-theme="toggle">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <!-- Enable responsiveness on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;github-actions-when-automation-meets-reality&#x2F;" />
+    
+    <!-- Robots meta -->
+    
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    
+
+    
+      
+        <meta name="description" content="Lessons learned from wrestling with GitHub Actions: submodules, deployment strategies, and when to embrace manual control." />
+        <meta property="og:description" content="Lessons learned from wrestling with GitHub Actions: submodules, deployment strategies, and when to embrace manual control." />
+        <meta property="twitter:description" content="Lessons learned from wrestling with GitHub Actions: submodules, deployment strategies, and when to embrace manual control." />
+      
+    
+
+    <!-- Title -->
+    
+      
+    
+    <title>
+    
+    GitHub Actions: When Automation Meets Reality | Noos - Where Thought, Code, and Craft Converge
+    
+</title>
+    
+    <!-- Author -->
+    
+    <meta name="author" content="Oshadha G" />
+    
+    
+    <!-- Article specific meta tags -->
+    
+    
+    <meta property="article:published_time" content="2025-10-19T00:00:00+00:00" />
+    
+    
+    
+    
+    <meta property="article:tag" content="github-actions" />
+    
+    <meta property="article:tag" content="ci-cd" />
+    
+    <meta property="article:tag" content="automation" />
+    
+    <meta property="article:tag" content="deployment" />
+    
+    <meta property="article:tag" content="lessons-learned" />
+    
+    
+    
+    
+    <meta property="article:section" content="DevOps" />
+    
+    
+    
+
+    <!-- Additional Facebook Meta Tags -->
+    <meta property="og:site_name" content="Noos - Where Thought, Code, and Craft Converge" />
+    <meta
+      property="og:url"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;github-actions-when-automation-meets-reality&#x2F;"
+    />
+    <meta
+      property="og:type"
+      content="article"
+    />
+    <meta property="og:title" content="GitHub Actions: When Automation Meets Reality | Noos - Where Thought, Code, and Craft Converge" />
+
+    <!-- Additional Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      property="twitter:url"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;github-actions-when-automation-meets-reality&#x2F;"
+    />
+    <meta name="twitter:title" content="GitHub Actions: When Automation Meets Reality | Noos - Where Thought, Code, and Craft Converge" />
+
+    <!-- Cover images -->
+           
+           
+           
+           
+             
+           
+
+    <meta
+      property="og:image"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;github-actions-when-automation-meets-reality.png"
+    />
+
+    <meta
+      name="twitter:image"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;github-actions-when-automation-meets-reality.png"
+    />
+
+
+
+    <!-- Favicons -->
+           
+           <!-- PNG + ICO (some clients ignore SVG favicons) -->
+           <link
+             rel="icon"
+             type="image/png"
+             sizes="96x96"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/favicon-96x96.png?v=3"
+           />
+           <link
+             rel="apple-touch-icon"
+             sizes="180x180"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/apple-touch-icon.png?v=3"
+           />
+           <link
+             rel="shortcut icon"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/favicon.ico?v=3"
+           />
+           
+
+    <!-- RSS Feed -->
+    
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      title="RSS"
+      href="https://noos.blog/atom.xml"
+    />
+    
+
+    <!-- Load Styles -->
+    
+      <link
+        rel="stylesheet"
+        href="https://noos.blog/site.css"
+      />
+    
+
+    <!-- Load Fonts -->
+    
+
+  
+
+
+
+
+
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+  
+
+
+
+<!-- Forcing Font -->
+<style>
+body {
+  font-family:
+    "JetBrains Mono", Menlo, Monaco, Lucida Console, Liberation Mono,
+    DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New,
+    monospace, serif !important;
+}
+</style>
+
+
+    <!-- Pass Theme Preference as Data Attribute -->
+    <script src="https://noos.blog/js/init-theme.js"></script>
+
+    <!-- Reference return to click position script -->
+    <script defer src="https://noos.blog/js/reference-return.js"></script>
+
+    <!-- Additional scripts -->
+    
+      
+        <script defer src="https://noos.blog/js/codeblock.js"></script>
+      
+            
+              <script defer src="https://noos.blog/js/toggle-theme.js"></script>
+            
+      
+<!-- MathJax script for rendering LaTeX math equations -->
+<script src="https://noos.blog/js/mathjax-config.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+  async
+></script>
+
+
+      
+<script type="text/javascript" src="https://noos.blog/elasticlunr.min.js"></script>
+<script type="text/javascript" src="https://noos.blog/js/search.js"></script>
+
+    
+    
+    <!-- Structured Data (JSON-LD) -->
+    
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "GitHub Actions: When Automation Meets Reality",
+  
+  "description": "Lessons learned from wrestling with GitHub Actions: submodules, deployment strategies, and when to embrace manual control.",
+  
+  
+  "datePublished": "2025-10-19T00:00:00+00:00",
+  
+  
+  "author": {
+    "@type": "Person",
+    "name": "Oshadha G"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Noos - Where Thought, Code, and Craft Converge",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https:&#x2F;&#x2F;noos.blog/icons/favicon/web-app-manifest-512x512.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;github-actions-when-automation-meets-reality&#x2F;"
+  },
+  "url": "https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;github-actions-when-automation-meets-reality&#x2F;",
+  
+  "keywords": "github-actions, ci-cd, automation, deployment, lessons-learned",
+  
+  "inLanguage": "en"
+}
+</script>
+
+
+    
+    <!-- Google Analytics (GA4) -->
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-54YK7R04LX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-54YK7R04LX', {
+        'anonymize_ip': true,
+        'respect_dnt': true
+      });
+    </script>
+    
+  </head>
+
+  <!-- Body element (contents of the page) -->
+  <body class="hack main container">
+    
+  
+    
+    
+      
+  
+  <section class="nav-header">
+    <nav
+      itemscope
+      itemtype="http://schema.org/SiteNavigationElement"
+      class="navbar"
+    >
+      <section class="nav-links">
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/"
+        >
+          <span itemprop="name">Home</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/about"
+        >
+          <span itemprop="name">About</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/categories"
+        >
+          <span itemprop="name">Categories</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/tags"
+        >
+          <span itemprop="name">Tags</span>
+        </a>
+        
+      </section>
+    </nav>
+    <aside class="user-actions-container">
+      
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        class="search-icon"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+        />
+      </svg>
+      <input type="text" id="search" placeholder="Search..." />
+      <section class="search-results" aria-live="polite">
+        <article class="search-results__items" role="list"></article>
+      </section>
+       
+      <a id="dark-mode-toggle" href="#">
+        <img
+          src="https://noos.blog/icons/sun.svg"
+          id="sun-icon"
+          style="filter: invert(1)"
+          alt="Light mode"
+        />
+        <img
+          src="https://noos.blog/icons/moon.svg"
+          id="moon-icon"
+          alt="Dark mode"
+        />
+      </a>
+       
+      <a
+        href="https://noos.blog/atom.xml"
+        class="feed-icon"
+        rel="noopener noreferrer"
+      >
+        <img
+          src="https://noos.blog/icons/rss.svg"
+          id="rss-icon"
+          alt="RSS feed"
+          class="social-icon"
+        />
+      </a>
+       
+    </aside>
+  </section>
+  
+
+    
+
+
+    <main>
+      
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">GitHub Actions: When Automation Meets Reality</h1>
+        
+        <data class="muted">
+    <svg class="icon i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <data>9 minute read</data>
+    
+    
+    <svg class="icon i-calendar" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <!-- Calendar outline -->
+        <rect x="3" y="6" width="26" height="23" rx="2" ry="2"/>
+        <!-- Binding rings -->
+        <line x1="10" y1="3" x2="10" y2="9"/>
+        <line x1="22" y1="3" x2="22" y2="9"/>
+        <!-- Top separator -->
+        <line x1="3" y1="12" x2="29" y2="12"/>
+    </svg>
+
+    Published: 2025-10-19
+    
+</data>
+        
+        
+        
+        
+          
+        
+        
+        
+        
+        <figure class="post-cover" style="margin: 1.25rem 0;">
+          <img src="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;github-actions-when-automation-meets-reality.png" alt="GitHub Actions: When Automation Meets Reality cover" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--color-border-default, #e5e7eb);" onerror="this.parentNode.style.display='none'" />
+        </figure>
+        
+    </header>
+
+    <article itemprop="articleBody">
+        
+            <!-- If no summary separate from content, just render content -->
+            <p>When you first set up GitHub Actions for a project, it feels like magic. Push your code, and the CI/CD pipeline takes care of everything—building, testing, deploying. But sometimes, the magic breaks. And when it does, you learn things you never expected to learn.</p>
+<p>I recently went through a journey with GitHub Actions that taught me a lot about the gap between "this should work" and "this actually works." Here's what I learned, without exposing too many project details.</p>
+<hr />
+<h2 id="background-building-with-zola">Background: Building with Zola</h2>
+<p>For context, this blog is built using <a href="https://www.getzola.org/">Zola</a>, a static site generator written in Rust. Zola takes Markdown files and templates, processes them, and outputs a static HTML site. It's fast, simple, and doesn't require a runtime—just compile your site and serve the static files.</p>
+<p>The deployment process is straightforward:</p>
+<ol>
+<li>Write content in Markdown</li>
+<li>Run <code>zola build</code> to generate static HTML</li>
+<li>Deploy the generated files to a hosting service</li>
+</ol>
+<p>This makes Zola an ideal candidate for GitHub Pages: you build once, deploy the static files, and GitHub Pages serves them. The challenge comes when you want to automate this process with GitHub Actions.</p>
+<h2 id="the-promise-of-automation">The Promise of Automation</h2>
+<p>GitHub Actions promises a lot:</p>
+<ul>
+<li>Automatic builds on every push</li>
+<li>Consistent deployment environments</li>
+<li>Less manual work, fewer human errors</li>
+<li>Integration with GitHub Pages for static sites</li>
+</ul>
+<p>The setup looks straightforward:</p>
+<ol>
+<li>Create a <code>.github/workflows/deploy.yml</code> file</li>
+<li>Define your build steps</li>
+<li>Push and watch it work</li>
+</ol>
+<p>But reality has a way of complicating things.</p>
+<hr />
+<h2 id="issue-1-the-submodule-problem">Issue #1: The Submodule Problem</h2>
+<p>One of the first issues I encountered was related to git submodules. If your project includes external dependencies managed as submodules, GitHub Actions needs explicit configuration to handle them.</p>
+<p><strong>The Error:</strong></p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>Error: fatal: No url found for submodule path &#39;themes/radion&#39; in .gitmodules
+</span><span>Error: The process &#39;/usr/bin/git&#39; failed with exit code 128
+</span></code></pre>
+<p><strong>The Root Cause:</strong>
+GitHub Actions tries to fetch submodules by default, but if your <code>.gitmodules</code> file is missing or incomplete, or if the submodule path exists but isn't properly configured, the build fails.</p>
+<p><strong>The Solution:</strong>
+If you're not actually using submodules (maybe you copied files directly), you have two options:</p>
+<ol>
+<li>
+<p><strong>Remove the submodule completely:</strong></p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">git</span><span> rm</span><span style="color:#bf616a;"> --cached</span><span> themes/radion
+</span><span style="color:#bf616a;">rm -rf</span><span> themes/radion/.git
+</span><span style="color:#bf616a;">git</span><span> add themes/radion
+</span><span style="color:#bf616a;">git</span><span> commit</span><span style="color:#bf616a;"> -m </span><span>&quot;</span><span style="color:#a3be8c;">Convert submodule to regular directory</span><span>&quot;
+</span></code></pre>
+</li>
+<li>
+<p><strong>Configure GitHub Actions to skip submodules:</strong></p>
+<pre data-lang="yaml" style="background-color:#2b303b;color:#c0c5ce;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span>- </span><span style="color:#bf616a;">uses</span><span>: </span><span style="color:#a3be8c;">actions/checkout@v4
+</span><span>  </span><span style="color:#bf616a;">with</span><span>:
+</span><span>    </span><span style="color:#bf616a;">submodules</span><span>: </span><span style="color:#d08770;">false
+</span></code></pre>
+</li>
+</ol>
+<p>I went with option 1 because I wasn't actually using submodules—I had copied the theme files directly into the repository. The submodule reference was leftover from an earlier setup.</p>
+<hr />
+<h2 id="issue-2-branch-confusion">Issue #2: Branch Confusion</h2>
+<p>GitHub Pages supports two deployment methods:</p>
+<ul>
+<li><strong>GitHub Actions:</strong> Build your site using a workflow</li>
+<li><strong>Branch-based:</strong> Serve files directly from a branch (like <code>gh-pages</code>)</li>
+</ul>
+<p>I started with GitHub Actions, but ran into issues. The build kept failing, and debugging CI/CD pipelines can be frustrating—you push, wait, check logs, repeat.</p>
+<p><strong>The Revelation:</strong>
+Sometimes, manual deployment to a <code>gh-pages</code> branch is simpler and more reliable. You get:</p>
+<ul>
+<li>Full control over when and how you deploy</li>
+<li>Ability to test locally before deploying</li>
+<li>No hidden automation surprises</li>
+<li>Easier debugging (you can inspect the built files directly)</li>
+</ul>
+<p><strong>The Manual Approach:</strong></p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># Build locally
+</span><span style="color:#bf616a;">zola</span><span> build</span><span style="color:#bf616a;"> --output-dir</span><span> public</span><span style="color:#bf616a;"> --force
+</span><span>
+</span><span style="color:#65737e;"># Deploy to gh-pages branch
+</span><span style="color:#bf616a;">git</span><span> checkout</span><span style="color:#bf616a;"> -B</span><span> gh-pages
+</span><span style="color:#bf616a;">rsync -av --delete --exclude</span><span>=&#39;</span><span style="color:#a3be8c;">.git/</span><span>&#39; public/ .
+</span><span style="color:#bf616a;">git</span><span> add</span><span style="color:#bf616a;"> -A
+</span><span style="color:#bf616a;">git</span><span> commit</span><span style="color:#bf616a;"> -m </span><span>&quot;</span><span style="color:#a3be8c;">Publish: </span><span>$</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">date</span><span style="color:#a3be8c;"> +</span><span>%</span><span style="color:#bf616a;">Y</span><span style="color:#a3be8c;">-</span><span>%</span><span style="color:#bf616a;">m</span><span style="color:#a3be8c;">-</span><span>%</span><span style="color:#bf616a;">d</span><span style="color:#a3be8c;">)</span><span>&quot;
+</span><span style="color:#bf616a;">git</span><span> push</span><span style="color:#bf616a;"> -f</span><span> origin gh-pages
+</span><span style="color:#bf616a;">git</span><span> checkout main
+</span></code></pre>
+<p>Is this less "modern"? Maybe. But it's transparent, predictable, and gives you control when you need it.</p>
+<hr />
+<h2 id="update-automation-wins-after-all">Update: Automation Wins After All</h2>
+<p>After writing the initial version of this post, I realized something: maintaining two branches manually was becoming a burden. The workflow was reliable, but it required:</p>
+<ul>
+<li>Remembering to switch branches</li>
+<li>Running build commands</li>
+<li>Manually syncing files</li>
+<li>Switching back to main</li>
+</ul>
+<p><strong>The Solution:</strong>
+I revisited GitHub Actions, but this time with a clear understanding of the issues:</p>
+<ol>
+<li>Configured submodules properly (<code>submodules: false</code> since we don't use them)</li>
+<li>Used a reliable deployment action (<code>peaceiris/actions-gh-pages</code>)</li>
+<li>Set up the workflow to trigger on push to <code>main</code></li>
+</ol>
+<p><strong>The Result:</strong>
+Now I just push to <code>main</code>, and GitHub Actions handles everything:</p>
+<ul>
+<li>Builds the site automatically</li>
+<li>Deploys to <code>gh-pages</code> branch</li>
+<li>Updates GitHub Pages</li>
+</ul>
+<p><strong>What Changed:</strong>
+The key was understanding the submodule issue first. Once that was resolved, the automation became reliable. The workflow is simple and transparent—I can see exactly what's happening in the Actions tab.</p>
+<p><strong>The Lesson:</strong>
+Sometimes automation <em>does</em> make sense. The difference between my first attempt and my second attempt was:</p>
+<ul>
+<li>Understanding the root causes (submodules, branch setup)</li>
+<li>Using proven, maintained actions</li>
+<li>Starting simple and adding complexity only when needed</li>
+</ul>
+<p>The manual approach taught me what was happening under the hood. That knowledge made the automation reliable.</p>
+<hr />
+<h2 id="issue-3-missing-scripts-and-assets">Issue #3: Missing Scripts and Assets</h2>
+<p>When deploying to GitHub Pages, you need to ensure all your assets are included. This might seem obvious, but it's easy to miss.</p>
+<p><strong>The Problem:</strong>
+Your site builds locally, but when deployed, certain features don't work—like a theme toggle button that does nothing, or search functionality that's broken.</p>
+<p><strong>The Cause:</strong>
+JavaScript files weren't being included in the HTML. The build process generated the files, but the HTML templates weren't referencing them correctly, or the script tags were missing entirely.</p>
+<p><strong>The Fix:</strong>
+Manually verify that all necessary scripts are loaded:</p>
+<ul>
+<li>Check your HTML templates</li>
+<li>Ensure script tags are in the correct order</li>
+<li>Verify paths are correct (especially for GitHub Pages subdirectory paths)</li>
+</ul>
+<p>Sometimes, the simplest solution is to open the generated HTML and check what's actually there.</p>
+<hr />
+<h2 id="issue-4-the-abstraction-trap">Issue #4: The Abstraction Trap</h2>
+<p>Here's the thing about automation: when it works, it's great. When it doesn't, you're debugging an abstraction layer you may not fully understand.</p>
+<p><strong>The Pattern:</strong></p>
+<ol>
+<li>Something breaks</li>
+<li>You check GitHub Actions logs</li>
+<li>You see an error message</li>
+<li>You make a change</li>
+<li>You push and wait</li>
+<li>Repeat</li>
+</ol>
+<p>This cycle can be slow, especially if your builds take a few minutes each time.</p>
+<p><strong>The Alternative:</strong>
+With manual deployment:</p>
+<ol>
+<li>Build locally (instant feedback)</li>
+<li>Test locally</li>
+<li>Deploy when ready</li>
+<li>Inspect the deployed files directly</li>
+</ol>
+<p>The feedback loop is faster, and you understand every step.</p>
+<hr />
+<h2 id="issue-5-github-pages-source-branch-mismatch">Issue #5: GitHub Pages Source Branch Mismatch</h2>
+<p>Even after getting the deployment pipeline working, some issues only surfaced when viewing the site in production. These weren't build failures—they were configuration problems.</p>
+<h3 id="the-github-pages-source-branch-mismatch">The GitHub Pages Source Branch Mismatch</h3>
+<p><strong>The Symptom:</strong>
+After deploying fixes, the blog post updates weren't appearing on the live site. The build succeeded, GitHub Actions showed successful deployment, but visiting the site showed old content.</p>
+<p><strong>The Root Cause:</strong>
+GitHub Pages has two deployment methods:</p>
+<ol>
+<li><strong>GitHub Actions</strong> - Pages builds from Actions workflow output</li>
+<li><strong>Branch-based</strong> - Pages serves files directly from a branch (like <code>gh-pages</code>)</li>
+</ol>
+<p>The problem was a configuration mismatch: GitHub Pages was set to use "GitHub Actions" as the source, but our workflow was deploying to the <code>gh-pages</code> branch. GitHub Pages was trying to serve from the Actions output, not the branch we were deploying to.</p>
+<p><strong>The Fix:</strong>
+Changed GitHub Pages source back to <code>gh-pages</code> branch in repository settings:</p>
+<ol>
+<li>Go to repository Settings → Pages</li>
+<li>Under "Source", select "Deploy from a branch"</li>
+<li>Choose <code>gh-pages</code> branch and <code>/ (root)</code> folder</li>
+<li>Save</li>
+</ol>
+<p><strong>Why This Happened:</strong>
+When you first set up GitHub Actions, GitHub Pages might automatically switch to "GitHub Actions" mode. If your workflow deploys to <code>gh-pages</code> branch (which is common), you need to ensure the Pages source matches where you're deploying.</p>
+<p><strong>The Lesson:</strong>
+Always verify that your GitHub Pages source matches your deployment target. If your Actions workflow deploys to <code>gh-pages</code>, make sure Pages is configured to serve from that branch. Configuration mismatches can cause silent failures where everything appears to work but content doesn't update.</p>
+<h3 id="testing-across-browsers">Testing Across Browsers</h3>
+<p><strong>The Problem:</strong>
+Different browsers cache differently. Chrome might show updated content while Firefox shows old content, or vice versa. However, in this case, the issue wasn't browser caching—it was a configuration mismatch.</p>
+<p><strong>The Solution:</strong></p>
+<ol>
+<li>Always verify GitHub Pages source matches your deployment method</li>
+<li>Check GitHub Actions logs to confirm deployment succeeded</li>
+<li>Wait 2-5 minutes for GitHub Pages to rebuild after deployment</li>
+<li>Use hard refresh (Cmd+Shift+R / Ctrl+Shift+R) when testing</li>
+<li>Test in multiple browsers to rule out caching issues</li>
+</ol>
+<p><strong>What I Learned:</strong></p>
+<ul>
+<li>GitHub Pages configuration must match your deployment method</li>
+<li>Always verify the deployment target matches the Pages source</li>
+<li>Testing locally doesn't catch configuration mismatches</li>
+</ul>
+<hr />
+<h2 id="when-to-use-github-actions">When to Use GitHub Actions</h2>
+<p>Don't get me wrong—GitHub Actions is powerful and useful. Use it when:</p>
+<ul>
+<li>You need automated testing on every commit</li>
+<li>You want consistent build environments</li>
+<li>Multiple people are deploying</li>
+<li>You need to run expensive operations (like building large projects)</li>
+<li>You want to enforce code quality checks</li>
+</ul>
+<p><strong>But consider manual deployment when:</strong></p>
+<ul>
+<li>Your build process is simple</li>
+<li>You want full control</li>
+<li>You're deploying infrequently</li>
+<li>You want to understand every step</li>
+<li>Debugging automation is slowing you down</li>
+</ul>
+<hr />
+<h2 id="lessons-learned">Lessons Learned</h2>
+<ol>
+<li>
+<p><strong>Understand your dependencies:</strong> Know whether you're using submodules, npm packages, or other external resources. This affects your CI/CD setup.</p>
+</li>
+<li>
+<p><strong>Test locally first:</strong> Always build and test your site locally before relying on automation. Automation catches mistakes, but you should catch them first.</p>
+</li>
+<li>
+<p><strong>Keep it simple:</strong> If automation adds complexity without clear benefits, consider if manual processes might be better for your use case.</p>
+</li>
+<li>
+<p><strong>Inspect the output:</strong> When something doesn't work, look at the actual generated files. HTML errors, missing assets, and broken links are often visible in the source.</p>
+</li>
+<li>
+<p><strong>Verify GitHub Pages configuration matches deployment:</strong> If your Actions workflow deploys to <code>gh-pages</code> branch, ensure GitHub Pages source is set to that branch. Configuration mismatches cause silent failures.</p>
+</li>
+<li>
+<p><strong>Test across browsers:</strong> Different browsers cache differently. Always test in multiple browsers after deployment, and use hard refresh when debugging.</p>
+</li>
+<li>
+<p><strong>Document your process:</strong> Whether you use automation or manual deployment, document it. Future you (and your team) will thank you.</p>
+</li>
+</ol>
+<hr />
+<h2 id="conclusion">Conclusion</h2>
+<p>GitHub Actions is a powerful tool, but it's not always the right tool—at least not immediately. My journey started with frustration, moved to manual control, and ended with successful automation.</p>
+<p>The manual approach wasn't wasted effort. It taught me:</p>
+<ul>
+<li>What was happening under the hood</li>
+<li>How the build process worked</li>
+<li>What could go wrong and why</li>
+</ul>
+<p>That knowledge made the automation reliable. When I returned to GitHub Actions, I understood the root causes and could configure it correctly.</p>
+<p>The key is to choose the approach that fits your project, your team, and your workflow. Sometimes that means starting manually to understand the process, then automating once you know what you're automating.</p>
+<p>At the end of the day, the goal is to deploy reliably and efficiently. Whether that's through GitHub Actions, manual commands, or a hybrid approach, what matters is that it works for you—and that you understand why it works.</p>
+<hr />
+<h3 id="further-reading">Further Reading</h3>
+<ul>
+<li><a href="https://docs.github.com/en/actions">GitHub Actions Documentation</a> – Official documentation</li>
+<li><a href="https://docs.github.com/en/pages">GitHub Pages Deployment</a> – Deployment strategies</li>
+<li><a href="https://git-scm.com/book/en/v2/Git-Tools-Submodules">Managing Git Submodules</a> – Git submodule basics</li>
+</ul>
+
+        
+    </article>
+
+    <!-- Comment section -->
+    
+      
+        
+          <script
+  src="https://giscus.app/client.js"
+  data-repo="nooscraft&#x2F;personal-blog"
+  data-repo-id="R_kgDOQJ_XNg"
+  data-category="General"
+  data-category-id="DIC_kwDOQJ_XNs4CxOmG"
+  data-mapping="pathname"
+  data-strict="0"
+  data-reactions-enabled="1"
+  data-emit-metadata="0"
+  data-input-position="bottom"
+
+  
+  data-theme="https:&#x2F;&#x2F;noos.blog&#x2F;css&#x2F;giscus-theme.css"
+  
+
+  data-lang="en"
+  data-loading="lazy"
+  crossorigin="anonymous"
+  async
+></script>
+
+        
+      
+    
+
+
+    <!-- Page footer -->
+    
+    <footer>
+        <hr>
+        <p>
+            
+            
+                
+                in <a href="https://noos.blog/categories/devops/">DevOps</a>
+            
+            
+                and
+                tagged
+                
+                    <a href="https://noos.blog/tags/github-actions/">github-actions</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/ci-cd/">ci-cd</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/automation/">automation</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/deployment/">deployment</a>
+                    
+                        
+                            
+                                and
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/lessons-learned/">lessons-learned</a>
+                    
+                        
+                    
+                
+            
+        </p>
+
+        <!-- Revision history (optional) -->
+        
+          
+            
+              
+            
+          
+        
+
+        
+        
+    </footer>
+
+
+</article>
+
+
+    </main>
+    
+
+  </body>
+</html>

@@ -1,0 +1,590 @@
+<!doctype html>
+<html lang="en" data-theme="toggle">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <!-- Enable responsiveness on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;rust-serde-datetime-deserialization-error&#x2F;" />
+    
+    <!-- Robots meta -->
+    
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    
+
+    
+      
+        <meta name="description" content="A common Rust Serde error when deserializing DateTime from JSON that stores timestamps as objects instead of RFC 3339 strings." />
+        <meta property="og:description" content="A common Rust Serde error when deserializing DateTime from JSON that stores timestamps as objects instead of RFC 3339 strings." />
+        <meta property="twitter:description" content="A common Rust Serde error when deserializing DateTime from JSON that stores timestamps as objects instead of RFC 3339 strings." />
+      
+    
+
+    <!-- Title -->
+    
+      
+    
+    <title>
+    
+    When Rust Expects a String But Gets a Map | Noos - Where Thought, Code, and Craft Converge
+    
+</title>
+    
+    <!-- Author -->
+    
+    <meta name="author" content="Oshadha G" />
+    
+    
+    <!-- Article specific meta tags -->
+    
+    
+    <meta property="article:published_time" content="2025-10-29T00:00:00+00:00" />
+    
+    
+    
+    
+    <meta property="article:tag" content="rust" />
+    
+    <meta property="article:tag" content="serde" />
+    
+    <meta property="article:tag" content="datetime" />
+    
+    <meta property="article:tag" content="json" />
+    
+    <meta property="article:tag" content="error-handling" />
+    
+    
+    
+    
+    <meta property="article:section" content="Programming" />
+    
+    
+    
+
+    <!-- Additional Facebook Meta Tags -->
+    <meta property="og:site_name" content="Noos - Where Thought, Code, and Craft Converge" />
+    <meta
+      property="og:url"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;rust-serde-datetime-deserialization-error&#x2F;"
+    />
+    <meta
+      property="og:type"
+      content="article"
+    />
+    <meta property="og:title" content="When Rust Expects a String But Gets a Map | Noos - Where Thought, Code, and Craft Converge" />
+
+    <!-- Additional Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      property="twitter:url"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;rust-serde-datetime-deserialization-error&#x2F;"
+    />
+    <meta name="twitter:title" content="When Rust Expects a String But Gets a Map | Noos - Where Thought, Code, and Craft Converge" />
+
+    <!-- Cover images -->
+           
+           
+           
+           
+             
+           
+
+    <meta
+      property="og:image"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;rust-serde-datetime-deserialization-error.png"
+    />
+
+    <meta
+      name="twitter:image"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;rust-serde-datetime-deserialization-error.png"
+    />
+
+
+
+    <!-- Favicons -->
+           
+           <!-- PNG + ICO (some clients ignore SVG favicons) -->
+           <link
+             rel="icon"
+             type="image/png"
+             sizes="96x96"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/favicon-96x96.png?v=3"
+           />
+           <link
+             rel="apple-touch-icon"
+             sizes="180x180"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/apple-touch-icon.png?v=3"
+           />
+           <link
+             rel="shortcut icon"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/favicon.ico?v=3"
+           />
+           
+
+    <!-- RSS Feed -->
+    
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      title="RSS"
+      href="https://noos.blog/atom.xml"
+    />
+    
+
+    <!-- Load Styles -->
+    
+      <link
+        rel="stylesheet"
+        href="https://noos.blog/site.css"
+      />
+    
+
+    <!-- Load Fonts -->
+    
+
+  
+
+
+
+
+
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+  
+
+
+
+<!-- Forcing Font -->
+<style>
+body {
+  font-family:
+    "JetBrains Mono", Menlo, Monaco, Lucida Console, Liberation Mono,
+    DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New,
+    monospace, serif !important;
+}
+</style>
+
+
+    <!-- Pass Theme Preference as Data Attribute -->
+    <script src="https://noos.blog/js/init-theme.js"></script>
+
+    <!-- Reference return to click position script -->
+    <script defer src="https://noos.blog/js/reference-return.js"></script>
+
+    <!-- Additional scripts -->
+    
+      
+        <script defer src="https://noos.blog/js/codeblock.js"></script>
+      
+            
+              <script defer src="https://noos.blog/js/toggle-theme.js"></script>
+            
+      
+<!-- MathJax script for rendering LaTeX math equations -->
+<script src="https://noos.blog/js/mathjax-config.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+  async
+></script>
+
+
+      
+<script type="text/javascript" src="https://noos.blog/elasticlunr.min.js"></script>
+<script type="text/javascript" src="https://noos.blog/js/search.js"></script>
+
+    
+    
+    <!-- Structured Data (JSON-LD) -->
+    
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "When Rust Expects a String But Gets a Map",
+  
+  "description": "A common Rust Serde error when deserializing DateTime from JSON that stores timestamps as objects instead of RFC 3339 strings.",
+  
+  
+  "datePublished": "2025-10-29T00:00:00+00:00",
+  
+  
+  "author": {
+    "@type": "Person",
+    "name": "Oshadha G"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Noos - Where Thought, Code, and Craft Converge",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https:&#x2F;&#x2F;noos.blog/icons/favicon/web-app-manifest-512x512.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;rust-serde-datetime-deserialization-error&#x2F;"
+  },
+  "url": "https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;rust-serde-datetime-deserialization-error&#x2F;",
+  
+  "keywords": "rust, serde, datetime, json, error-handling",
+  
+  "inLanguage": "en"
+}
+</script>
+
+
+    
+    <!-- Google Analytics (GA4) -->
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-54YK7R04LX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-54YK7R04LX', {
+        'anonymize_ip': true,
+        'respect_dnt': true
+      });
+    </script>
+    
+  </head>
+
+  <!-- Body element (contents of the page) -->
+  <body class="hack main container">
+    
+  
+    
+    
+      
+  
+  <section class="nav-header">
+    <nav
+      itemscope
+      itemtype="http://schema.org/SiteNavigationElement"
+      class="navbar"
+    >
+      <section class="nav-links">
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/"
+        >
+          <span itemprop="name">Home</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/about"
+        >
+          <span itemprop="name">About</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/categories"
+        >
+          <span itemprop="name">Categories</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/tags"
+        >
+          <span itemprop="name">Tags</span>
+        </a>
+        
+      </section>
+    </nav>
+    <aside class="user-actions-container">
+      
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        class="search-icon"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+        />
+      </svg>
+      <input type="text" id="search" placeholder="Search..." />
+      <section class="search-results" aria-live="polite">
+        <article class="search-results__items" role="list"></article>
+      </section>
+       
+      <a id="dark-mode-toggle" href="#">
+        <img
+          src="https://noos.blog/icons/sun.svg"
+          id="sun-icon"
+          style="filter: invert(1)"
+          alt="Light mode"
+        />
+        <img
+          src="https://noos.blog/icons/moon.svg"
+          id="moon-icon"
+          alt="Dark mode"
+        />
+      </a>
+       
+      <a
+        href="https://noos.blog/atom.xml"
+        class="feed-icon"
+        rel="noopener noreferrer"
+      >
+        <img
+          src="https://noos.blog/icons/rss.svg"
+          id="rss-icon"
+          alt="RSS feed"
+          class="social-icon"
+        />
+      </a>
+       
+    </aside>
+  </section>
+  
+
+    
+
+
+    <main>
+      
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">When Rust Expects a String But Gets a Map</h1>
+        
+        <data class="muted">
+    <svg class="icon i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <data>2 minute read</data>
+    
+    
+    <svg class="icon i-calendar" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <!-- Calendar outline -->
+        <rect x="3" y="6" width="26" height="23" rx="2" ry="2"/>
+        <!-- Binding rings -->
+        <line x1="10" y1="3" x2="10" y2="9"/>
+        <line x1="22" y1="3" x2="22" y2="9"/>
+        <!-- Top separator -->
+        <line x1="3" y1="12" x2="29" y2="12"/>
+    </svg>
+
+    Published: 2025-10-29
+    
+</data>
+        
+        
+        
+        
+          
+        
+        
+        
+        
+        <figure class="post-cover" style="margin: 1.25rem 0;">
+          <img src="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;rust-serde-datetime-deserialization-error.png" alt="When Rust Expects a String But Gets a Map cover" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--color-border-default, #e5e7eb);" onerror="this.parentNode.style.display='none'" />
+        </figure>
+        
+    </header>
+
+    <article itemprop="articleBody">
+        
+            <!-- If no summary separate from content, just render content -->
+            <p>I recently hit this error while working with a Rust application that reads from a database:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>Database(&quot;Kind: invalid type: map, expected an RFC 3339 formatted date and time string, labels: {}&quot;)
+</span></code></pre>
+<p>At first glance, it's a bit cryptic. But the error message actually tells you exactly what's wrong.</p>
+<h2 id="the-problem">The Problem</h2>
+<p>When you have a Rust struct with a <code>DateTime&lt;Utc&gt;</code> field, Serde expects the JSON to contain an RFC 3339 formatted string like:</p>
+<pre data-lang="json" style="background-color:#2b303b;color:#c0c5ce;" class="language-json "><code class="language-json" data-lang="json"><span>&quot;</span><span style="color:#a3be8c;">2025-09-15T01:36:19Z</span><span>&quot;
+</span></code></pre>
+<p>But instead, your database (or JSON source) is storing it as a map/object:</p>
+<pre data-lang="json" style="background-color:#2b303b;color:#c0c5ce;" class="language-json "><code class="language-json" data-lang="json"><span>{
+</span><span>  &quot;</span><span style="color:#a3be8c;">sec</span><span>&quot;: </span><span style="color:#d08770;">1694733379</span><span>,
+</span><span>  &quot;</span><span style="color:#a3be8c;">nsec</span><span>&quot;: </span><span style="color:#d08770;">199610000
+</span><span>}
+</span></code></pre>
+<p>Serde can't automatically convert a map into a <code>DateTime</code>—it needs a string it can parse.</p>
+<h2 id="why-this-happens">Why This Happens</h2>
+<p>Different systems store timestamps differently:</p>
+<ul>
+<li>Some databases store timestamps as Unix time objects with separate seconds and nanoseconds</li>
+<li>Some JSON APIs return timestamps as nested objects</li>
+<li>Other sources might use different date formats</li>
+</ul>
+<p>But Rust's <code>DateTime&lt;Utc&gt;</code> with Serde defaults expects the standard RFC 3339 string format.</p>
+<h2 id="the-fix">The Fix</h2>
+<p>You have two options:</p>
+<p><strong>Option 1: Fix the data source</strong> (if you control it)
+Make sure your database or JSON source stores timestamps as RFC 3339 strings:</p>
+<pre data-lang="json" style="background-color:#2b303b;color:#c0c5ce;" class="language-json "><code class="language-json" data-lang="json"><span>&quot;</span><span style="color:#a3be8c;">created_at</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">2025-09-15T01:36:19Z</span><span>&quot;
+</span></code></pre>
+<p><strong>Option 2: Use a custom deserializer</strong> (if you can't change the source)
+Write a custom Serde deserializer to handle the map format:</p>
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">use </span><span>chrono::{DateTime, Utc};
+</span><span style="color:#b48ead;">use </span><span>serde::{Deserialize, Deserializer};
+</span><span>
+</span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">from_timestamp_map</span><span>&lt;</span><span style="color:#b48ead;">&#39;de</span><span>, D&gt;(</span><span style="color:#bf616a;">deserializer</span><span>: D) -&gt; Result&lt;DateTime&lt;Utc&gt;, </span><span style="color:#b48ead;">D::</span><span>Error&gt;
+</span><span style="color:#b48ead;">where
+</span><span>    D: Deserializer&lt;</span><span style="color:#b48ead;">&#39;de</span><span>&gt;,
+</span><span>{
+</span><span>    #[</span><span style="color:#bf616a;">derive</span><span>(Deserialize)]
+</span><span>    </span><span style="color:#b48ead;">struct </span><span>Timestamp {
+</span><span>        </span><span style="color:#bf616a;">sec</span><span>: </span><span style="color:#b48ead;">i64</span><span>,
+</span><span>        </span><span style="color:#bf616a;">nsec</span><span>: </span><span style="color:#b48ead;">u32</span><span>,
+</span><span>    }
+</span><span>    
+</span><span>    </span><span style="color:#b48ead;">let</span><span> ts = Timestamp::deserialize(deserializer)?;
+</span><span>    DateTime::from_timestamp(ts.sec, ts.nsec)
+</span><span>        .</span><span style="color:#96b5b4;">ok_or_else</span><span>(|| serde::de::Error::custom(&quot;</span><span style="color:#a3be8c;">Invalid timestamp</span><span>&quot;))
+</span><span>}
+</span><span>
+</span><span>#[</span><span style="color:#bf616a;">derive</span><span>(Deserialize)]
+</span><span style="color:#b48ead;">struct </span><span>ModelSelection {
+</span><span>    #[</span><span style="color:#bf616a;">serde</span><span>(deserialize_with = &quot;</span><span style="color:#a3be8c;">from_timestamp_map</span><span>&quot;)]
+</span><span>    </span><span style="color:#bf616a;">created_at</span><span>: DateTime&lt;Utc&gt;,
+</span><span>}
+</span></code></pre>
+<p>The custom deserializer reads the <code>sec</code> and <code>nsec</code> fields from the map and constructs a <code>DateTime&lt;Utc&gt;</code> from them.</p>
+<h2 id="bottom-line">Bottom Line</h2>
+<p>When Serde complains about expecting a string but getting a map for a <code>DateTime</code> field, your data source is storing timestamps in a format Serde doesn't recognize. Either standardize on RFC 3339 strings, or write a deserializer to handle your specific format.</p>
+
+        
+    </article>
+
+    <!-- Comment section -->
+    
+      
+        
+          <script
+  src="https://giscus.app/client.js"
+  data-repo="nooscraft&#x2F;personal-blog"
+  data-repo-id="R_kgDOQJ_XNg"
+  data-category="General"
+  data-category-id="DIC_kwDOQJ_XNs4CxOmG"
+  data-mapping="pathname"
+  data-strict="0"
+  data-reactions-enabled="1"
+  data-emit-metadata="0"
+  data-input-position="bottom"
+
+  
+  data-theme="https:&#x2F;&#x2F;noos.blog&#x2F;css&#x2F;giscus-theme.css"
+  
+
+  data-lang="en"
+  data-loading="lazy"
+  crossorigin="anonymous"
+  async
+></script>
+
+        
+      
+    
+
+
+    <!-- Page footer -->
+    
+    <footer>
+        <hr>
+        <p>
+            
+            
+                
+                in <a href="https://noos.blog/categories/programming/">Programming</a>
+            
+            
+                and
+                tagged
+                
+                    <a href="https://noos.blog/tags/rust/">rust</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/serde/">serde</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/datetime/">datetime</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/json/">json</a>
+                    
+                        
+                            
+                                and
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/error-handling/">error-handling</a>
+                    
+                        
+                    
+                
+            
+        </p>
+
+        <!-- Revision history (optional) -->
+        
+          
+            
+              
+            
+          
+        
+
+        
+        
+    </footer>
+
+
+</article>
+
+
+    </main>
+    
+
+  </body>
+</html>

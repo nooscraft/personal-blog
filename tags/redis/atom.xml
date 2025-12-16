@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Noos - Where Thought, Code, and Craft Converge - redis</title>
+    <subtitle>Personal blog about programming, technology, and engineering insights. Topics include Rust, DevOps, Linux, and software craftsmanship.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://noos.blog/tags/redis/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://noos.blog"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2025-10-30T00:00:00+00:00</updated>
+    <id>https://noos.blog/tags/redis/atom.xml</id>
+    <entry xml:lang="en">
+        <title>Redis, TLS, and Deadpool: When Dependency Versions Collide</title>
+        <published>2025-10-30T00:00:00+00:00</published>
+        <updated>2025-10-30T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/redis-tls-deadpool-compatibility/"/>
+        <id>https://noos.blog/posts/redis-tls-deadpool-compatibility/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/redis-tls-deadpool-compatibility/">&lt;h3 id=&quot;the-problem&quot;&gt;The Problem&lt;&#x2F;h3&gt;
+&lt;p&gt;I was working on a Rust project that uses Redis with TLS connections and a connection pool via &lt;code&gt;deadpool-redis&lt;&#x2F;code&gt;. Everything was working fine until I ran &lt;code&gt;cargo check&lt;&#x2F;code&gt; and saw this warning:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;warning: the following packages contain code that will be rejected by a future version of Rust: redis v0.25.4
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;That&#x27;s not something you want to see. It suggests your code will break in future Rust versions. So naturally, I tried to upgrade the &lt;code&gt;redis&lt;&#x2F;code&gt; crate to a newer version.&lt;&#x2F;p&gt;
+&lt;p&gt;But here&#x27;s where things got interesting—every single attempt to upgrade past &lt;code&gt;v0.25.4&lt;&#x2F;code&gt; broke the build. Not just small errors, but fundamental incompatibilities between the &lt;code&gt;redis&lt;&#x2F;code&gt; crate and &lt;code&gt;deadpool-redis&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;what-i-tried&quot;&gt;What I Tried&lt;&#x2F;h3&gt;
+&lt;p&gt;I went through the versions systematically, testing each major release:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;v0.26.x&lt;&#x2F;strong&gt;: Broke immediately. Missing &lt;code&gt;TcpTls&lt;&#x2F;code&gt; variant in the &lt;code&gt;Tokio&lt;&#x2F;code&gt; enum, internal TLS types incomplete.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;v0.27.x&lt;&#x2F;strong&gt;: Same issues as v0.26.x. TLS support partially broken.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;v0.28.x&lt;&#x2F;strong&gt;: TLS types like &lt;code&gt;TlsConnParams&lt;&#x2F;code&gt; and &lt;code&gt;TcpTls&lt;&#x2F;code&gt; were still broken internally.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;v0.29.x&lt;&#x2F;strong&gt;: Now it requires a &lt;code&gt;connect_tcp_tls&lt;&#x2F;code&gt; trait that &lt;code&gt;deadpool-redis&lt;&#x2F;code&gt; doesn&#x27;t implement.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;v0.30.x, v0.31.x, v0.32.x&lt;&#x2F;strong&gt;: All require the same &lt;code&gt;connect_tcp_tls&lt;&#x2F;code&gt; trait.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;The pattern became clear: somewhere between v0.25.4 and v0.29.0, the &lt;code&gt;redis&lt;&#x2F;code&gt; crate changed how it handles TLS connections, and &lt;code&gt;deadpool-redis&lt;&#x2F;code&gt; hasn&#x27;t caught up yet.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;the-root-cause&quot;&gt;The Root Cause&lt;&#x2F;h3&gt;
+&lt;p&gt;The issue is that &lt;code&gt;redis&lt;&#x2F;code&gt; v0.25.4 is the last version before &lt;code&gt;connect_tcp_tls&lt;&#x2F;code&gt; was introduced. This new trait-based approach is cleaner architecturally, but it requires connection pool libraries to implement this trait. &lt;code&gt;deadpool-redis&lt;&#x2F;code&gt; v0.14.0 was built against the older API and doesn&#x27;t have this implementation.&lt;&#x2F;p&gt;
+&lt;p&gt;Versions between v0.25.4 and v0.29.0 are in a transitional state—they have some TLS support but it&#x27;s incomplete or broken.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;current-status&quot;&gt;Current Status&lt;&#x2F;h3&gt;
+&lt;p&gt;After testing all these versions, I ended up staying with &lt;code&gt;redis v0.25.4&lt;&#x2F;code&gt;. Here&#x27;s the working configuration:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;Cargo.toml:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;toml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-toml &quot;&gt;&lt;code class=&quot;language-toml&quot; data-lang=&quot;toml&quot;&gt;&lt;span&gt;[dependencies]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;redis &lt;&#x2F;span&gt;&lt;span&gt;= { &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;version &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;=0.25.4&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;features &lt;&#x2F;span&gt;&lt;span&gt;= [&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;tokio-comp&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;tls-rustls&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;connection-manager&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;] }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;deadpool-redis &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;0.14.0&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;tokio &lt;&#x2F;span&gt;&lt;span&gt;= { &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;version &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;features &lt;&#x2F;span&gt;&lt;span&gt;= [&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;full&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;] }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;tokio-rustls &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;0.23.4&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;rustls &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;0.20.8&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;strong&gt;rust-toolchain.toml:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;toml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-toml &quot;&gt;&lt;code class=&quot;language-toml&quot; data-lang=&quot;toml&quot;&gt;&lt;span&gt;[toolchain]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;channel &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;1.74.1&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The &lt;code&gt;=&lt;&#x2F;code&gt; prefix on the redis version pins it exactly to v0.25.4, preventing accidental upgrades. And pinning Rust to &lt;code&gt;1.74.1&lt;&#x2F;code&gt; helps avoid future compatibility warnings.&lt;&#x2F;p&gt;
+&lt;p&gt;This setup works reliably:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;TLS over &lt;code&gt;rediss:&#x2F;&#x2F;&lt;&#x2F;code&gt; connections work with &lt;code&gt;tokio-rustls&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;Connection pooling via &lt;code&gt;deadpool-redis&lt;&#x2F;code&gt; functions correctly&lt;&#x2F;li&gt;
+&lt;li&gt;No compilation warnings or errors&lt;&#x2F;li&gt;
+&lt;li&gt;Stable and predictable behavior&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;what-to-avoid&quot;&gt;What to Avoid&lt;&#x2F;h3&gt;
+&lt;p&gt;If you&#x27;re in a similar situation, avoid these version combinations:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;redis v0.26.x–v0.28.x&lt;&#x2F;strong&gt;: TLS support is broken or incomplete. You&#x27;ll get compilation errors related to missing enum variants or broken TLS types.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;redis &amp;gt;= v0.29.0 with deadpool-redis&lt;&#x2F;strong&gt;: Won&#x27;t compile because &lt;code&gt;deadpool-redis&lt;&#x2F;code&gt; doesn&#x27;t implement the required &lt;code&gt;connect_tcp_tls&lt;&#x2F;code&gt; trait.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;deadpool-redis v0.15+&lt;&#x2F;strong&gt;: Currently not compatible with stable &lt;code&gt;redis&lt;&#x2F;code&gt; versions due to the same trait mismatch.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;alternative-approach&quot;&gt;Alternative Approach&lt;&#x2F;h3&gt;
+&lt;p&gt;If you really need a newer &lt;code&gt;redis&lt;&#x2F;code&gt; version, you have one option: drop &lt;code&gt;deadpool-redis&lt;&#x2F;code&gt; and use &lt;code&gt;redis&lt;&#x2F;code&gt;&#x27;s built-in &lt;code&gt;ConnectionManager&lt;&#x2F;code&gt; or switch to a different pooling library like &lt;code&gt;bb8&lt;&#x2F;code&gt;. But this means rewriting your connection pool code, which might not be worth it for most projects.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;the-future&quot;&gt;The Future&lt;&#x2F;h3&gt;
+&lt;p&gt;The situation is temporary, but it&#x27;s unclear when it will be resolved. The &lt;code&gt;deadpool-redis&lt;&#x2F;code&gt; maintainers need to either:&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;Implement the &lt;code&gt;connect_tcp_tls&lt;&#x2F;code&gt; trait for newer &lt;code&gt;redis&lt;&#x2F;code&gt; versions, or&lt;&#x2F;li&gt;
+&lt;li&gt;Update their API to work with the new connection model&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;Until then, staying with &lt;code&gt;redis v0.25.4&lt;&#x2F;code&gt; and &lt;code&gt;deadpool-redis v0.14.0&lt;&#x2F;code&gt; is the most stable path forward. Yes, you&#x27;ll see that deprecation warning, but it&#x27;s better than having broken code.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;bottom-line&quot;&gt;Bottom Line&lt;&#x2F;h3&gt;
+&lt;p&gt;Sometimes upgrading dependencies isn&#x27;t the right move. In this case, the ecosystem has a compatibility gap between &lt;code&gt;redis&lt;&#x2F;code&gt; and &lt;code&gt;deadpool-redis&lt;&#x2F;code&gt;, and staying on the older version is the pragmatic choice. The warning is annoying, but it&#x27;s not breaking anything right now—and when the ecosystem catches up, you can upgrade then.&lt;&#x2F;p&gt;
+&lt;p&gt;If you&#x27;re building a new project and need Redis with TLS and pooling, consider whether you can use &lt;code&gt;redis&lt;&#x2F;code&gt;&#x27;s built-in &lt;code&gt;ConnectionManager&lt;&#x2F;code&gt; instead of &lt;code&gt;deadpool-redis&lt;&#x2F;code&gt;. If you&#x27;re maintaining an existing project, stick with what works: &lt;code&gt;redis v0.25.4&lt;&#x2F;code&gt; and &lt;code&gt;deadpool-redis v0.14.0&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+</feed>
