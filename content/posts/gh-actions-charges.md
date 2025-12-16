@@ -61,17 +61,10 @@ Here's a simple breakdown of what's changing:
 
 ## What This Means for You
 
-### If you're using public repositories:
-**No action needed.** Everything stays free.
-
-### If you're using private repositories with GitHub-hosted runners:
-**You'll pay less.** Prices are going down, so your costs will decrease.
-
-### If you're using self-hosted runners:
-**You'll see a small charge.** At $0.002 per minute, that's about $0.12 per hour of runtime. For most projects, this is a minimal cost, but it's worth calculating based on your usage.
-
-### If you're on Enterprise Server:
-**No changes.** Your pricing remains the same.
+- **Public repositories:** No change—still free
+- **Private repositories (GitHub-hosted):** You'll pay less—prices dropping up to 39%
+- **Self-hosted runners:** New $0.002/min charge (~$0.12/hour). Calculate based on your usage
+- **Enterprise Server:** No changes
 
 ---
 
