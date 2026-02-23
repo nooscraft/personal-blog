@@ -1,7 +1,7 @@
 +++
 title = "When Rust Expects a String But Gets a Map"
 date = 2025-10-29
-description = "A common Rust Serde error when deserializing DateTime from JSON that stores timestamps as objects instead of RFC 3339 strings."
+description = "Fix Rust Serde DateTime deserialization errors: handling JSON timestamps as objects vs RFC 3339 strings. Common error solutions and workarounds."
 [taxonomies]
 categories = ["Programming"]
 tags = ["rust", "serde", "datetime", "json", "error-handling"]

@@ -1,6 +1,7 @@
 +++
 title = "Linux | Fancy little \"dialog\" utility"
 date = 2013-12-23
+description = "Create interactive terminal interfaces with Linux's dialog utility. Learn how to display CPU temperature with a simple bash script using dialog and lm-sensors."
 [taxonomies]
 categories = ["Linux"]
 tags = ["linux", "dialog", "bash", "cli"]

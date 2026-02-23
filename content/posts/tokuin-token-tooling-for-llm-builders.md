@@ -1,7 +1,7 @@
 +++
 title = "Tokuin: Token Intelligence for LLM Developers"
 date = 2025-11-07
-description = "A look at Tokuin, a ground-up token analysis and load-testing CLI for LLM prompts, why it exists, what it offers today, and where it's headed next."
+description = "Tokuin: A Rust CLI for LLM token counting, cost estimation, and load testing. Analyze prompts, compare models, and test APIs with reliable token intelligence."
 [taxonomies]
 categories = ["Tools"]
 tags = ["tokuin", "llm", "cli", "tokenization", "load-testing", "rust"]

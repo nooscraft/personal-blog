@@ -1,7 +1,7 @@
 +++
 title = "mock: Build APIs with Shell Scripts, Not Frameworks"
 date = 2025-11-05
-description = "mock is a lightweight API framework that lets you build endpoints using shell scripts—perfect for prototyping, testing, and quick integrations."
+description = "Build REST APIs with shell scripts using mock framework. Lightweight API prototyping without heavy frameworks—perfect for testing, mocking, and quick integrations."
 [taxonomies]
 categories = ["Tools"]
 tags = ["api", "shell", "devops", "prototyping", "testing"]

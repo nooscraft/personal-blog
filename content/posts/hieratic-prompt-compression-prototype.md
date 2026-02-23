@@ -1,7 +1,7 @@
 +++
 title = "Hieratic Prompt Compression: Ambitious Prototype or Superpower?"
 date = 2025-11-16
-description = "A proposal-style exploration of a rule-based, structure-aware prompt compression engine for Tokuin—and a call for expert feedback."
+description = "Exploring rule-based prompt compression for LLMs: structure-aware compression that reduces tokens by 66% without losing semantic meaning. A technical proposal for Tokuin."
 
 [taxonomies]
 categories = ["Engineering"]

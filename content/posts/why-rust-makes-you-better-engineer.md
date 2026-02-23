@@ -1,6 +1,6 @@
 +++
 title = "Why Rust Makes You a Better Engineer"
-description = "Deep dive into ownership, errors, and compiler-driven discipline that makes Rust unique and teaches better programming practices."
+description = "Learn why Rust makes you a better programmer. Explore ownership, memory safety, error handling, and how Rust's strict compiler teaches disciplined coding practices."
 date = 2025-10-16
 draft = false
 [taxonomies]

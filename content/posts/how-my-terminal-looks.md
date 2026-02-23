@@ -1,6 +1,6 @@
 +++
 title = "How my terminal looks"
-description = "My terminal setup: zsh + oh-my-zsh, tmux, a clean theme, and plugins for a faster, more productive workflow."
+description = "My productive terminal setup: zsh with oh-my-zsh, tmux configuration, clean themes, and essential plugins for a faster development workflow on Linux."
 date = 2025-10-13
 [taxonomies]
 categories = ["Tools"]

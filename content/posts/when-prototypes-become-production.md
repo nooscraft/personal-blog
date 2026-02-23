@@ -1,7 +1,7 @@
 +++
 title = "What Happens When Prototypes Try to Go to Production"
 date = 2025-11-02
-description = "Observations from building AI systems: why prototypes struggle to become production-ready, and what the research shows."
+description = "Why AI prototypes fail in production: technical debt, scalability issues, and the gap between research and production ML systems. Real-world observations."
 [taxonomies]
 categories = ["Engineering"]
 tags = ["ai", "engineering", "architecture", "lessons-learned", "production"]

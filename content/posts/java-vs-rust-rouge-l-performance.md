@@ -1,7 +1,7 @@
 +++
 title = "Java vs Rust: A ROUGE-L Performance Comparison"
 date = 2025-11-02
-description = "Comparing ROUGE-L implementations in Java and Rust: same algorithm, same results, dramatically different performance. What I learned from this fun experiment."
+description = "Java vs Rust performance benchmark: ROUGE-L implementation comparison shows dramatic speed differences. Same algorithm, same results, wildly different execution times."
 [taxonomies]
 categories = ["Programming"]
 tags = ["rust", "java", "performance", "nlp", "rouge-l", "benchmarking"]

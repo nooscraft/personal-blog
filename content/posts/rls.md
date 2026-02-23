@@ -1,7 +1,7 @@
 +++
 title = "Exploring PostgreSQL Row-Level Security"
 date = 2026-01-06
-description = "Notes from implementing RLS in a multi-tenant setup—what worked, what surprised me, and what I'd do differently."
+description = "PostgreSQL Row-Level Security (RLS) implementation guide for multi-tenant applications. Real-world lessons, surprises, and best practices for database security."
 [taxonomies]
 categories = ["Database"]
 tags = ["postgresql", "rls", "security", "database"]

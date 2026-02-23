@@ -1,7 +1,7 @@
 +++
 title = "GitHub Actions: When Automation Meets Reality"
 date = 2025-10-19
-description = "Lessons learned from wrestling with GitHub Actions: submodules, deployment strategies, and when to embrace manual control."
+description = "Real-world GitHub Actions lessons: handling git submodules, deployment strategies, workflow debugging, and knowing when automation isn't the answer."
 [taxonomies]
 categories = ["DevOps"]
 tags = ["github-actions", "ci-cd", "automation", "deployment", "lessons-learned"]

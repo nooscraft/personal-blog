@@ -1,6 +1,7 @@
 +++
 title = "JAXB + Maven – Xml to Java"
 date = 2013-09-02
+description = "Generate Java classes from XML schemas automatically using JAXB2 and Maven. A straightforward approach to XML-to-Java code generation in your build process."
 [taxonomies]
 categories = ["Programming"]
 tags = ["java", "maven", "jaxb", "xml"]
