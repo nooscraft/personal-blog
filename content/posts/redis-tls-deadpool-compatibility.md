@@ -1,7 +1,7 @@
 +++
 title = "Redis, TLS, and Deadpool: When Dependency Versions Collide"
 date = 2025-10-30
-description = "A deep dive into version compatibility issues between redis, deadpool-redis, and TLS support in Rust—and why sometimes you need to stick with an older version."
+description = "Solving Rust dependency conflicts: redis crate, deadpool-redis, and TLS compatibility issues. Learn how to navigate version mismatches in Rust projects."
 [taxonomies]
 categories = ["Programming"]
 tags = ["rust", "redis", "deadpool", "tls", "dependency-management", "compatibility"]

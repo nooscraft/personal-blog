@@ -1,6 +1,7 @@
 +++
 title = "JDK 9 and JShell"
 date = 2015-06-12
+description = "Exploring JShell, Java's official REPL (Read-Eval-Print-Loop) coming in JDK 9. Learn how to run Java code interactively without compilation—like Python's IDLE for Java."
 [taxonomies]
 categories = ["Programming"]
 tags = ["java", "jdk9", "jshell"]

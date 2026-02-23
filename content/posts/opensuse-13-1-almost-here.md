@@ -1,6 +1,7 @@
 +++
 title = "openSUSE 13.1 – almost here [updated]"
 date = 2013-10-07
+description = "Anticipating the openSUSE 13.1 release. A look at the beta, RC1, and what's coming in this major Linux distribution update from the openSUSE community."
 [taxonomies]
 categories = ["Linux"]
 tags = ["opensuse", "linux", "release"]

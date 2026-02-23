@@ -1,6 +1,7 @@
 +++
 title = "Amazon WS EC2 – connect via SSH RSA"
 date = 2013-09-15
+description = "Step-by-step guide to connect to AWS EC2 instances using SSH RSA keys. Learn how to set up hassle-free authentication with key pairs for secure cloud access."
 [taxonomies]
 categories = ["Cloud"]
 tags = ["aws", "ec2", "ssh", "cloud"]

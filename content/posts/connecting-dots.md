@@ -1,6 +1,7 @@
 +++
 title = "Connecting Dots"
 date = 2013-09-15
+description = "A reflection on the addictive mobile game Dots—exploring what makes simple games engaging, the psychology of gameplay, and the power-ups that keep you coming back."
 [taxonomies]
 categories = ["Personal"]
 tags = ["reflection", "games", "mobile", "productivity"]

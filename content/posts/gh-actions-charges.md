@@ -1,7 +1,7 @@
 +++
 title = "GitHub Actions Won't Charge You (Probably)"
 date = 2025-12-16
-description = "Breaking down GitHub's 2026 pricing changes for Actions—what's free, what's changing, and what it means for your projects."
+description = "GitHub Actions pricing 2026: What's free, what changed, and how to avoid charges. Complete breakdown of GitHub Actions costs for public and private repositories."
 [taxonomies]
 categories = ["DevOps"]
 tags = ["github-actions", "pricing", "ci-cd", "automation"]

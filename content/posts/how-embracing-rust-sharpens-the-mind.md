@@ -1,7 +1,7 @@
 +++
 title = "How Embracing Rust Sharpens the Mind — and Elevates Teams"
 date = 2025-10-22
-description = "Rust develops focus, critical thinking, and responsible individualism that uplift individuals and teams."
+description = "How learning Rust improves critical thinking, focus, and team collaboration. Discover why Rust's strict compiler develops better engineering habits and mindset."
 [taxonomies]
 categories = ["Programming"]
 tags = ["rust", "craftsmanship", "mindset", "productivity", "engineering", "teamwork"]

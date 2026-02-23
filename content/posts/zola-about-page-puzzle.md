@@ -1,7 +1,7 @@
 +++
 title = "The Zola About Page Puzzle: When Root Sections Bite Back"
 date = 2025-11-02
-description = "A quick dive into how Zola handles root-level pages differently than you might expect, and the simple fix that resolved everything."
+description = "Solving Zola static site generator routing issues: how root-level pages work differently than expected. Quick fix for about page and section configuration."
 [taxonomies]
 categories = ["DevOps"]
 tags = ["zola", "static-site-generator", "troubleshooting", "lessons-learned"]

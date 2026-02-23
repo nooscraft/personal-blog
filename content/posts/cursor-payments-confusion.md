@@ -1,7 +1,7 @@
 +++
 title = "The Confusing World of Cursor Payments"
 date = 2025-10-25
-description = "Navigating the unclear pricing and payment model for Cursor IDE—where free tiers, usage limits, and billing can be confusing."
+description = "Cursor IDE pricing explained: Understanding the confusing payment model, free tier limits, usage caps, and billing structure for this AI-powered code editor."
 [taxonomies]
 categories = ["Tools"]
 tags = ["cursor", "ide", "payments", "pricing"]

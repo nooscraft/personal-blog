@@ -1,6 +1,7 @@
 +++
 title = "A simple word definition script"
 date = 2015-08-25
+description = "Build a simple bash script to get word definitions directly in your terminal. No browser needed—just query the dictionary API and get instant results from the command line."
 [taxonomies]
 categories = ["Programming"]
 tags = ["scripts", "bash", "cli", "productivity"]

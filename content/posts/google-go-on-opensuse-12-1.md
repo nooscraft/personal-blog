@@ -1,6 +1,7 @@
 +++
 title = "Google Go on OpenSUSE 12.1"
 date = 2012-01-29
+description = "Getting started with Go programming language on OpenSUSE 12.1. Learn how to install Go, set up your environment, and write your first Go program on Linux."
 [taxonomies]
 categories = ["Programming"]
 tags = ["golang", "go", "opensuse", "linux"]

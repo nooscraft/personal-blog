@@ -1,7 +1,7 @@
 +++
 title = "Covers on Autopilot — Why I Let AI Paint the Edges"
 date = 2025-10-30
-description = "A small, stubborn problem (blog covers) turned into a simple, reliable pipeline: prompt, generate, embed. Notes on the choices, the bumps, and the GitHub Actions that make it all work."
+description = "Automate blog cover image generation with AI and GitHub Actions. Learn how to build a reliable pipeline using Replicate SDXL for context-aware cover images."
 [taxonomies]
 categories = ["Automation"]
 tags = ["ai", "covers", "replicate", "github-actions", "zola"]
