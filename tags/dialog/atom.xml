@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Noos - Where Thought, Code, and Craft Converge - dialog</title>
+    <subtitle>Personal blog about programming, technology, and engineering insights. Topics include Rust, DevOps, Linux, and software craftsmanship.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://noos.blog/tags/dialog/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://noos.blog"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2013-12-23T00:00:00+00:00</updated>
+    <id>https://noos.blog/tags/dialog/atom.xml</id>
+    <entry xml:lang="en">
+        <title>Linux | Fancy little &quot;dialog&quot; utility</title>
+        <published>2013-12-23T00:00:00+00:00</published>
+        <updated>2013-12-23T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/linux-fancy-little-dialog-utility/"/>
+        <id>https://noos.blog/posts/linux-fancy-little-dialog-utility/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/linux-fancy-little-dialog-utility/">&lt;p&gt;Using Linux&#x27;s sophisticated &quot;dialog&quot; utility to display CPU core temperature&lt;&#x2F;p&gt;
+&lt;p&gt;Installation&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;sudo apt-get install dialog&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;sudo apt-get install lm-sensors&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Here the lm-sensors for detecting temperature (see here for configuration details: http:&#x2F;&#x2F;lm-sensors.org&#x2F;wiki&#x2F;iwizard&#x2F;Detection)&lt;&#x2F;p&gt;
+&lt;p&gt;Finally the script goes as&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;#!&#x2F;bin&#x2F;bash
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;temp1=$(sensors | grep &amp;quot;Core 0:&amp;quot; | cut -c1-24)
+&lt;&#x2F;span&gt;&lt;span&gt;temp2=$(sensors | grep &amp;quot;Core 1:&amp;quot; | cut -c1-24)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;dialog –title &amp;quot;System temp info&amp;quot; –msgbox &amp;quot;$temp1 $temp2″ 10 22
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;dialog –clear
+&lt;&#x2F;span&gt;&lt;span&gt;exit 0
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Using minimal advantage of lm-sensors, it&#x27;s just displaying main core temperatures.&lt;&#x2F;p&gt;
+&lt;img src=&quot;&#x2F;public&#x2F;images&#x2F;screenshot-11232013-105234-pm1.png&quot; alt=&quot;img&quot; class=&quot;inline&quot;&#x2F;&gt;
+</content>
+        
+    </entry>
+</feed>

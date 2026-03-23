@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Noos - Where Thought, Code, and Craft Converge - DevOps</title>
+    <subtitle>Personal blog about programming, technology, and engineering insights. Topics include Rust, DevOps, Linux, and software craftsmanship.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://noos.blog/categories/devops/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://noos.blog"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2025-12-16T00:00:00+00:00</updated>
+    <id>https://noos.blog/categories/devops/atom.xml</id>
+    <entry xml:lang="en">
+        <title>GitHub Actions Won&#x27;t Charge You (Probably)</title>
+        <published>2025-12-16T00:00:00+00:00</published>
+        <updated>2025-12-16T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/gh-actions-charges/"/>
+        <id>https://noos.blog/posts/gh-actions-charges/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/gh-actions-charges/">&lt;p&gt;If you received an email from GitHub about upcoming pricing changes for GitHub Actions, you might be wondering: &quot;Are they going to start charging me for something that was free?&quot; The short answer: &lt;strong&gt;It depends on what you&#x27;re using, but for most people, the news is actually good.&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Let me break down what&#x27;s changing in plain language, so you can understand how it affects your projects.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;the-big-question-is-github-actions-still-free&quot;&gt;The Big Question: Is GitHub Actions Still Free?&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;strong&gt;Yes—for public repositories, GitHub Actions remains completely free.&lt;&#x2F;strong&gt; If you&#x27;re using GitHub Actions in public repositories (like open-source projects), nothing changes. You can continue using it without any charges.&lt;&#x2F;p&gt;
+&lt;p&gt;This is important because many developers and organizations rely on GitHub Actions for open-source projects, and GitHub has committed to keeping that free.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;what-s-actually-changing&quot;&gt;What&#x27;s Actually Changing?&lt;&#x2F;h2&gt;
+&lt;p&gt;GitHub is making two main changes, both scheduled for 2026:&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;1-price-reductions-january-1-2026&quot;&gt;1. Price Reductions (January 1, 2026)&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;strong&gt;Good news:&lt;&#x2F;strong&gt; GitHub is reducing prices for GitHub-hosted runners in private repositories by up to 39%, depending on the machine type you use.&lt;&#x2F;p&gt;
+&lt;p&gt;If you&#x27;re currently paying for GitHub Actions in private repositories, your costs will go down. This is a straightforward price cut—no catch.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;2-new-platform-charge-for-self-hosted-runners-march-1-2026&quot;&gt;2. New Platform Charge for Self-Hosted Runners (March 1, 2026)&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;strong&gt;This is the one that might affect you:&lt;&#x2F;strong&gt; GitHub will introduce a new $0.002 per-minute &quot;cloud platform&quot; charge for self-hosted runners.&lt;&#x2F;p&gt;
+&lt;p&gt;Wait—what&#x27;s a self-hosted runner? If you&#x27;re using your own servers or machines to run GitHub Actions (instead of GitHub&#x27;s cloud infrastructure), those are self-hosted runners. Most individual developers and small teams use GitHub-hosted runners, so this won&#x27;t affect them.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;Important details:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;This charge only applies to self-hosted runners (your own machines)&lt;&#x2F;li&gt;
+&lt;li&gt;The charge is $0.002 per minute (that&#x27;s 0.2 cents per minute)&lt;&#x2F;li&gt;
+&lt;li&gt;Even with this charge, it still counts against the minutes already included in your GitHub plan&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;strong&gt;What does that last point mean?&lt;&#x2F;strong&gt; If you have a GitHub plan that includes 2,000 minutes per month, and you use 500 minutes on self-hosted runners, you&#x27;ll pay the $0.002&#x2F;minute charge, but those 500 minutes still count toward your 2,000-minute allowance. You&#x27;re not being double-charged.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;quick-reference-pricing-summary&quot;&gt;Quick Reference: Pricing Summary&lt;&#x2F;h2&gt;
+&lt;p&gt;Here&#x27;s a simple breakdown of what&#x27;s changing:&lt;&#x2F;p&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Type&lt;&#x2F;th&gt;&lt;th&gt;Status After Update&lt;&#x2F;th&gt;&lt;&#x2F;tr&gt;&lt;&#x2F;thead&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;&lt;strong&gt;Public repo GitHub-hosted&lt;&#x2F;strong&gt;&lt;&#x2F;td&gt;&lt;td&gt;✅ Still free&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;strong&gt;Private repo GitHub-hosted&lt;&#x2F;strong&gt;&lt;&#x2F;td&gt;&lt;td&gt;🔻 Price reduced (up to 39%)&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;strong&gt;Self-hosted runners&lt;&#x2F;strong&gt;&lt;&#x2F;td&gt;&lt;td&gt;💲 $0.002&#x2F;min platform charge&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;strong&gt;Enterprise Server customers&lt;&#x2F;strong&gt;&lt;&#x2F;td&gt;&lt;td&gt;✅ No change&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;&#x2F;tbody&gt;&lt;&#x2F;table&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;what-this-means-for-you&quot;&gt;What This Means for You&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Public repositories:&lt;&#x2F;strong&gt; No change—still free&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Private repositories (GitHub-hosted):&lt;&#x2F;strong&gt; You&#x27;ll pay less—prices dropping up to 39%&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Self-hosted runners:&lt;&#x2F;strong&gt; New $0.002&#x2F;min charge (~$0.12&#x2F;hour). Calculate based on your usage&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Enterprise Server:&lt;&#x2F;strong&gt; No changes&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;why-the-change&quot;&gt;Why the Change?&lt;&#x2F;h2&gt;
+&lt;p&gt;GitHub hasn&#x27;t provided detailed reasoning, but the new charge for self-hosted runners likely reflects the infrastructure costs of managing the platform, security, and integration features that make self-hosted runners work seamlessly with GitHub Actions—even when the actual compute happens on your machines.&lt;&#x2F;p&gt;
+&lt;p&gt;The price reduction for GitHub-hosted runners suggests GitHub is optimizing their infrastructure and passing those savings to customers.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;what-should-you-do&quot;&gt;What Should You Do?&lt;&#x2F;h2&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Check your usage:&lt;&#x2F;strong&gt; If you&#x27;re using self-hosted runners, review how many minutes you typically use per month to estimate the new cost.&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Review your plan:&lt;&#x2F;strong&gt; Make sure you understand what&#x27;s included in your current GitHub plan (free, Pro, Team, or Enterprise).&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Calculate impact:&lt;&#x2F;strong&gt; For self-hosted runners, multiply your monthly minutes by $0.002 to see the additional cost. For example:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;1,000 minutes&#x2F;month = $2.00&#x2F;month&lt;&#x2F;li&gt;
+&lt;li&gt;5,000 minutes&#x2F;month = $10.00&#x2F;month&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Consider alternatives:&lt;&#x2F;strong&gt; If the new charge significantly impacts your costs, you might want to evaluate whether self-hosted runners are still the best option, or if GitHub-hosted runners (which are getting cheaper) might work for your needs.&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;the-bottom-line&quot;&gt;The Bottom Line&lt;&#x2F;h2&gt;
+&lt;p&gt;For most users, these changes are either neutral (public repos stay free) or positive (private repo prices go down). The only group that will see new charges is those using self-hosted runners, and even then, the charge is relatively small.&lt;&#x2F;p&gt;
+&lt;p&gt;The key takeaway: &lt;strong&gt;GitHub Actions isn&#x27;t going away, and it&#x27;s not suddenly becoming expensive.&lt;&#x2F;strong&gt; The changes are targeted and mostly beneficial. If you&#x27;re concerned about costs, take some time to review your usage patterns and plan accordingly before the changes take effect in 2026.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h3 id=&quot;further-reading&quot;&gt;Further Reading&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;docs.github.com&#x2F;en&#x2F;billing&#x2F;managing-billing-for-github-actions&#x2F;about-billing-for-github-actions&quot;&gt;GitHub Actions Pricing&lt;&#x2F;a&gt; – Official pricing documentation&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;docs.github.com&#x2F;en&#x2F;billing&#x2F;managing-billing-for-github-actions&#x2F;about-billing-for-github-actions#usage-limits&quot;&gt;GitHub Actions Usage Limits&lt;&#x2F;a&gt; – Understanding included minutes and limits&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>The Zola About Page Puzzle: When Root Sections Bite Back</title>
+        <published>2025-11-02T00:00:00+00:00</published>
+        <updated>2025-11-02T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/zola-about-page-puzzle/"/>
+        <id>https://noos.blog/posts/zola-about-page-puzzle/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/zola-about-page-puzzle/">&lt;h3 id=&quot;the-goal&quot;&gt;The Goal&lt;&#x2F;h3&gt;
+&lt;p&gt;I wanted to add an About page to my blog. Simple enough, right? Create &lt;code&gt;content&#x2F;about.md&lt;&#x2F;code&gt;, add it to the navigation menu, and done.&lt;&#x2F;p&gt;
+&lt;p&gt;Wrong.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;the-problem&quot;&gt;The Problem&lt;&#x2F;h3&gt;
+&lt;p&gt;I created the About page, updated the navigation, and ran &lt;code&gt;zola build&lt;&#x2F;code&gt;. Instead of a clean build, I got this:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;Warning: 1 page(s) ignored (missing date or weight in a sorted section):
+&lt;&#x2F;span&gt;&lt;span&gt;Warning: - &#x2F;Users&#x2F;oshadhagunawardena&#x2F;Projects&#x2F;personal&#x2F;personal-blog&#x2F;content&#x2F;about.md
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The page wasn&#x27;t being built at all. But wait—why does an About page need a date? It&#x27;s not a blog post.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;the-investigation&quot;&gt;The Investigation&lt;&#x2F;h3&gt;
+&lt;p&gt;The issue was in my &lt;code&gt;content&#x2F;_index.md&lt;&#x2F;code&gt; file:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;toml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-toml &quot;&gt;&lt;code class=&quot;language-toml&quot; data-lang=&quot;toml&quot;&gt;&lt;span style=&quot;background-color:#bf616a;color:#2b303b;&quot;&gt;+++&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;title &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Home&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;paginate_by &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;5
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sort_by &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;date&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;transparent &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;true
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;template &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;index.html&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;background-color:#bf616a;color:#2b303b;&quot;&gt;+++&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;See that &lt;code&gt;sort_by = &quot;date&quot;&lt;&#x2F;code&gt;? That was the culprit. According to &lt;a href=&quot;https:&#x2F;&#x2F;www.getzola.org&#x2F;documentation&#x2F;content&#x2F;section&#x2F;&quot;&gt;Zola&#x27;s documentation&lt;&#x2F;a&gt;, when you set &lt;code&gt;sort_by = &quot;date&quot;&lt;&#x2F;code&gt; in a section&#x27;s front matter, &lt;strong&gt;all pages in that section&lt;&#x2F;strong&gt; must have a date field. Pages without the required field are ignored during rendering and a warning is displayed.&lt;&#x2F;p&gt;
+&lt;p&gt;This is documented behavior, but it&#x27;s easy to miss when you&#x27;re just trying to add a simple About page.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;the-solution&quot;&gt;The Solution&lt;&#x2F;h3&gt;
+&lt;p&gt;The fix had two parts:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;Step 1&lt;&#x2F;strong&gt;: Add a &lt;code&gt;date&lt;&#x2F;code&gt; field to the About page. Since the root section uses &lt;code&gt;sort_by = &quot;date&quot;&lt;&#x2F;code&gt;, all pages need a date—even non-post pages.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;Step 2&lt;&#x2F;strong&gt;: Hide the date from displaying on the About page using &lt;code&gt;show_date = false&lt;&#x2F;code&gt; in the front matter.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;Before:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;toml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-toml &quot;&gt;&lt;code class=&quot;language-toml&quot; data-lang=&quot;toml&quot;&gt;&lt;span style=&quot;background-color:#bf616a;color:#2b303b;&quot;&gt;+++&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;title &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;About&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;description &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Learn about Oshadha G...&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;template &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;page.html&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;weight &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1
+&lt;&#x2F;span&gt;&lt;span&gt;[extra]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;hide_from_list &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;true
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;comments &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;false
+&lt;&#x2F;span&gt;&lt;span style=&quot;background-color:#bf616a;color:#2b303b;&quot;&gt;+++&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;strong&gt;After:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;toml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-toml &quot;&gt;&lt;code class=&quot;language-toml&quot; data-lang=&quot;toml&quot;&gt;&lt;span style=&quot;background-color:#bf616a;color:#2b303b;&quot;&gt;+++&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;title &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;About&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;description &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Learn about Oshadha G...&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;template &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;page.html&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;date &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;2025-01-01  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Required because root section uses sort_by = &amp;quot;date&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;weight &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1
+&lt;&#x2F;span&gt;&lt;span&gt;[extra]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;hide_from_list &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;true
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;comments &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;false
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;show_date &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;false  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Hide the awkward date from displaying
+&lt;&#x2F;span&gt;&lt;span style=&quot;background-color:#bf616a;color:#2b303b;&quot;&gt;+++&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;I also had to create a custom &lt;code&gt;templates&#x2F;macros&#x2F;post_macros.html&lt;&#x2F;code&gt; to override the theme&#x27;s default meta macro and respect the &lt;code&gt;show_date&lt;&#x2F;code&gt; flag. But the front matter solution is the important part.&lt;&#x2F;p&gt;
+&lt;p&gt;Now the About page builds correctly, appears in the correct order for pagination, but doesn&#x27;t display the awkward &quot;Published: 2025-01-01&quot; meta.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;the-lesson&quot;&gt;The Lesson&lt;&#x2F;h3&gt;
+&lt;p&gt;Root-level sections in Zola behave differently than you might think. If you set &lt;code&gt;sort_by = &quot;date&quot;&lt;&#x2F;code&gt; in a section, &lt;strong&gt;all&lt;&#x2F;strong&gt; pages in that section must have a date field—even non-post pages like About pages.&lt;&#x2F;p&gt;
+&lt;p&gt;While Zola&#x27;s docs mention this behavior, it&#x27;s the kind of detail that&#x27;s easy to gloss over when you&#x27;re focused on building features. The solution is straightforward:&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;Give every page a date if your section sorts by date (I use &lt;code&gt;2025-01-01&lt;&#x2F;code&gt; for static pages)&lt;&#x2F;li&gt;
+&lt;li&gt;Use a custom macro override to conditionally hide dates where they don&#x27;t make sense&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;For static pages like About, seeing &quot;Published: 2025-01-01&quot; is awkward, so the &lt;code&gt;show_date = false&lt;&#x2F;code&gt; flag was essential.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;quick-check&quot;&gt;Quick Check&lt;&#x2F;h3&gt;
+&lt;p&gt;If you&#x27;re having similar issues with Zola pages not building:&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;Check your section&#x27;s &lt;code&gt;_index.md&lt;&#x2F;code&gt; for &lt;code&gt;sort_by&lt;&#x2F;code&gt; directives&lt;&#x2F;li&gt;
+&lt;li&gt;Make sure all pages in that section have the required fields&lt;&#x2F;li&gt;
+&lt;li&gt;Use &lt;code&gt;show_date = false&lt;&#x2F;code&gt; in front matter if you want to hide dates on static pages&lt;&#x2F;li&gt;
+&lt;li&gt;Consider moving sorted content to a dedicated subsection&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;Sometimes the simplest fixes are the most unexpected. And sometimes you need two fixes instead of one.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>GitHub Actions: When Automation Meets Reality</title>
+        <published>2025-10-19T00:00:00+00:00</published>
+        <updated>2025-10-19T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/github-actions-when-automation-meets-reality/"/>
+        <id>https://noos.blog/posts/github-actions-when-automation-meets-reality/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/github-actions-when-automation-meets-reality/">&lt;p&gt;When you first set up GitHub Actions for a project, it feels like magic. Push your code, and the CI&#x2F;CD pipeline takes care of everything—building, testing, deploying. But sometimes, the magic breaks. And when it does, you learn things you never expected to learn.&lt;&#x2F;p&gt;
+&lt;p&gt;I recently went through a journey with GitHub Actions that taught me a lot about the gap between &quot;this should work&quot; and &quot;this actually works.&quot; Here&#x27;s what I learned, without exposing too many project details.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;background-building-with-zola&quot;&gt;Background: Building with Zola&lt;&#x2F;h2&gt;
+&lt;p&gt;For context, this blog is built using &lt;a href=&quot;https:&#x2F;&#x2F;www.getzola.org&#x2F;&quot;&gt;Zola&lt;&#x2F;a&gt;, a static site generator written in Rust. Zola takes Markdown files and templates, processes them, and outputs a static HTML site. It&#x27;s fast, simple, and doesn&#x27;t require a runtime—just compile your site and serve the static files.&lt;&#x2F;p&gt;
+&lt;p&gt;The deployment process is straightforward:&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;Write content in Markdown&lt;&#x2F;li&gt;
+&lt;li&gt;Run &lt;code&gt;zola build&lt;&#x2F;code&gt; to generate static HTML&lt;&#x2F;li&gt;
+&lt;li&gt;Deploy the generated files to a hosting service&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;This makes Zola an ideal candidate for GitHub Pages: you build once, deploy the static files, and GitHub Pages serves them. The challenge comes when you want to automate this process with GitHub Actions.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-promise-of-automation&quot;&gt;The Promise of Automation&lt;&#x2F;h2&gt;
+&lt;p&gt;GitHub Actions promises a lot:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Automatic builds on every push&lt;&#x2F;li&gt;
+&lt;li&gt;Consistent deployment environments&lt;&#x2F;li&gt;
+&lt;li&gt;Less manual work, fewer human errors&lt;&#x2F;li&gt;
+&lt;li&gt;Integration with GitHub Pages for static sites&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;The setup looks straightforward:&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;Create a &lt;code&gt;.github&#x2F;workflows&#x2F;deploy.yml&lt;&#x2F;code&gt; file&lt;&#x2F;li&gt;
+&lt;li&gt;Define your build steps&lt;&#x2F;li&gt;
+&lt;li&gt;Push and watch it work&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;But reality has a way of complicating things.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;issue-1-the-submodule-problem&quot;&gt;Issue #1: The Submodule Problem&lt;&#x2F;h2&gt;
+&lt;p&gt;One of the first issues I encountered was related to git submodules. If your project includes external dependencies managed as submodules, GitHub Actions needs explicit configuration to handle them.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;The Error:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;Error: fatal: No url found for submodule path &amp;#39;themes&#x2F;radion&amp;#39; in .gitmodules
+&lt;&#x2F;span&gt;&lt;span&gt;Error: The process &amp;#39;&#x2F;usr&#x2F;bin&#x2F;git&amp;#39; failed with exit code 128
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;strong&gt;The Root Cause:&lt;&#x2F;strong&gt;
+GitHub Actions tries to fetch submodules by default, but if your &lt;code&gt;.gitmodules&lt;&#x2F;code&gt; file is missing or incomplete, or if the submodule path exists but isn&#x27;t properly configured, the build fails.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;The Solution:&lt;&#x2F;strong&gt;
+If you&#x27;re not actually using submodules (maybe you copied files directly), you have two options:&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Remove the submodule completely:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span&gt; rm&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --cached&lt;&#x2F;span&gt;&lt;span&gt; themes&#x2F;radion
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;rm -rf&lt;&#x2F;span&gt;&lt;span&gt; themes&#x2F;radion&#x2F;.git
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span&gt; add themes&#x2F;radion
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span&gt; commit&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -m &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Convert submodule to regular directory&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Configure GitHub Actions to skip submodules:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;yaml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-yaml &quot;&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span&gt;- &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;uses&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;actions&#x2F;checkout@v4
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;with&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;submodules&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;false
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;I went with option 1 because I wasn&#x27;t actually using submodules—I had copied the theme files directly into the repository. The submodule reference was leftover from an earlier setup.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;issue-2-branch-confusion&quot;&gt;Issue #2: Branch Confusion&lt;&#x2F;h2&gt;
+&lt;p&gt;GitHub Pages supports two deployment methods:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;GitHub Actions:&lt;&#x2F;strong&gt; Build your site using a workflow&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Branch-based:&lt;&#x2F;strong&gt; Serve files directly from a branch (like &lt;code&gt;gh-pages&lt;&#x2F;code&gt;)&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;I started with GitHub Actions, but ran into issues. The build kept failing, and debugging CI&#x2F;CD pipelines can be frustrating—you push, wait, check logs, repeat.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;The Revelation:&lt;&#x2F;strong&gt;
+Sometimes, manual deployment to a &lt;code&gt;gh-pages&lt;&#x2F;code&gt; branch is simpler and more reliable. You get:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Full control over when and how you deploy&lt;&#x2F;li&gt;
+&lt;li&gt;Ability to test locally before deploying&lt;&#x2F;li&gt;
+&lt;li&gt;No hidden automation surprises&lt;&#x2F;li&gt;
+&lt;li&gt;Easier debugging (you can inspect the built files directly)&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;strong&gt;The Manual Approach:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Build locally
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;zola&lt;&#x2F;span&gt;&lt;span&gt; build&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --output-dir&lt;&#x2F;span&gt;&lt;span&gt; public&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --force
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Deploy to gh-pages branch
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span&gt; checkout&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -B&lt;&#x2F;span&gt;&lt;span&gt; gh-pages
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;rsync -av --delete --exclude&lt;&#x2F;span&gt;&lt;span&gt;=&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;.git&#x2F;&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39; public&#x2F; .
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span&gt; add&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -A
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span&gt; commit&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -m &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Publish: &lt;&#x2F;span&gt;&lt;span&gt;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;date&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; +&lt;&#x2F;span&gt;&lt;span&gt;%&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Y&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-&lt;&#x2F;span&gt;&lt;span&gt;%&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;m&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-&lt;&#x2F;span&gt;&lt;span&gt;%&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;d&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span&gt; push&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -f&lt;&#x2F;span&gt;&lt;span&gt; origin gh-pages
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span&gt; checkout main
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Is this less &quot;modern&quot;? Maybe. But it&#x27;s transparent, predictable, and gives you control when you need it.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;update-automation-wins-after-all&quot;&gt;Update: Automation Wins After All&lt;&#x2F;h2&gt;
+&lt;p&gt;After writing the initial version of this post, I realized something: maintaining two branches manually was becoming a burden. The workflow was reliable, but it required:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Remembering to switch branches&lt;&#x2F;li&gt;
+&lt;li&gt;Running build commands&lt;&#x2F;li&gt;
+&lt;li&gt;Manually syncing files&lt;&#x2F;li&gt;
+&lt;li&gt;Switching back to main&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;strong&gt;The Solution:&lt;&#x2F;strong&gt;
+I revisited GitHub Actions, but this time with a clear understanding of the issues:&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;Configured submodules properly (&lt;code&gt;submodules: false&lt;&#x2F;code&gt; since we don&#x27;t use them)&lt;&#x2F;li&gt;
+&lt;li&gt;Used a reliable deployment action (&lt;code&gt;peaceiris&#x2F;actions-gh-pages&lt;&#x2F;code&gt;)&lt;&#x2F;li&gt;
+&lt;li&gt;Set up the workflow to trigger on push to &lt;code&gt;main&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;&lt;strong&gt;The Result:&lt;&#x2F;strong&gt;
+Now I just push to &lt;code&gt;main&lt;&#x2F;code&gt;, and GitHub Actions handles everything:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Builds the site automatically&lt;&#x2F;li&gt;
+&lt;li&gt;Deploys to &lt;code&gt;gh-pages&lt;&#x2F;code&gt; branch&lt;&#x2F;li&gt;
+&lt;li&gt;Updates GitHub Pages&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;strong&gt;What Changed:&lt;&#x2F;strong&gt;
+The key was understanding the submodule issue first. Once that was resolved, the automation became reliable. The workflow is simple and transparent—I can see exactly what&#x27;s happening in the Actions tab.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;The Lesson:&lt;&#x2F;strong&gt;
+Sometimes automation &lt;em&gt;does&lt;&#x2F;em&gt; make sense. The difference between my first attempt and my second attempt was:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Understanding the root causes (submodules, branch setup)&lt;&#x2F;li&gt;
+&lt;li&gt;Using proven, maintained actions&lt;&#x2F;li&gt;
+&lt;li&gt;Starting simple and adding complexity only when needed&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;The manual approach taught me what was happening under the hood. That knowledge made the automation reliable.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;issue-3-missing-scripts-and-assets&quot;&gt;Issue #3: Missing Scripts and Assets&lt;&#x2F;h2&gt;
+&lt;p&gt;When deploying to GitHub Pages, you need to ensure all your assets are included. This might seem obvious, but it&#x27;s easy to miss.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;The Problem:&lt;&#x2F;strong&gt;
+Your site builds locally, but when deployed, certain features don&#x27;t work—like a theme toggle button that does nothing, or search functionality that&#x27;s broken.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;The Cause:&lt;&#x2F;strong&gt;
+JavaScript files weren&#x27;t being included in the HTML. The build process generated the files, but the HTML templates weren&#x27;t referencing them correctly, or the script tags were missing entirely.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;The Fix:&lt;&#x2F;strong&gt;
+Manually verify that all necessary scripts are loaded:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Check your HTML templates&lt;&#x2F;li&gt;
+&lt;li&gt;Ensure script tags are in the correct order&lt;&#x2F;li&gt;
+&lt;li&gt;Verify paths are correct (especially for GitHub Pages subdirectory paths)&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Sometimes, the simplest solution is to open the generated HTML and check what&#x27;s actually there.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;issue-4-the-abstraction-trap&quot;&gt;Issue #4: The Abstraction Trap&lt;&#x2F;h2&gt;
+&lt;p&gt;Here&#x27;s the thing about automation: when it works, it&#x27;s great. When it doesn&#x27;t, you&#x27;re debugging an abstraction layer you may not fully understand.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;The Pattern:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;Something breaks&lt;&#x2F;li&gt;
+&lt;li&gt;You check GitHub Actions logs&lt;&#x2F;li&gt;
+&lt;li&gt;You see an error message&lt;&#x2F;li&gt;
+&lt;li&gt;You make a change&lt;&#x2F;li&gt;
+&lt;li&gt;You push and wait&lt;&#x2F;li&gt;
+&lt;li&gt;Repeat&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;This cycle can be slow, especially if your builds take a few minutes each time.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;The Alternative:&lt;&#x2F;strong&gt;
+With manual deployment:&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;Build locally (instant feedback)&lt;&#x2F;li&gt;
+&lt;li&gt;Test locally&lt;&#x2F;li&gt;
+&lt;li&gt;Deploy when ready&lt;&#x2F;li&gt;
+&lt;li&gt;Inspect the deployed files directly&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;The feedback loop is faster, and you understand every step.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;issue-5-github-pages-source-branch-mismatch&quot;&gt;Issue #5: GitHub Pages Source Branch Mismatch&lt;&#x2F;h2&gt;
+&lt;p&gt;Even after getting the deployment pipeline working, some issues only surfaced when viewing the site in production. These weren&#x27;t build failures—they were configuration problems.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;the-github-pages-source-branch-mismatch&quot;&gt;The GitHub Pages Source Branch Mismatch&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;strong&gt;The Symptom:&lt;&#x2F;strong&gt;
+After deploying fixes, the blog post updates weren&#x27;t appearing on the live site. The build succeeded, GitHub Actions showed successful deployment, but visiting the site showed old content.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;The Root Cause:&lt;&#x2F;strong&gt;
+GitHub Pages has two deployment methods:&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;GitHub Actions&lt;&#x2F;strong&gt; - Pages builds from Actions workflow output&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Branch-based&lt;&#x2F;strong&gt; - Pages serves files directly from a branch (like &lt;code&gt;gh-pages&lt;&#x2F;code&gt;)&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;The problem was a configuration mismatch: GitHub Pages was set to use &quot;GitHub Actions&quot; as the source, but our workflow was deploying to the &lt;code&gt;gh-pages&lt;&#x2F;code&gt; branch. GitHub Pages was trying to serve from the Actions output, not the branch we were deploying to.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;The Fix:&lt;&#x2F;strong&gt;
+Changed GitHub Pages source back to &lt;code&gt;gh-pages&lt;&#x2F;code&gt; branch in repository settings:&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;Go to repository Settings → Pages&lt;&#x2F;li&gt;
+&lt;li&gt;Under &quot;Source&quot;, select &quot;Deploy from a branch&quot;&lt;&#x2F;li&gt;
+&lt;li&gt;Choose &lt;code&gt;gh-pages&lt;&#x2F;code&gt; branch and &lt;code&gt;&#x2F; (root)&lt;&#x2F;code&gt; folder&lt;&#x2F;li&gt;
+&lt;li&gt;Save&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;&lt;strong&gt;Why This Happened:&lt;&#x2F;strong&gt;
+When you first set up GitHub Actions, GitHub Pages might automatically switch to &quot;GitHub Actions&quot; mode. If your workflow deploys to &lt;code&gt;gh-pages&lt;&#x2F;code&gt; branch (which is common), you need to ensure the Pages source matches where you&#x27;re deploying.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;The Lesson:&lt;&#x2F;strong&gt;
+Always verify that your GitHub Pages source matches your deployment target. If your Actions workflow deploys to &lt;code&gt;gh-pages&lt;&#x2F;code&gt;, make sure Pages is configured to serve from that branch. Configuration mismatches can cause silent failures where everything appears to work but content doesn&#x27;t update.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;testing-across-browsers&quot;&gt;Testing Across Browsers&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;strong&gt;The Problem:&lt;&#x2F;strong&gt;
+Different browsers cache differently. Chrome might show updated content while Firefox shows old content, or vice versa. However, in this case, the issue wasn&#x27;t browser caching—it was a configuration mismatch.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;The Solution:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;Always verify GitHub Pages source matches your deployment method&lt;&#x2F;li&gt;
+&lt;li&gt;Check GitHub Actions logs to confirm deployment succeeded&lt;&#x2F;li&gt;
+&lt;li&gt;Wait 2-5 minutes for GitHub Pages to rebuild after deployment&lt;&#x2F;li&gt;
+&lt;li&gt;Use hard refresh (Cmd+Shift+R &#x2F; Ctrl+Shift+R) when testing&lt;&#x2F;li&gt;
+&lt;li&gt;Test in multiple browsers to rule out caching issues&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;&lt;strong&gt;What I Learned:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;GitHub Pages configuration must match your deployment method&lt;&#x2F;li&gt;
+&lt;li&gt;Always verify the deployment target matches the Pages source&lt;&#x2F;li&gt;
+&lt;li&gt;Testing locally doesn&#x27;t catch configuration mismatches&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;when-to-use-github-actions&quot;&gt;When to Use GitHub Actions&lt;&#x2F;h2&gt;
+&lt;p&gt;Don&#x27;t get me wrong—GitHub Actions is powerful and useful. Use it when:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;You need automated testing on every commit&lt;&#x2F;li&gt;
+&lt;li&gt;You want consistent build environments&lt;&#x2F;li&gt;
+&lt;li&gt;Multiple people are deploying&lt;&#x2F;li&gt;
+&lt;li&gt;You need to run expensive operations (like building large projects)&lt;&#x2F;li&gt;
+&lt;li&gt;You want to enforce code quality checks&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;strong&gt;But consider manual deployment when:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Your build process is simple&lt;&#x2F;li&gt;
+&lt;li&gt;You want full control&lt;&#x2F;li&gt;
+&lt;li&gt;You&#x27;re deploying infrequently&lt;&#x2F;li&gt;
+&lt;li&gt;You want to understand every step&lt;&#x2F;li&gt;
+&lt;li&gt;Debugging automation is slowing you down&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;lessons-learned&quot;&gt;Lessons Learned&lt;&#x2F;h2&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Understand your dependencies:&lt;&#x2F;strong&gt; Know whether you&#x27;re using submodules, npm packages, or other external resources. This affects your CI&#x2F;CD setup.&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Test locally first:&lt;&#x2F;strong&gt; Always build and test your site locally before relying on automation. Automation catches mistakes, but you should catch them first.&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Keep it simple:&lt;&#x2F;strong&gt; If automation adds complexity without clear benefits, consider if manual processes might be better for your use case.&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Inspect the output:&lt;&#x2F;strong&gt; When something doesn&#x27;t work, look at the actual generated files. HTML errors, missing assets, and broken links are often visible in the source.&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Verify GitHub Pages configuration matches deployment:&lt;&#x2F;strong&gt; If your Actions workflow deploys to &lt;code&gt;gh-pages&lt;&#x2F;code&gt; branch, ensure GitHub Pages source is set to that branch. Configuration mismatches cause silent failures.&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Test across browsers:&lt;&#x2F;strong&gt; Different browsers cache differently. Always test in multiple browsers after deployment, and use hard refresh when debugging.&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Document your process:&lt;&#x2F;strong&gt; Whether you use automation or manual deployment, document it. Future you (and your team) will thank you.&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;&#x2F;h2&gt;
+&lt;p&gt;GitHub Actions is a powerful tool, but it&#x27;s not always the right tool—at least not immediately. My journey started with frustration, moved to manual control, and ended with successful automation.&lt;&#x2F;p&gt;
+&lt;p&gt;The manual approach wasn&#x27;t wasted effort. It taught me:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;What was happening under the hood&lt;&#x2F;li&gt;
+&lt;li&gt;How the build process worked&lt;&#x2F;li&gt;
+&lt;li&gt;What could go wrong and why&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;That knowledge made the automation reliable. When I returned to GitHub Actions, I understood the root causes and could configure it correctly.&lt;&#x2F;p&gt;
+&lt;p&gt;The key is to choose the approach that fits your project, your team, and your workflow. Sometimes that means starting manually to understand the process, then automating once you know what you&#x27;re automating.&lt;&#x2F;p&gt;
+&lt;p&gt;At the end of the day, the goal is to deploy reliably and efficiently. Whether that&#x27;s through GitHub Actions, manual commands, or a hybrid approach, what matters is that it works for you—and that you understand why it works.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h3 id=&quot;further-reading&quot;&gt;Further Reading&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;docs.github.com&#x2F;en&#x2F;actions&quot;&gt;GitHub Actions Documentation&lt;&#x2F;a&gt; – Official documentation&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;docs.github.com&#x2F;en&#x2F;pages&quot;&gt;GitHub Pages Deployment&lt;&#x2F;a&gt; – Deployment strategies&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;git-scm.com&#x2F;book&#x2F;en&#x2F;v2&#x2F;Git-Tools-Submodules&quot;&gt;Managing Git Submodules&lt;&#x2F;a&gt; – Git submodule basics&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</content>
+        
+    </entry>
+</feed>
