@@ -5,6 +5,8 @@ description = "OpenAI's acquisition of Astral raises questions about AI's grip o
 [taxonomies]
 categories = ["Engineering"]
 tags = ["openai", "astral", "ruff", "codex", "oss", "apple", "vibe-coding", "developer-tools"]
+[extra]
+cover_image_static = "images/covers/openai-astral-codex-developer-tooling-crossroads.png"
 +++
 
 OpenAI has long framed itself as a models company. Yet its move to acquire [Astral](https://astral.sh), the team behind [Ruff](https://github.com/astral-sh/ruff), [uv](https://github.com/astral-sh/uv), and [ty](https://github.com/astral-sh/ty), signals something else: a calculated push into developer tooling. Questionable? Perhaps. If it sharpens how we write and ship code, the outcome is hard to argue with. But the implications run deeper than that.
