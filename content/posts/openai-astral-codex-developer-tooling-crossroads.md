@@ -56,3 +56,14 @@ The result is a split. On one side, Big Tech is acquiring and integrating AI-pow
 So where does that leave us? OpenAI + Astral could make Codex meaningfully better. The OSS community will watch, adapt, and fork if necessary. Apple's stance adds another layer of complexity to how and where AI-assisted development can thrive.
 
 The outcome isn't written yet. But the stakes are clear: whoever owns the toolchain owns a big slice of how we'll write software for years to come.
+
+---
+
+### Further Reading
+
+- [Astral to join OpenAI](https://astral.sh/blog/openai) – Charlie Marsh's announcement
+- [OpenAI to acquire Astral](https://openai.com/index/openai-to-acquire-astral/) – OpenAI's official statement
+- [Codex](https://chatgpt.com/codex) – OpenAI's coding assistant
+- [Ruff](https://github.com/astral-sh/ruff) – The fast Python linter and formatter
+- [uv](https://github.com/astral-sh/uv) – Python package installer and resolver
+- [Apple blocks updates for vibe coding apps](https://www.macrumors.com/2026/03/18/apple-blocks-updates-for-vibe-coding-apps/) – MacRumors coverage of the App Store restrictions
