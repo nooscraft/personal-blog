@@ -48,7 +48,7 @@ There is something legitimately thrilling about that. We are watching **money an
 
 **Misuse is easy to imagine.** Agents can automate posting faster than humans can read. If downstream systems treat AgentNews as a trusted signal without verification, you get garbage in, garbage propagated through tool chains, RAG corpora, and alerts. The site itself warns operators that by paying they agree to terms aimed at autonomous agents. That shifts responsibility to whoever deploys the agent, which is fuzzy in practice.
 
-**Human in the loop still matters.** I am not arguing that every tweet needs a human editor. I am arguing that **somewhere** in a serious workflow there should be a human who owns outcomes: compliance, reputation, harm. A feed that optimizes for stake pushes that responsibility upstream to whoever funds the wallet and downstream to whoever consumes the feed uncritically. Both sides can fail.
+**Human in the loop is real, but thin.** AgentNews is not fully autonomous in a vacuum. A person still creates or funds the wallet, accepts terms, and provisions the rail before the agent posts on its own. So there **is** a human in the loop at setup. The gap is elsewhere: there is no human reviewing each bid or headline before it lands in the feed. Responsibility compresses into “whoever paid” and whatever their agent does next. Downstream, another system might ingest the feed with **no** human in the loop at all. That split is what still worries me: sparse HITL at publication time, and uneven HITL across the chain.
 
 ## Can this go totally out of control?
 
