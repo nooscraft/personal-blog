@@ -1,0 +1,615 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Noos - Where Thought, Code, and Craft Converge - Engineering</title>
+    <subtitle>Personal blog about programming, technology, and engineering insights. Topics include Rust, DevOps, Linux, and software craftsmanship.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://noos.blog/categories/engineering/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://noos.blog"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2026-04-03T00:00:00+00:00</updated>
+    <id>https://noos.blog/categories/engineering/atom.xml</id>
+    <entry xml:lang="en">
+        <title>AgentNews: A Front Page for Machines, and Why That Bothers Me</title>
+        <published>2026-04-03T00:00:00+00:00</published>
+        <updated>2026-04-03T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/agentnews-frontpage-agentic-internet/"/>
+        <id>https://noos.blog/posts/agentnews-frontpage-agentic-internet/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/agentnews-frontpage-agentic-internet/">&lt;p&gt;Imagine a news feed where no human types the headline and no human hits submit. &lt;a href=&quot;https:&#x2F;&#x2F;agentne.ws&#x2F;about.html&quot;&gt;AgentNews&lt;&#x2F;a&gt; calls itself the front page of the agentic internet: a place built for autonomous software to publish, discover, and rank information on its own terms. That is a wild sentence to read sober. It is also, right now, a small experiment with real money and real APIs behind it.&lt;&#x2F;p&gt;
+&lt;p&gt;This post is not a product review. It is an honest look at what AgentNews actually does, why the idea is compelling, and why part of me hopes we never fully hand the information layer to machines without humans in the loop.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;what-it-actually-is-concrete&quot;&gt;What it actually is (concrete)&lt;&#x2F;h2&gt;
+&lt;p&gt;At a high level, AgentNews is closer to a scheduled bulletin than an endless social feed. Agents do not post for free. They stake money to bid for visibility. Bidding closes at :55 past the hour; the &lt;strong&gt;top ten stakes&lt;&#x2F;strong&gt; get published on the hour. Minimum stake per post is &lt;strong&gt;$0.50&lt;&#x2F;strong&gt; on the live rails described in their docs.&lt;&#x2F;p&gt;
+&lt;p&gt;Payments are programmatic. Submissions go through &lt;strong&gt;HTTP 402&lt;&#x2F;strong&gt; style flows: the server challenges the client, the agent pays, then the content is accepted. Two settlement paths are live today: &lt;strong&gt;MPP on Tempo&lt;&#x2F;strong&gt; (USDC.e, chain id 4217) and &lt;strong&gt;x402 on Base&lt;&#x2F;strong&gt; (USDC on eip155:8453, with gas sponsored so the agent mainly needs USDC, not ETH). A &lt;strong&gt;Stripe&lt;&#x2F;strong&gt; path for scoped card tokens is listed as coming soon.&lt;&#x2F;p&gt;
+&lt;p&gt;Reading the feed is free. No API key. A plain &lt;code&gt;GET&lt;&#x2F;code&gt; to &lt;strong&gt;&lt;code&gt;https:&#x2F;&#x2F;agentne.ws&#x2F;api&#x2F;v1&#x2F;feed&lt;&#x2F;code&gt;&lt;&#x2F;strong&gt; returns JSON with a &lt;code&gt;schema&lt;&#x2F;code&gt; field (&lt;code&gt;agentnews&#x2F;feed&#x2F;1.0&lt;&#x2F;code&gt;) and an &lt;code&gt;items&lt;&#x2F;code&gt; array: titles, outbound URLs, &lt;code&gt;agent_id&lt;&#x2F;code&gt;, &lt;code&gt;payer_address&lt;&#x2F;code&gt;, timestamps, and so on. I verified it from the terminal; the response is a few kilobytes and includes cache headers plus an &lt;code&gt;ETag&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;curl -sS &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;https:&#x2F;&#x2F;agentne.ws&#x2F;api&#x2F;v1&#x2F;feed&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;figure style=&quot;margin: 1.25rem 0;&quot;&gt;
+  &lt;img src=&quot;&#x2F;images&#x2F;agentnews-feed-screenshot.png&quot; alt=&quot;JSON response from GET https:&#x2F;&#x2F;agentne.ws&#x2F;api&#x2F;v1&#x2F;feed showing AgentNews feed items&quot; class=&quot;inline&quot; style=&quot;max-width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--color-border-default, #e5e7eb);&quot; &#x2F;&gt;
+  &lt;figcaption style=&quot;font-size: 0.9rem; color: var(--color-fg-muted, #6b7280); margin-top: 0.5rem;&quot;&gt;Public feed JSON from &lt;code&gt;GET &#x2F;api&#x2F;v1&#x2F;feed&lt;&#x2F;code&gt; (no auth). Captured from a terminal session.&lt;&#x2F;figcaption&gt;
+&lt;&#x2F;figure&gt;
+&lt;p&gt;They also publish machine-oriented discovery: &lt;code&gt;llms.txt&lt;&#x2F;code&gt;, OpenAPI, an agent manifest under &lt;code&gt;&#x2F;.well-known&#x2F;agentnews.json&lt;&#x2F;code&gt;, and even an MCP endpoint for tools like Claude Code. That level of &quot;built for machines first&quot; is rare and deliberate.&lt;&#x2F;p&gt;
+&lt;p&gt;So in plain terms: &lt;strong&gt;visibility is an auction&lt;&#x2F;strong&gt;, not a popularity contest. The ranking signal is economic stake from whoever runs the agent, not karma, likes, or editorial judgment.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;why-that-is-exciting&quot;&gt;Why that is exciting&lt;&#x2F;h2&gt;
+&lt;p&gt;If you believe agents will keep doing research, monitoring, trading, and coordination without a human in the loop every second, then they need &lt;strong&gt;their own discovery layer&lt;&#x2F;strong&gt;. Human feeds optimize for attention, identity, and drama. AgentNews is betting that agents care about &lt;strong&gt;utility&lt;&#x2F;strong&gt;: what helped a workflow, what was worth paying to surface, what other agents funded.&lt;&#x2F;p&gt;
+&lt;p&gt;The infrastructure story is serious too. Dual-rail 402 responses (MPP and x402 in one challenge), session pre-authorization with spending caps, receipts on paid actions, idempotency keys: these are the boring pieces that make autonomous payment safe enough to script. That is not vaporware copy; it is the kind of detail you add when you expect retries, failures, and non-human clients.&lt;&#x2F;p&gt;
+&lt;p&gt;There is something legitimately thrilling about that. We are watching &lt;strong&gt;money and protocols&lt;&#x2F;strong&gt; meet &lt;strong&gt;autonomous clients&lt;&#x2F;strong&gt; in public, on a schedule, with docs written for LLMs and scripts.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;where-it-gets-worrying&quot;&gt;Where it gets worrying&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;strong&gt;Money is not truth.&lt;&#x2F;strong&gt; The top ten posts each hour are not &quot;the most accurate&quot; or &quot;the most important.&quot; They are &quot;who paid most this round.&quot; A well-funded spammer, a coordinated pool of agents, or a single actor with a large budget can dominate the visible slice as long as the economics work out. Ranking being &quot;off&quot; is not a bug in that model. It is the model.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;Misuse is easy to imagine.&lt;&#x2F;strong&gt; Agents can automate posting faster than humans can read. If downstream systems treat AgentNews as a trusted signal without verification, you get garbage in, garbage propagated through tool chains, RAG corpora, and alerts. The site itself warns operators that by paying they agree to terms aimed at autonomous agents. That shifts responsibility to whoever deploys the agent, which is fuzzy in practice.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;Human in the loop is real, but thin.&lt;&#x2F;strong&gt; AgentNews is not fully autonomous in a vacuum. A person still creates or funds the wallet, accepts terms, and provisions the rail before the agent posts on its own. So there &lt;strong&gt;is&lt;&#x2F;strong&gt; a human in the loop at setup. The gap is elsewhere: there is no human reviewing each bid or headline before it lands in the feed. Responsibility compresses into “whoever paid” and whatever their agent does next. Downstream, another system might ingest the feed with &lt;strong&gt;no&lt;&#x2F;strong&gt; human in the loop at all. That split is what still worries me: sparse HITL at publication time, and uneven HITL across the chain.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;can-this-go-totally-out-of-control&quot;&gt;Can this go totally out of control?&lt;&#x2F;h2&gt;
+&lt;p&gt;Probably not in a Hollywood sense. No single MVP feed takes over the internet overnight. But &lt;strong&gt;incentives can drift badly&lt;&#x2F;strong&gt; without a dramatic moment. If more products start ingesting agent-only feeds as ground truth, small biases in who can pay and who can scrape compound. You get a parallel information economy where &lt;strong&gt;the rich agent wins the headline&lt;&#x2F;strong&gt;, and humans only see the second-order effects in bad trades, wrong alerts, or polluted context windows.&lt;&#x2F;p&gt;
+&lt;p&gt;&quot;Out of control&quot; here looks less like Skynet and more like &lt;strong&gt;opaque feedback loops&lt;&#x2F;strong&gt;: agents boosting content other agents train on, or pay to amplify, until the signal is mostly financial, not epistemic.&lt;&#x2F;p&gt;
+&lt;p&gt;The roadmap language on their site points toward richer trust and ranking (identity partnerships, depth-of-book visibility, utility-based scoring). Those ideas could help. They are also &lt;strong&gt;not fully there&lt;&#x2F;strong&gt; in the MVP. Today, the simple story is stake and top ten.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;so-what-should-you-take-away&quot;&gt;So what should you take away?&lt;&#x2F;h2&gt;
+&lt;p&gt;AgentNews is worth watching if you build or operate agents. It is a concrete experiment in &lt;strong&gt;agent-native discovery and payment&lt;&#x2F;strong&gt;, not just another wrapper around a chat UI. It is also a reminder that &lt;strong&gt;new infrastructure encodes new values&lt;&#x2F;strong&gt;. When visibility is bought by the hour, we should ask who benefits and who gets priced out of being heard.&lt;&#x2F;p&gt;
+&lt;p&gt;I land somewhere between excited and uneasy. The plumbing for autonomous agents is going to exist; pretending otherwise is naive. Whether we keep enough human judgment in the loop is still our choice.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h3 id=&quot;further-reading&quot;&gt;Further Reading&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;agentne.ws&#x2F;about.html&quot;&gt;AgentNews about&lt;&#x2F;a&gt; – Briefing: what it is, bidding, and philosophy&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;agentne.ws&#x2F;docs&#x2F;posting.md&quot;&gt;Posting&lt;&#x2F;a&gt; – HTTP 402 flow, MPP and x402 rails, stakes&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;agentne.ws&#x2F;docs&#x2F;reading.md&quot;&gt;Reading&lt;&#x2F;a&gt; – Feed API, formats, free access&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;agentne.ws&#x2F;llms-full.txt&quot;&gt;llms-full.txt&lt;&#x2F;a&gt; – Combined machine-readable documentation&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;agentne.ws&#x2F;openapi.json&quot;&gt;OpenAPI spec&lt;&#x2F;a&gt; – API structure for integrations&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>OpenAI + Astral, Apple&#x27;s Vibe Coding Blocks, and the Future of Developer Tooling</title>
+        <published>2026-03-23T00:00:00+00:00</published>
+        <updated>2026-03-23T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/openai-astral-codex-developer-tooling-crossroads/"/>
+        <id>https://noos.blog/posts/openai-astral-codex-developer-tooling-crossroads/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/openai-astral-codex-developer-tooling-crossroads/">&lt;p&gt;OpenAI has long framed itself as a models company. Yet its move to acquire &lt;a href=&quot;https:&#x2F;&#x2F;astral.sh&quot;&gt;Astral&lt;&#x2F;a&gt;, the team behind &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;astral-sh&#x2F;ruff&quot;&gt;Ruff&lt;&#x2F;a&gt;, &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;astral-sh&#x2F;uv&quot;&gt;uv&lt;&#x2F;a&gt;, and &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;astral-sh&#x2F;ty&quot;&gt;ty&lt;&#x2F;a&gt;, signals something else: a calculated push into developer tooling. Questionable? Perhaps. If it sharpens how we write and ship code, the outcome is hard to argue with. But the implications run deeper than that.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;why-would-openai-need-astral&quot;&gt;Why Would OpenAI Need Astral?&lt;&#x2F;h2&gt;
+&lt;p&gt;My suspicion: models alone aren&#x27;t enough. Great AI can generate code, but real projects need linting, formatting, dependency resolution, and fast feedback loops. Astral built tooling that went from zero to hundreds of millions of downloads per month. Ruff replaced decades of Python tooling in one Rust binary. uv reimagined pip and virtualenv. These aren&#x27;t &quot;nice to have.&quot; They&#x27;re foundational.&lt;&#x2F;p&gt;
+&lt;p&gt;Codex, OpenAI&#x27;s coding assistant, lives or dies by the quality and consistency of what it produces. Embedding Ruff, uv, and ty into the Codex stack means AI-generated code can be checked, formatted, and run against real project constraints from day one. OpenAI isn&#x27;t just buying tools. It&#x27;s buying control over the pipeline between prompt and production.&lt;&#x2F;p&gt;
+&lt;p&gt;Astral also brings something less tangible: trust in the Python ecosystem. Millions of projects already depend on their work. That credibility is hard to replicate.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;does-the-future-unfold-as-a-mystery&quot;&gt;Does the Future Unfold as a Mystery?&lt;&#x2F;h2&gt;
+&lt;p&gt;Yes, and that&#x27;s the uncomfortable part. The deal promises continued open source support. In practice, priorities shift when a startup becomes part of a larger product roadmap. Will Ruff and uv stay community-first, or will they bend toward Codex-specific features? Will contributions from outside OpenAI still get the same attention?&lt;&#x2F;p&gt;
+&lt;p&gt;The future isn&#x27;t predetermined. It depends on governance, incentives, and whether the team can maintain the culture that made these tools beloved in the first place. We&#x27;ll only know in retrospect.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;how-does-the-oss-community-cope&quot;&gt;How Does the OSS Community Cope?&lt;&#x2F;h2&gt;
+&lt;p&gt;The usual playbook applies: forks, alternatives, and vigilance.&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Forks&lt;&#x2F;strong&gt;: If Ruff or uv drift, the community can fork. But forks need maintainers, bandwidth, and funding. They rarely match the velocity of a well-resourced team.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Alternatives&lt;&#x2F;strong&gt;: Pyright, Pylance, Black, pip, Poetry. The ecosystem isn&#x27;t monolithic. Some will double down on alternatives; others will wait and see.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Governance&lt;&#x2F;strong&gt;: Clear licensing and governance reduce risk. Astral&#x27;s tools are permissively licensed, which helps. The question is whether governance structures (e.g. foundations, steering committees) evolve to protect long-term independence.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;The community will adapt. Some will embrace the integration; others will hedge. Both reactions are rational.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;is-this-the-beginning-of-the-end&quot;&gt;Is This the Beginning of the End?&lt;&#x2F;h2&gt;
+&lt;p&gt;&quot;The end&quot; is too strong. But it does feel like an inflection point.&lt;&#x2F;p&gt;
+&lt;p&gt;Developer tooling is consolidating around a small set of players with deep AI investments. GitHub (Copilot), Google (Gemini Code Assist), and now OpenAI (Codex + Astral) are racing to own the full stack: models, editors, linters, package managers. The risk isn&#x27;t that OSS disappears overnight. It&#x27;s that the best talent and resources flow toward proprietary ecosystems, and the open-source pipeline slowly starves.&lt;&#x2F;p&gt;
+&lt;p&gt;That said, OSS has survived similar pressures before. The question is whether this cycle is different.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;meanwhile-apple-blocks-vibe-coded-apps&quot;&gt;Meanwhile: Apple Blocks Vibe-Coded Apps&lt;&#x2F;h2&gt;
+&lt;p&gt;In a stark contrast, &lt;a href=&quot;https:&#x2F;&#x2F;www.macrumors.com&#x2F;2026&#x2F;03&#x2F;18&#x2F;apple-blocks-updates-for-vibe-coding-apps&#x2F;&quot;&gt;Apple has blocked updates&lt;&#x2F;a&gt; for AI &quot;vibe coding&quot; apps like Replit and Vibecode in the App Store. The cited reason: Guideline 2.5.2. Apps cannot download or execute code that changes their own functionality. When vibe coding platforms generate apps, they often run them inside the host app via embedded web views. Apple says that violates the rules.&lt;&#x2F;p&gt;
+&lt;p&gt;The irony: Apple promotes AI-assisted coding inside Xcode. Third-party tools that do something similar, but outside Apple&#x27;s walled garden, get restricted. Whether that&#x27;s principled policy enforcement or strategic gatekeeping is up for debate.&lt;&#x2F;p&gt;
+&lt;p&gt;The result is a split. On one side, Big Tech is acquiring and integrating AI-powered dev tools. On the other, the same platforms are limiting where and how those tools can be used. Developers are caught in the middle.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;So where does that leave us? OpenAI + Astral could make Codex meaningfully better. The OSS community will watch, adapt, and fork if necessary. Apple&#x27;s stance adds another layer of complexity to how and where AI-assisted development can thrive.&lt;&#x2F;p&gt;
+&lt;p&gt;The outcome isn&#x27;t written yet. But the stakes are clear: whoever owns the toolchain owns a big slice of how we&#x27;ll write software for years to come.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h3 id=&quot;further-reading&quot;&gt;Further Reading&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;astral.sh&#x2F;blog&#x2F;openai&quot;&gt;Astral to join OpenAI&lt;&#x2F;a&gt; – Charlie Marsh&#x27;s announcement&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;openai.com&#x2F;index&#x2F;openai-to-acquire-astral&#x2F;&quot;&gt;OpenAI to acquire Astral&lt;&#x2F;a&gt; – OpenAI&#x27;s official statement&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;chatgpt.com&#x2F;codex&quot;&gt;Codex&lt;&#x2F;a&gt; – OpenAI&#x27;s coding assistant&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;astral-sh&#x2F;ruff&quot;&gt;Ruff&lt;&#x2F;a&gt; – The fast Python linter and formatter&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;astral-sh&#x2F;uv&quot;&gt;uv&lt;&#x2F;a&gt; – Python package installer and resolver&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;www.macrumors.com&#x2F;2026&#x2F;03&#x2F;18&#x2F;apple-blocks-updates-for-vibe-coding-apps&#x2F;&quot;&gt;Apple blocks updates for vibe coding apps&lt;&#x2F;a&gt; – MacRumors coverage of the App Store restrictions&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Hieratic Prompt Compression: From Prototype to Production</title>
+        <published>2026-02-20T00:00:00+00:00</published>
+        <updated>2026-02-20T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/hieratic-prompt-compression-release/"/>
+        <id>https://noos.blog/posts/hieratic-prompt-compression-release/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/hieratic-prompt-compression-release/">&lt;p&gt;Back in November, I wrote about &lt;a href=&quot;https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;hieratic-prompt-compression-prototype&#x2F;&quot;&gt;an ambitious prototype&lt;&#x2F;a&gt;: a way to shrink LLM prompts by 50–80% without losing meaning, using a structured format I called &quot;Hieratic&quot;.&lt;&#x2F;p&gt;
+&lt;p&gt;Today, that prototype is real. &lt;strong&gt;Tokuin v0.2.0&lt;&#x2F;strong&gt; is out, and it includes a full implementation of Hieratic prompt compression.&lt;&#x2F;p&gt;
+&lt;p&gt;You can grab it now:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;curl -fsSL&lt;&#x2F;span&gt;&lt;span&gt; https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;nooscraft&#x2F;tokuin&#x2F;main&#x2F;install.sh | &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;bash
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Or check the &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;nooscraft&#x2F;tokuin&#x2F;discussions&#x2F;5&quot;&gt;release notes&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;the-problem-recap&quot;&gt;The Problem (Recap)&lt;&#x2F;h2&gt;
+&lt;p&gt;We all know the pain: context windows are finite, tokens cost money, and latency kills user experience. You stuff a prompt with examples, role definitions, and constraints, and suddenly you&#x27;re paying for 2,000 tokens of boilerplate on every single request.&lt;&#x2F;p&gt;
+&lt;p&gt;The industry&#x27;s answer has mostly been &quot;use a bigger model&quot; or &quot;summarize with another LLM.&quot; But adding an LLM step to compress your prompt introduces latency, cost, and non-determinism.&lt;&#x2F;p&gt;
+&lt;p&gt;I wanted something different: &lt;strong&gt;deterministic, rule-based, structure-aware compression.&lt;&#x2F;strong&gt; A tool that acts like a scribe, rewriting your verbose prose into a compact shorthand that models can still read natively.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;meet-hieratic&quot;&gt;Meet Hieratic&lt;&#x2F;h2&gt;
+&lt;p&gt;The core idea is simple: LLMs don&#x27;t need polite, grammatically correct English. They need semantic signals.&lt;&#x2F;p&gt;
+&lt;p&gt;Hieratic strips away the fluff and organizes the signal into a structured format.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;Before (850 tokens):&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;You are an expert programmer with 10 years of experience in building distributed systems, microservices, and cloud-native applications... [200 more tokens of role context]
+Example 1: Authentication Bug Fix... [detailed narrative example]&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;After (285 tokens - 66% less):&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;@HIERATIC v1.0
+&lt;&#x2F;span&gt;&lt;span&gt;@ROLE[inline] &amp;quot;Expert engineer: 10y distributed systems, microservices, cloud-native&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;@EXAMPLES[inline]
+&lt;&#x2F;span&gt;&lt;span&gt;1. Auth bug: session bypass → HMAC signing → 94% bot reduction
+&lt;&#x2F;span&gt;&lt;span&gt;2. DB perf: 2.3s queries → pooling+cache → 0.1s, 10x capacity
+&lt;&#x2F;span&gt;&lt;span&gt;@TASK Analyze code and provide recommendations
+&lt;&#x2F;span&gt;&lt;span&gt;@FOCUS: performance, security, maintainability
+&lt;&#x2F;span&gt;&lt;span&gt;@STYLE: concise, actionable
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;You pipe this compressed text directly to the LLM. No decoding step needed. The model just &lt;em&gt;gets it&lt;&#x2F;em&gt;.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;what-s-in-v0-2-0&quot;&gt;What&#x27;s in v0.2.0?&lt;&#x2F;h2&gt;
+&lt;p&gt;This isn&#x27;t just a regex script. The v0.2.0 release includes a complete compression engine built in Rust:&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;1-compression-levels&quot;&gt;1. Compression Levels&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Light (30-50%)&lt;&#x2F;strong&gt;: Safe for almost anything. Removes obvious fluff.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Medium (50-70%)&lt;&#x2F;strong&gt;: The default. Rewrites verbose sections into Hieratic shorthand.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Aggressive (70-90%)&lt;&#x2F;strong&gt;: For when you really need space. Verify with quality metrics first.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;2-quality-metrics&quot;&gt;2. Quality Metrics&lt;&#x2F;h3&gt;
+&lt;p&gt;How do you know if the compression broke your prompt? Tokuin can score it:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;tokuin&lt;&#x2F;span&gt;&lt;span&gt; compress prompt.txt&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --quality
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;It checks:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Semantic Similarity&lt;&#x2F;strong&gt;: Do the embeddings match?&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Critical Instructions&lt;&#x2F;strong&gt;: Are the key verbs and constraints still there?&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Structural Integrity&lt;&#x2F;strong&gt;: Did we break your JSON schema?&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;3-llm-as-a-judge&quot;&gt;3. LLM-as-a-Judge&lt;&#x2F;h3&gt;
+&lt;p&gt;For the ultimate test, you can run an automated evaluation where a judge model (like Claude 3 Opus) compares the outputs of your original vs. compressed prompt.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;tokuin&lt;&#x2F;span&gt;&lt;span&gt; compress prompt.txt&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --quality --llm-judge
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;4-incremental-compression&quot;&gt;4. Incremental Compression&lt;&#x2F;h3&gt;
+&lt;p&gt;For chat apps, you don&#x27;t want to re-compress the whole history every turn. Tokuin supports incremental compression, processing only the new tokens and keeping a rolling state.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;does-it-actually-work&quot;&gt;Does it actually work?&lt;&#x2F;h2&gt;
+&lt;p&gt;Yes, but with caveats.&lt;&#x2F;p&gt;
+&lt;p&gt;It works &lt;strong&gt;exceptionally well&lt;&#x2F;strong&gt; for:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Long system prompts with repetitive role definitions&lt;&#x2F;li&gt;
+&lt;li&gt;Prompts with many few-shot examples&lt;&#x2F;li&gt;
+&lt;li&gt;Technical specs with clear sections&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;It &lt;strong&gt;doesn&#x27;t help much&lt;&#x2F;strong&gt; for:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Very short prompts (&amp;lt; 50 tokens)&lt;&#x2F;li&gt;
+&lt;li&gt;Already dense text (code, mathematical formulas)&lt;&#x2F;li&gt;
+&lt;li&gt;Prompts where exact wording is legally critical&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;In my testing, I&#x27;m seeing &lt;strong&gt;60-70% reduction&lt;&#x2F;strong&gt; on typical RAG prompts with minimal loss in output quality.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;try-it-out&quot;&gt;Try it out&lt;&#x2F;h2&gt;
+&lt;p&gt;The best way to see if it works for you is to try it on your own prompts.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Install
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;curl -fsSL&lt;&#x2F;span&gt;&lt;span&gt; https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;nooscraft&#x2F;tokuin&#x2F;main&#x2F;install.sh | &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;bash
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Compress
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;tokuin&lt;&#x2F;span&gt;&lt;span&gt; compress your-prompt.txt&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --quality
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# See the result
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cat&lt;&#x2F;span&gt;&lt;span&gt; your-prompt.txt.hieratic
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;If you do try it, I&#x27;d love to hear your compression ratios. Drop a note in the &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;nooscraft&#x2F;tokuin&#x2F;discussions&#x2F;5&quot;&gt;GitHub Discussion&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;This started as a &quot;what if&quot; blog post. Now it&#x27;s a tool you can run. That&#x27;s the best kind of engineering.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Hieratic Prompt Compression: Ambitious Prototype or Superpower?</title>
+        <published>2025-11-16T00:00:00+00:00</published>
+        <updated>2025-11-16T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/hieratic-prompt-compression-prototype/"/>
+        <id>https://noos.blog/posts/hieratic-prompt-compression-prototype/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/hieratic-prompt-compression-prototype/">&lt;h2 id=&quot;why-even-bother-compressing-prompts&quot;&gt;Why Even Bother Compressing Prompts?&lt;&#x2F;h2&gt;
+&lt;p&gt;Large prompts are the new monoliths.&lt;&#x2F;p&gt;
+&lt;p&gt;If you’ve ever tried to stuff a serious extraction spec, a few pages of dense tables or configs, and long-running conversation history into a single LLM call, you already know the pain:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Context windows get cramped.&lt;&#x2F;li&gt;
+&lt;li&gt;Tokens get expensive.&lt;&#x2F;li&gt;
+&lt;li&gt;Latency creeps up.&lt;&#x2F;li&gt;
+&lt;li&gt;And the “just add more context” strategy quietly stops scaling.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;strong&gt;Hieratic Prompt Compression&lt;&#x2F;strong&gt; is my attempt to push back on that—without spinning up yet another LLM just to shrink prompts. It’s being explored as an experimental feature for &lt;strong&gt;Tokuin&lt;&#x2F;strong&gt;, my CLI for token estimation and provider-aware load testing (&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;nooscraft&#x2F;tokuin&quot;&gt;GitHub&lt;&#x2F;a&gt;).&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;The core question of this post&lt;&#x2F;strong&gt;:&lt;br &#x2F;&gt;
+Can we build a &lt;em&gt;deterministic&lt;&#x2F;em&gt;, structure-aware compression layer that shrinks prompts by 50–80% while preserving downstream task fidelity?&lt;br &#x2F;&gt;
+And maybe more importantly: &lt;strong&gt;is it worth doing&lt;&#x2F;strong&gt;, or is this just an over-engineered curiosity?&lt;&#x2F;p&gt;
+&lt;p&gt;This is not a feature announcement. It’s a proposal in public, and I’d like your help pressure-testing it.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;why-hieratic&quot;&gt;Why “Hieratic”?&lt;&#x2F;h2&gt;
+&lt;p&gt;The name “Hieratic” comes from the &lt;strong&gt;hieratic script&lt;&#x2F;strong&gt; used in ancient Egypt: a &lt;strong&gt;compact, scribal shorthand&lt;&#x2F;strong&gt; for hieroglyphs that preserved meaning while being much faster to write.&lt;&#x2F;p&gt;
+&lt;p&gt;That’s roughly the spirit here:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;We want a &lt;strong&gt;compact, structured shorthand&lt;&#x2F;strong&gt; for long prompts.&lt;&#x2F;li&gt;
+&lt;li&gt;We care about &lt;strong&gt;preserving the semantic load&lt;&#x2F;strong&gt;, not the surface form.&lt;&#x2F;li&gt;
+&lt;li&gt;We want something a “scribal” system can produce deterministically, instead of asking another model to improvise a summary.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Hieratic is meant to be that shorthand: a structured, compressed representation of your original prompt that an LLM can still “read” effectively.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;what-i-m-proposing-in-plain-terms&quot;&gt;What I’m Proposing (in Plain Terms)&lt;&#x2F;h2&gt;
+&lt;p&gt;The rough sketch is:&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;A &lt;strong&gt;non-LLM, structure-aware compression pipeline&lt;&#x2F;strong&gt; that:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;treats instructions and structured documents differently,&lt;&#x2F;li&gt;
+&lt;li&gt;aggressively removes boilerplate,&lt;&#x2F;li&gt;
+&lt;li&gt;reuses repeated snippets via a context library,&lt;&#x2F;li&gt;
+&lt;li&gt;and supports incremental compression over long histories.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;More concretely:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Extractive, not generative&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
+We’re not asking another model to “summarize” the prompt. We’re &lt;strong&gt;selectively dropping&lt;&#x2F;strong&gt; low-value text and keeping the high-signal bits intact.&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Structure-aware&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
+JSON, HTML tables, and BNF-like grammars are treated as &lt;em&gt;verbatim&lt;&#x2F;em&gt; document blocks. Only the natural language &lt;em&gt;instructions&lt;&#x2F;em&gt; around them get compressed.&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Library-driven boilerplate removal&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
+Repeated extraction instructions, legal boilerplate, or scaffolding can be recognized and replaced by compact references using a reusable &lt;strong&gt;context library&lt;&#x2F;strong&gt;.&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Incremental compression&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
+For long-running flows, only the &lt;strong&gt;newly dropped&lt;&#x2F;strong&gt; parts of the conversation get compressed into anchored summaries. We don’t re-summarize the entire history on every call.&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;The output is a “Hieratic” prompt: a compact, structured representation that the application can expand or feed directly into an LLM.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;why-this-might-be-worth-doing&quot;&gt;Why This Might Be Worth Doing&lt;&#x2F;h2&gt;
+&lt;p&gt;From a product and engineering standpoint, a feature like this could unlock some real benefits:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Token savings at scale&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
+If you’re sending the same extraction spec or long policy docs over and over, shaving 50–80% of that cost starts to matter.&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Longer, richer prompts&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
+A smaller prompt budget per call means:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;More examples,&lt;&#x2F;li&gt;
+&lt;li&gt;More “why this matters” context,&lt;&#x2F;li&gt;
+&lt;li&gt;More system-level constraints,
+&lt;strong&gt;without&lt;&#x2F;strong&gt; immediately slamming into context window limits.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Latency and stability&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
+Fewer tokens → lower latency, more predictable runtime, fewer timeouts and retries.&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Determinism &amp;amp; debuggability&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
+Compression is &lt;strong&gt;rule-based&lt;&#x2F;strong&gt;:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Same input → same compressed output.&lt;&#x2F;li&gt;
+&lt;li&gt;Easy to diff and inspect what was kept vs dropped.&lt;&#x2F;li&gt;
+&lt;li&gt;Failure modes can be reasoned about and tested explicitly.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Better fit for structured tasks&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
+Many real-world prompts mix instructions with structured data (tables, JSON, etc.). A structure-aware compressor is a more natural fit than a generic summarizer.&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;If this works even moderately well, Hieratic could become a &lt;strong&gt;core building block&lt;&#x2F;strong&gt; for workflows where prompts—not models—are the main bottleneck.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;why-this-might-be-a-terrible-idea&quot;&gt;Why This Might Be a Terrible Idea&lt;&#x2F;h2&gt;
+&lt;p&gt;Being honest about the risks:&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;We silently destroy task fidelity&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;The dangerous failure mode is not “the model throws an error”, it’s “the model quietly stops extracting certain fields.”&lt;&#x2F;li&gt;
+&lt;li&gt;Under aggressive compression, subtle but important constraints and corner cases can just, disappear.&lt;&#x2F;li&gt;
+&lt;li&gt;Research like &lt;strong&gt;500xCompressor&lt;&#x2F;strong&gt; reports retaining ~62–73% of performance under heavy compression; that may be fine for some tasks, terrifying for others.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;We overfit to a narrow prompt shape&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;The early design assumes prompts that look like:
+&lt;ul&gt;
+&lt;li&gt;a long instruction block, plus&lt;&#x2F;li&gt;
+&lt;li&gt;a structured document (tables, configs, schemas, etc.).&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;If your prompts are mostly conversational, mostly code, or heavily multimodal, these strategies may not transfer well.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Evaluation is non-trivial&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;To take this seriously, we’ll need:
+&lt;ul&gt;
+&lt;li&gt;a proper “before vs after compression” benchmark,&lt;&#x2F;li&gt;
+&lt;li&gt;real extraction and reasoning tasks, not toy examples,&lt;&#x2F;li&gt;
+&lt;li&gt;and metrics beyond “tokens saved” (precision&#x2F;recall on fields, calibration of failure modes, etc.).&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;If we’re not disciplined, we’ll end up with a fancy &lt;strong&gt;token counter&lt;&#x2F;strong&gt; that quietly degrades the very tasks this was supposed to help with.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;a-bit-of-research-backing&quot;&gt;A Bit of Research Backing&lt;&#x2F;h2&gt;
+&lt;p&gt;This idea borrows from existing work rather than inventing everything from scratch:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;500xCompressor: Generalized Prompt Compression for Large Language Models&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
+Shows that prompts are &lt;strong&gt;highly compressible&lt;&#x2F;strong&gt; (6×–480×) by learning a compressed “language” while retaining 62–73% of task performance. Key takeaways:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Prompts contain a lot of low-information redundancy.&lt;&#x2F;li&gt;
+&lt;li&gt;You can compress aggressively if you protect information-bearing tokens.&lt;br &#x2F;&gt;
+→ &lt;a href=&quot;https:&#x2F;&#x2F;arxiv.org&#x2F;abs&#x2F;2408.03094?utm_source=chatgpt.com&quot;&gt;500xCompressor: Generalized Prompt Compression for Large Language Models&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;NAACL 2025 survey on prompt compression&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
+Surveys extractive vs. abstractive compression and token-pruning strategies, emphasizing:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;trade-offs between compression ratio and task fidelity,&lt;&#x2F;li&gt;
+&lt;li&gt;the importance of preserving structure for technical prompts.&lt;br &#x2F;&gt;
+→ &lt;a href=&quot;https:&#x2F;&#x2F;aclanthology.org&#x2F;2025.naacl-long.368.pdf?utm_source=chatgpt.com&quot;&gt;NAACL 2025 prompt compression survey (PDF)&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Factory.ai – “Compressing Context”&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
+Describes a production-ready strategy for &lt;strong&gt;incremental, anchored summaries&lt;&#x2F;strong&gt;:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;maintain a persistent conversation state,&lt;&#x2F;li&gt;
+&lt;li&gt;compress only the span that’s about to fall out of context,&lt;&#x2F;li&gt;
+&lt;li&gt;avoid repeatedly re-summarizing old history.&lt;br &#x2F;&gt;
+→ &lt;a href=&quot;https:&#x2F;&#x2F;factory.ai&#x2F;news&#x2F;compressing-context?utm_source=chatgpt.com&quot;&gt;Factory.ai: “Compressing Context”&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Where Hieratic diverges is in deliberately &lt;strong&gt;not&lt;&#x2F;strong&gt; adding another model to the loop. The goal is a deterministic, rule-based compressor that plays nicely with structured prompts and long-running pipelines.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;rough-shape-of-the-system&quot;&gt;Rough Shape of the System&lt;&#x2F;h2&gt;
+&lt;p&gt;Here’s the high-level architecture I’m exploring.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;1-split-instructions-vs-document&quot;&gt;1. Split instructions vs document&lt;&#x2F;h3&gt;
+&lt;p&gt;Before we drop any tokens:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Instruction block&lt;&#x2F;strong&gt;: natural-language instructions and commentary.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Document block&lt;&#x2F;strong&gt;: structured tables, JSON payloads, grammars, etc.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;strong&gt;Only the instruction block is compressed.&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
+Document blocks are treated as &lt;strong&gt;verbatim&lt;&#x2F;strong&gt; and left untouched.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;2-pattern-extraction-context-library-optional&quot;&gt;2. Pattern extraction &amp;amp; context library (optional)&lt;&#x2F;h3&gt;
+&lt;p&gt;Given a corpus of prompts, a pattern extractor:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;scans for &lt;strong&gt;frequently repeated fragments&lt;&#x2F;strong&gt; (boilerplate instructions, shared scaffolding),&lt;&#x2F;li&gt;
+&lt;li&gt;builds a reusable &lt;strong&gt;context library&lt;&#x2F;strong&gt;,&lt;&#x2F;li&gt;
+&lt;li&gt;allows future prompts to reference those snippets instead of inlining them.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;This is similar in spirit to a learned codebook (as in research like 500xCompressor), but done in a deterministic, human-auditable way.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;3-extractive-compression-over-instruction-blocks&quot;&gt;3. Extractive compression over instruction blocks&lt;&#x2F;h3&gt;
+&lt;p&gt;For instruction text, the compressor:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Sets a &lt;strong&gt;token budget&lt;&#x2F;strong&gt; based on a compression level (&lt;code&gt;Light&lt;&#x2F;code&gt;, &lt;code&gt;Medium&lt;&#x2F;code&gt;, &lt;code&gt;Aggressive&lt;&#x2F;code&gt;) or explicit target ratio.&lt;&#x2F;li&gt;
+&lt;li&gt;Segments text using structure-aware heuristics:
+&lt;ul&gt;
+&lt;li&gt;headings (&lt;code&gt;#&lt;&#x2F;code&gt;, &lt;code&gt;##&lt;&#x2F;code&gt;),&lt;&#x2F;li&gt;
+&lt;li&gt;“Definition:”, “Location:”, “Response Format:” markers,&lt;&#x2F;li&gt;
+&lt;li&gt;parameter blocks (&lt;code&gt;Extracted_Value&lt;&#x2F;code&gt;, &lt;code&gt;Doc_Page_Number&lt;&#x2F;code&gt;, etc.).&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;Scores segments such that:
+&lt;ul&gt;
+&lt;li&gt;hard constraints and response formats are &lt;strong&gt;hard-kept&lt;&#x2F;strong&gt;,&lt;&#x2F;li&gt;
+&lt;li&gt;explanatory text and examples are more compressible.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;Implements a greedy selection: keep highest-scoring segments until the budget is spent.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;The intent is to preserve the “spine” of the instructions while trimming repetition and soft context.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;4-encode-as-a-hieratic-prompt&quot;&gt;4. Encode as a Hieratic prompt&lt;&#x2F;h3&gt;
+&lt;p&gt;The compressed result is organized into a &lt;strong&gt;Hieratic&lt;&#x2F;strong&gt; structure, with sections like:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;@ROLE&lt;&#x2F;code&gt; – who the model is supposed to be,&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;@TASK&lt;&#x2F;code&gt; – what it’s supposed to do,&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;@FOCUS&lt;&#x2F;code&gt; – which fields &#x2F; behaviors matter most,&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;@EXAMPLES&lt;&#x2F;code&gt; – optionally compressed or referenced,&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;@RECENT&lt;&#x2F;code&gt; – most recent interaction span,&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;@ANCHOR[...]&lt;&#x2F;code&gt; – anchored summaries of older context.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;It’s essentially a compact, structured representation of your original prompt.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;5-incremental-mode-for-long-histories&quot;&gt;5. Incremental mode for long histories&lt;&#x2F;h3&gt;
+&lt;p&gt;In incremental mode, the compressor:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;loads a previous compression state,&lt;&#x2F;li&gt;
+&lt;li&gt;identifies the “oldest” span that’s about to be evicted from context,&lt;&#x2F;li&gt;
+&lt;li&gt;compresses that span into a new &lt;code&gt;@ANCHOR[...]&lt;&#x2F;code&gt;,&lt;&#x2F;li&gt;
+&lt;li&gt;keeps the most recent N tokens uncompressed.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Over time, you get a stack of anchors plus a fresh &lt;code&gt;@RECENT&lt;&#x2F;code&gt; tail, keeping context current without growing linearly with the full history.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;what-i-d-love-feedback-on&quot;&gt;What I’d Love Feedback On&lt;&#x2F;h2&gt;
+&lt;p&gt;This is the experimental part. I’d love to hear from people who:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;run LLMs in production with big prompts,&lt;&#x2F;li&gt;
+&lt;li&gt;have tried prompt compression in anger,&lt;&#x2F;li&gt;
+&lt;li&gt;or have opinions on where this kind of feature should live in a system like Tokuin.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;A few specific questions:&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Evaluation&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;How would you design a &lt;em&gt;real&lt;&#x2F;em&gt; benchmark for this?&lt;&#x2F;li&gt;
+&lt;li&gt;Which tasks &#x2F; datasets would you use to prove that we’re not quietly breaking critical behaviors?&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Failure modes&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Where have compression strategies bitten you before?&lt;&#x2F;li&gt;
+&lt;li&gt;Are there patterns or structures you’d mark as “never compress this”?&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Integration into a stack like Tokuin&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;At what layer would you expect to see a feature like this?
+&lt;ul&gt;
+&lt;li&gt;Right before the LLM call?&lt;&#x2F;li&gt;
+&lt;li&gt;As part of a prompt-building pipeline?&lt;&#x2F;li&gt;
+&lt;li&gt;As a standalone preprocessor with its own cache?&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Alternatives &amp;amp; trade-offs&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Would you lean towards learned compressors instead?&lt;&#x2F;li&gt;
+&lt;li&gt;Are there simpler heuristics that get most of the benefit without this level of complexity?&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Product shaping&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Should this live as:
+&lt;ul&gt;
+&lt;li&gt;a first-class Tokuin feature,&lt;&#x2F;li&gt;
+&lt;li&gt;an “experimental &#x2F; power user” option,&lt;&#x2F;li&gt;
+&lt;li&gt;or a separate library that Tokuin can plug into?&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;If you have opinions—positive or negative—I’d genuinely appreciate hearing them.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;how-this-fits-into-tokuin-right-now&quot;&gt;How This Fits Into Tokuin (Right Now)&lt;&#x2F;h2&gt;
+&lt;p&gt;As of today, &lt;strong&gt;Hieratic Prompt Compression is experimental and aspirational&lt;&#x2F;strong&gt;:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;It’s being explored as a potential &lt;strong&gt;feature for Tokuin&lt;&#x2F;strong&gt;, not a locked-in roadmap item.&lt;&#x2F;li&gt;
+&lt;li&gt;Any implementation will start as:
+&lt;ul&gt;
+&lt;li&gt;an opt-in, feature-flagged module,&lt;&#x2F;li&gt;
+&lt;li&gt;with clear disclaimers about the risks,&lt;&#x2F;li&gt;
+&lt;li&gt;and tooling to inspect exactly what was compressed.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Long term, if the idea survives scrutiny, I could imagine:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;per-project &lt;strong&gt;compression profiles&lt;&#x2F;strong&gt;,&lt;&#x2F;li&gt;
+&lt;li&gt;UI&#x2F;CLI tools for inspecting “before vs after” prompts,&lt;&#x2F;li&gt;
+&lt;li&gt;and tighter integration with context management and retrieval strategies.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;But we’re not there yet. For now, I’m trying to answer a simpler question:&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Can a Hieratic-style, rule-based compressor earn its place inside Tokuin, or should we keep prompts uncompressed and invest elsewhere?&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;If you’ve navigated similar trade-offs—or you’re just curious and want to poke holes in this idea—I’d love to hear from you.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;references&quot;&gt;References&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;500xCompressor: Generalized Prompt Compression for Large Language Models&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
+&lt;a href=&quot;https:&#x2F;&#x2F;arxiv.org&#x2F;abs&#x2F;2408.03094?utm_source=chatgpt.com&quot;&gt;https:&#x2F;&#x2F;arxiv.org&#x2F;abs&#x2F;2408.03094&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;NAACL 2025 Prompt Compression Survey&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
+&lt;a href=&quot;https:&#x2F;&#x2F;aclanthology.org&#x2F;2025.naacl-long.368.pdf?utm_source=chatgpt.com&quot;&gt;https:&#x2F;&#x2F;aclanthology.org&#x2F;2025.naacl-long.368.pdf&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Factory.ai – “Compressing Context”&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
+&lt;a href=&quot;https:&#x2F;&#x2F;factory.ai&#x2F;news&#x2F;compressing-context?utm_source=chatgpt.com&quot;&gt;https:&#x2F;&#x2F;factory.ai&#x2F;news&#x2F;compressing-context&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>What Happens When Prototypes Try to Go to Production</title>
+        <published>2025-11-02T00:00:00+00:00</published>
+        <updated>2025-11-02T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/when-prototypes-become-production/"/>
+        <id>https://noos.blog/posts/when-prototypes-become-production/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/when-prototypes-become-production/">&lt;h3 id=&quot;the-conversation&quot;&gt;The Conversation&lt;&#x2F;h3&gt;
+&lt;p&gt;You&#x27;ve built a production-ready AI system with proper architecture, traceability, and acceptable latency. Then someone suggests &quot;why not just use a prompt?&quot;&lt;&#x2F;p&gt;
+&lt;p&gt;You don&#x27;t need to explain why that won&#x27;t work. The industry has already documented what happens when prototypes become production.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;why-not-just-give-an-opinion&quot;&gt;Why Not Just Give an Opinion?&lt;&#x2F;h3&gt;
+&lt;p&gt;There&#x27;s a temptation to push back when surface-level decisions ignore architecture, scalability, edge cases, and maintainability. But opinions based on current trends or individual preferences don&#x27;t help. They just add noise.&lt;&#x2F;p&gt;
+&lt;p&gt;The current landscape is filled with quick takes and hot takes. Everyone has an opinion, often shaped more by what&#x27;s trending than by systematic thinking. Narcissistic individualism—the idea that one person&#x27;s perspective matters more than collective experience—creates an environment where strong opinions win even when they&#x27;re wrong.&lt;&#x2F;p&gt;
+&lt;p&gt;The problem isn&#x27;t trends themselves. It&#x27;s choosing tools or approaches because they&#x27;re trending, rather than because they solve real problems. The distinction matters.&lt;&#x2F;p&gt;
+&lt;p&gt;Research and data exist. Patterns repeat. The industry has documented what works and what doesn&#x27;t. Why add another opinion when we can point to what&#x27;s already been proven?&lt;&#x2F;p&gt;
+&lt;p&gt;That&#x27;s why this isn&#x27;t about pushing back with opinions. It&#x27;s about pointing to what the industry already knows: prototypes that skip architecture rarely become production systems. The data is public. The patterns are clear.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;the-statistics&quot;&gt;The Statistics&lt;&#x2F;h3&gt;
+&lt;p&gt;According to recent research, &lt;strong&gt;87% of machine learning models never make it past the prototype stage&lt;&#x2F;strong&gt;. Reasons include technical debt, edge cases that break everything, scale issues, and maintainability collapses.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;why-just-a-prompt-rarely-works&quot;&gt;Why &quot;Just a Prompt&quot; Rarely Works&lt;&#x2F;h3&gt;
+&lt;p&gt;When you build a direct LLM solution, you&#x27;re coding logic into prompts. This creates brittleness—small changes require rewriting entire prompts. It&#x27;s impossible to debug—you can&#x27;t see intermediate steps. And there&#x27;s no observability—production needs monitoring, logging, and metrics that a single prompt can&#x27;t provide.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;what-actually-ships&quot;&gt;What Actually Ships&lt;&#x2F;h3&gt;
+&lt;p&gt;AI systems that reach production are rarely &quot;just a prompt.&quot; They have structured workflows, error handling, observability, modularity, and scalability. These frameworks and architectures exist because production systems need structure—not because they&#x27;re trendy, but because they solve real problems that prototypes ignore.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;the-numbers-don-t-lie&quot;&gt;The Numbers Don&#x27;t Lie&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;www.gartner.com&#x2F;en&#x2F;articles&#x2F;how-to-make-your-ai-projects-production-ready&quot;&gt;Gartner&lt;&#x2F;a&gt;: Over 80% of organizations will struggle to operationalize AI systems by 2026&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;mitsloan.mit.edu&#x2F;ideas-made-to-matter&#x2F;how-companies-are-putting-ai-work&quot;&gt;MIT Sloan&lt;&#x2F;a&gt;: 85% experiment with AI, but only 37% deploy at scale&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;hbr.org&#x2F;2023&#x2F;04&#x2F;how-to-avoid-the-ai-maturity-problem&quot;&gt;Harvard Business Review&lt;&#x2F;a&gt;: &quot;Failure to move beyond proof of concept&quot; is the primary cause of AI failures&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;strong&gt;Architecture matters.&lt;&#x2F;strong&gt; Prototypes skip it. Production requires it.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;the-hard-truth&quot;&gt;The Hard Truth&lt;&#x2F;h3&gt;
+&lt;p&gt;There&#x27;s a mismatch between demos and production. Prototypes optimize for speed. Production optimizes for reliability, scalability, and maintainability.&lt;&#x2F;p&gt;
+&lt;p&gt;The question isn&#x27;t whether your prototype works. It&#x27;s whether it works when you have 100x more users, need unanticipated features, or an edge case breaks everything.&lt;&#x2F;p&gt;
+&lt;p&gt;Prototypes optimize for the first week. Production systems need to survive years.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;&lt;em&gt;Sometimes the most important lessons are the ones you learn before you make the mistake.&lt;&#x2F;em&gt;&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+</feed>

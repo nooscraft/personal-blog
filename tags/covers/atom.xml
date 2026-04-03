@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Noos - Where Thought, Code, and Craft Converge - covers</title>
+    <subtitle>Personal blog about programming, technology, and engineering insights. Topics include Rust, DevOps, Linux, and software craftsmanship.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://noos.blog/tags/covers/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://noos.blog"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2025-10-30T00:00:00+00:00</updated>
+    <id>https://noos.blog/tags/covers/atom.xml</id>
+    <entry xml:lang="en">
+        <title>Covers on Autopilot — Why I Let AI Paint the Edges</title>
+        <published>2025-10-30T00:00:00+00:00</published>
+        <updated>2025-10-30T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/ai-covers-on-autopilot/"/>
+        <id>https://noos.blog/posts/ai-covers-on-autopilot/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/ai-covers-on-autopilot/">&lt;p&gt;There are jobs you can do by hand for years and never notice the drag. For me it was cover images. Each new post: open a design tool, stare at a blank canvas, export a PNG, wire it to the post. Not hard, just enough friction to make publishing feel heavier than it should.&lt;&#x2F;p&gt;
+&lt;p&gt;This is a short note about shaving that yak with a tiny toolchain: a context‑aware prompt, an image model, and some guardrails in CI. No heroics—just removing a repeated decision so the writing flows.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;why-automate-covers&quot;&gt;Why automate covers&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Consistency: 1200×630 every time. No more odd crops in link unfurls.&lt;&#x2F;li&gt;
+&lt;li&gt;Momentum: publishing shouldn’t wait for “design time”.&lt;&#x2F;li&gt;
+&lt;li&gt;Style: light background, a single accent, abstract shapes. Enough personality, zero fuss.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Over time the manual step was turning into a speed bump. That was the whole motivation.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-bumps-along-the-road-the-important-part&quot;&gt;The bumps along the road (the important part)&lt;&#x2F;h2&gt;
+&lt;p&gt;I didn’t get it right on the first try. Here are the lessons that actually mattered.&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;Model and limits&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;At first I used Stable Horde for SDXL. It’s great and free, but CI doesn’t love queues. I kept seeing 400&#x2F;429s in the logs (invalid payload or rate‑limited). Switched to Replicate with an API token; still got rate limits sometimes, but at least the errors were predictable.&lt;&#x2F;p&gt;
+&lt;ol start=&quot;2&quot;&gt;
+&lt;li&gt;Exact sizing&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;SDXL likes multiples of 64. I request 1024×576, then downscale to 1200×630 with Sharp. Crisp edges, correct aspect for social cards.&lt;&#x2F;p&gt;
+&lt;ol start=&quot;3&quot;&gt;
+&lt;li&gt;Slugs vs. filenames&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;My fallback logic assumed &lt;code&gt;page.slug&lt;&#x2F;code&gt; exactly matched the filename. It didn’t—some posts derive the slug from the permalink. I fixed the template to compute &lt;code&gt;slug-from-permalink&lt;&#x2F;code&gt; and look for &lt;code&gt;&#x2F;images&#x2F;covers&#x2F;{slug}.png&lt;&#x2F;code&gt;. Simple, but that bug cost the most time.&lt;&#x2F;p&gt;
+&lt;ol start=&quot;4&quot;&gt;
+&lt;li&gt;“Why is it regenerating?”&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;CI starts from a clean checkout. If covers aren’t in Git, they disappear each run. I added a cache step that restores &lt;code&gt;static&#x2F;images&#x2F;covers&lt;&#x2F;code&gt; keyed to &lt;code&gt;content&#x2F;posts&#x2F;**&#x2F;*.md&lt;&#x2F;code&gt;. Now the generator truly skips when a PNG already exists.&lt;&#x2F;p&gt;
+&lt;ol start=&quot;5&quot;&gt;
+&lt;li&gt;Context in prompts&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;Pure tags produced vague images. I added a little context: title + ~240 chars of summary (description if present, otherwise a clean slice of the body). Still abstract, just more grounded.&lt;&#x2F;p&gt;
+&lt;ol start=&quot;6&quot;&gt;
+&lt;li&gt;One‑time resets&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;Sometimes you do want a full refresh. There’s a manual “Run workflow” input (&lt;code&gt;force_regenerate=true&lt;&#x2F;code&gt;) that bypasses the “file exists” check once. Good for style changes or a model upgrade.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;how-we-decided-on-ai-at-all&quot;&gt;How we decided on AI at all&lt;&#x2F;h2&gt;
+&lt;p&gt;I tried three options in order:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Hand‑made banners (historically): high quality, low velocity.&lt;&#x2F;li&gt;
+&lt;li&gt;Programmatic shapes: reliable, but too repetitive.&lt;&#x2F;li&gt;
+&lt;li&gt;AI with guardrails: abstract, brand‑aware, hands‑off once it’s set.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;The third option hit the balance. The prompt constrains style; the model supplies variation. It’s not “art direction”, but it serves the post—and that’s the only job here.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-pipeline-nuts-and-bolts&quot;&gt;The pipeline (nuts and bolts)&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Script: &lt;code&gt;scripts&#x2F;generate-ai-covers.mjs&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Scans &lt;code&gt;content&#x2F;posts&#x2F;*.md&lt;&#x2F;code&gt;, pulls &lt;code&gt;tags&lt;&#x2F;code&gt;, &lt;code&gt;title&lt;&#x2F;code&gt;, and a short summary.&lt;&#x2F;li&gt;
+&lt;li&gt;Prompt (simplified):
+&lt;blockquote&gt;
+&lt;p&gt;Abstract, minimal illustration. Tags: {tags}. Title: {title}. Context: {summary}. Vector‑like, clean geometric shapes, high contrast, brand accent #d64a48 on #f6f7f4. No text.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;Calls Replicate SDXL (model version from a secret), requests 1024×576, saves 1200×630 as &lt;code&gt;static&#x2F;images&#x2F;covers&#x2F;{slug}.png&lt;&#x2F;code&gt;.&lt;&#x2F;li&gt;
+&lt;li&gt;Skips generation if the PNG already exists (unless &lt;code&gt;FORCE_REGENERATE_COVERS=1&lt;&#x2F;code&gt;).&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;Template: &lt;code&gt;themes&#x2F;radion&#x2F;templates&#x2F;page.html&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;If a post doesn’t specify a cover, it tries &lt;code&gt;&#x2F;images&#x2F;covers&#x2F;{slug-from-permalink}.png&lt;&#x2F;code&gt; and hides the figure if missing.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;CI: &lt;code&gt;.github&#x2F;workflows&#x2F;deploy.yml&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Restores a covers cache before generation; saves it after.&lt;&#x2F;li&gt;
+&lt;li&gt;Optional manual input &lt;code&gt;force_regenerate&lt;&#x2F;code&gt; for a one‑time refresh.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;what-github-actions-brings&quot;&gt;What GitHub Actions brings&lt;&#x2F;h2&gt;
+&lt;p&gt;The boring kind of power: reliability.&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Every run restores the previous covers, generates only what’s missing, and embeds without a front‑matter tweak.&lt;&#x2F;li&gt;
+&lt;li&gt;When rate‑limited, the post still publishes—missing images pick up on the next run.&lt;&#x2F;li&gt;
+&lt;li&gt;A small verification stage lists the covers in &lt;code&gt;public&#x2F;images&#x2F;covers&lt;&#x2F;code&gt; and checks that posts actually reference them.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;closing-the-loop&quot;&gt;Closing the loop&lt;&#x2F;h2&gt;
+&lt;p&gt;This wasn’t about making the site “AI‑powered”. It was about removing a tiny friction point that kept breaking the flow. The rule of thumb I keep coming back to: automate anything that steals attention from writing. Covers were stealing attention. Now they aren’t.&lt;&#x2F;p&gt;
+&lt;p&gt;And if the art ever needs a new feel? I flip the model or tweak the prompt, hit “Run workflow”, and let the pipeline repaint the edges while I get back to words.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+</feed>
