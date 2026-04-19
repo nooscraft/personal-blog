@@ -1,6 +1,7 @@
 +++
 title = "How uv Works Under the Hood"
 date = 2026-04-08
+updated = 2026-04-19
 description = "A thorough walkthrough of uv's internals: the Rust crate architecture, what uv init actually does on disk, the two-thread resolver design, how PubGrub's CDCL algorithm works, batch prefetching, the forking resolver, and why these Rust-specific patterns make it 10–100x faster than pip."
 draft = false
 [taxonomies]
@@ -8,9 +9,13 @@ tags = ["python", "rust", "uv", "package-manager", "pubgrub", "dependency-resolu
 categories = ["Engineering"]
 +++
 
-I started using [uv](https://github.com/astral-sh/uv) because the benchmarks seemed too good to be true—10–100x faster than `pip`, resolves and installs in milliseconds. After reading the source code and the official resolver internals documentation, I understand *why*, and the answers are more interesting than just "it's written in Rust."
+> *Updated 2026-04-19: revised for accuracy after reader feedback. All claims now verified against uv v0.11.7; the `uv add` example output, the `resolve()` source excerpt, and several stylistic rough edges have been corrected.*
 
-This post traces every layer: from the repository structure, through what literally happens when you type `uv init` or `uv add requests`, down to the Rust concurrency patterns that make the resolver work. It's written for someone who wants to understand the engineering and might want to contribute. No prior Rust experience needed—but if you've seen Rust before, I'll point to the specific patterns in the source.
+I started using [uv](https://github.com/astral-sh/uv) because the benchmarks seemed too good to be true: 10–100x faster than `pip`, resolves and installs in milliseconds. So I spent a weekend reading the source. This post is what I wish I'd had on day one.
+
+It traces every layer: the repository structure, what actually happens when you type `uv init` or `uv add requests`, and the Rust concurrency patterns the resolver uses. No prior Rust experience needed, but if you've seen Rust before I'll point to the specific patterns in the source.
+
+Everything below was verified against uv [v0.11.7](https://github.com/astral-sh/uv/releases/tag/0.11.7) (April 2026). Specific numbers and code excerpts come from that tag; if you're reading this much later, the line numbers in linked source files may have drifted, but the high-level architecture has been stable for many releases.
 
 ---
 
@@ -27,7 +32,7 @@ uv is an **extremely fast Python package and project manager**, written in Rust 
 | `pipx run` | `uvx` / `uv tool run` |
 | `poetry` / `rye` | `uv init` + `uv add` |
 
-It has 82k+ stars, is used in production at scale, and its dependency resolver is designated as the replacement for Cargo's own solver—which is a significant endorsement from the Rust ecosystem itself.
+It has 83k+ stars, is used in production at scale, and the underlying [`pubgrub-rs`](https://github.com/pubgrub-rs/pubgrub) crate it depends on is the [designated basis for Cargo's next dependency solver](https://rust-lang.github.io/rust-project-goals/2025h1/pubgrub-in-cargo.html). The same algorithm and largely the same Rust crate will eventually power both `uv` and `cargo` resolutions.
 
 ---
 
@@ -46,7 +51,7 @@ uv/
 └── pyproject.toml   # uv manages itself with uv
 ```
 
-The real action is in `crates/`. Rust does not allow circular dependencies between crates, so the uv team structured the code as a directed acyclic graph of focused crates. Each does one thing:
+The real action is in `crates/`. There are 68 of them in v0.11.7 (`ls crates/ | wc -l` says so). Rust does not allow circular dependencies between crates, so the uv team structured the code as a directed acyclic graph of focused crates. Each does one thing:
 
 ```
 crates/
@@ -73,7 +78,7 @@ You can generate a visual dependency graph between crates:
 cargo depgraph --dedup-transitive-deps --workspace-only | dot -Tpng > graph.png
 ```
 
-The key insight: `uv` (the binary) sits at the top and depends on everything. `uv-types` sits near the bottom and depends on almost nothing. Code only flows downward—no cycles, by language enforcement.
+The shape of the graph is roughly: `uv` (the binary) sits at the top and depends on everything. `uv-types` sits near the bottom and depends on almost nothing. Code only flows downward; cycles are a hard compile error.
 
 ---
 
@@ -113,9 +118,9 @@ requires-python = ">=3.12"
 dependencies = []
 ```
 
-Notice there is **no `[build-system]`** section. Without it, the project is *not installable as a package*—it won't be installed into the virtual environment itself. This is the correct default for applications (web servers, scripts, CLIs). It avoids an unnecessary install step and the complexity of choosing a build backend upfront.
+Notice there is **no `[build-system]`** section. Without it, the project is *not installable as a package*: it won't be installed into the virtual environment itself. This is the correct default for applications (web servers, scripts, CLIs); it avoids an unnecessary install step and the complexity of choosing a build backend upfront.
 
-If you pass `--lib` or `--package`, uv adds a `src/` layout and a `[build-system]` pointing to `uv_build`—uv's own Rust-native build backend:
+If you pass `--lib` or `--package`, uv adds a `src/` layout and a `[build-system]` pointing to `uv_build`, uv's own Rust-native build backend:
 
 ```toml
 [build-system]
@@ -127,7 +132,7 @@ build-backend = "uv_build"
 
 uv runs `git init` and writes a `.gitignore` that excludes `.venv/` and `__pycache__/`. Skip this with `--no-vcs`.
 
-**No virtual environment is created yet.** uv is lazy—it creates `.venv` only when you first run something or add a package. This avoids disk writes for projects you might never use.
+**No virtual environment is created yet.** uv is lazy: it creates `.venv` only when you first run something or add a package. This avoids disk writes for projects you might never use.
 
 ---
 
@@ -137,15 +142,19 @@ This is the core operation. `uv add` installs a package and records it in `pypro
 
 ```
 $ uv add requests
+Using CPython 3.12.10
 Creating virtual environment at: .venv
-Resolved 6 packages in 400ms
-Installed 6 packages in 18ms
- + certifi==2025.1.31
- + charset-normalizer==3.4.1
- + idna==3.10
- + requests==2.32.3
- + urllib3==2.4.0
+Resolved 6 packages in 456ms
+Prepared 5 packages in 451ms
+Installed 5 packages in 4ms
+ + certifi==2026.2.25
+ + charset-normalizer==3.4.7
+ + idna==3.11
+ + requests==2.33.1
+ + urllib3==2.6.3
 ```
+
+Two things worth noticing about that output. "Resolved 6 packages" includes the project itself as a node in the dependency graph (your project + 5 transitive deps), but only 5 packages are *installed*: the project itself isn't installable here because there's no `[build-system]`. And "Prepared" is uv's word for "downloaded and unpacked into the cache, ready to be linked into the venv": the actual install step is just creating links, which is why it takes 4ms.
 
 ### Stage 1: Read the project state (`uv-workspace`)
 
@@ -153,15 +162,15 @@ Installed 6 packages in 18ms
 
 ### Stage 2: Update `pyproject.toml` (`pyproject_mut`)
 
-uv adds `requests` to the `dependencies` list in `pyproject.toml`. At this point it doesn't know the version yet, so it records it as a bare requirement. After resolution (Stage 3), it rewrites the specifier with the resolved lower bound:
+uv adds `requests` to the `dependencies` list in `pyproject.toml`. At this point it doesn't know the version yet, so it records it as a bare requirement. After resolution (Stage 3), it rewrites the specifier with the resolved version. The exact form depends on the `--bounds` flag; the default (`AddBoundsKind::Lower` in [`pyproject_mut.rs`](https://github.com/astral-sh/uv/blob/0.11.7/crates/uv-workspace/src/pyproject_mut.rs)) is a single lower bound:
 
 ```toml
 dependencies = [
-    "requests>=2.32.3",
+    "requests>=2.33.1",
 ]
 ```
 
-This edit goes through `uv-workspace`'s `pyproject_mut` module, which does **surgical TOML editing**—it patches exactly the field it needs to change without reformatting anything else in the file. This is important because `pyproject.toml` often contains hand-formatted sections, comments, and deliberate ordering that tools should not destroy.
+This edit goes through `uv-workspace`'s `pyproject_mut` module, which does **surgical TOML editing**: it patches exactly the field it needs to change without reformatting anything else in the file. That matters because `pyproject.toml` often contains hand-formatted sections, comments, and deliberate ordering that a naive serialize/reserialize pass would obliterate.
 
 ### Stage 3: Resolution (`uv-resolver` + PubGrub)
 
@@ -203,11 +212,11 @@ wheels = [
 ]
 ```
 
-The lockfile is **universal**: one `uv.lock` works on macOS, Linux, and Windows. It records all possible packages for all platforms using environment markers. When you install from the lockfile on a real machine, uv selects only the packages appropriate for that platform. This is a fundamental improvement over `pip freeze` or `requirements.txt`, which are inherently platform-specific snapshots.
+The lockfile is **universal**: one `uv.lock` works on macOS, Linux, and Windows. It records all possible packages for all platforms using environment markers. When you install from the lockfile on a real machine, uv selects only the packages appropriate for that platform. This is a real improvement over `pip freeze` or `requirements.txt`, which are inherently platform-specific snapshots.
 
 The hashes serve two purposes: integrity verification when downloading, and cache lookup keying.
 
-> **Note:** `uv.lock` is an internal format that may change between versions. If you need to read it programmatically, use `uv workspace metadata` instead—it outputs a stable JSON representation of the same dependency graph.
+> **Note:** `uv.lock` is an internal format that may change between versions. If you need to read it programmatically, the experimental `uv workspace metadata --preview-features workspace-metadata` command outputs a stable JSON representation of the same dependency graph (it's still preview as of v0.11.7, so don't rely on its schema being final).
 
 ### Stage 5: Download packages (`uv-client` + Tokio)
 
@@ -230,16 +239,16 @@ This is the largest contributor to uv's cold-cache speed. Network I/O latency is
 Packages are stored in a **global, content-addressed cache** managed by `uv-cache`. The cache key is the SHA-256 hash of the package content. This means:
 
 - Any package version you have ever installed is reused across all your projects, forever.
-- The cache is verified by hash on every use—silent corruption is caught immediately.
+- The cache is verified by hash on every use; silent corruption is caught immediately.
 - The cache is shared across `uv pip install`, `uv add`, and `uvx` tool installs.
 
 ### Stage 6: Install packages (`uv-installer`)
 
 "Install" normally implies copying files. uv mostly doesn't copy anything.
 
-`uv-installer` uses **hard links** wherever the filesystem supports them (most Linux and macOS filesystems do). A hard link means two directory entries point to the same physical data blocks on disk. Creating a hard link is essentially free—it's a single filesystem metadata operation.
+`uv-installer` uses **hard links** wherever the filesystem supports them (most Linux and macOS filesystems do). A hard link means two directory entries point to the same physical data blocks on disk. Creating one is essentially free: a single filesystem metadata operation.
 
-When uv "installs" a package into `.venv/lib/python3.12/site-packages/`, it's creating hard links from the global cache into the virtual environment. No bytes are duplicated. This is why you see timings like `Installed 43 packages in 208ms`—that 208ms is the overhead of creating ~thousands of directory entries, not copying gigabytes.
+When uv "installs" a package into `.venv/lib/python3.12/site-packages/`, it's creating hard links from the global cache into the virtual environment. No bytes are duplicated. This is why you see timings like `Installed 43 packages in 208ms`: that 208ms is the overhead of creating thousands of directory entries, not copying gigabytes.
 
 On filesystems that don't support cross-device hard links (e.g., home directory and temp on different mounts, or network filesystems), uv falls back to copy-on-write reflinks, then regular copies. But the common case is hard links.
 
@@ -253,40 +262,46 @@ The resolver is the most architecturally interesting part of uv, and the source 
 
 The PubGrub algorithm is inherently **sequential and synchronous**: it makes one decision at a time, and each decision depends on all previous decisions. You cannot trivially parallelize it.
 
-But metadata fetching—querying PyPI for "which versions of `flask` exist?" or "what does `flask==3.1.0` depend on?"—is highly parallelizable I/O.
+But metadata fetching (querying PyPI for "which versions of `flask` exist?" or "what does `flask==3.1.0` depend on?") is highly parallelizable I/O.
 
 The naive approach is to serialize everything: decide package, fetch metadata, decide next package, fetch metadata. This is what pip does. uv does something cleverer.
 
 ### Two threads communicating via channels
 
-Looking at [`crates/uv-resolver/src/resolver/mod.rs`](https://github.com/astral-sh/uv/blob/main/crates/uv-resolver/src/resolver/mod.rs), the `resolve()` function reveals the architecture:
+The `resolve()` function in [`crates/uv-resolver/src/resolver/mod.rs`](https://github.com/astral-sh/uv/blob/0.11.7/crates/uv-resolver/src/resolver/mod.rs#L277-L309) is short enough to quote verbatim:
 
 ```rust
 pub async fn resolve(self) -> Result<ResolverOutput, ResolveError> {
     let state = Arc::new(self.state);
     let provider = Arc::new(self.provider);
 
-    // Channel for sending fetch requests from solver → fetcher (capacity: 300).
+    // A channel to fetch package metadata (e.g., given `flask`, fetch all versions) and version
+    // metadata (e.g., given `flask==1.0.0`, fetch the metadata for that version).
+    // Channel size is set large to accommodate batch prefetching.
     let (request_sink, request_stream) = mpsc::channel(300);
 
-    // The async fetcher runs on the Tokio thread pool.
+    // Run the fetcher.
     let requests_fut = state.clone().fetch(provider.clone(), request_stream).fuse();
 
-    // The PubGrub solver runs on a DEDICATED SYNCHRONOUS THREAD.
+    // Spawn the PubGrub solver on a dedicated thread.
     let solver = state.clone();
     let (tx, rx) = oneshot::channel();
     thread::Builder::new()
         .name("uv-resolver".into())
         .spawn(move || {
             let result = solver.solve(&request_sink);
+
+            // This may fail if the main thread returned early due to an error.
             let _ = tx.send(result);
         })
         .unwrap();
 
     let resolve_fut = async move { rx.await.map_err(|_| ResolveError::ChannelClosed) };
 
-    // Run both until one completes (or errors).
+    // Wait for both to complete.
     let ((), resolution) = tokio::try_join!(requests_fut, resolve_fut)?;
+
+    state.on_complete();
     resolution
 }
 ```
@@ -310,19 +325,20 @@ The architecture is:
 └────────────────────────────────────────────┘
 ```
 
-The solver thread is **synchronous**. PubGrub's algorithm doesn't fit naturally into async/await because it's a tight loop with complex mutable state. Running it synchronously on a dedicated thread avoids the overhead of trying to make the solver async.
+The solver thread is **synchronous**. PubGrub's algorithm doesn't fit naturally into async/await because it's a tight loop with complex mutable state. Running it on its own OS thread sidesteps the question entirely.
 
-The fetcher runs on Tokio's async thread pool. When the solver needs metadata for a package, it sends a `Request` down the `mpsc` channel (capacity 300) and then checks the `InMemoryIndex` (a concurrent `DashMap`-backed cache). If the result isn't there yet, it parks and yields until the fetcher writes it in. The solver thread uses `wait_blocking()` which blocks *only that thread*, not the Tokio runtime.
+The fetcher runs on Tokio's async runtime. When the solver needs metadata for a package, it sends a `Request` down the `mpsc` channel and then looks up the `InMemoryIndex` (a `DashMap`-backed concurrent cache). If the result isn't there yet, the solver thread blocks on the index's per-key notifier. That blocks *only the solver thread*, not Tokio's runtime, which keeps happily making more network requests.
 
-This design separates concerns cleanly:
+This design separates concerns:
+
 - PubGrub stays synchronous and simple.
 - Network I/O stays async and concurrent.
-- `Arc<ResolverState>` is shared safely between both sides.
-- The `mpsc` channel with capacity 300 provides backpressure—the solver can queue up to 300 requests before it blocks.
+- `Arc<ResolverState>` is shared safely between the two sides.
+- The 300-deep `mpsc` channel provides backpressure: if the solver burns through requests faster than the fetcher can keep up, it eventually blocks on `send`.
 
 ### The `InMemoryIndex`
 
-The `InMemoryIndex` is a shared cache of already-fetched metadata, backed by `DashMap` (a concurrent hashmap that allows reads without locking the whole map). The solver reads from it; the fetcher writes to it. The solver uses `wait_blocking()` to park itself if a result isn't in the index yet, without blocking the async runtime.
+The `InMemoryIndex` is a shared cache of already-fetched metadata, backed by `DashMap` (a concurrent hashmap that allows reads without locking the whole map). The solver reads from it; the fetcher writes to it. When a key is missing, the solver thread parks on a per-key notifier until the fetcher writes the value in. The Tokio runtime is never blocked, so other in-flight downloads keep making progress.
 
 ---
 
@@ -330,19 +346,19 @@ The `InMemoryIndex` is a shared cache of already-fetched metadata, backed by `Da
 
 ### Why this is hard
 
-The resolver must answer: given a set of requirements (with version ranges), find one exact version for every package such that every package's requirements are also satisfied—recursively, for all transitive dependencies.
+The resolver must answer: given a set of requirements (with version ranges), find one exact version for every package such that every package's requirements are also satisfied, recursively, for all transitive dependencies.
 
 In the general case, this is equivalent to the [Boolean Satisfiability Problem](https://en.wikipedia.org/wiki/Boolean_satisfiability_problem) (SAT), which is NP-complete. Package ecosystems have thousands of packages and hundreds of versions each. Naive backtracking (try a version; if it conflicts, undo and try another) can be exponential.
 
 ### PubGrub's approach: conflict-driven clause learning
 
-uv uses [pubgrub-rs](https://github.com/pubgrub-rs/pubgrub), the Rust implementation of [PubGrub](https://nex3.medium.com/pubgrub-2fb6470504f), invented by Natalie Weizenbaum for the Dart package manager in 2018. PubGrub is a **conflict-driven clause learning (CDCL)** solver.
+uv uses [pubgrub-rs](https://github.com/pubgrub-rs/pubgrub), the Rust implementation of [PubGrub](https://nex3.medium.com/pubgrub-2fb6470504f). PubGrub was [introduced in April 2018](https://nex3.medium.com/pubgrub-2fb6470504f) by Natalie Weizenbaum for Dart's `pub` package manager and has since been adopted by Bundler, Poetry, and now uv. It is a **conflict-driven clause learning (CDCL)** solver.
 
-**Old approach:** Pick a version. Try it. On conflict, undo and try another. Worst case: exponential.
+The old approach is: pick a version, try it, on conflict undo and try another. Worst case is exponential.
 
-**PubGrub's approach:** When a conflict is found, *learn from it* by recording an **incompatibility clause**. The clause encodes which combination of package versions caused the conflict. Any future state that would trigger that same conflict is pruned immediately, without re-exploring.
+PubGrub's approach: when a conflict is found, *learn from it* by recording an **incompatibility clause**. The clause encodes which combination of package versions caused the conflict. Any future partial assignment that would trigger that same conflict is pruned immediately, without re-exploring.
 
-For example: the resolver discovers that `a==2.0` and `b==3.0` can't coexist (because they require conflicting versions of `c`). PubGrub records the incompatibility `{a==2.0, b==3.0}`. Any future partial solution containing both is instantly ruled out. This turns exponential worst cases into manageable ones for realistic package graphs.
+Concrete example: the resolver discovers that `a==2.0` and `b==3.0` can't coexist (because they require conflicting versions of `c`). PubGrub records the incompatibility `{a==2.0, b==3.0}`. Any future partial solution containing both is ruled out by unit propagation, instantly. This turns exponential worst cases into manageable ones for realistic package graphs.
 
 ### The resolver loop
 
@@ -350,9 +366,10 @@ Here is how PubGrub runs in uv, from the [official internals documentation](http
 
 **1. Initialize.** Create a virtual root package representing your project. It is the only "decided" package; everything else is undecided.
 
-**2. Pick the highest-priority undecided package.** uv's priority order is:
-- URL dependencies (git, path, file) — pinned; no version negotiation needed.
-- Packages with `==` constraints — version is already determined.
+**2. Pick the highest-priority undecided package.** uv's priority order is roughly:
+
+- URL dependencies (git, path, file): pinned, no version negotiation needed.
+- Packages with `==` constraints: version is already determined.
 - Packages flagged as "highly conflicting" (see below).
 - Everything else, ordered by when first encountered (breadth-first traversal).
 
@@ -368,20 +385,20 @@ This ensures direct dependencies are decided before transitive ones.
 
 ### The conflict-priority heuristic
 
-The `CONFLICT_THRESHOLD` constant in the source is set to `5`:
+The `CONFLICT_THRESHOLD` constant in [`resolver/mod.rs`](https://github.com/astral-sh/uv/blob/0.11.7/crates/uv-resolver/src/resolver/mod.rs#L97-L98) is set to `5`:
 
 ```rust
 /// The number of conflicts a package may accumulate before we re-prioritize and backtrack.
 const CONFLICT_THRESHOLD: usize = 5;
 ```
 
-Here's the scenario it solves: Package `A` has high priority and is decided first. Every version of `B` the resolver tries is immediately rejected due to conflict with `A`. The resolver exhausts all of `B`'s versions before realizing the root cause is `A`'s chosen version—this is slow.
+The scenario it solves: package `A` has high priority and is decided first. Every version of `B` the resolver tries is immediately rejected due to a conflict with `A`. The resolver could exhaust all of `B`'s versions before realising the root cause is `A`'s chosen version, which is slow.
 
 After 5 conflicts involving `A` and `B`, uv marks them as "highly conflicting" and promotes `B`'s priority above `A`'s. It then backtracks to before `A` was decided and tries `B` first. Deciding the constrained package first finds the correct solution much faster.
 
 ### Error messages
 
-When resolution fails, PubGrub can reconstruct exactly why. Instead of `"conflicting requirements detected"`, you get:
+When resolution fails, PubGrub can reconstruct exactly *why* by walking the derivation tree of incompatibilities backwards from the root. Instead of `"conflicting requirements detected"`, you get something like:
 
 ```
 × No solution found when resolving dependencies:
@@ -392,34 +409,36 @@ When resolution fails, PubGrub can reconstruct exactly why. Instead of `"conflic
     unsatisfiable.
 ```
 
-PubGrub walks the incompatibility chain backward and turns it into a narrative. pip's error messages tell you *what* conflicted; PubGrub tells you *why*, package by package.
+This is the single feature most likely to make you fall in love with PubGrub. Modern pip has improved here too, but uv's errors come from the same derivation tree the solver actually used, so they're always faithful to what the algorithm did.
 
 ---
 
 ## 7. Batch prefetching: the boto3 optimization
 
-The `BatchPrefetcher` in `crates/uv-resolver/src/resolver/batch_prefetch.rs` is a targeted optimization for packages with many versions that cause a lot of backtracking—the canonical example is `boto3`/`botocore`/`urllib3`.
+The `BatchPrefetcher` in [`crates/uv-resolver/src/resolver/batch_prefetch.rs`](https://github.com/astral-sh/uv/blob/0.11.7/crates/uv-resolver/src/resolver/batch_prefetch.rs) is a targeted optimization for packages with many versions that cause a lot of backtracking. The canonical example is `boto3`/`botocore`/`urllib3`.
 
-The problem: the resolver tries a version, fetches its metadata, discovers a conflict, tries the next version, fetches *its* metadata, discovers a conflict... For botocore, which has hundreds of releases, this means hundreds of sequential fetch-then-reject cycles on a cold cache.
+The problem: the resolver tries a version, fetches its metadata, discovers a conflict, tries the next version, fetches *its* metadata, discovers a conflict, and so on. For botocore, which has hundreds of releases, this can mean hundreds of sequential fetch-then-reject cycles on a cold cache.
 
-The fix: after the resolver has unsuccessfully tried 5 versions of a package, the `BatchPrefetcher` speculatively sends fetch requests for the *next 50 compatible versions* ahead of time. The schedule from the source:
+The fix: after the resolver has tried a few versions of a package, the `BatchPrefetcher` speculatively sends fetch requests for several upcoming versions ahead of time. The schedule from the source ([line 178](https://github.com/astral-sh/uv/blob/0.11.7/crates/uv-resolver/src/resolver/batch_prefetch.rs#L162-L183)):
 
 ```rust
-// After 5, 10, 20, 40 tried versions, prefetch that many versions to start early
-// but not too aggressive. Later, schedule the prefetch of 50 versions every 20
-// versions—high enough to saturate the task pool.
-let do_prefetch = (num_tried >= 5  && previous_prefetch < 5)
+/// After 5, 10, 20, 40 tried versions, prefetch that many versions to start early but not
+/// too aggressive. Later we schedule the prefetch of 50 versions every 20 versions, this gives
+/// us a good buffer until we see prefetch again and is high enough to saturate the task pool.
+let do_prefetch = (num_tried >= 5 && previous_prefetch < 5)
     || (num_tried >= 10 && previous_prefetch < 10)
     || (num_tried >= 20 && previous_prefetch < 20)
     || (num_tried >= 20 && num_tried - previous_prefetch >= 20);
 ```
+
+(The doc comment promises "5, 10, 20, 40" but the code only checks 5, 10, 20 explicitly; the 40-and-beyond case is handled by the rolling `num_tried - previous_prefetch >= 20` clause. Same end result, but if you're reading the source it's worth noting the comment doesn't quite match the conditions.)
 
 The prefetcher uses two strategies:
 
 - **Compatible strategy**: prefetch versions within the current constraint range, from newest downward.
 - **In-order strategy**: when the compatible range is exhausted, prefetch the next versions by release order, ignoring compatibility.
 
-It avoids prefetching source distributions (which are expensive to build) and wheels that require building from source when there's no metadata available via range requests. These are heuristics—they might prefetch irrelevant versions—but in the cold-cache botocore case, they can turn hundreds of serial round trips into a handful of batched ones.
+It avoids prefetching source distributions (which are expensive to build). These are heuristics, and they might prefetch versions that turn out to be irrelevant, but in the cold-cache botocore case they can turn hundreds of serial round trips into a handful of batched ones.
 
 ---
 
@@ -434,7 +453,7 @@ numpy>=2,<3 ; python_version >= "3.11"
 numpy>=1.16,<2 ; python_version < "3.11"
 ```
 
-A naive resolver fails here—Python only allows one installed version of any package. uv's resolver detects that the two requirements for `numpy` have **different environment markers** and splits (forks) the resolution into two independent sub-resolutions:
+A naive resolver fails here, since Python only allows one installed version of any package. uv's resolver detects that the two requirements for `numpy` have **different environment markers** and splits (forks) the resolution into two independent sub-resolutions:
 
 - Fork 1: `python_version >= "3.11"` → resolves numpy to `2.3.0`
 - Fork 2: `python_version < "3.11"` → resolves numpy to `1.26.4`
@@ -453,11 +472,11 @@ uv lock -v 2>&1 | grep -E "(Splitting|Solving split|Split.*took)"
 
 uv makes one important assumption that enables a significant performance optimization: **all wheels of a single version of a package have identical `METADATA` files**.
 
-Why this matters: numpy 2.3.2 has 73 wheels (for different Python versions, operating systems, and architectures). Without the metadata consistency assumption, uv would need to fetch the metadata from each wheel separately to understand that version's dependencies. That's 73 network requests for one version of one package.
+Why this matters: I just checked PyPI, and numpy 2.3.2 has exactly 73 wheels (for different Python versions, operating systems, and architectures) plus one source distribution. Without the metadata consistency assumption, uv would need to fetch the metadata from each wheel separately to understand that version's dependencies. That's 73 network requests for one version of one package.
 
-With the assumption, uv fetches metadata from *any one* wheel (preferring whichever supports range requests or exposes `.metadata` via PEP 658) and uses it for all platforms. This turns 73 requests into 1.
+With the assumption, uv fetches metadata from *any one* wheel (preferring whichever exposes `.metadata` via [PEP 658](https://peps.python.org/pep-0658/), or whichever supports HTTP range requests so only the wheel's metadata footer needs to be downloaded) and uses it for all platforms. That turns 73 requests into 1.
 
-The assumption holds for all major packages in practice. The Python packaging standards don't formally require it, and there's ongoing discussion about whether to mandate it—but uv's bet has paid off.
+The assumption holds for all major packages in practice. PEP 658 doesn't strictly require it, and there's been discussion about whether to mandate it, but uv's bet has paid off so far.
 
 ---
 
@@ -482,10 +501,10 @@ Its structure:
 **Content addressing**: packages are stored and retrieved by their SHA-256 hash, not by name or version. This means:
 
 - Two projects using `requests==2.32.3` share one copy on disk.
-- The integrity check is free—the hash is the key.
+- The integrity check is free: the hash *is* the key.
 - Renaming or moving the cache is safe; nothing relies on the path.
 
-**The `simple/` cache**: PyPI's "simple" index is just an HTML page listing all available versions of a package. uv caches these responses. When you re-resolve with an existing `uv.lock`, uv can often skip all PyPI queries—it knows which versions it selected last time, checks the `simple/` cache for any newer versions, and in most cases (no new releases since last lock) produces an identical solution without any network requests.
+**The `simple/` cache**: PyPI's "simple" index is just an HTML page listing all available versions of a package. uv caches these responses. When you re-resolve with an existing `uv.lock`, uv can often skip almost all PyPI queries: it knows which versions it selected last time, checks the `simple/` cache (revalidating with a conditional GET) for any newer versions, and in most cases (no new releases since last lock) produces an identical solution without hitting the network.
 
 Manage the cache:
 
@@ -503,7 +522,7 @@ When a package only provides an sdist (no binary wheel for your platform), uv mu
 
 Building an sdist means running the package's build backend (e.g., setuptools, flit, hatchling) inside an isolated build environment. This is necessary because build scripts can run arbitrary Python code, and that code might read files, make network requests, or modify the filesystem.
 
-uv caches successfully built wheels in `~/.cache/uv/builds/` keyed by the sdist hash. If you install the same source package again—even across projects—the build only runs once.
+uv caches successfully built wheels in `~/.cache/uv/builds/` keyed by the sdist hash. If you install the same source package again, even across projects, the build only runs once.
 
 The contributing guide recommends building inside Docker if you're working with untrusted packages:
 
@@ -520,27 +539,13 @@ This matters for uv's own development: if you're benchmarking the resolver again
 
 ## 11. Why Rust, specifically
 
-The Rust choice is not aesthetic. These are the concrete reasons it matters for uv's design:
+The choice of Rust isn't aesthetic. Reading the resolver, two specific properties stand out as load-bearing for the design:
 
-### Synchronous solver + async I/O in one process
+**Sync and async coexist in the same process.** The resolver wants a synchronous PubGrub loop and a concurrent async fetcher in the same binary, sharing state via `Arc<DashMap<…>>`. Rust gives you `std::thread::spawn`, `tokio::spawn`, and `Arc` as first-class equals; you can pick the right execution model per subsystem and the type checker keeps you honest about what crosses the boundary. In Python this hybrid is famously awkward (the GIL plus `asyncio` make it hard to mix the two cleanly), and in Go everything wants to be a goroutine.
 
-The resolver uses a dedicated synchronous thread for PubGrub and Tokio's async runtime for I/O, communicating via channels. This hybrid is natural in Rust: `thread::spawn` and `tokio::spawn` are both first-class, and `Arc<T>` makes shared state safe across the boundary. In Python, mixing threading and async is notoriously tricky; in Go, goroutines are all-async. Rust lets you choose the right execution model per subsystem.
+**Concurrent shared state without runtime data races.** The `InMemoryIndex` is read from the solver thread and written from the Tokio runtime simultaneously. `DashMap` is the data structure that makes this safe, but Rust's type system is what makes the safety *enforced*: you can't accidentally hand out a `&mut` reference across threads. You can still write deadlocks or logic bugs, of course, but the class of "two threads stomping on each other's memory" simply doesn't compile.
 
-### Compile-time data race prevention
-
-uv fires hundreds of concurrent network requests. Shared state—the `InMemoryIndex`, the `unavailable_packages` map—is accessed from both the solver thread and the Tokio runtime. Rust's ownership and borrowing rules make **data races a compile error**. The `DashMap` type (a concurrent hashmap) is used specifically because it lets multiple threads read without exclusive locking, and Rust's type system ensures it's used correctly. If a developer accidentally introduced an unsynchronized shared write, the code wouldn't compile.
-
-### No garbage collector pauses
-
-uv's performance goal is sub-second resolution. Python, Java, and Go all have GCs that pause execution unpredictably. A 20ms GC pause in a 200ms operation is a 10% slowdown. Rust's memory is freed deterministically at the end of each value's scope (enforced by the compiler, zero runtime cost), so there are no GC pauses to worry about.
-
-### Hard links and OS primitives
-
-`uv-installer` calls `linkat()` to create hard links, which is a direct syscall with no interpreter overhead. In Rust, this is `std::fs::hard_link()` or the platform-specific `nix` crate—safe, efficient, and with the error handling enforced by the type system. In Python you'd use `os.link()`, which works, but you're going through the Python interpreter, the `os` module dispatch, and CPython's own memory management for every call.
-
-### Zero-cost async/await
-
-Tokio transforms `async fn` + `.await` into state machines at compile time. Each `.await` point is a state transition with no heap allocation and no virtual dispatch—the compiler generates exactly the code you'd write by hand in C if you were implementing the state machine yourself. This means uv can use thousands of concurrent async tasks (one per pending package fetch) without the overhead that would be prohibitive in languages where concurrency primitives have runtime costs.
+The other usual Rust talking points (no GC pauses, zero-cost `async`, native `linkat()`) all apply too, but they're not specific to uv. The two above are the ones I'd point to as actually shaping the architecture.
 
 ---
 
@@ -605,31 +610,23 @@ The `RUST_LOG` env var follows the `tracing` crate's directive syntax: you can s
 
 ### Finding a first contribution
 
-The team labels beginner-friendly issues as [`good first issue`](https://github.com/astral-sh/uv/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22). These typically don't require deep resolver knowledge—improving error messages, handling edge cases in TOML parsing, adding missing CLI flags. The `bug` label is also a good source of contributions.
+The team labels beginner-friendly issues as [`good first issue`](https://github.com/astral-sh/uv/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22). These typically don't require deep resolver knowledge: improving error messages, handling edge cases in TOML parsing, adding missing CLI flags. The `bug` label is also a good source of contributions.
 
 Before starting on anything not labeled `good first issue` or `bug`, comment on the issue first. The team has strong opinions on what uv should and shouldn't do, and they prefer to align on approach before implementation.
 
 ---
 
-## Putting it all together
+## What surprised me
 
-When you type `uv add requests`, every layer we covered fires in sequence:
+A few things I didn't expect going in, in case they're useful as anchors when you read the source yourself:
 
-1. **`uv` crate** parses arguments via clap.
-2. **`uv-workspace`** reads `pyproject.toml`, discovers the workspace, builds the `Manifest`.
-3. **`pyproject_mut`** surgically adds `requests` to `dependencies`.
-4. **`uv-resolver`** calls `resolve()`:
-   - The PubGrub solver starts on a **dedicated sync thread**, sending fetch requests via a Tokio `mpsc` channel (capacity 300).
-   - The **async fetcher** on the Tokio runtime handles those requests, firing concurrent HTTP requests via `uv-client`/reqwest.
-   - Fetched metadata lands in the shared `InMemoryIndex` (`DashMap`-backed).
-   - **PubGrub** iterates: pick highest-priority undecided package → pick newest compatible version → add its requirements → detect conflicts → learn incompatibilities → repeat.
-   - After 5 failed versions of a package, **`BatchPrefetcher`** speculatively fetches up to 50 upcoming versions.
-   - If environment markers diverge (e.g., platform-specific requirements), the resolver **forks**, producing separate solutions tagged with markers.
-5. The resolution is written to **`uv.lock`** as a universal, platform-tagged dependency graph.
-6. **`uv-installer`** checks `uv-cache` for each package. Cache hits are **hard-linked** into `.venv/` instantly. Cache misses are downloaded concurrently, cached, then hard-linked.
-7. Done. Warm cache: under 50ms. Cold cache on a fast connection: under two seconds for typical projects.
+- The solver is a *plain `std::thread::spawn`*, not a `tokio::task::spawn_blocking`. The hybrid isn't subtle; it really is "spawn an OS thread and hand it the channel sender."
+- The `InMemoryIndex` blocking primitive (the per-key notifier the solver waits on) is what makes the "sync solver, async fetcher" split actually work. Without it the solver would either busy-wait or block the Tokio runtime, and you'd lose all the parallelism.
+- `pyproject_mut` is a much bigger module than I expected (~1800 lines for surgical TOML edits). Preserving user formatting turns out to be most of the work in any tool that round-trips human-edited config.
+- The `BatchPrefetcher` doc comment doesn't quite match its code. Small thing, but it's the kind of detail that convinces you the rest is hand-written by people, not regenerated.
+- The "metadata consistency" assumption (Section 8) feels load-bearing but is technically not guaranteed by any PEP. uv is essentially betting on a behaviour packaging tooling has converged on without ever standardising.
 
-The speed is not magic. It is the accumulation of many specific engineering decisions, each grounded in either algorithmic improvement (CDCL vs. backtracking), systems programming (hard links, zero-cost async), or Rust's type system enforcing correctness of concurrent code that would be risky to write in other languages.
+If you want to poke at any of this, the entry points to read first are [`crates/uv-resolver/src/resolver/mod.rs`](https://github.com/astral-sh/uv/blob/0.11.7/crates/uv-resolver/src/resolver/mod.rs) (the `resolve()` and `solve()` functions) and [`batch_prefetch.rs`](https://github.com/astral-sh/uv/blob/0.11.7/crates/uv-resolver/src/resolver/batch_prefetch.rs). After that, the rest of the codebase mostly explains itself.
 
 ---
 
@@ -638,8 +635,8 @@ The speed is not magic. It is the accumulation of many specific engineering deci
 - [uv resolver internals](https://docs.astral.sh/uv/reference/internals/resolver/) — the official deep dive, written by the uv team; the primary source for Section 6
 - [PubGrub blog post by Natalie Weizenbaum](https://nex3.medium.com/pubgrub-2fb6470504f) — the original algorithm explanation; very approachable
 - [pubgrub-rs internals guide](https://pubgrub-rs-guide.pages.dev/internals/intro) — the Rust implementation's own documentation
-- [uv resolver source: `resolver/mod.rs`](https://github.com/astral-sh/uv/blob/main/crates/uv-resolver/src/resolver/mod.rs) — start here if you want to read the resolver code; the `resolve()` function is the entry point
-- [uv resolver source: `batch_prefetch.rs`](https://github.com/astral-sh/uv/blob/main/crates/uv-resolver/src/resolver/batch_prefetch.rs) — the `BatchPrefetcher` implementation
+- [uv resolver source: `resolver/mod.rs`](https://github.com/astral-sh/uv/blob/0.11.7/crates/uv-resolver/src/resolver/mod.rs) — start here if you want to read the resolver code; the `resolve()` function is the entry point
+- [uv resolver source: `batch_prefetch.rs`](https://github.com/astral-sh/uv/blob/0.11.7/crates/uv-resolver/src/resolver/batch_prefetch.rs) — the `BatchPrefetcher` implementation
 - [uv CONTRIBUTING.md](https://github.com/astral-sh/uv/blob/main/CONTRIBUTING.md) — setup, testing, profiling, snapshot testing
 - [Tokio async runtime](https://tokio.rs/) — the async runtime underlying uv's concurrent I/O
 - [DashMap](https://docs.rs/dashmap/latest/dashmap/) — the concurrent hashmap used in `InMemoryIndex`
