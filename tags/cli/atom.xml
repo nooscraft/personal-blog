@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Noos - Where Thought, Code, and Craft Converge - cli</title>
+    <subtitle>Personal blog about programming, technology, and engineering insights. Topics include Rust, DevOps, Linux, and software craftsmanship.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://noos.blog/tags/cli/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://noos.blog"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2025-11-07T00:00:00+00:00</updated>
+    <id>https://noos.blog/tags/cli/atom.xml</id>
+    <entry xml:lang="en">
+        <title>Tokuin: Token Intelligence for LLM Developers</title>
+        <published>2025-11-07T00:00:00+00:00</published>
+        <updated>2025-11-07T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/tokuin-token-tooling-for-llm-builders/"/>
+        <id>https://noos.blog/posts/tokuin-token-tooling-for-llm-builders/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/tokuin-token-tooling-for-llm-builders/">&lt;p&gt;I built &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;nooscraft&#x2F;tokuin&quot;&gt;Tokuin&lt;&#x2F;a&gt; because the tooling around prompt design still feels like guesswork. We scribble system prompts in scratchpads, retry endpoints until rate limits scream, and only know what the bill looks like after the invoice arrives. Tokuin changes that. It gives you &lt;strong&gt;reliable token estimates, cost projections, and synthetic load tests&lt;&#x2F;strong&gt;—all packaged in a Rust CLI you can trust.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;why-another-cli&quot;&gt;Why Another CLI?&lt;&#x2F;h2&gt;
+&lt;p&gt;Prompts have become product surfaces. Teams iterate on them like code, but the support tooling still feels like duct tape. I wanted something that:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Reads prompts from files, stdin, or watch mode&lt;&#x2F;li&gt;
+&lt;li&gt;Targets multiple providers without juggling SDKs&lt;&#x2F;li&gt;
+&lt;li&gt;Surfaces pricing before you ever hit “Send”&lt;&#x2F;li&gt;
+&lt;li&gt;Scales up to load tests when you need to know how a model behaves across 1,000 requests&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Tokuin is the result: a &lt;strong&gt;ground-up build in Rust&lt;&#x2F;strong&gt; with a modular architecture for tokenizers, providers, and output formats. It’s fast, predictable, and stays out of your way while you experiment.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;feature-highlights&quot;&gt;Feature Highlights&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Token estimation that understands context&lt;&#x2F;strong&gt;: Supply raw text, chat transcripts, or JSON payloads and Tokuin breaks down system&#x2F;user&#x2F;assistant roles with optional markdown minification.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Multi-model comparisons&lt;&#x2F;strong&gt;: Pass &lt;code&gt;--compare&lt;&#x2F;code&gt; with OpenAI, Anthropic, or OpenRouter models to see how token counts and costs differ.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Pricing awareness&lt;&#x2F;strong&gt;: Add &lt;code&gt;--price&lt;&#x2F;code&gt; or &lt;code&gt;--estimate-cost&lt;&#x2F;code&gt; to forecast spend per prompt, per run, or across a load test.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Watch mode&lt;&#x2F;strong&gt;: Keep Tokuin running with &lt;code&gt;--watch&lt;&#x2F;code&gt; and it re-computes every time you save a file. Perfect for prompt gardening.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Load testing (feature flag)&lt;&#x2F;strong&gt;: Enable the &lt;code&gt;load-test&lt;&#x2F;code&gt; feature to hammer APIs with controlled concurrency, think times, retry logic, and automatic latency&#x2F;cost reports.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Format-flexible output&lt;&#x2F;strong&gt;: Emit human-friendly text, JSON for scripts, Markdown for docs, CSV for spreadsheets, or Prometheus metrics when you need dashboards.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Provider-ready&lt;&#x2F;strong&gt;: OpenAI and OpenRouter work out of the box, Gemini is one flag away, and new providers plug into the registry without rewriting the CLI surface.&lt;sup class=&quot;footnote-reference&quot;&gt;&lt;a href=&quot;#tokuin&quot;&gt;1&lt;&#x2F;a&gt;&lt;&#x2F;sup&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;div class=&quot;footnote-definition&quot; id=&quot;tokuin&quot;&gt;&lt;sup class=&quot;footnote-definition-label&quot;&gt;1&lt;&#x2F;sup&gt;
+&lt;p&gt;Feature set sourced from the project README.&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;nooscraft&#x2F;tokuin&quot;&gt;tokuin&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;div&gt;
+&lt;h2 id=&quot;advantages-for-developers&quot;&gt;Advantages for Developers&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Budget confidence&lt;&#x2F;strong&gt;: Know input&#x2F;output token counts and projected cost before you ship or run a batch job.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Faster iteration&lt;&#x2F;strong&gt;: Swap “test, wait, pray” with a tight loop; piping prompts through Tokuin becomes muscle memory.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;CI-friendly&lt;&#x2F;strong&gt;: Because it’s a single binary, you can run token checks in CI to guard against prompt bloat before merge.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Team alignment&lt;&#x2F;strong&gt;: Comparing multiple models is now a line of CLI flags, not a spreadsheet of stitched-together data.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Infra visibility&lt;&#x2F;strong&gt;: Load tests surface latency cliffs, provider throttling, and cost ceilings before your users do.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;built-for-growth&quot;&gt;Built for Growth&lt;&#x2F;h2&gt;
+&lt;p&gt;Tokuin ships with a modular core: &lt;code&gt;tokenizers&#x2F;&lt;&#x2F;code&gt;, &lt;code&gt;models&#x2F;&lt;&#x2F;code&gt;, &lt;code&gt;providers&#x2F;&lt;&#x2F;code&gt;, and &lt;code&gt;output&#x2F;&lt;&#x2F;code&gt; live in separate crates so we can grow the ecosystem without tangling the CLI.&lt;sup class=&quot;footnote-reference&quot;&gt;&lt;a href=&quot;#tokuin&quot;&gt;1&lt;&#x2F;a&gt;&lt;&#x2F;sup&gt; Near-term roadmap items include:&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Provider expansion&lt;&#x2F;strong&gt;: Native Anthropic, Mistral, and Cohere support (work already outlined in &lt;code&gt;PROVIDERS_PLAN.md&lt;&#x2F;code&gt;).&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Scenario scripts&lt;&#x2F;strong&gt;: Define multi-turn conversations and replay them in load tests.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Cost guardrails&lt;&#x2F;strong&gt;: Abort long runs automatically when reaching a user-defined budget ceiling.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Prompt linting&lt;&#x2F;strong&gt;: Surface style and structure issues before they hit production pipelines.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Plugin hooks&lt;&#x2F;strong&gt;: Let users contribute tokenizers or pricing sources without forking the repo.&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;h2 id=&quot;from-experiment-to-community-tooling&quot;&gt;From Experiment to Community Tooling&lt;&#x2F;h2&gt;
+&lt;p&gt;Tokuin grew out of practical late-night benchmarking, budget vetting, and the need for predictable tooling across teams. We still welcome that vibe-coding energy—if you sketch solutions with AI co-pilots or riff on ideas in flow, there’s room here to help shape how we build for LLMs.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;how-to-get-involved&quot;&gt;How to Get Involved&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Run it&lt;&#x2F;strong&gt;: &lt;code&gt;cargo install tokuin&lt;&#x2F;code&gt; or build from source and kick the tires.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Share prompts&lt;&#x2F;strong&gt;: If you discover funky edge cases in tokenization or pricing, capture them as regression fixtures.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Open a PR&lt;&#x2F;strong&gt;: Contributions are welcome whether you’re adding providers, tightening error messages, or documenting workflows. Mention any vibe-coding sessions in your PR so we can trace the creative path.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Join the roadmap&lt;&#x2F;strong&gt;: Drop ideas in issues, especially if you’re working on multi-provider tooling—the more weird setups we test, the better Tokuin gets.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Thanks for trying it out. Tokuin exists to remove guesswork, save budgets, and let prompt engineers stay in flow. If you ship something with it, I’d love to hear the story.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>A simple word definition script</title>
+        <published>2015-08-25T00:00:00+00:00</published>
+        <updated>2015-08-25T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/a-simple-word-definition-script/"/>
+        <id>https://noos.blog/posts/a-simple-word-definition-script/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/a-simple-word-definition-script/">&lt;p&gt;Have you ever come across a difficulty to find a definition of a word that you are looking for. Well I find it bit difficult for me.&lt;&#x2F;p&gt;
+&lt;p&gt;I normally use Google search to find definitions of words. For example to get the definition of the word &quot;replenish&quot; I use &lt;a href=&quot;https:&#x2F;&#x2F;www.google.lk&#x2F;webhp?sourceid=chrome-instant&amp;amp;ion=1&amp;amp;espv=2&amp;amp;ie=UTF-8#q=definition%20replenish&quot;&gt;&lt;em&gt;definition replenish&lt;&#x2F;em&gt;&lt;&#x2F;a&gt; on search bar&lt;&#x2F;p&gt;
+&lt;p&gt;But this approach is still bit clumsy though, since you need a browser and if you are already opened multiple tabs then it is sometimes get messy around to switch around tabs.&lt;&#x2F;p&gt;
+&lt;p&gt;So I found out this simple script from the book &lt;a href=&quot;https:&#x2F;&#x2F;www.packtpub.com&#x2F;application-development&#x2F;linux-shell-scripting-cookbook-second-edition&quot;&gt;&lt;em&gt;Linux Shell Scripting Cookbook, 2nd Edition&lt;&#x2F;em&gt;&lt;&#x2F;a&gt; that will query your word and get the definition of it.&lt;&#x2F;p&gt;
+&lt;p&gt;Let&#x27;s see how to get it to work (I have altered the original script from the book to make is more convenient)&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;First you need an account in &lt;em&gt;dictionaryapi.com&lt;&#x2F;em&gt; - &lt;a href=&quot;http:&#x2F;&#x2F;www.dictionaryapi.com&#x2F;register&#x2F;index.htm&quot;&gt;http:&#x2F;&#x2F;www.dictionaryapi.com&#x2F;register&#x2F;index.htm&lt;&#x2F;a&gt;
+&lt;ul&gt;
+&lt;li&gt;API key for the &lt;em&gt;learners&lt;&#x2F;em&gt; API would be enough for the time being&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;Get the script from &lt;a href=&quot;https:&#x2F;&#x2F;gist.github.com&#x2F;nooscraft&#x2F;1fe12ee85074e361836a&quot;&gt;here&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;Assign your API key to the variable &lt;strong&gt;apikey&lt;&#x2F;strong&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;Make it executable &lt;code&gt;chmod +x define&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;Optional: if you want to make it available system wide add the script to &lt;code&gt;&#x2F;usr&#x2F;local&#x2F;bin&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;Finally you can run it as &lt;code&gt;.&#x2F;define replenish&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;The outcome would be:-
+&lt;img src=&quot;&#x2F;public&#x2F;images&#x2F;define_script.png&quot; alt=&quot;img&quot; class=&quot;inline&quot;&#x2F;&gt;&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Linux | Fancy little &quot;dialog&quot; utility</title>
+        <published>2013-12-23T00:00:00+00:00</published>
+        <updated>2013-12-23T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/linux-fancy-little-dialog-utility/"/>
+        <id>https://noos.blog/posts/linux-fancy-little-dialog-utility/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/linux-fancy-little-dialog-utility/">&lt;p&gt;Using Linux&#x27;s sophisticated &quot;dialog&quot; utility to display CPU core temperature&lt;&#x2F;p&gt;
+&lt;p&gt;Installation&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;sudo apt-get install dialog&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;sudo apt-get install lm-sensors&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Here the lm-sensors for detecting temperature (see here for configuration details: http:&#x2F;&#x2F;lm-sensors.org&#x2F;wiki&#x2F;iwizard&#x2F;Detection)&lt;&#x2F;p&gt;
+&lt;p&gt;Finally the script goes as&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;#!&#x2F;bin&#x2F;bash
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;temp1=$(sensors | grep &amp;quot;Core 0:&amp;quot; | cut -c1-24)
+&lt;&#x2F;span&gt;&lt;span&gt;temp2=$(sensors | grep &amp;quot;Core 1:&amp;quot; | cut -c1-24)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;dialog –title &amp;quot;System temp info&amp;quot; –msgbox &amp;quot;$temp1 $temp2″ 10 22
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;dialog –clear
+&lt;&#x2F;span&gt;&lt;span&gt;exit 0
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Using minimal advantage of lm-sensors, it&#x27;s just displaying main core temperatures.&lt;&#x2F;p&gt;
+&lt;img src=&quot;&#x2F;public&#x2F;images&#x2F;screenshot-11232013-105234-pm1.png&quot; alt=&quot;img&quot; class=&quot;inline&quot;&#x2F;&gt;
+</content>
+        
+    </entry>
+</feed>

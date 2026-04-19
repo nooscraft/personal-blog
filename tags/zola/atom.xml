@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Noos - Where Thought, Code, and Craft Converge - zola</title>
+    <subtitle>Personal blog about programming, technology, and engineering insights. Topics include Rust, DevOps, Linux, and software craftsmanship.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://noos.blog/tags/zola/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://noos.blog"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2025-11-02T00:00:00+00:00</updated>
+    <id>https://noos.blog/tags/zola/atom.xml</id>
+    <entry xml:lang="en">
+        <title>The Zola About Page Puzzle: When Root Sections Bite Back</title>
+        <published>2025-11-02T00:00:00+00:00</published>
+        <updated>2025-11-02T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/zola-about-page-puzzle/"/>
+        <id>https://noos.blog/posts/zola-about-page-puzzle/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/zola-about-page-puzzle/">&lt;h3 id=&quot;the-goal&quot;&gt;The Goal&lt;&#x2F;h3&gt;
+&lt;p&gt;I wanted to add an About page to my blog. Simple enough, right? Create &lt;code&gt;content&#x2F;about.md&lt;&#x2F;code&gt;, add it to the navigation menu, and done.&lt;&#x2F;p&gt;
+&lt;p&gt;Wrong.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;the-problem&quot;&gt;The Problem&lt;&#x2F;h3&gt;
+&lt;p&gt;I created the About page, updated the navigation, and ran &lt;code&gt;zola build&lt;&#x2F;code&gt;. Instead of a clean build, I got this:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;Warning: 1 page(s) ignored (missing date or weight in a sorted section):
+&lt;&#x2F;span&gt;&lt;span&gt;Warning: - &#x2F;Users&#x2F;oshadhagunawardena&#x2F;Projects&#x2F;personal&#x2F;personal-blog&#x2F;content&#x2F;about.md
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The page wasn&#x27;t being built at all. But wait—why does an About page need a date? It&#x27;s not a blog post.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;the-investigation&quot;&gt;The Investigation&lt;&#x2F;h3&gt;
+&lt;p&gt;The issue was in my &lt;code&gt;content&#x2F;_index.md&lt;&#x2F;code&gt; file:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;toml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-toml &quot;&gt;&lt;code class=&quot;language-toml&quot; data-lang=&quot;toml&quot;&gt;&lt;span style=&quot;background-color:#bf616a;color:#2b303b;&quot;&gt;+++&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;title &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Home&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;paginate_by &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;5
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sort_by &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;date&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;transparent &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;true
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;template &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;index.html&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;background-color:#bf616a;color:#2b303b;&quot;&gt;+++&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;See that &lt;code&gt;sort_by = &quot;date&quot;&lt;&#x2F;code&gt;? That was the culprit. According to &lt;a href=&quot;https:&#x2F;&#x2F;www.getzola.org&#x2F;documentation&#x2F;content&#x2F;section&#x2F;&quot;&gt;Zola&#x27;s documentation&lt;&#x2F;a&gt;, when you set &lt;code&gt;sort_by = &quot;date&quot;&lt;&#x2F;code&gt; in a section&#x27;s front matter, &lt;strong&gt;all pages in that section&lt;&#x2F;strong&gt; must have a date field. Pages without the required field are ignored during rendering and a warning is displayed.&lt;&#x2F;p&gt;
+&lt;p&gt;This is documented behavior, but it&#x27;s easy to miss when you&#x27;re just trying to add a simple About page.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;the-solution&quot;&gt;The Solution&lt;&#x2F;h3&gt;
+&lt;p&gt;The fix had two parts:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;Step 1&lt;&#x2F;strong&gt;: Add a &lt;code&gt;date&lt;&#x2F;code&gt; field to the About page. Since the root section uses &lt;code&gt;sort_by = &quot;date&quot;&lt;&#x2F;code&gt;, all pages need a date—even non-post pages.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;Step 2&lt;&#x2F;strong&gt;: Hide the date from displaying on the About page using &lt;code&gt;show_date = false&lt;&#x2F;code&gt; in the front matter.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;Before:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;toml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-toml &quot;&gt;&lt;code class=&quot;language-toml&quot; data-lang=&quot;toml&quot;&gt;&lt;span style=&quot;background-color:#bf616a;color:#2b303b;&quot;&gt;+++&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;title &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;About&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;description &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Learn about Oshadha G...&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;template &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;page.html&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;weight &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1
+&lt;&#x2F;span&gt;&lt;span&gt;[extra]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;hide_from_list &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;true
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;comments &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;false
+&lt;&#x2F;span&gt;&lt;span style=&quot;background-color:#bf616a;color:#2b303b;&quot;&gt;+++&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;strong&gt;After:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;toml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-toml &quot;&gt;&lt;code class=&quot;language-toml&quot; data-lang=&quot;toml&quot;&gt;&lt;span style=&quot;background-color:#bf616a;color:#2b303b;&quot;&gt;+++&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;title &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;About&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;description &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Learn about Oshadha G...&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;template &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;page.html&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;date &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;2025-01-01  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Required because root section uses sort_by = &amp;quot;date&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;weight &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1
+&lt;&#x2F;span&gt;&lt;span&gt;[extra]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;hide_from_list &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;true
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;comments &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;false
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;show_date &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;false  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Hide the awkward date from displaying
+&lt;&#x2F;span&gt;&lt;span style=&quot;background-color:#bf616a;color:#2b303b;&quot;&gt;+++&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;I also had to create a custom &lt;code&gt;templates&#x2F;macros&#x2F;post_macros.html&lt;&#x2F;code&gt; to override the theme&#x27;s default meta macro and respect the &lt;code&gt;show_date&lt;&#x2F;code&gt; flag. But the front matter solution is the important part.&lt;&#x2F;p&gt;
+&lt;p&gt;Now the About page builds correctly, appears in the correct order for pagination, but doesn&#x27;t display the awkward &quot;Published: 2025-01-01&quot; meta.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;the-lesson&quot;&gt;The Lesson&lt;&#x2F;h3&gt;
+&lt;p&gt;Root-level sections in Zola behave differently than you might think. If you set &lt;code&gt;sort_by = &quot;date&quot;&lt;&#x2F;code&gt; in a section, &lt;strong&gt;all&lt;&#x2F;strong&gt; pages in that section must have a date field—even non-post pages like About pages.&lt;&#x2F;p&gt;
+&lt;p&gt;While Zola&#x27;s docs mention this behavior, it&#x27;s the kind of detail that&#x27;s easy to gloss over when you&#x27;re focused on building features. The solution is straightforward:&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;Give every page a date if your section sorts by date (I use &lt;code&gt;2025-01-01&lt;&#x2F;code&gt; for static pages)&lt;&#x2F;li&gt;
+&lt;li&gt;Use a custom macro override to conditionally hide dates where they don&#x27;t make sense&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;For static pages like About, seeing &quot;Published: 2025-01-01&quot; is awkward, so the &lt;code&gt;show_date = false&lt;&#x2F;code&gt; flag was essential.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;quick-check&quot;&gt;Quick Check&lt;&#x2F;h3&gt;
+&lt;p&gt;If you&#x27;re having similar issues with Zola pages not building:&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;Check your section&#x27;s &lt;code&gt;_index.md&lt;&#x2F;code&gt; for &lt;code&gt;sort_by&lt;&#x2F;code&gt; directives&lt;&#x2F;li&gt;
+&lt;li&gt;Make sure all pages in that section have the required fields&lt;&#x2F;li&gt;
+&lt;li&gt;Use &lt;code&gt;show_date = false&lt;&#x2F;code&gt; in front matter if you want to hide dates on static pages&lt;&#x2F;li&gt;
+&lt;li&gt;Consider moving sorted content to a dedicated subsection&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;Sometimes the simplest fixes are the most unexpected. And sometimes you need two fixes instead of one.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Covers on Autopilot — Why I Let AI Paint the Edges</title>
+        <published>2025-10-30T00:00:00+00:00</published>
+        <updated>2025-10-30T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/ai-covers-on-autopilot/"/>
+        <id>https://noos.blog/posts/ai-covers-on-autopilot/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/ai-covers-on-autopilot/">&lt;p&gt;There are jobs you can do by hand for years and never notice the drag. For me it was cover images. Each new post: open a design tool, stare at a blank canvas, export a PNG, wire it to the post. Not hard, just enough friction to make publishing feel heavier than it should.&lt;&#x2F;p&gt;
+&lt;p&gt;This is a short note about shaving that yak with a tiny toolchain: a context‑aware prompt, an image model, and some guardrails in CI. No heroics—just removing a repeated decision so the writing flows.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;why-automate-covers&quot;&gt;Why automate covers&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Consistency: 1200×630 every time. No more odd crops in link unfurls.&lt;&#x2F;li&gt;
+&lt;li&gt;Momentum: publishing shouldn’t wait for “design time”.&lt;&#x2F;li&gt;
+&lt;li&gt;Style: light background, a single accent, abstract shapes. Enough personality, zero fuss.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Over time the manual step was turning into a speed bump. That was the whole motivation.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-bumps-along-the-road-the-important-part&quot;&gt;The bumps along the road (the important part)&lt;&#x2F;h2&gt;
+&lt;p&gt;I didn’t get it right on the first try. Here are the lessons that actually mattered.&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;Model and limits&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;At first I used Stable Horde for SDXL. It’s great and free, but CI doesn’t love queues. I kept seeing 400&#x2F;429s in the logs (invalid payload or rate‑limited). Switched to Replicate with an API token; still got rate limits sometimes, but at least the errors were predictable.&lt;&#x2F;p&gt;
+&lt;ol start=&quot;2&quot;&gt;
+&lt;li&gt;Exact sizing&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;SDXL likes multiples of 64. I request 1024×576, then downscale to 1200×630 with Sharp. Crisp edges, correct aspect for social cards.&lt;&#x2F;p&gt;
+&lt;ol start=&quot;3&quot;&gt;
+&lt;li&gt;Slugs vs. filenames&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;My fallback logic assumed &lt;code&gt;page.slug&lt;&#x2F;code&gt; exactly matched the filename. It didn’t—some posts derive the slug from the permalink. I fixed the template to compute &lt;code&gt;slug-from-permalink&lt;&#x2F;code&gt; and look for &lt;code&gt;&#x2F;images&#x2F;covers&#x2F;{slug}.png&lt;&#x2F;code&gt;. Simple, but that bug cost the most time.&lt;&#x2F;p&gt;
+&lt;ol start=&quot;4&quot;&gt;
+&lt;li&gt;“Why is it regenerating?”&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;CI starts from a clean checkout. If covers aren’t in Git, they disappear each run. I added a cache step that restores &lt;code&gt;static&#x2F;images&#x2F;covers&lt;&#x2F;code&gt; keyed to &lt;code&gt;content&#x2F;posts&#x2F;**&#x2F;*.md&lt;&#x2F;code&gt;. Now the generator truly skips when a PNG already exists.&lt;&#x2F;p&gt;
+&lt;ol start=&quot;5&quot;&gt;
+&lt;li&gt;Context in prompts&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;Pure tags produced vague images. I added a little context: title + ~240 chars of summary (description if present, otherwise a clean slice of the body). Still abstract, just more grounded.&lt;&#x2F;p&gt;
+&lt;ol start=&quot;6&quot;&gt;
+&lt;li&gt;One‑time resets&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;Sometimes you do want a full refresh. There’s a manual “Run workflow” input (&lt;code&gt;force_regenerate=true&lt;&#x2F;code&gt;) that bypasses the “file exists” check once. Good for style changes or a model upgrade.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;how-we-decided-on-ai-at-all&quot;&gt;How we decided on AI at all&lt;&#x2F;h2&gt;
+&lt;p&gt;I tried three options in order:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Hand‑made banners (historically): high quality, low velocity.&lt;&#x2F;li&gt;
+&lt;li&gt;Programmatic shapes: reliable, but too repetitive.&lt;&#x2F;li&gt;
+&lt;li&gt;AI with guardrails: abstract, brand‑aware, hands‑off once it’s set.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;The third option hit the balance. The prompt constrains style; the model supplies variation. It’s not “art direction”, but it serves the post—and that’s the only job here.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-pipeline-nuts-and-bolts&quot;&gt;The pipeline (nuts and bolts)&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Script: &lt;code&gt;scripts&#x2F;generate-ai-covers.mjs&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Scans &lt;code&gt;content&#x2F;posts&#x2F;*.md&lt;&#x2F;code&gt;, pulls &lt;code&gt;tags&lt;&#x2F;code&gt;, &lt;code&gt;title&lt;&#x2F;code&gt;, and a short summary.&lt;&#x2F;li&gt;
+&lt;li&gt;Prompt (simplified):
+&lt;blockquote&gt;
+&lt;p&gt;Abstract, minimal illustration. Tags: {tags}. Title: {title}. Context: {summary}. Vector‑like, clean geometric shapes, high contrast, brand accent #d64a48 on #f6f7f4. No text.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;Calls Replicate SDXL (model version from a secret), requests 1024×576, saves 1200×630 as &lt;code&gt;static&#x2F;images&#x2F;covers&#x2F;{slug}.png&lt;&#x2F;code&gt;.&lt;&#x2F;li&gt;
+&lt;li&gt;Skips generation if the PNG already exists (unless &lt;code&gt;FORCE_REGENERATE_COVERS=1&lt;&#x2F;code&gt;).&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;Template: &lt;code&gt;themes&#x2F;radion&#x2F;templates&#x2F;page.html&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;If a post doesn’t specify a cover, it tries &lt;code&gt;&#x2F;images&#x2F;covers&#x2F;{slug-from-permalink}.png&lt;&#x2F;code&gt; and hides the figure if missing.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;CI: &lt;code&gt;.github&#x2F;workflows&#x2F;deploy.yml&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Restores a covers cache before generation; saves it after.&lt;&#x2F;li&gt;
+&lt;li&gt;Optional manual input &lt;code&gt;force_regenerate&lt;&#x2F;code&gt; for a one‑time refresh.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;what-github-actions-brings&quot;&gt;What GitHub Actions brings&lt;&#x2F;h2&gt;
+&lt;p&gt;The boring kind of power: reliability.&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Every run restores the previous covers, generates only what’s missing, and embeds without a front‑matter tweak.&lt;&#x2F;li&gt;
+&lt;li&gt;When rate‑limited, the post still publishes—missing images pick up on the next run.&lt;&#x2F;li&gt;
+&lt;li&gt;A small verification stage lists the covers in &lt;code&gt;public&#x2F;images&#x2F;covers&lt;&#x2F;code&gt; and checks that posts actually reference them.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;closing-the-loop&quot;&gt;Closing the loop&lt;&#x2F;h2&gt;
+&lt;p&gt;This wasn’t about making the site “AI‑powered”. It was about removing a tiny friction point that kept breaking the flow. The rule of thumb I keep coming back to: automate anything that steals attention from writing. Covers were stealing attention. Now they aren’t.&lt;&#x2F;p&gt;
+&lt;p&gt;And if the art ever needs a new feel? I flip the model or tweak the prompt, hit “Run workflow”, and let the pipeline repaint the edges while I get back to words.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+</feed>

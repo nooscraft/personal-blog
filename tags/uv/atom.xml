@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Noos - Where Thought, Code, and Craft Converge - uv</title>
+    <subtitle>Personal blog about programming, technology, and engineering insights. Topics include Rust, DevOps, Linux, and software craftsmanship.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://noos.blog/tags/uv/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://noos.blog"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2026-04-19T00:00:00+00:00</updated>
+    <id>https://noos.blog/tags/uv/atom.xml</id>
+    <entry xml:lang="en">
+        <title>How uv Works Under the Hood</title>
+        <published>2026-04-08T00:00:00+00:00</published>
+        <updated>2026-04-19T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/uv-how-it-works-under-the-hood/"/>
+        <id>https://noos.blog/posts/uv-how-it-works-under-the-hood/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/uv-how-it-works-under-the-hood/">&lt;blockquote&gt;
+&lt;p&gt;&lt;em&gt;Updated 2026-04-19: revised for accuracy after reader feedback. All claims now verified against uv v0.11.7; the &lt;code&gt;uv add&lt;&#x2F;code&gt; example output, the &lt;code&gt;resolve()&lt;&#x2F;code&gt; source excerpt, and several stylistic rough edges have been corrected.&lt;&#x2F;em&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;I started using &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;astral-sh&#x2F;uv&quot;&gt;uv&lt;&#x2F;a&gt; because the benchmarks seemed too good to be true: 10–100x faster than &lt;code&gt;pip&lt;&#x2F;code&gt;, resolves and installs in milliseconds. So I spent a weekend reading the source. This post is what I wish I&#x27;d had on day one.&lt;&#x2F;p&gt;
+&lt;p&gt;It traces every layer: the repository structure, what actually happens when you type &lt;code&gt;uv init&lt;&#x2F;code&gt; or &lt;code&gt;uv add requests&lt;&#x2F;code&gt;, and the Rust concurrency patterns the resolver uses. No prior Rust experience needed, but if you&#x27;ve seen Rust before I&#x27;ll point to the specific patterns in the source.&lt;&#x2F;p&gt;
+&lt;p&gt;Everything below was verified against uv &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;astral-sh&#x2F;uv&#x2F;releases&#x2F;tag&#x2F;0.11.7&quot;&gt;v0.11.7&lt;&#x2F;a&gt; (April 2026). Specific numbers and code excerpts come from that tag; if you&#x27;re reading this much later, the line numbers in linked source files may have drifted, but the high-level architecture has been stable for many releases.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;1-what-uv-is&quot;&gt;1. What uv is&lt;&#x2F;h2&gt;
+&lt;p&gt;uv is an &lt;strong&gt;extremely fast Python package and project manager&lt;&#x2F;strong&gt;, written in Rust and built by &lt;a href=&quot;https:&#x2F;&#x2F;astral.sh&quot;&gt;Astral&lt;&#x2F;a&gt;, the team behind &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;astral-sh&#x2F;ruff&quot;&gt;Ruff&lt;&#x2F;a&gt;. It replaces most of your Python toolchain in one binary:&lt;&#x2F;p&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Old tool&lt;&#x2F;th&gt;&lt;th&gt;uv equivalent&lt;&#x2F;th&gt;&lt;&#x2F;tr&gt;&lt;&#x2F;thead&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;&lt;code&gt;pip install&lt;&#x2F;code&gt;&lt;&#x2F;td&gt;&lt;td&gt;&lt;code&gt;uv pip install&lt;&#x2F;code&gt;&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;code&gt;pip-compile&lt;&#x2F;code&gt;&lt;&#x2F;td&gt;&lt;td&gt;&lt;code&gt;uv pip compile&lt;&#x2F;code&gt;&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;code&gt;virtualenv&lt;&#x2F;code&gt; &#x2F; &lt;code&gt;venv&lt;&#x2F;code&gt;&lt;&#x2F;td&gt;&lt;td&gt;&lt;code&gt;uv venv&lt;&#x2F;code&gt;&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;code&gt;pyenv&lt;&#x2F;code&gt;&lt;&#x2F;td&gt;&lt;td&gt;&lt;code&gt;uv python install&lt;&#x2F;code&gt;&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;code&gt;pipx run&lt;&#x2F;code&gt;&lt;&#x2F;td&gt;&lt;td&gt;&lt;code&gt;uvx&lt;&#x2F;code&gt; &#x2F; &lt;code&gt;uv tool run&lt;&#x2F;code&gt;&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;code&gt;poetry&lt;&#x2F;code&gt; &#x2F; &lt;code&gt;rye&lt;&#x2F;code&gt;&lt;&#x2F;td&gt;&lt;td&gt;&lt;code&gt;uv init&lt;&#x2F;code&gt; + &lt;code&gt;uv add&lt;&#x2F;code&gt;&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;&#x2F;tbody&gt;&lt;&#x2F;table&gt;
+&lt;p&gt;It has 83k+ stars, is used in production at scale, and the underlying &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;pubgrub-rs&#x2F;pubgrub&quot;&gt;&lt;code&gt;pubgrub-rs&lt;&#x2F;code&gt;&lt;&#x2F;a&gt; crate it depends on is the &lt;a href=&quot;https:&#x2F;&#x2F;rust-lang.github.io&#x2F;rust-project-goals&#x2F;2025h1&#x2F;pubgrub-in-cargo.html&quot;&gt;designated basis for Cargo&#x27;s next dependency solver&lt;&#x2F;a&gt;. The same algorithm and largely the same Rust crate will eventually power both &lt;code&gt;uv&lt;&#x2F;code&gt; and &lt;code&gt;cargo&lt;&#x2F;code&gt; resolutions.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;2-the-repository-layout&quot;&gt;2. The repository layout&lt;&#x2F;h2&gt;
+&lt;p&gt;Clone the repo and you&#x27;ll see:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;uv&#x2F;
+&lt;&#x2F;span&gt;&lt;span&gt;├── crates&#x2F;          # All Rust source code
+&lt;&#x2F;span&gt;&lt;span&gt;├── docs&#x2F;            # MkDocs documentation
+&lt;&#x2F;span&gt;&lt;span&gt;├── python&#x2F;          # Small Python shim package (the uv PyPI wheel)
+&lt;&#x2F;span&gt;&lt;span&gt;├── scripts&#x2F;         # Benchmarking, release tooling
+&lt;&#x2F;span&gt;&lt;span&gt;├── test&#x2F;            # Test fixtures, requirement files for benchmarks
+&lt;&#x2F;span&gt;&lt;span&gt;├── Cargo.toml       # Rust workspace root
+&lt;&#x2F;span&gt;&lt;span&gt;└── pyproject.toml   # uv manages itself with uv
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The real action is in &lt;code&gt;crates&#x2F;&lt;&#x2F;code&gt;. There are 68 of them in v0.11.7 (&lt;code&gt;ls crates&#x2F; | wc -l&lt;&#x2F;code&gt; says so). Rust does not allow circular dependencies between crates, so the uv team structured the code as a directed acyclic graph of focused crates. Each does one thing:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;crates&#x2F;
+&lt;&#x2F;span&gt;&lt;span&gt;├── uv&#x2F;                  # CLI binary — entry point, argument parsing (clap)
+&lt;&#x2F;span&gt;&lt;span&gt;├── uv-resolver&#x2F;         # Dependency resolution engine (PubGrub)
+&lt;&#x2F;span&gt;&lt;span&gt;├── uv-installer&#x2F;        # Installing packages into environments
+&lt;&#x2F;span&gt;&lt;span&gt;├── uv-client&#x2F;           # Async HTTP client for PyPI and registries
+&lt;&#x2F;span&gt;&lt;span&gt;├── uv-workspace&#x2F;        # pyproject.toml parsing and workspace discovery
+&lt;&#x2F;span&gt;&lt;span&gt;├── uv-python&#x2F;           # Python version management
+&lt;&#x2F;span&gt;&lt;span&gt;├── uv-cache&#x2F;            # Global content-addressed cache
+&lt;&#x2F;span&gt;&lt;span&gt;├── uv-distribution&#x2F;     # Wheel and sdist handling, metadata fetching
+&lt;&#x2F;span&gt;&lt;span&gt;├── uv-build&#x2F;            # uv&amp;#39;s own build backend (replaces setuptools&#x2F;hatchling)
+&lt;&#x2F;span&gt;&lt;span&gt;├── uv-git&#x2F;              # Git dependency support (based on Cargo&amp;#39;s implementation)
+&lt;&#x2F;span&gt;&lt;span&gt;├── uv-platform-tags&#x2F;    # Wheel compatibility tag matching
+&lt;&#x2F;span&gt;&lt;span&gt;├── uv-pep440&#x2F;           # Python version specifier parsing (PEP 440)
+&lt;&#x2F;span&gt;&lt;span&gt;├── uv-pep508&#x2F;           # Dependency specifier parsing (PEP 508)
+&lt;&#x2F;span&gt;&lt;span&gt;├── uv-types&#x2F;            # Shared type definitions used across crates
+&lt;&#x2F;span&gt;&lt;span&gt;└── ... (many more)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;You can generate a visual dependency graph between crates:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cargo&lt;&#x2F;span&gt;&lt;span&gt; depgraph&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --dedup-transitive-deps --workspace-only &lt;&#x2F;span&gt;&lt;span&gt;| &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;dot -Tpng &lt;&#x2F;span&gt;&lt;span&gt;&amp;gt; graph.png
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The shape of the graph is roughly: &lt;code&gt;uv&lt;&#x2F;code&gt; (the binary) sits at the top and depends on everything. &lt;code&gt;uv-types&lt;&#x2F;code&gt; sits near the bottom and depends on almost nothing. Code only flows downward; cycles are a hard compile error.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;3-what-happens-when-you-run-uv-init&quot;&gt;3. What happens when you run &lt;code&gt;uv init&lt;&#x2F;code&gt;&lt;&#x2F;h2&gt;
+&lt;p&gt;Let&#x27;s trace &lt;code&gt;uv init my-project&lt;&#x2F;code&gt; step by step through the codebase.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;step-1-argument-parsing-uv-crate&quot;&gt;Step 1: Argument parsing (&lt;code&gt;uv&lt;&#x2F;code&gt; crate)&lt;&#x2F;h3&gt;
+&lt;p&gt;The &lt;code&gt;uv&lt;&#x2F;code&gt; crate is the binary entry point. It uses &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;clap-rs&#x2F;clap&quot;&gt;clap&lt;&#x2F;a&gt; for argument parsing. When you run &lt;code&gt;uv init my-project&lt;&#x2F;code&gt;, clap matches the &lt;code&gt;init&lt;&#x2F;code&gt; subcommand and extracts the project name and any flags (&lt;code&gt;--lib&lt;&#x2F;code&gt;, &lt;code&gt;--app&lt;&#x2F;code&gt;, &lt;code&gt;--package&lt;&#x2F;code&gt;, &lt;code&gt;--bare&lt;&#x2F;code&gt;, &lt;code&gt;--build-backend&lt;&#x2F;code&gt;, etc.).&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;step-2-workspace-discovery-uv-workspace&quot;&gt;Step 2: Workspace discovery (&lt;code&gt;uv-workspace&lt;&#x2F;code&gt;)&lt;&#x2F;h3&gt;
+&lt;p&gt;Before creating anything, uv checks whether you&#x27;re already inside an existing workspace. It walks &lt;strong&gt;up&lt;&#x2F;strong&gt; the directory tree looking for a &lt;code&gt;pyproject.toml&lt;&#x2F;code&gt; with a &lt;code&gt;[tool.uv.workspace]&lt;&#x2F;code&gt; section. If you&#x27;re inside one, the new project is registered as a workspace member automatically. If not, it creates a standalone project.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;step-3-scaffold-project-files&quot;&gt;Step 3: Scaffold project files&lt;&#x2F;h3&gt;
+&lt;p&gt;For &lt;code&gt;uv init my-project&lt;&#x2F;code&gt;, uv writes these files to disk:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;my-project&#x2F;
+&lt;&#x2F;span&gt;&lt;span&gt;├── .python-version    # e.g., &amp;quot;3.12&amp;quot; — pins the Python version
+&lt;&#x2F;span&gt;&lt;span&gt;├── README.md
+&lt;&#x2F;span&gt;&lt;span&gt;├── main.py            # boilerplate main() function
+&lt;&#x2F;span&gt;&lt;span&gt;└── pyproject.toml
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The generated &lt;code&gt;pyproject.toml&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;toml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-toml &quot;&gt;&lt;code class=&quot;language-toml&quot; data-lang=&quot;toml&quot;&gt;&lt;span&gt;[project]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;my-project&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;version &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;0.1.0&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;description &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Add your description here&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;readme &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;README.md&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;requires-python &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;gt;=3.12&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;dependencies &lt;&#x2F;span&gt;&lt;span&gt;= []
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Notice there is &lt;strong&gt;no &lt;code&gt;[build-system]&lt;&#x2F;code&gt;&lt;&#x2F;strong&gt; section. Without it, the project is &lt;em&gt;not installable as a package&lt;&#x2F;em&gt;: it won&#x27;t be installed into the virtual environment itself. This is the correct default for applications (web servers, scripts, CLIs); it avoids an unnecessary install step and the complexity of choosing a build backend upfront.&lt;&#x2F;p&gt;
+&lt;p&gt;If you pass &lt;code&gt;--lib&lt;&#x2F;code&gt; or &lt;code&gt;--package&lt;&#x2F;code&gt;, uv adds a &lt;code&gt;src&#x2F;&lt;&#x2F;code&gt; layout and a &lt;code&gt;[build-system]&lt;&#x2F;code&gt; pointing to &lt;code&gt;uv_build&lt;&#x2F;code&gt;, uv&#x27;s own Rust-native build backend:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;toml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-toml &quot;&gt;&lt;code class=&quot;language-toml&quot; data-lang=&quot;toml&quot;&gt;&lt;span&gt;[build-system]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;requires &lt;&#x2F;span&gt;&lt;span&gt;= [&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;uv_build&amp;gt;=0.11.4,&amp;lt;0.12&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;build-backend &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;uv_build&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;step-4-git-initialization&quot;&gt;Step 4: Git initialization&lt;&#x2F;h3&gt;
+&lt;p&gt;uv runs &lt;code&gt;git init&lt;&#x2F;code&gt; and writes a &lt;code&gt;.gitignore&lt;&#x2F;code&gt; that excludes &lt;code&gt;.venv&#x2F;&lt;&#x2F;code&gt; and &lt;code&gt;__pycache__&#x2F;&lt;&#x2F;code&gt;. Skip this with &lt;code&gt;--no-vcs&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;No virtual environment is created yet.&lt;&#x2F;strong&gt; uv is lazy: it creates &lt;code&gt;.venv&lt;&#x2F;code&gt; only when you first run something or add a package. This avoids disk writes for projects you might never use.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;4-what-happens-when-you-run-uv-add-requests&quot;&gt;4. What happens when you run &lt;code&gt;uv add requests&lt;&#x2F;code&gt;&lt;&#x2F;h2&gt;
+&lt;p&gt;This is the core operation. &lt;code&gt;uv add&lt;&#x2F;code&gt; installs a package and records it in &lt;code&gt;pyproject.toml&lt;&#x2F;code&gt; and &lt;code&gt;uv.lock&lt;&#x2F;code&gt;. Here is the full pipeline:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;$ uv add requests
+&lt;&#x2F;span&gt;&lt;span&gt;Using CPython 3.12.10
+&lt;&#x2F;span&gt;&lt;span&gt;Creating virtual environment at: .venv
+&lt;&#x2F;span&gt;&lt;span&gt;Resolved 6 packages in 456ms
+&lt;&#x2F;span&gt;&lt;span&gt;Prepared 5 packages in 451ms
+&lt;&#x2F;span&gt;&lt;span&gt;Installed 5 packages in 4ms
+&lt;&#x2F;span&gt;&lt;span&gt; + certifi==2026.2.25
+&lt;&#x2F;span&gt;&lt;span&gt; + charset-normalizer==3.4.7
+&lt;&#x2F;span&gt;&lt;span&gt; + idna==3.11
+&lt;&#x2F;span&gt;&lt;span&gt; + requests==2.33.1
+&lt;&#x2F;span&gt;&lt;span&gt; + urllib3==2.6.3
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Two things worth noticing about that output. &quot;Resolved 6 packages&quot; includes the project itself as a node in the dependency graph (your project + 5 transitive deps), but only 5 packages are &lt;em&gt;installed&lt;&#x2F;em&gt;: the project itself isn&#x27;t installable here because there&#x27;s no &lt;code&gt;[build-system]&lt;&#x2F;code&gt;. And &quot;Prepared&quot; is uv&#x27;s word for &quot;downloaded and unpacked into the cache, ready to be linked into the venv&quot;: the actual install step is just creating links, which is why it takes 4ms.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;stage-1-read-the-project-state-uv-workspace&quot;&gt;Stage 1: Read the project state (&lt;code&gt;uv-workspace&lt;&#x2F;code&gt;)&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;code&gt;uv-workspace&lt;&#x2F;code&gt; reads &lt;code&gt;pyproject.toml&lt;&#x2F;code&gt; and constructs an in-memory &lt;code&gt;Manifest&lt;&#x2F;code&gt;: the project name, existing dependencies, Python version constraint, workspace members, and overrides.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;stage-2-update-pyproject-toml-pyproject-mut&quot;&gt;Stage 2: Update &lt;code&gt;pyproject.toml&lt;&#x2F;code&gt; (&lt;code&gt;pyproject_mut&lt;&#x2F;code&gt;)&lt;&#x2F;h3&gt;
+&lt;p&gt;uv adds &lt;code&gt;requests&lt;&#x2F;code&gt; to the &lt;code&gt;dependencies&lt;&#x2F;code&gt; list in &lt;code&gt;pyproject.toml&lt;&#x2F;code&gt;. At this point it doesn&#x27;t know the version yet, so it records it as a bare requirement. After resolution (Stage 3), it rewrites the specifier with the resolved version. The exact form depends on the &lt;code&gt;--bounds&lt;&#x2F;code&gt; flag; the default (&lt;code&gt;AddBoundsKind::Lower&lt;&#x2F;code&gt; in &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;astral-sh&#x2F;uv&#x2F;blob&#x2F;0.11.7&#x2F;crates&#x2F;uv-workspace&#x2F;src&#x2F;pyproject_mut.rs&quot;&gt;&lt;code&gt;pyproject_mut.rs&lt;&#x2F;code&gt;&lt;&#x2F;a&gt;) is a single lower bound:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;toml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-toml &quot;&gt;&lt;code class=&quot;language-toml&quot; data-lang=&quot;toml&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;dependencies &lt;&#x2F;span&gt;&lt;span&gt;= [
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;requests&amp;gt;=2.33.1&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;]
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;This edit goes through &lt;code&gt;uv-workspace&lt;&#x2F;code&gt;&#x27;s &lt;code&gt;pyproject_mut&lt;&#x2F;code&gt; module, which does &lt;strong&gt;surgical TOML editing&lt;&#x2F;strong&gt;: it patches exactly the field it needs to change without reformatting anything else in the file. That matters because &lt;code&gt;pyproject.toml&lt;&#x2F;code&gt; often contains hand-formatted sections, comments, and deliberate ordering that a naive serialize&#x2F;reserialize pass would obliterate.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;stage-3-resolution-uv-resolver-pubgrub&quot;&gt;Stage 3: Resolution (&lt;code&gt;uv-resolver&lt;&#x2F;code&gt; + PubGrub)&lt;&#x2F;h3&gt;
+&lt;p&gt;The resolver answers: &lt;em&gt;&quot;Which exact version of every package satisfies all constraints?&quot;&lt;&#x2F;em&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;This is the most complex stage. We&#x27;ll cover it in depth in sections 5 and 6. The output is a complete &lt;code&gt;(package, version)&lt;&#x2F;code&gt; assignment for every package in the dependency tree.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;stage-4-write-uv-lock&quot;&gt;Stage 4: Write &lt;code&gt;uv.lock&lt;&#x2F;code&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;The resolved set is serialized to &lt;code&gt;uv.lock&lt;&#x2F;code&gt;. This is a TOML file that records every package: its exact version, source URL, content hash, and its own dependencies. A real excerpt:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;toml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-toml &quot;&gt;&lt;code class=&quot;language-toml&quot; data-lang=&quot;toml&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;version &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;requires-python &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;gt;=3.12&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;[[package]]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;requests&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;version &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;2.32.3&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;source &lt;&#x2F;span&gt;&lt;span&gt;= { &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;registry &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;https:&#x2F;&#x2F;pypi.org&#x2F;simple&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;dependencies &lt;&#x2F;span&gt;&lt;span&gt;= [
+&lt;&#x2F;span&gt;&lt;span&gt;    { &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;certifi&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; },
+&lt;&#x2F;span&gt;&lt;span&gt;    { &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;charset-normalizer&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; },
+&lt;&#x2F;span&gt;&lt;span&gt;    { &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;idna&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; },
+&lt;&#x2F;span&gt;&lt;span&gt;    { &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;urllib3&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; },
+&lt;&#x2F;span&gt;&lt;span&gt;]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sdist &lt;&#x2F;span&gt;&lt;span&gt;= { &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;url &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;https:&#x2F;&#x2F;files.pythonhosted.org&#x2F;packages&#x2F;...&#x2F;requests-2.32.3.tar.gz&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;hash &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;sha256:55365417734eb18255590a9f9bf5f8f4a9a2e6bf7119580b895a78a75a4a8802&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;size &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;131218 &lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;wheels &lt;&#x2F;span&gt;&lt;span&gt;= [
+&lt;&#x2F;span&gt;&lt;span&gt;    { &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;url &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;https:&#x2F;&#x2F;files.pythonhosted.org&#x2F;packages&#x2F;...&#x2F;requests-2.32.3-py3-none-any.whl&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;hash &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;sha256:70761cfe03c773ceb22aa2f671b4757976145175cdfed9ef6f2eedb0a1600cf9&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; },
+&lt;&#x2F;span&gt;&lt;span&gt;]
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;[[package]]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;urllib3&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;version &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;2.4.0&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;source &lt;&#x2F;span&gt;&lt;span&gt;= { &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;registry &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;https:&#x2F;&#x2F;pypi.org&#x2F;simple&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;dependencies &lt;&#x2F;span&gt;&lt;span&gt;= []
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sdist &lt;&#x2F;span&gt;&lt;span&gt;= { &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;url &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;https:&#x2F;&#x2F;files.pythonhosted.org&#x2F;packages&#x2F;...&#x2F;urllib3-2.4.0.tar.gz&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;hash &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;sha256:...&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;size &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;200288 &lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;wheels &lt;&#x2F;span&gt;&lt;span&gt;= [
+&lt;&#x2F;span&gt;&lt;span&gt;    { &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;url &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;https:&#x2F;&#x2F;files.pythonhosted.org&#x2F;packages&#x2F;...&#x2F;urllib3-2.4.0-py3-none-any.whl&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;hash &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;sha256:...&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; },
+&lt;&#x2F;span&gt;&lt;span&gt;]
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The lockfile is &lt;strong&gt;universal&lt;&#x2F;strong&gt;: one &lt;code&gt;uv.lock&lt;&#x2F;code&gt; works on macOS, Linux, and Windows. It records all possible packages for all platforms using environment markers. When you install from the lockfile on a real machine, uv selects only the packages appropriate for that platform. This is a real improvement over &lt;code&gt;pip freeze&lt;&#x2F;code&gt; or &lt;code&gt;requirements.txt&lt;&#x2F;code&gt;, which are inherently platform-specific snapshots.&lt;&#x2F;p&gt;
+&lt;p&gt;The hashes serve two purposes: integrity verification when downloading, and cache lookup keying.&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;&#x2F;strong&gt; &lt;code&gt;uv.lock&lt;&#x2F;code&gt; is an internal format that may change between versions. If you need to read it programmatically, the experimental &lt;code&gt;uv workspace metadata --preview-features workspace-metadata&lt;&#x2F;code&gt; command outputs a stable JSON representation of the same dependency graph (it&#x27;s still preview as of v0.11.7, so don&#x27;t rely on its schema being final).&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;h3 id=&quot;stage-5-download-packages-uv-client-tokio&quot;&gt;Stage 5: Download packages (&lt;code&gt;uv-client&lt;&#x2F;code&gt; + Tokio)&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;code&gt;uv-client&lt;&#x2F;code&gt; is uv&#x27;s async HTTP client, built on &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;seanmonstar&#x2F;reqwest&quot;&gt;reqwest&lt;&#x2F;a&gt; and &lt;a href=&quot;https:&#x2F;&#x2F;tokio.rs&#x2F;&quot;&gt;Tokio&lt;&#x2F;a&gt;. For every package not already in the global cache, uv fires off &lt;strong&gt;concurrent downloads&lt;&#x2F;strong&gt;:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;# pip: sequential
+&lt;&#x2F;span&gt;&lt;span&gt;fetch requests → wait → fetch urllib3 → wait → fetch certifi → wait → ...
+&lt;&#x2F;span&gt;&lt;span&gt;total ≈ N × round_trip_time
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;# uv: concurrent
+&lt;&#x2F;span&gt;&lt;span&gt;fetch requests ─┐
+&lt;&#x2F;span&gt;&lt;span&gt;fetch urllib3   ├── all in parallel
+&lt;&#x2F;span&gt;&lt;span&gt;fetch certifi   ─┘
+&lt;&#x2F;span&gt;&lt;span&gt;total ≈ 1 × round_trip_time (roughly)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;This is the largest contributor to uv&#x27;s cold-cache speed. Network I&#x2F;O latency is the bottleneck, and parallelism makes it roughly constant regardless of the number of packages.&lt;&#x2F;p&gt;
+&lt;p&gt;Packages are stored in a &lt;strong&gt;global, content-addressed cache&lt;&#x2F;strong&gt; managed by &lt;code&gt;uv-cache&lt;&#x2F;code&gt;. The cache key is the SHA-256 hash of the package content. This means:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Any package version you have ever installed is reused across all your projects, forever.&lt;&#x2F;li&gt;
+&lt;li&gt;The cache is verified by hash on every use; silent corruption is caught immediately.&lt;&#x2F;li&gt;
+&lt;li&gt;The cache is shared across &lt;code&gt;uv pip install&lt;&#x2F;code&gt;, &lt;code&gt;uv add&lt;&#x2F;code&gt;, and &lt;code&gt;uvx&lt;&#x2F;code&gt; tool installs.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;stage-6-install-packages-uv-installer&quot;&gt;Stage 6: Install packages (&lt;code&gt;uv-installer&lt;&#x2F;code&gt;)&lt;&#x2F;h3&gt;
+&lt;p&gt;&quot;Install&quot; normally implies copying files. uv mostly doesn&#x27;t copy anything.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;uv-installer&lt;&#x2F;code&gt; uses &lt;strong&gt;hard links&lt;&#x2F;strong&gt; wherever the filesystem supports them (most Linux and macOS filesystems do). A hard link means two directory entries point to the same physical data blocks on disk. Creating one is essentially free: a single filesystem metadata operation.&lt;&#x2F;p&gt;
+&lt;p&gt;When uv &quot;installs&quot; a package into &lt;code&gt;.venv&#x2F;lib&#x2F;python3.12&#x2F;site-packages&#x2F;&lt;&#x2F;code&gt;, it&#x27;s creating hard links from the global cache into the virtual environment. No bytes are duplicated. This is why you see timings like &lt;code&gt;Installed 43 packages in 208ms&lt;&#x2F;code&gt;: that 208ms is the overhead of creating thousands of directory entries, not copying gigabytes.&lt;&#x2F;p&gt;
+&lt;p&gt;On filesystems that don&#x27;t support cross-device hard links (e.g., home directory and temp on different mounts, or network filesystems), uv falls back to copy-on-write reflinks, then regular copies. But the common case is hard links.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;5-inside-the-resolver-the-two-thread-architecture&quot;&gt;5. Inside the resolver: the two-thread architecture&lt;&#x2F;h2&gt;
+&lt;p&gt;The resolver is the most architecturally interesting part of uv, and the source code reveals a specific design decision that&#x27;s worth understanding.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;the-concurrency-problem&quot;&gt;The concurrency problem&lt;&#x2F;h3&gt;
+&lt;p&gt;The PubGrub algorithm is inherently &lt;strong&gt;sequential and synchronous&lt;&#x2F;strong&gt;: it makes one decision at a time, and each decision depends on all previous decisions. You cannot trivially parallelize it.&lt;&#x2F;p&gt;
+&lt;p&gt;But metadata fetching (querying PyPI for &quot;which versions of &lt;code&gt;flask&lt;&#x2F;code&gt; exist?&quot; or &quot;what does &lt;code&gt;flask==3.1.0&lt;&#x2F;code&gt; depend on?&quot;) is highly parallelizable I&#x2F;O.&lt;&#x2F;p&gt;
+&lt;p&gt;The naive approach is to serialize everything: decide package, fetch metadata, decide next package, fetch metadata. This is what pip does. uv does something cleverer.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;two-threads-communicating-via-channels&quot;&gt;Two threads communicating via channels&lt;&#x2F;h3&gt;
+&lt;p&gt;The &lt;code&gt;resolve()&lt;&#x2F;code&gt; function in &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;astral-sh&#x2F;uv&#x2F;blob&#x2F;0.11.7&#x2F;crates&#x2F;uv-resolver&#x2F;src&#x2F;resolver&#x2F;mod.rs#L277-L309&quot;&gt;&lt;code&gt;crates&#x2F;uv-resolver&#x2F;src&#x2F;resolver&#x2F;mod.rs&lt;&#x2F;code&gt;&lt;&#x2F;a&gt; is short enough to quote verbatim:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;pub&lt;&#x2F;span&gt;&lt;span&gt; async &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;resolve&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;self&lt;&#x2F;span&gt;&lt;span&gt;) -&amp;gt; Result&amp;lt;ResolverOutput, ResolveError&amp;gt; {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; state = Arc::new(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;self&lt;&#x2F;span&gt;&lt;span&gt;.state);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; provider = Arc::new(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;self&lt;&#x2F;span&gt;&lt;span&gt;.provider);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; A channel to fetch package metadata (e.g., given `flask`, fetch all versions) and version
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; metadata (e.g., given `flask==1.0.0`, fetch the metadata for that version).
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Channel size is set large to accommodate batch prefetching.
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let &lt;&#x2F;span&gt;&lt;span&gt;(request_sink, request_stream) = mpsc::channel(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;300&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Run the fetcher.
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; requests_fut = state.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;clone&lt;&#x2F;span&gt;&lt;span&gt;().&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;fetch&lt;&#x2F;span&gt;&lt;span&gt;(provider.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;clone&lt;&#x2F;span&gt;&lt;span&gt;(), request_stream).&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;fuse&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Spawn the PubGrub solver on a dedicated thread.
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; solver = state.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;clone&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let &lt;&#x2F;span&gt;&lt;span&gt;(tx, rx) = oneshot::channel();
+&lt;&#x2F;span&gt;&lt;span&gt;    thread::Builder::new()
+&lt;&#x2F;span&gt;&lt;span&gt;        .&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;uv-resolver&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;into&lt;&#x2F;span&gt;&lt;span&gt;())
+&lt;&#x2F;span&gt;&lt;span&gt;        .&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;spawn&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;move &lt;&#x2F;span&gt;&lt;span&gt;|| {
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; result = solver.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;solve&lt;&#x2F;span&gt;&lt;span&gt;(&amp;amp;request_sink);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; This may fail if the main thread returned early due to an error.
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let &lt;&#x2F;span&gt;&lt;span&gt;_ = tx.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;send&lt;&#x2F;span&gt;&lt;span&gt;(result);
+&lt;&#x2F;span&gt;&lt;span&gt;        })
+&lt;&#x2F;span&gt;&lt;span&gt;        .&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;unwrap&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; resolve_fut = async &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;move &lt;&#x2F;span&gt;&lt;span&gt;{ rx.await.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;map_err&lt;&#x2F;span&gt;&lt;span&gt;(|_| ResolveError::ChannelClosed) };
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Wait for both to complete.
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let &lt;&#x2F;span&gt;&lt;span&gt;((), resolution) = tokio::try_join!(requests_fut, resolve_fut)?;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    state.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;on_complete&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    resolution
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The architecture is:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;┌────────────────────────────────────────────┐
+&lt;&#x2F;span&gt;&lt;span&gt;│  Dedicated sync thread: &amp;quot;uv-resolver&amp;quot;       │
+&lt;&#x2F;span&gt;&lt;span&gt;│  Runs PubGrub solver (solve())              │
+&lt;&#x2F;span&gt;&lt;span&gt;│  → Sends fetch requests via mpsc::Sender   │
+&lt;&#x2F;span&gt;&lt;span&gt;│  → Receives results via InMemoryIndex       │
+&lt;&#x2F;span&gt;&lt;span&gt;└──────────────────┬─────────────────────────┘
+&lt;&#x2F;span&gt;&lt;span&gt;                   │ mpsc channel (capacity 300)
+&lt;&#x2F;span&gt;&lt;span&gt;                   ▼
+&lt;&#x2F;span&gt;&lt;span&gt;┌────────────────────────────────────────────┐
+&lt;&#x2F;span&gt;&lt;span&gt;│  Tokio async runtime                        │
+&lt;&#x2F;span&gt;&lt;span&gt;│  Runs fetch() — handles request_stream      │
+&lt;&#x2F;span&gt;&lt;span&gt;│  Fires concurrent HTTP requests             │
+&lt;&#x2F;span&gt;&lt;span&gt;│  Writes results into Arc&amp;lt;InMemoryIndex&amp;gt;     │
+&lt;&#x2F;span&gt;&lt;span&gt;└────────────────────────────────────────────┘
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The solver thread is &lt;strong&gt;synchronous&lt;&#x2F;strong&gt;. PubGrub&#x27;s algorithm doesn&#x27;t fit naturally into async&#x2F;await because it&#x27;s a tight loop with complex mutable state. Running it on its own OS thread sidesteps the question entirely.&lt;&#x2F;p&gt;
+&lt;p&gt;The fetcher runs on Tokio&#x27;s async runtime. When the solver needs metadata for a package, it sends a &lt;code&gt;Request&lt;&#x2F;code&gt; down the &lt;code&gt;mpsc&lt;&#x2F;code&gt; channel and then looks up the &lt;code&gt;InMemoryIndex&lt;&#x2F;code&gt; (a &lt;code&gt;DashMap&lt;&#x2F;code&gt;-backed concurrent cache). If the result isn&#x27;t there yet, the solver thread blocks on the index&#x27;s per-key notifier. That blocks &lt;em&gt;only the solver thread&lt;&#x2F;em&gt;, not Tokio&#x27;s runtime, which keeps happily making more network requests.&lt;&#x2F;p&gt;
+&lt;p&gt;This design separates concerns:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;PubGrub stays synchronous and simple.&lt;&#x2F;li&gt;
+&lt;li&gt;Network I&#x2F;O stays async and concurrent.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;Arc&amp;lt;ResolverState&amp;gt;&lt;&#x2F;code&gt; is shared safely between the two sides.&lt;&#x2F;li&gt;
+&lt;li&gt;The 300-deep &lt;code&gt;mpsc&lt;&#x2F;code&gt; channel provides backpressure: if the solver burns through requests faster than the fetcher can keep up, it eventually blocks on &lt;code&gt;send&lt;&#x2F;code&gt;.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;the-inmemoryindex&quot;&gt;The &lt;code&gt;InMemoryIndex&lt;&#x2F;code&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;The &lt;code&gt;InMemoryIndex&lt;&#x2F;code&gt; is a shared cache of already-fetched metadata, backed by &lt;code&gt;DashMap&lt;&#x2F;code&gt; (a concurrent hashmap that allows reads without locking the whole map). The solver reads from it; the fetcher writes to it. When a key is missing, the solver thread parks on a per-key notifier until the fetcher writes the value in. The Tokio runtime is never blocked, so other in-flight downloads keep making progress.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;6-pubgrub-the-dependency-resolution-algorithm&quot;&gt;6. PubGrub: the dependency resolution algorithm&lt;&#x2F;h2&gt;
+&lt;h3 id=&quot;why-this-is-hard&quot;&gt;Why this is hard&lt;&#x2F;h3&gt;
+&lt;p&gt;The resolver must answer: given a set of requirements (with version ranges), find one exact version for every package such that every package&#x27;s requirements are also satisfied, recursively, for all transitive dependencies.&lt;&#x2F;p&gt;
+&lt;p&gt;In the general case, this is equivalent to the &lt;a href=&quot;https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Boolean_satisfiability_problem&quot;&gt;Boolean Satisfiability Problem&lt;&#x2F;a&gt; (SAT), which is NP-complete. Package ecosystems have thousands of packages and hundreds of versions each. Naive backtracking (try a version; if it conflicts, undo and try another) can be exponential.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;pubgrub-s-approach-conflict-driven-clause-learning&quot;&gt;PubGrub&#x27;s approach: conflict-driven clause learning&lt;&#x2F;h3&gt;
+&lt;p&gt;uv uses &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;pubgrub-rs&#x2F;pubgrub&quot;&gt;pubgrub-rs&lt;&#x2F;a&gt;, the Rust implementation of &lt;a href=&quot;https:&#x2F;&#x2F;nex3.medium.com&#x2F;pubgrub-2fb6470504f&quot;&gt;PubGrub&lt;&#x2F;a&gt;. PubGrub was &lt;a href=&quot;https:&#x2F;&#x2F;nex3.medium.com&#x2F;pubgrub-2fb6470504f&quot;&gt;introduced in April 2018&lt;&#x2F;a&gt; by Natalie Weizenbaum for Dart&#x27;s &lt;code&gt;pub&lt;&#x2F;code&gt; package manager and has since been adopted by Bundler, Poetry, and now uv. It is a &lt;strong&gt;conflict-driven clause learning (CDCL)&lt;&#x2F;strong&gt; solver.&lt;&#x2F;p&gt;
+&lt;p&gt;The old approach is: pick a version, try it, on conflict undo and try another. Worst case is exponential.&lt;&#x2F;p&gt;
+&lt;p&gt;PubGrub&#x27;s approach: when a conflict is found, &lt;em&gt;learn from it&lt;&#x2F;em&gt; by recording an &lt;strong&gt;incompatibility clause&lt;&#x2F;strong&gt;. The clause encodes which combination of package versions caused the conflict. Any future partial assignment that would trigger that same conflict is pruned immediately, without re-exploring.&lt;&#x2F;p&gt;
+&lt;p&gt;Concrete example: the resolver discovers that &lt;code&gt;a==2.0&lt;&#x2F;code&gt; and &lt;code&gt;b==3.0&lt;&#x2F;code&gt; can&#x27;t coexist (because they require conflicting versions of &lt;code&gt;c&lt;&#x2F;code&gt;). PubGrub records the incompatibility &lt;code&gt;{a==2.0, b==3.0}&lt;&#x2F;code&gt;. Any future partial solution containing both is ruled out by unit propagation, instantly. This turns exponential worst cases into manageable ones for realistic package graphs.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;the-resolver-loop&quot;&gt;The resolver loop&lt;&#x2F;h3&gt;
+&lt;p&gt;Here is how PubGrub runs in uv, from the &lt;a href=&quot;https:&#x2F;&#x2F;docs.astral.sh&#x2F;uv&#x2F;reference&#x2F;internals&#x2F;resolver&#x2F;&quot;&gt;official internals documentation&lt;&#x2F;a&gt;:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;1. Initialize.&lt;&#x2F;strong&gt; Create a virtual root package representing your project. It is the only &quot;decided&quot; package; everything else is undecided.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;2. Pick the highest-priority undecided package.&lt;&#x2F;strong&gt; uv&#x27;s priority order is roughly:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;URL dependencies (git, path, file): pinned, no version negotiation needed.&lt;&#x2F;li&gt;
+&lt;li&gt;Packages with &lt;code&gt;==&lt;&#x2F;code&gt; constraints: version is already determined.&lt;&#x2F;li&gt;
+&lt;li&gt;Packages flagged as &quot;highly conflicting&quot; (see below).&lt;&#x2F;li&gt;
+&lt;li&gt;Everything else, ordered by when first encountered (breadth-first traversal).&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;This ensures direct dependencies are decided before transitive ones.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;3. Pick a version.&lt;&#x2F;strong&gt; uv tries versions newest-to-oldest by default (or oldest-to-newest with &lt;code&gt;resolution = &quot;lowest&quot;&lt;&#x2F;code&gt;). It prefers versions already in &lt;code&gt;uv.lock&lt;&#x2F;code&gt; (making re-resolves stable) and versions already installed in the current environment (avoiding unnecessary upgrades).&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;4. Add requirements.&lt;&#x2F;strong&gt; All requirements of the chosen version are added to the undecided set. uv sends prefetch requests for their metadata in the background (see BatchPrefetcher below).&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;5. Detect conflicts.&lt;&#x2F;strong&gt; If PubGrub detects that the chosen version creates a conflict, it identifies the incompatible pair, records the incompatibility clause, backtracks to before one of them was decided, and retries with the new constraint.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;6. Repeat or terminate.&lt;&#x2F;strong&gt; If all packages have decided versions: success. If an incompatibility propagates back to the root: failure with an explanation.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;the-conflict-priority-heuristic&quot;&gt;The conflict-priority heuristic&lt;&#x2F;h3&gt;
+&lt;p&gt;The &lt;code&gt;CONFLICT_THRESHOLD&lt;&#x2F;code&gt; constant in &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;astral-sh&#x2F;uv&#x2F;blob&#x2F;0.11.7&#x2F;crates&#x2F;uv-resolver&#x2F;src&#x2F;resolver&#x2F;mod.rs#L97-L98&quot;&gt;&lt;code&gt;resolver&#x2F;mod.rs&lt;&#x2F;code&gt;&lt;&#x2F;a&gt; is set to &lt;code&gt;5&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F;&#x2F; The number of conflicts a package may accumulate before we re-prioritize and backtrack.
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;CONFLICT_THRESHOLD&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;usize &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;5&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The scenario it solves: package &lt;code&gt;A&lt;&#x2F;code&gt; has high priority and is decided first. Every version of &lt;code&gt;B&lt;&#x2F;code&gt; the resolver tries is immediately rejected due to a conflict with &lt;code&gt;A&lt;&#x2F;code&gt;. The resolver could exhaust all of &lt;code&gt;B&lt;&#x2F;code&gt;&#x27;s versions before realising the root cause is &lt;code&gt;A&lt;&#x2F;code&gt;&#x27;s chosen version, which is slow.&lt;&#x2F;p&gt;
+&lt;p&gt;After 5 conflicts involving &lt;code&gt;A&lt;&#x2F;code&gt; and &lt;code&gt;B&lt;&#x2F;code&gt;, uv marks them as &quot;highly conflicting&quot; and promotes &lt;code&gt;B&lt;&#x2F;code&gt;&#x27;s priority above &lt;code&gt;A&lt;&#x2F;code&gt;&#x27;s. It then backtracks to before &lt;code&gt;A&lt;&#x2F;code&gt; was decided and tries &lt;code&gt;B&lt;&#x2F;code&gt; first. Deciding the constrained package first finds the correct solution much faster.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;error-messages&quot;&gt;Error messages&lt;&#x2F;h3&gt;
+&lt;p&gt;When resolution fails, PubGrub can reconstruct exactly &lt;em&gt;why&lt;&#x2F;em&gt; by walking the derivation tree of incompatibilities backwards from the root. Instead of &lt;code&gt;&quot;conflicting requirements detected&quot;&lt;&#x2F;code&gt;, you get something like:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;× No solution found when resolving dependencies:
+&lt;&#x2F;span&gt;&lt;span&gt;╰─▶ Because my-project depends on flask&amp;gt;=3.0 and flask&amp;gt;=3.0 requires
+&lt;&#x2F;span&gt;&lt;span&gt;    werkzeug&amp;gt;=3.0, my-project requires werkzeug&amp;gt;=3.0.
+&lt;&#x2F;span&gt;&lt;span&gt;    And because legacy-lib==1.0 requires werkzeug&amp;lt;2.0, and my-project
+&lt;&#x2F;span&gt;&lt;span&gt;    depends on legacy-lib==1.0, my-project&amp;#39;s requirements are
+&lt;&#x2F;span&gt;&lt;span&gt;    unsatisfiable.
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;This is the single feature most likely to make you fall in love with PubGrub. Modern pip has improved here too, but uv&#x27;s errors come from the same derivation tree the solver actually used, so they&#x27;re always faithful to what the algorithm did.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;7-batch-prefetching-the-boto3-optimization&quot;&gt;7. Batch prefetching: the boto3 optimization&lt;&#x2F;h2&gt;
+&lt;p&gt;The &lt;code&gt;BatchPrefetcher&lt;&#x2F;code&gt; in &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;astral-sh&#x2F;uv&#x2F;blob&#x2F;0.11.7&#x2F;crates&#x2F;uv-resolver&#x2F;src&#x2F;resolver&#x2F;batch_prefetch.rs&quot;&gt;&lt;code&gt;crates&#x2F;uv-resolver&#x2F;src&#x2F;resolver&#x2F;batch_prefetch.rs&lt;&#x2F;code&gt;&lt;&#x2F;a&gt; is a targeted optimization for packages with many versions that cause a lot of backtracking. The canonical example is &lt;code&gt;boto3&lt;&#x2F;code&gt;&#x2F;&lt;code&gt;botocore&lt;&#x2F;code&gt;&#x2F;&lt;code&gt;urllib3&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;The problem: the resolver tries a version, fetches its metadata, discovers a conflict, tries the next version, fetches &lt;em&gt;its&lt;&#x2F;em&gt; metadata, discovers a conflict, and so on. For botocore, which has hundreds of releases, this can mean hundreds of sequential fetch-then-reject cycles on a cold cache.&lt;&#x2F;p&gt;
+&lt;p&gt;The fix: after the resolver has tried a few versions of a package, the &lt;code&gt;BatchPrefetcher&lt;&#x2F;code&gt; speculatively sends fetch requests for several upcoming versions ahead of time. The schedule from the source (&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;astral-sh&#x2F;uv&#x2F;blob&#x2F;0.11.7&#x2F;crates&#x2F;uv-resolver&#x2F;src&#x2F;resolver&#x2F;batch_prefetch.rs#L162-L183&quot;&gt;line 178&lt;&#x2F;a&gt;):&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F;&#x2F; After 5, 10, 20, 40 tried versions, prefetch that many versions to start early but not
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F;&#x2F; too aggressive. Later we schedule the prefetch of 50 versions every 20 versions, this gives
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F;&#x2F; us a good buffer until we see prefetch again and is high enough to saturate the task pool.
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; do_prefetch = (num_tried &amp;gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;5 &lt;&#x2F;span&gt;&lt;span&gt;&amp;amp;&amp;amp; previous_prefetch &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;5&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;    || (num_tried &amp;gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;10 &lt;&#x2F;span&gt;&lt;span&gt;&amp;amp;&amp;amp; previous_prefetch &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;10&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;    || (num_tried &amp;gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;20 &lt;&#x2F;span&gt;&lt;span&gt;&amp;amp;&amp;amp; previous_prefetch &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;20&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;    || (num_tried &amp;gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;20 &lt;&#x2F;span&gt;&lt;span&gt;&amp;amp;&amp;amp; num_tried - previous_prefetch &amp;gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;20&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;(The doc comment promises &quot;5, 10, 20, 40&quot; but the code only checks 5, 10, 20 explicitly; the 40-and-beyond case is handled by the rolling &lt;code&gt;num_tried - previous_prefetch &amp;gt;= 20&lt;&#x2F;code&gt; clause. Same end result, but if you&#x27;re reading the source it&#x27;s worth noting the comment doesn&#x27;t quite match the conditions.)&lt;&#x2F;p&gt;
+&lt;p&gt;The prefetcher uses two strategies:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Compatible strategy&lt;&#x2F;strong&gt;: prefetch versions within the current constraint range, from newest downward.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;In-order strategy&lt;&#x2F;strong&gt;: when the compatible range is exhausted, prefetch the next versions by release order, ignoring compatibility.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;It avoids prefetching source distributions (which are expensive to build). These are heuristics, and they might prefetch versions that turn out to be irrelevant, but in the cold-cache botocore case they can turn hundreds of serial round trips into a handful of batched ones.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;8-the-forking-resolver-one-lockfile-for-all-platforms&quot;&gt;8. The forking resolver: one lockfile for all platforms&lt;&#x2F;h2&gt;
+&lt;p&gt;Most Python resolvers produce a platform-specific result. uv produces a &lt;strong&gt;universal lockfile&lt;&#x2F;strong&gt; using a forking resolver.&lt;&#x2F;p&gt;
+&lt;p&gt;Consider:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;numpy&amp;gt;=2,&amp;lt;3 ; python_version &amp;gt;= &amp;quot;3.11&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;numpy&amp;gt;=1.16,&amp;lt;2 ; python_version &amp;lt; &amp;quot;3.11&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;A naive resolver fails here, since Python only allows one installed version of any package. uv&#x27;s resolver detects that the two requirements for &lt;code&gt;numpy&lt;&#x2F;code&gt; have &lt;strong&gt;different environment markers&lt;&#x2F;strong&gt; and splits (forks) the resolution into two independent sub-resolutions:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Fork 1: &lt;code&gt;python_version &amp;gt;= &quot;3.11&quot;&lt;&#x2F;code&gt; → resolves numpy to &lt;code&gt;2.3.0&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;Fork 2: &lt;code&gt;python_version &amp;lt; &quot;3.11&quot;&lt;&#x2F;code&gt; → resolves numpy to &lt;code&gt;1.26.4&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Both results land in &lt;code&gt;uv.lock&lt;&#x2F;code&gt; tagged with their markers. When you install from the lockfile on a real machine, uv evaluates the markers against the actual Python version and installs only the matching package.&lt;&#x2F;p&gt;
+&lt;p&gt;Forks can be &lt;strong&gt;nested&lt;&#x2F;strong&gt;: a fork can itself be split on another marker, resulting in a tree of resolutions. Forks with identical packages are merged to keep the lockfile manageable. The fork points are recorded in &lt;code&gt;uv.lock&lt;&#x2F;code&gt; so that re-resolving produces stable, identical forks rather than recalculating them from scratch.&lt;&#x2F;p&gt;
+&lt;p&gt;You can observe forking live:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;uv&lt;&#x2F;span&gt;&lt;span&gt; lock&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -v &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;2&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1 &lt;&#x2F;span&gt;&lt;span&gt;| &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;grep -E &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;(Splitting|Solving split|Split.*took)&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;the-metadata-consistency-assumption&quot;&gt;The metadata consistency assumption&lt;&#x2F;h3&gt;
+&lt;p&gt;uv makes one important assumption that enables a significant performance optimization: &lt;strong&gt;all wheels of a single version of a package have identical &lt;code&gt;METADATA&lt;&#x2F;code&gt; files&lt;&#x2F;strong&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;Why this matters: I just checked PyPI, and numpy 2.3.2 has exactly 73 wheels (for different Python versions, operating systems, and architectures) plus one source distribution. Without the metadata consistency assumption, uv would need to fetch the metadata from each wheel separately to understand that version&#x27;s dependencies. That&#x27;s 73 network requests for one version of one package.&lt;&#x2F;p&gt;
+&lt;p&gt;With the assumption, uv fetches metadata from &lt;em&gt;any one&lt;&#x2F;em&gt; wheel (preferring whichever exposes &lt;code&gt;.metadata&lt;&#x2F;code&gt; via &lt;a href=&quot;https:&#x2F;&#x2F;peps.python.org&#x2F;pep-0658&#x2F;&quot;&gt;PEP 658&lt;&#x2F;a&gt;, or whichever supports HTTP range requests so only the wheel&#x27;s metadata footer needs to be downloaded) and uses it for all platforms. That turns 73 requests into 1.&lt;&#x2F;p&gt;
+&lt;p&gt;The assumption holds for all major packages in practice. PEP 658 doesn&#x27;t strictly require it, and there&#x27;s been discussion about whether to mandate it, but uv&#x27;s bet has paid off so far.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;9-the-global-cache&quot;&gt;9. The global cache&lt;&#x2F;h2&gt;
+&lt;p&gt;The cache lives at:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;~&#x2F;.cache&#x2F;uv&lt;&#x2F;code&gt; on Linux&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;~&#x2F;Library&#x2F;Caches&#x2F;uv&lt;&#x2F;code&gt; on macOS&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;%LOCALAPPDATA%\uv\cache&lt;&#x2F;code&gt; on Windows&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Its structure:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;~&#x2F;.cache&#x2F;uv&#x2F;
+&lt;&#x2F;span&gt;&lt;span&gt;├── wheels&#x2F;        # Extracted wheels, keyed by content hash
+&lt;&#x2F;span&gt;&lt;span&gt;├── sdists&#x2F;        # Source distributions
+&lt;&#x2F;span&gt;&lt;span&gt;├── builds&#x2F;        # Wheels built from sdists (cached after first build)
+&lt;&#x2F;span&gt;&lt;span&gt;├── interpreter&#x2F;   # Python interpreter metadata (version, sysconfig, etc.)
+&lt;&#x2F;span&gt;&lt;span&gt;└── simple&#x2F;        # Cached PyPI &amp;quot;simple&amp;quot; index HTTP responses
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;strong&gt;Content addressing&lt;&#x2F;strong&gt;: packages are stored and retrieved by their SHA-256 hash, not by name or version. This means:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Two projects using &lt;code&gt;requests==2.32.3&lt;&#x2F;code&gt; share one copy on disk.&lt;&#x2F;li&gt;
+&lt;li&gt;The integrity check is free: the hash &lt;em&gt;is&lt;&#x2F;em&gt; the key.&lt;&#x2F;li&gt;
+&lt;li&gt;Renaming or moving the cache is safe; nothing relies on the path.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;strong&gt;The &lt;code&gt;simple&#x2F;&lt;&#x2F;code&gt; cache&lt;&#x2F;strong&gt;: PyPI&#x27;s &quot;simple&quot; index is just an HTML page listing all available versions of a package. uv caches these responses. When you re-resolve with an existing &lt;code&gt;uv.lock&lt;&#x2F;code&gt;, uv can often skip almost all PyPI queries: it knows which versions it selected last time, checks the &lt;code&gt;simple&#x2F;&lt;&#x2F;code&gt; cache (revalidating with a conditional GET) for any newer versions, and in most cases (no new releases since last lock) produces an identical solution without hitting the network.&lt;&#x2F;p&gt;
+&lt;p&gt;Manage the cache:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;uv&lt;&#x2F;span&gt;&lt;span&gt; cache dir          &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# print the cache location
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;uv&lt;&#x2F;span&gt;&lt;span&gt; cache prune        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# remove entries not referenced by any environment
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;uv&lt;&#x2F;span&gt;&lt;span&gt; cache clean        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# remove all entries
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;10-source-distributions-and-the-build-sandbox&quot;&gt;10. Source distributions and the build sandbox&lt;&#x2F;h2&gt;
+&lt;p&gt;When a package only provides an sdist (no binary wheel for your platform), uv must build the wheel. This is handled by &lt;code&gt;uv-distribution&lt;&#x2F;code&gt;&#x27;s &lt;code&gt;DistributionDatabase&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;Building an sdist means running the package&#x27;s build backend (e.g., setuptools, flit, hatchling) inside an isolated build environment. This is necessary because build scripts can run arbitrary Python code, and that code might read files, make network requests, or modify the filesystem.&lt;&#x2F;p&gt;
+&lt;p&gt;uv caches successfully built wheels in &lt;code&gt;~&#x2F;.cache&#x2F;uv&#x2F;builds&#x2F;&lt;&#x2F;code&gt; keyed by the sdist hash. If you install the same source package again, even across projects, the build only runs once.&lt;&#x2F;p&gt;
+&lt;p&gt;The contributing guide recommends building inside Docker if you&#x27;re working with untrusted packages:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;docker&lt;&#x2F;span&gt;&lt;span&gt; build&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -t&lt;&#x2F;span&gt;&lt;span&gt; uv-builder&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -f&lt;&#x2F;span&gt;&lt;span&gt; crates&#x2F;uv-dev&#x2F;builder.dockerfile&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --load&lt;&#x2F;span&gt;&lt;span&gt; .
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;docker&lt;&#x2F;span&gt;&lt;span&gt; run&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --rm -it -v &lt;&#x2F;span&gt;&lt;span&gt;$(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;pwd&lt;&#x2F;span&gt;&lt;span&gt;):&#x2F;app uv-builder \
+&lt;&#x2F;span&gt;&lt;span&gt;  &#x2F;app&#x2F;target&#x2F;x86_64-unknown-linux-musl&#x2F;profiling&#x2F;uv-dev \
+&lt;&#x2F;span&gt;&lt;span&gt;  resolve-many &#x2F;app&#x2F;scripts&#x2F;popular_packages&#x2F;pypi_10k_most_dependents.txt
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;This matters for uv&#x27;s own development: if you&#x27;re benchmarking the resolver against the 10k most popular PyPI packages, some of those sdists run code that could affect your system.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;11-why-rust-specifically&quot;&gt;11. Why Rust, specifically&lt;&#x2F;h2&gt;
+&lt;p&gt;The choice of Rust isn&#x27;t aesthetic. Reading the resolver, two specific properties stand out as load-bearing for the design:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;Sync and async coexist in the same process.&lt;&#x2F;strong&gt; The resolver wants a synchronous PubGrub loop and a concurrent async fetcher in the same binary, sharing state via &lt;code&gt;Arc&amp;lt;DashMap&amp;lt;…&amp;gt;&amp;gt;&lt;&#x2F;code&gt;. Rust gives you &lt;code&gt;std::thread::spawn&lt;&#x2F;code&gt;, &lt;code&gt;tokio::spawn&lt;&#x2F;code&gt;, and &lt;code&gt;Arc&lt;&#x2F;code&gt; as first-class equals; you can pick the right execution model per subsystem and the type checker keeps you honest about what crosses the boundary. In Python this hybrid is famously awkward (the GIL plus &lt;code&gt;asyncio&lt;&#x2F;code&gt; make it hard to mix the two cleanly), and in Go everything wants to be a goroutine.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;Concurrent shared state without runtime data races.&lt;&#x2F;strong&gt; The &lt;code&gt;InMemoryIndex&lt;&#x2F;code&gt; is read from the solver thread and written from the Tokio runtime simultaneously. &lt;code&gt;DashMap&lt;&#x2F;code&gt; is the data structure that makes this safe, but Rust&#x27;s type system is what makes the safety &lt;em&gt;enforced&lt;&#x2F;em&gt;: you can&#x27;t accidentally hand out a &lt;code&gt;&amp;amp;mut&lt;&#x2F;code&gt; reference across threads. You can still write deadlocks or logic bugs, of course, but the class of &quot;two threads stomping on each other&#x27;s memory&quot; simply doesn&#x27;t compile.&lt;&#x2F;p&gt;
+&lt;p&gt;The other usual Rust talking points (no GC pauses, zero-cost &lt;code&gt;async&lt;&#x2F;code&gt;, native &lt;code&gt;linkat()&lt;&#x2F;code&gt;) all apply too, but they&#x27;re not specific to uv. The two above are the ones I&#x27;d point to as actually shaping the architecture.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;12-building-from-source-and-contributing&quot;&gt;12. Building from source and contributing&lt;&#x2F;h2&gt;
+&lt;p&gt;If you want to poke around or contribute:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Install Rust
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;curl --proto &lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;=https&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --tlsv1&lt;&#x2F;span&gt;&lt;span&gt;.2&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -sSf&lt;&#x2F;span&gt;&lt;span&gt; https:&#x2F;&#x2F;sh.rustup.rs | &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sh
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Clone
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span&gt; clone https:&#x2F;&#x2F;github.com&#x2F;astral-sh&#x2F;uv.git &amp;amp;&amp;amp; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;cd&lt;&#x2F;span&gt;&lt;span&gt; uv
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Build and run your local version
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cargo&lt;&#x2F;span&gt;&lt;span&gt; run -- --version
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cargo&lt;&#x2F;span&gt;&lt;span&gt; run -- pip install requests
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cargo&lt;&#x2F;span&gt;&lt;span&gt; run -- venv
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Install the recommended test runner
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cargo&lt;&#x2F;span&gt;&lt;span&gt; install cargo-nextest
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Run the full test suite
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cargo&lt;&#x2F;span&gt;&lt;span&gt; nextest run
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Run a specific test
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cargo&lt;&#x2F;span&gt;&lt;span&gt; nextest run&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -E &lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;test(test_add_requirement)&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Update and review snapshot changes (uv uses insta for snapshot testing)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cargo&lt;&#x2F;span&gt;&lt;span&gt; install cargo-insta
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cargo&lt;&#x2F;span&gt;&lt;span&gt; insta test&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --accept --test-runner&lt;&#x2F;span&gt;&lt;span&gt; nextest
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;snapshot-testing-with-insta&quot;&gt;Snapshot testing with &lt;code&gt;insta&lt;&#x2F;code&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;uv&#x27;s test suite makes heavy use of &lt;a href=&quot;https:&#x2F;&#x2F;insta.rs&#x2F;&quot;&gt;insta&lt;&#x2F;a&gt; for snapshot testing. A typical test looks like:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span&gt;#[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;test&lt;&#x2F;span&gt;&lt;span&gt;]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;test_add&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; context = TestContext::new(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;3.12&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;    uv_snapshot!(context.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;filters&lt;&#x2F;span&gt;&lt;span&gt;(), context.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;add&lt;&#x2F;span&gt;&lt;span&gt;().&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;arg&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;requests&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;), @&amp;quot;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The &lt;code&gt;@&quot;&quot;&lt;&#x2F;code&gt; at the end is a snapshot placeholder. The first time you run the test, insta captures the output. Subsequent runs compare against the snapshot. When behavior changes intentionally, you run &lt;code&gt;cargo insta review&lt;&#x2F;code&gt; to approve the updated snapshots. This makes it easy to catch unintended regressions in CLI output.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;enabling-logs&quot;&gt;Enabling logs&lt;&#x2F;h3&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# High-level resolver decisions
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;RUST_LOG&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;uv=info &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cargo&lt;&#x2F;span&gt;&lt;span&gt; run -- pip compile requirements.in
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Resolver fork events specifically
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;RUST_LOG&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;uv_resolver=debug &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cargo&lt;&#x2F;span&gt;&lt;span&gt; run -- lock -v
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Everything (very verbose)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;RUST_LOG&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;trace &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cargo&lt;&#x2F;span&gt;&lt;span&gt; run -- pip install requests
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The &lt;code&gt;RUST_LOG&lt;&#x2F;code&gt; env var follows the &lt;code&gt;tracing&lt;&#x2F;code&gt; crate&#x27;s directive syntax: you can scope it to specific crates (&lt;code&gt;uv_resolver=debug&lt;&#x2F;code&gt;), specific targets, or specific log levels.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;finding-a-first-contribution&quot;&gt;Finding a first contribution&lt;&#x2F;h3&gt;
+&lt;p&gt;The team labels beginner-friendly issues as &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;astral-sh&#x2F;uv&#x2F;issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22&quot;&gt;&lt;code&gt;good first issue&lt;&#x2F;code&gt;&lt;&#x2F;a&gt;. These typically don&#x27;t require deep resolver knowledge: improving error messages, handling edge cases in TOML parsing, adding missing CLI flags. The &lt;code&gt;bug&lt;&#x2F;code&gt; label is also a good source of contributions.&lt;&#x2F;p&gt;
+&lt;p&gt;Before starting on anything not labeled &lt;code&gt;good first issue&lt;&#x2F;code&gt; or &lt;code&gt;bug&lt;&#x2F;code&gt;, comment on the issue first. The team has strong opinions on what uv should and shouldn&#x27;t do, and they prefer to align on approach before implementation.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;what-surprised-me&quot;&gt;What surprised me&lt;&#x2F;h2&gt;
+&lt;p&gt;A few things I didn&#x27;t expect going in, in case they&#x27;re useful as anchors when you read the source yourself:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;The solver is a &lt;em&gt;plain &lt;code&gt;std::thread::spawn&lt;&#x2F;code&gt;&lt;&#x2F;em&gt;, not a &lt;code&gt;tokio::task::spawn_blocking&lt;&#x2F;code&gt;. The hybrid isn&#x27;t subtle; it really is &quot;spawn an OS thread and hand it the channel sender.&quot;&lt;&#x2F;li&gt;
+&lt;li&gt;The &lt;code&gt;InMemoryIndex&lt;&#x2F;code&gt; blocking primitive (the per-key notifier the solver waits on) is what makes the &quot;sync solver, async fetcher&quot; split actually work. Without it the solver would either busy-wait or block the Tokio runtime, and you&#x27;d lose all the parallelism.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;pyproject_mut&lt;&#x2F;code&gt; is a much bigger module than I expected (~1800 lines for surgical TOML edits). Preserving user formatting turns out to be most of the work in any tool that round-trips human-edited config.&lt;&#x2F;li&gt;
+&lt;li&gt;The &lt;code&gt;BatchPrefetcher&lt;&#x2F;code&gt; doc comment doesn&#x27;t quite match its code. Small thing, but it&#x27;s the kind of detail that convinces you the rest is hand-written by people, not regenerated.&lt;&#x2F;li&gt;
+&lt;li&gt;The &quot;metadata consistency&quot; assumption (Section 8) feels load-bearing but is technically not guaranteed by any PEP. uv is essentially betting on a behaviour packaging tooling has converged on without ever standardising.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;If you want to poke at any of this, the entry points to read first are &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;astral-sh&#x2F;uv&#x2F;blob&#x2F;0.11.7&#x2F;crates&#x2F;uv-resolver&#x2F;src&#x2F;resolver&#x2F;mod.rs&quot;&gt;&lt;code&gt;crates&#x2F;uv-resolver&#x2F;src&#x2F;resolver&#x2F;mod.rs&lt;&#x2F;code&gt;&lt;&#x2F;a&gt; (the &lt;code&gt;resolve()&lt;&#x2F;code&gt; and &lt;code&gt;solve()&lt;&#x2F;code&gt; functions) and &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;astral-sh&#x2F;uv&#x2F;blob&#x2F;0.11.7&#x2F;crates&#x2F;uv-resolver&#x2F;src&#x2F;resolver&#x2F;batch_prefetch.rs&quot;&gt;&lt;code&gt;batch_prefetch.rs&lt;&#x2F;code&gt;&lt;&#x2F;a&gt;. After that, the rest of the codebase mostly explains itself.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;further-reading&quot;&gt;Further reading&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;docs.astral.sh&#x2F;uv&#x2F;reference&#x2F;internals&#x2F;resolver&#x2F;&quot;&gt;uv resolver internals&lt;&#x2F;a&gt; — the official deep dive, written by the uv team; the primary source for Section 6&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;nex3.medium.com&#x2F;pubgrub-2fb6470504f&quot;&gt;PubGrub blog post by Natalie Weizenbaum&lt;&#x2F;a&gt; — the original algorithm explanation; very approachable&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;pubgrub-rs-guide.pages.dev&#x2F;internals&#x2F;intro&quot;&gt;pubgrub-rs internals guide&lt;&#x2F;a&gt; — the Rust implementation&#x27;s own documentation&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;astral-sh&#x2F;uv&#x2F;blob&#x2F;0.11.7&#x2F;crates&#x2F;uv-resolver&#x2F;src&#x2F;resolver&#x2F;mod.rs&quot;&gt;uv resolver source: &lt;code&gt;resolver&#x2F;mod.rs&lt;&#x2F;code&gt;&lt;&#x2F;a&gt; — start here if you want to read the resolver code; the &lt;code&gt;resolve()&lt;&#x2F;code&gt; function is the entry point&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;astral-sh&#x2F;uv&#x2F;blob&#x2F;0.11.7&#x2F;crates&#x2F;uv-resolver&#x2F;src&#x2F;resolver&#x2F;batch_prefetch.rs&quot;&gt;uv resolver source: &lt;code&gt;batch_prefetch.rs&lt;&#x2F;code&gt;&lt;&#x2F;a&gt; — the &lt;code&gt;BatchPrefetcher&lt;&#x2F;code&gt; implementation&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;astral-sh&#x2F;uv&#x2F;blob&#x2F;main&#x2F;CONTRIBUTING.md&quot;&gt;uv CONTRIBUTING.md&lt;&#x2F;a&gt; — setup, testing, profiling, snapshot testing&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;tokio.rs&#x2F;&quot;&gt;Tokio async runtime&lt;&#x2F;a&gt; — the async runtime underlying uv&#x27;s concurrent I&#x2F;O&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;docs.rs&#x2F;dashmap&#x2F;latest&#x2F;dashmap&#x2F;&quot;&gt;DashMap&lt;&#x2F;a&gt; — the concurrent hashmap used in &lt;code&gt;InMemoryIndex&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;insta.rs&#x2F;&quot;&gt;insta snapshot testing&lt;&#x2F;a&gt; — the testing library used throughout uv&#x27;s test suite&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</content>
+        
+    </entry>
+</feed>
