@@ -2,7 +2,7 @@
 title = "Stacked PRs go native in GitHub, and what that means for AI-assisted work"
 date = 2026-04-19
 description = "GitHub is bringing stacked pull requests in natively. A look at what changes, what does not, and why the workflow matters more now that AI agents are writing a lot of the diffs."
-draft = true
+draft = false
 [taxonomies]
 tags = ["github", "stacked-prs", "code-review", "ai", "developer-workflow", "gh-stack"]
 categories = ["Engineering"]
