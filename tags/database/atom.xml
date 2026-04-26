@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Noos - Where Thought, Code, and Craft Converge - database</title>
+    <subtitle>Personal blog about programming, technology, and engineering insights. Topics include Rust, DevOps, Linux, and software craftsmanship.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://noos.blog/tags/database/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://noos.blog"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2026-01-06T00:00:00+00:00</updated>
+    <id>https://noos.blog/tags/database/atom.xml</id>
+    <entry xml:lang="en">
+        <title>Exploring PostgreSQL Row-Level Security</title>
+        <published>2026-01-06T00:00:00+00:00</published>
+        <updated>2026-01-06T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/rls/"/>
+        <id>https://noos.blog/posts/rls/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/rls/">&lt;p&gt;I recently needed to implement data isolation for a multi-tenant application. The usual approach—filtering in application code—felt fragile. What if someone forgets to add the filter? What if a new service is added and the pattern isn&#x27;t followed? These questions led me to explore PostgreSQL&#x27;s Row-Level Security (RLS).&lt;&#x2F;p&gt;
+&lt;p&gt;This is what I learned along the way.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;the-problem&quot;&gt;The Problem&lt;&#x2F;h2&gt;
+&lt;p&gt;The application had multiple tenants sharing the same database tables. Each tenant&#x27;s data needed to be completely isolated—users from one tenant shouldn&#x27;t see or modify data from another, even if they somehow bypassed application-level checks.&lt;&#x2F;p&gt;
+&lt;p&gt;The traditional approach would be to add &lt;code&gt;WHERE tenant_id = ?&lt;&#x2F;code&gt; filters everywhere in the application code. But that&#x27;s error-prone. A missed filter in one query, and you have a data leak. I wanted something that would enforce isolation at the database level, regardless of where the query came from.&lt;&#x2F;p&gt;
+&lt;p&gt;That&#x27;s where RLS comes in.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;what-is-rls&quot;&gt;What is RLS?&lt;&#x2F;h2&gt;
+&lt;p&gt;Row-Level Security lets you define policies that control which rows can be returned by queries. These policies run at the database level, so they apply whether the query comes from your application, a direct database connection, or even a third-party tool.&lt;&#x2F;p&gt;
+&lt;p&gt;Think of it as a bouncer for your tables. Even if your application forgets to check credentials, the database won&#x27;t.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;the-implementation&quot;&gt;The Implementation&lt;&#x2F;h2&gt;
+&lt;p&gt;For this example, let&#x27;s say we have a &lt;code&gt;documents&lt;&#x2F;code&gt; table where each document belongs to an &lt;code&gt;owner_id&lt;&#x2F;code&gt;. The goal: users should only see and modify their own documents. (These are example table and column names—adapt to your schema.)&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;enabling-rls&quot;&gt;Enabling RLS&lt;&#x2F;h3&gt;
+&lt;p&gt;The first step is straightforward:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sql&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sql &quot;&gt;&lt;code class=&quot;language-sql&quot; data-lang=&quot;sql&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;ALTER TABLE &lt;&#x2F;span&gt;&lt;span&gt;documents ENABLE ROW LEVEL SECURITY;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Once enabled, RLS blocks all access by default. You need to create policies to allow specific operations.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;creating-policies&quot;&gt;Creating Policies&lt;&#x2F;h3&gt;
+&lt;p&gt;I decided to use a session variable to pass the current user ID. This keeps the policies simple and avoids fragile string matching or role-based approaches.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sql&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sql &quot;&gt;&lt;code class=&quot;language-sql&quot; data-lang=&quot;sql&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;-- Users can only see their own documents
+&lt;&#x2F;span&gt;&lt;span&gt;CREATE POLICY user_documents_select ON documents
+&lt;&#x2F;span&gt;&lt;span&gt;  FOR &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;SELECT
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;USING&lt;&#x2F;span&gt;&lt;span&gt; (owner_id = current_setting(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;myapp.current_user_id&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;)::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;-- Users can only update their own documents
+&lt;&#x2F;span&gt;&lt;span&gt;CREATE POLICY user_documents_update ON documents
+&lt;&#x2F;span&gt;&lt;span&gt;  FOR &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;UPDATE
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;USING&lt;&#x2F;span&gt;&lt;span&gt; (owner_id = current_setting(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;myapp.current_user_id&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;)::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;-- Users can only delete their own documents
+&lt;&#x2F;span&gt;&lt;span&gt;CREATE POLICY user_documents_delete ON documents
+&lt;&#x2F;span&gt;&lt;span&gt;  FOR &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;DELETE
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;USING&lt;&#x2F;span&gt;&lt;span&gt; (owner_id = current_setting(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;myapp.current_user_id&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;)::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;-- Users can only insert documents with their own owner_id
+&lt;&#x2F;span&gt;&lt;span&gt;CREATE POLICY user_documents_insert ON documents
+&lt;&#x2F;span&gt;&lt;span&gt;  FOR &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;INSERT
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;WITH CHECK&lt;&#x2F;span&gt;&lt;span&gt; (owner_id = current_setting(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;myapp.current_user_id&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;)::&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The &lt;code&gt;USING&lt;&#x2F;code&gt; clause controls which rows are visible for SELECT, UPDATE, and DELETE. The &lt;code&gt;WITH CHECK&lt;&#x2F;code&gt; clause ensures new rows respect the policy on INSERT.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;setting-the-session-variable&quot;&gt;Setting the Session Variable&lt;&#x2F;h3&gt;
+&lt;p&gt;The tricky part was ensuring the session variable is set correctly in the application. I ended up setting it at the start of each database connection or transaction:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sql&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-sql &quot;&gt;&lt;code class=&quot;language-sql&quot; data-lang=&quot;sql&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;BEGIN&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;SET&lt;&#x2F;span&gt;&lt;span&gt; LOCAL &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;myapp&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;current_user_id &lt;&#x2F;span&gt;&lt;span&gt;= &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;42&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;-- Example user ID
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;SELECT &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;FROM&lt;&#x2F;span&gt;&lt;span&gt; documents;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;-- Only sees documents where owner_id = 42
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;COMMIT&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;In the application code (Node.js with &lt;code&gt;pg&lt;&#x2F;code&gt;), it looked like:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;js&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-js &quot;&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;await &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;client&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;query&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;SELECT set_config(&amp;#39;myapp.current_user_id&amp;#39;, $1, false)&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, [&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;42&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;]);  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Example user ID
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;rows &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;await &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;client&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;query&lt;&#x2F;span&gt;&lt;span&gt;(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;SELECT * FROM documents&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;);
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;what-surprised-me&quot;&gt;What Surprised Me&lt;&#x2F;h2&gt;
+&lt;h3 id=&quot;the-insert-policy-gotcha&quot;&gt;The INSERT Policy Gotcha&lt;&#x2F;h3&gt;
+&lt;p&gt;Initially, I only created SELECT, UPDATE, and DELETE policies. I assumed INSERT would just work. It didn&#x27;t. Without an INSERT policy with &lt;code&gt;WITH CHECK&lt;&#x2F;code&gt;, users couldn&#x27;t insert rows at all—RLS blocked everything.&lt;&#x2F;p&gt;
+&lt;p&gt;The &lt;code&gt;WITH CHECK&lt;&#x2F;code&gt; clause is crucial for INSERT operations. It ensures that new rows being inserted actually match the policy criteria.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;performance-considerations&quot;&gt;Performance Considerations&lt;&#x2F;h3&gt;
+&lt;p&gt;I was worried about performance. Would RLS policies slow down queries? In my testing, the overhead was minimal for simple policies like &lt;code&gt;owner_id = current_setting(...)&lt;&#x2F;code&gt;. But I can see how complex policies with joins or subqueries could become a bottleneck.&lt;&#x2F;p&gt;
+&lt;p&gt;The key is to keep policies simple and efficient. If you need complex logic, consider materialized views or application-level filters.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;testing-is-critical&quot;&gt;Testing is Critical&lt;&#x2F;h3&gt;
+&lt;p&gt;RLS policies can be subtle. A policy that looks correct might have edge cases. I spent time testing different scenarios:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;What happens if the session variable isn&#x27;t set?&lt;&#x2F;li&gt;
+&lt;li&gt;What if it&#x27;s set to a non-existent user ID?&lt;&#x2F;li&gt;
+&lt;li&gt;What if multiple policies apply to the same operation?&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Testing revealed that forgetting to set the session variable results in users seeing no data (or all data, depending on your policy setup). This is something you need to catch early.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;rls-vs-application-filters&quot;&gt;RLS vs Application Filters&lt;&#x2F;h2&gt;
+&lt;p&gt;I found myself thinking about the trade-offs. RLS centralizes security logic in the database, which is great for consistency. But it also means your security logic lives in the database, which can be harder to version control, test, and reason about compared to application code.&lt;&#x2F;p&gt;
+&lt;p&gt;For this project, I went with RLS for the core isolation requirements. Business-specific filtering still happens in the application layer. It&#x27;s a hybrid approach, but it feels like the right balance.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;looking-back&quot;&gt;Looking Back&lt;&#x2F;h2&gt;
+&lt;p&gt;If I were starting over:&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Start with a single table&lt;&#x2F;strong&gt;: I tried to enable RLS on multiple tables at once. Starting with one table would have made debugging easier.&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Add better error handling&lt;&#x2F;strong&gt;: When the session variable isn&#x27;t set, queries fail silently or return unexpected results. Better error messages would help.&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Document the session variable pattern&lt;&#x2F;strong&gt;: This is now part of our database connection setup, but it wasn&#x27;t obvious at first. Clear documentation would have saved time.&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Test with different connection patterns&lt;&#x2F;strong&gt;: I initially tested with simple queries, but real applications use connection pooling, transactions, and prepared statements. Testing those scenarios earlier would have caught issues sooner.&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;the-bottom-line&quot;&gt;The Bottom Line&lt;&#x2F;h2&gt;
+&lt;p&gt;RLS solved the problem I set out to solve. Data isolation is now enforced at the database level, which gives me confidence that even if application code has bugs, the database won&#x27;t leak data between tenants.&lt;&#x2F;p&gt;
+&lt;p&gt;It&#x27;s not a silver bullet—there are trade-offs, and it requires careful implementation and testing. But for multi-tenant applications where data isolation is critical, RLS is worth exploring.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h3 id=&quot;further-reading&quot;&gt;Further Reading&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;www.postgresql.org&#x2F;docs&#x2F;current&#x2F;ddl-rowsecurity.html&quot;&gt;PostgreSQL RLS Documentation&lt;&#x2F;a&gt; – Official documentation&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;www.postgresql.org&#x2F;docs&#x2F;current&#x2F;sql-createpolicy.html&quot;&gt;RLS Policies&lt;&#x2F;a&gt; – Policy syntax and options&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</content>
+        
+    </entry>
+</feed>

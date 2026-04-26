@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Noos - Where Thought, Code, and Craft Converge - games</title>
+    <subtitle>Personal blog about programming, technology, and engineering insights. Topics include Rust, DevOps, Linux, and software craftsmanship.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://noos.blog/tags/games/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://noos.blog"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2013-09-15T00:00:00+00:00</updated>
+    <id>https://noos.blog/tags/games/atom.xml</id>
+    <entry xml:lang="en">
+        <title>Connecting Dots</title>
+        <published>2013-09-15T00:00:00+00:00</published>
+        <updated>2013-09-15T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/connecting-dots/"/>
+        <id>https://noos.blog/posts/connecting-dots/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/connecting-dots/">&lt;p&gt;While I was fooling around the Play store I found this recently released nice, simple and very addictive game. It&#x27;s called the Dots. The funny thing about this game is that once you get started playing it you won&#x27;t feel bored even it just has to do the same thing over and over again.&lt;&#x2F;p&gt;
+&lt;p&gt;The experience that I felt was somewhat different from other games I have played before (but this could be only me). I think the main psychological factor that keeps me in the game is its simplicity and the options you get to boost your score and the opportunity you get to use those options. So there should be also a bit of a planning involved.&lt;&#x2F;p&gt;
+&lt;p&gt;Talking about the game basics there are two game mods &quot;Time mode&quot; and &quot;Moves mode&quot;. In time mode there&#x27;s a timer which runs for 60 seconds for a single round, so all your connecting skills should be used in this time frame. And in moves mode you&#x27;ll get 30 moves to scream at in a round. I usually go with the Time mode because it is fun and challenging.&lt;&#x2F;p&gt;
+&lt;p&gt;Once you filled your bucket with enough earned dots you can go ahead and acquire one or more above mentioned options. They call these options as Power Ups.&lt;&#x2F;p&gt;
+&lt;p&gt;Here I will list those Power Ups&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Time Stops: With this Power Up you can hold off your timer for 5 seconds and it requires 1000 dots for 5 tryouts. It&#x27;s a pretty neat Power Up by the way. (In moves mode you&#x27;ll get extra five moves)&lt;&#x2F;li&gt;
+&lt;li&gt;Shrinkers: This Power Up just shrinks any dot from the board. You just have to double tap on a dot. It requires 500 dots for five tryouts and can be used only once in a round.&lt;&#x2F;li&gt;
+&lt;li&gt;Expanders: This Power Up I haven&#x27;t used yet. As described it removes all the same color dots. It requires 5000 dots for five tryouts. This Power Up will definitely come in handy.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;That&#x27;s pretty much it about this beautiful game. If you are bored or trying to eat up some free time this game will certainly do the job for you.&lt;&#x2F;p&gt;
+&lt;p&gt;So here&#x27;s the Play store &lt;a href=&quot;https:&#x2F;&#x2F;play.google.com&#x2F;store&#x2F;apps&#x2F;details?id=com.nerdyoctopus.gamedots&quot;&gt;URL&lt;&#x2F;a&gt; give it a try&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;UPDATE&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;I noticed something new in the game&#x27;s About section. Actually it was already there but I wasn&#x27;t so curious to check it out.
+There are few sections, most of them has quotes of wisdom by an admired person.  But one of them has this funny little dots of all colors and you can tap on them, which will eventually makes a unique sound for each dot.&lt;&#x2F;p&gt;
+&lt;img src=&quot;&#x2F;public&#x2F;images&#x2F;dots_screenshot_2013-09-15-22-32-05.png&quot; alt=&quot;img&quot; class=&quot;inline&quot;&#x2F;&gt;
+&lt;img src=&quot;&#x2F;public&#x2F;images&#x2F;dots_screenshot_2013-09-15-22-32-19.png&quot; alt=&quot;img&quot; class=&quot;inline&quot;&#x2F;&gt;
+</content>
+        
+    </entry>
+</feed>
