@@ -2,7 +2,7 @@
 title = "When nothing feels fun any more"
 date = 2026-04-26
 description = "On the growing emptiness toward hobbies and joy, and what might be causing it. Not a solution post, just observations from someone who feels it too."
-draft = true
+draft = false
 [taxonomies]
 tags = ["reflection", "mental-health", "tech-culture", "attention"]
 categories = ["Personal"]
