@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Noos - Where Thought, Code, and Craft Converge - ai</title>
+    <subtitle>Personal blog about programming, technology, and engineering insights. Topics include Rust, DevOps, Linux, and software craftsmanship.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://noos.blog/tags/ai/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://noos.blog"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2026-04-19T00:00:00+00:00</updated>
+    <id>https://noos.blog/tags/ai/atom.xml</id>
+    <entry xml:lang="en">
+        <title>Stacked PRs go native in GitHub, and what that means for AI-assisted work</title>
+        <published>2026-04-19T00:00:00+00:00</published>
+        <updated>2026-04-19T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/stacked-prs-go-native-and-the-ai-angle/"/>
+        <id>https://noos.blog/posts/stacked-prs-go-native-and-the-ai-angle/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/stacked-prs-go-native-and-the-ai-angle/">&lt;p&gt;GitHub announced &lt;a href=&quot;https:&#x2F;&#x2F;github.github.com&#x2F;gh-stack&quot;&gt;native Stacked PRs&lt;&#x2F;a&gt;, still in private preview. I wanted to write about it for two reasons. First, it bakes in a workflow some of us have been doing for a while, either manually or via third-party tools, mostly to keep PRs small enough that reviewers actually read them. Second, it lands at a moment when AI agents are producing more of the diffs, and the gap between &quot;diff size&quot; and &quot;what a human can review well&quot; is getting wider every month.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;what-a-stack-is-quickly&quot;&gt;What a stack is, quickly&lt;&#x2F;h2&gt;
+&lt;p&gt;A stack is a chain of pull requests in the same repo where each PR targets the branch of the PR below it. Instead of one giant PR that touches the database layer, the API, and the UI, you get three smaller ones that build on each other:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;main
+&lt;&#x2F;span&gt;&lt;span&gt; ↑
+&lt;&#x2F;span&gt;&lt;span&gt; PR #1: auth-layer
+&lt;&#x2F;span&gt;&lt;span&gt; ↑
+&lt;&#x2F;span&gt;&lt;span&gt; PR #2: api-endpoints
+&lt;&#x2F;span&gt;&lt;span&gt; ↑
+&lt;&#x2F;span&gt;&lt;span&gt; PR #3: frontend
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Each layer is reviewed on its own. When the bottom is ready you can merge the bottom couple, or all of them at once, and the rest auto-rebase onto the new base. That auto-rebase is one of the things that makes a stack worth the trouble; doing it by hand across five branches is the part that always made me give up before.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;what-is-actually-new&quot;&gt;What is actually new&lt;&#x2F;h2&gt;
+&lt;p&gt;Stacking as a workflow is not new. &lt;a href=&quot;https:&#x2F;&#x2F;graphite.dev&#x2F;stacking&quot;&gt;Graphite&lt;&#x2F;a&gt; has built a polished CLI (&lt;code&gt;gt&lt;&#x2F;code&gt;), a VS Code extension, a PR inbox, and an AI review product around it. Meta&#x27;s &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;ezyang&#x2F;ghstack&quot;&gt;&lt;code&gt;ghstack&lt;&#x2F;code&gt;&lt;&#x2F;a&gt; by Edward Yang has been around for years and powers a lot of the PyTorch workflow. There is also &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;ejoffe&#x2F;spr&quot;&gt;&lt;code&gt;spr&lt;&#x2F;code&gt;&lt;&#x2F;a&gt;, and historically Phabricator did this before Meta sunset it.&lt;&#x2F;p&gt;
+&lt;p&gt;What GitHub adds, going by the &lt;a href=&quot;https:&#x2F;&#x2F;github.github.com&#x2F;gh-stack&#x2F;?ref=console.dev&quot;&gt;overview docs&lt;&#x2F;a&gt;, is the bits that previous tools could only approximate from the outside:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;A stack map in the PR header so reviewers can navigate between layers.&lt;&#x2F;li&gt;
+&lt;li&gt;Branch protection rules enforced against the &lt;strong&gt;final target branch&lt;&#x2F;strong&gt; (usually &lt;code&gt;main&lt;&#x2F;code&gt;), not just the immediate parent branch of each PR.&lt;&#x2F;li&gt;
+&lt;li&gt;CI runs each PR as if it were targeting the final branch, so green checks actually mean something.&lt;&#x2F;li&gt;
+&lt;li&gt;One-click merge of multiple layers, with automatic rebase of the rest of the stack afterwards.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;The &quot;branch protection against the final target&quot; point is the one that quietly matters. With third-party tools, your PR #3 in a stack technically targets PR #2&#x27;s branch, which often does not have the same protection rules as &lt;code&gt;main&lt;&#x2F;code&gt;. Teams used to work around this with naming conventions, bots, or just hoping reviewers paid attention. Native handling closes that gap.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;trying-the-cli-right-now&quot;&gt;Trying the CLI right now&lt;&#x2F;h2&gt;
+&lt;p&gt;The feature is in private preview as of April 2026, and you need to be allowlisted on a repo for the server-side bits (&lt;code&gt;submit&lt;&#x2F;code&gt;, &lt;code&gt;merge&lt;&#x2F;code&gt;, the stack map UI) to work. But the CLI itself is publicly installable. I poked at it a bit:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; gh extension install github&#x2F;gh-stack
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; gh stack&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --help
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Create,&lt;&#x2F;span&gt;&lt;span&gt; navigate, and manage stacks of branches and pull requests.
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Usage:
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;gh&lt;&#x2F;span&gt;&lt;span&gt; stack &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;[&lt;&#x2F;span&gt;&lt;span&gt;command&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;]
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Available&lt;&#x2F;span&gt;&lt;span&gt; Commands:
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;add&lt;&#x2F;span&gt;&lt;span&gt;         Add a new branch on top of the current stack
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;alias       &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;Create &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;a shell alias for gh stack
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;bottom&lt;&#x2F;span&gt;&lt;span&gt;      Check out the bottom branch of the stack
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;checkout&lt;&#x2F;span&gt;&lt;span&gt;    Checkout a stack from a PR number or branch name
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;down&lt;&#x2F;span&gt;&lt;span&gt;        Check out a branch further down in the stack
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;feedback&lt;&#x2F;span&gt;&lt;span&gt;    Submit feedback for gh-stack
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;init&lt;&#x2F;span&gt;&lt;span&gt;        Initialize a new stack
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;merge&lt;&#x2F;span&gt;&lt;span&gt;       Merge a stack of PRs
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;push&lt;&#x2F;span&gt;&lt;span&gt;        Push all branches in the current stack to the remote
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;rebase&lt;&#x2F;span&gt;&lt;span&gt;      Rebase a stack of branches
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;submit&lt;&#x2F;span&gt;&lt;span&gt;      Create a stack of PRs on GitHub
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sync&lt;&#x2F;span&gt;&lt;span&gt;        Sync the current stack with the remote
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;top&lt;&#x2F;span&gt;&lt;span&gt;         Check out the top branch of the stack
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;unstack&lt;&#x2F;span&gt;&lt;span&gt;     Delete a stack locally and on GitHub
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The local workflow works without any preview access. In a throwaway repo:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; git init&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -q &lt;&#x2F;span&gt;&lt;span&gt;&amp;amp;&amp;amp; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span&gt; commit&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --allow-empty -m &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;init&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -q
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; gh stack init test-stack-bottom
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;✓&lt;&#x2F;span&gt;&lt;span&gt; Creating stack with trunk main and branch test-stack-bottom
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Switched&lt;&#x2F;span&gt;&lt;span&gt; to branch test-stack-bottom
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;To&lt;&#x2F;span&gt;&lt;span&gt; add a new layer to your stack, run `&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;gh&lt;&#x2F;span&gt;&lt;span&gt; stack add`
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;When&lt;&#x2F;span&gt;&lt;span&gt; you&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;re ready to push to GitHub and open a stack of PRs, run `gh stack submit`
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;$ echo &amp;quot;auth&amp;quot; &amp;gt; auth.txt &amp;amp;&amp;amp; git add . &amp;amp;&amp;amp; git commit -m &amp;quot;auth layer&amp;quot; -q
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;$ gh stack add api-layer
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;✓ Created and checked out branch &amp;quot;api-layer&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;$ git log --oneline --all --decorate
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;463808f (HEAD -&amp;gt; api-layer, test-stack-bottom) auth layer
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;2b6a4ea (main) init
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;So you can install it, play with &lt;code&gt;init&lt;&#x2F;code&gt;, &lt;code&gt;add&lt;&#x2F;code&gt;, &lt;code&gt;bottom&lt;&#x2F;code&gt;, &lt;code&gt;top&lt;&#x2F;code&gt;, &lt;code&gt;down&lt;&#x2F;code&gt;, &lt;code&gt;up&lt;&#x2F;code&gt;, &lt;code&gt;rebase&lt;&#x2F;code&gt;, &lt;code&gt;unstack&lt;&#x2F;code&gt; locally today. The bits that need GitHub-side support are the actual &lt;code&gt;submit&lt;&#x2F;code&gt; and &lt;code&gt;merge&lt;&#x2F;code&gt;, and that part is gated by the &lt;a href=&quot;https:&#x2F;&#x2F;github.github.com&#x2F;gh-stack&#x2F;?ref=console.dev&quot;&gt;waitlist&lt;&#x2F;a&gt;. Prerequisites are &lt;code&gt;gh&lt;&#x2F;code&gt; v2.0+ and Git 2.20+ (&lt;a href=&quot;https:&#x2F;&#x2F;github.github.com&#x2F;gh-stack&#x2F;getting-started&#x2F;quick-start&#x2F;&quot;&gt;Quick Start&lt;&#x2F;a&gt;), both pretty undemanding.&lt;&#x2F;p&gt;
+&lt;p&gt;There is also a &lt;code&gt;gh stack alias&lt;&#x2F;code&gt; command that wires up &lt;code&gt;gs&lt;&#x2F;code&gt; as a shorter alias, which I will probably end up using because typing &lt;code&gt;gh stack add&lt;&#x2F;code&gt; thirty times a day gets old.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-ai-assisted-angle&quot;&gt;The AI-assisted angle&lt;&#x2F;h2&gt;
+&lt;p&gt;Here is the part I actually wanted to think out loud about.&lt;&#x2F;p&gt;
+&lt;p&gt;If you have reviewed a PR opened by an AI agent (Cursor, Codex, Claude Code, Copilot, or any of the cloud agents), you know the failure mode. The agent gets asked to &quot;add user profiles&quot;, and twenty minutes later there is a PR with a migration, a schema, a service layer, three endpoints, two React components, a settings page, and seventeen unit tests. All in one or two commits. Reviewing that with any rigour is an afternoon&#x27;s work, and the path of least resistance is to skim, push back on a couple of obvious things, and merge.&lt;&#x2F;p&gt;
+&lt;p&gt;Stacked PRs are a structural answer to that problem. If the agent (or the human supervising it) is encouraged to land the migration first, then the service, then the endpoints, then the UI, each layer is something a person can actually read in one sitting. Conflicts get smaller. Reverts get surgical. The cost of &quot;actually let&#x27;s redo the data model&quot; drops from &quot;throw away the whole PR&quot; to &quot;throw away the bottom layer and rebase&quot;.&lt;&#x2F;p&gt;
+&lt;p&gt;GitHub seems to know this is the angle. The docs include an AI agent integration step:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;npx&lt;&#x2F;span&gt;&lt;span&gt; skills add github&#x2F;gh-stack
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;That installs a skill telling the agent how to author and manage stacks. I have not tried it yet (no preview access), so I cannot tell you how good it is in practice. The bet is interesting though: instead of teaching humans to slice their AI-generated work after the fact, teach the agent to slice its own work and produce a stack from the start.&lt;&#x2F;p&gt;
+&lt;p&gt;A few honest reservations:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;AI agents can mechanically split a diff (one file per commit, one logical component per commit). They are still not great at deciding &lt;em&gt;where&lt;&#x2F;em&gt; the right review boundaries are. That is exactly the kind of architectural judgment they tend to miss. A stack of five PRs split in the wrong places is arguably worse than one large PR, because reviewers context-switch between layers without the layering actually helping them.&lt;&#x2F;li&gt;
+&lt;li&gt;A stack is only as solid as its bottom layer. If the data model in PR #1 is wrong, every later PR is built on sand. AI-authored stacks raise that risk because the agent often does not pause long enough to question the foundation.&lt;&#x2F;li&gt;
+&lt;li&gt;Merge queues, codeowners, and stacks together are still a frontier. I expect most of the next round of papercuts will be in that intersection.&lt;&#x2F;li&gt;
+&lt;li&gt;This is GitHub&#x27;s native version, but there are mature alternatives. If your team already pays for Graphite, the stack-management half of what they sell is now duplicated in GitHub itself, but the review queue, dashboards, and Diamond AI review are not. Whether you switch is more of a procurement question than a tooling question.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;what-i-am-going-to-actually-try&quot;&gt;What I am going to actually try&lt;&#x2F;h2&gt;
+&lt;p&gt;Some small experiments I have lined up once I get preview access:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Use &lt;code&gt;gh stack init&lt;&#x2F;code&gt; for any change that touches more than one logical layer (data, service, UI). One layer per PR.&lt;&#x2F;li&gt;
+&lt;li&gt;For AI-generated work, ask the agent to produce a plan first, treat each plan step as a layer, and only let it write code one layer at a time.&lt;&#x2F;li&gt;
+&lt;li&gt;Test the merge-multiple-layers-at-once flow on a low-stakes change before relying on it for anything serious.&lt;&#x2F;li&gt;
+&lt;li&gt;See whether the GitHub skill (&lt;code&gt;npx skills add github&#x2F;gh-stack&lt;&#x2F;code&gt;) actually gets the agent to author stacks unprompted, or whether it still needs hand-holding.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;If any of these turn out interesting, I will come back with an update.&lt;&#x2F;p&gt;
+&lt;p&gt;For now the &lt;a href=&quot;https:&#x2F;&#x2F;github.github.com&#x2F;gh-stack&quot;&gt;overview&lt;&#x2F;a&gt; and the &lt;a href=&quot;https:&#x2F;&#x2F;github.github.com&#x2F;gh-stack&#x2F;getting-started&#x2F;quick-start&#x2F;&quot;&gt;Quick Start&lt;&#x2F;a&gt; are the two pages worth reading. The waitlist is on the same page.&lt;&#x2F;p&gt;
+&lt;p&gt;Let&#x27;s see how it goes once it is open.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>What Happens When Prototypes Try to Go to Production</title>
+        <published>2025-11-02T00:00:00+00:00</published>
+        <updated>2025-11-02T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/when-prototypes-become-production/"/>
+        <id>https://noos.blog/posts/when-prototypes-become-production/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/when-prototypes-become-production/">&lt;h3 id=&quot;the-conversation&quot;&gt;The Conversation&lt;&#x2F;h3&gt;
+&lt;p&gt;You&#x27;ve built a production-ready AI system with proper architecture, traceability, and acceptable latency. Then someone suggests &quot;why not just use a prompt?&quot;&lt;&#x2F;p&gt;
+&lt;p&gt;You don&#x27;t need to explain why that won&#x27;t work. The industry has already documented what happens when prototypes become production.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;why-not-just-give-an-opinion&quot;&gt;Why Not Just Give an Opinion?&lt;&#x2F;h3&gt;
+&lt;p&gt;There&#x27;s a temptation to push back when surface-level decisions ignore architecture, scalability, edge cases, and maintainability. But opinions based on current trends or individual preferences don&#x27;t help. They just add noise.&lt;&#x2F;p&gt;
+&lt;p&gt;The current landscape is filled with quick takes and hot takes. Everyone has an opinion, often shaped more by what&#x27;s trending than by systematic thinking. Narcissistic individualism—the idea that one person&#x27;s perspective matters more than collective experience—creates an environment where strong opinions win even when they&#x27;re wrong.&lt;&#x2F;p&gt;
+&lt;p&gt;The problem isn&#x27;t trends themselves. It&#x27;s choosing tools or approaches because they&#x27;re trending, rather than because they solve real problems. The distinction matters.&lt;&#x2F;p&gt;
+&lt;p&gt;Research and data exist. Patterns repeat. The industry has documented what works and what doesn&#x27;t. Why add another opinion when we can point to what&#x27;s already been proven?&lt;&#x2F;p&gt;
+&lt;p&gt;That&#x27;s why this isn&#x27;t about pushing back with opinions. It&#x27;s about pointing to what the industry already knows: prototypes that skip architecture rarely become production systems. The data is public. The patterns are clear.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;the-statistics&quot;&gt;The Statistics&lt;&#x2F;h3&gt;
+&lt;p&gt;According to recent research, &lt;strong&gt;87% of machine learning models never make it past the prototype stage&lt;&#x2F;strong&gt;. Reasons include technical debt, edge cases that break everything, scale issues, and maintainability collapses.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;why-just-a-prompt-rarely-works&quot;&gt;Why &quot;Just a Prompt&quot; Rarely Works&lt;&#x2F;h3&gt;
+&lt;p&gt;When you build a direct LLM solution, you&#x27;re coding logic into prompts. This creates brittleness—small changes require rewriting entire prompts. It&#x27;s impossible to debug—you can&#x27;t see intermediate steps. And there&#x27;s no observability—production needs monitoring, logging, and metrics that a single prompt can&#x27;t provide.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;what-actually-ships&quot;&gt;What Actually Ships&lt;&#x2F;h3&gt;
+&lt;p&gt;AI systems that reach production are rarely &quot;just a prompt.&quot; They have structured workflows, error handling, observability, modularity, and scalability. These frameworks and architectures exist because production systems need structure—not because they&#x27;re trendy, but because they solve real problems that prototypes ignore.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;the-numbers-don-t-lie&quot;&gt;The Numbers Don&#x27;t Lie&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;www.gartner.com&#x2F;en&#x2F;articles&#x2F;how-to-make-your-ai-projects-production-ready&quot;&gt;Gartner&lt;&#x2F;a&gt;: Over 80% of organizations will struggle to operationalize AI systems by 2026&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;mitsloan.mit.edu&#x2F;ideas-made-to-matter&#x2F;how-companies-are-putting-ai-work&quot;&gt;MIT Sloan&lt;&#x2F;a&gt;: 85% experiment with AI, but only 37% deploy at scale&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;hbr.org&#x2F;2023&#x2F;04&#x2F;how-to-avoid-the-ai-maturity-problem&quot;&gt;Harvard Business Review&lt;&#x2F;a&gt;: &quot;Failure to move beyond proof of concept&quot; is the primary cause of AI failures&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;strong&gt;Architecture matters.&lt;&#x2F;strong&gt; Prototypes skip it. Production requires it.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;the-hard-truth&quot;&gt;The Hard Truth&lt;&#x2F;h3&gt;
+&lt;p&gt;There&#x27;s a mismatch between demos and production. Prototypes optimize for speed. Production optimizes for reliability, scalability, and maintainability.&lt;&#x2F;p&gt;
+&lt;p&gt;The question isn&#x27;t whether your prototype works. It&#x27;s whether it works when you have 100x more users, need unanticipated features, or an edge case breaks everything.&lt;&#x2F;p&gt;
+&lt;p&gt;Prototypes optimize for the first week. Production systems need to survive years.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;&lt;em&gt;Sometimes the most important lessons are the ones you learn before you make the mistake.&lt;&#x2F;em&gt;&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Covers on Autopilot — Why I Let AI Paint the Edges</title>
+        <published>2025-10-30T00:00:00+00:00</published>
+        <updated>2025-10-30T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/ai-covers-on-autopilot/"/>
+        <id>https://noos.blog/posts/ai-covers-on-autopilot/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/ai-covers-on-autopilot/">&lt;p&gt;There are jobs you can do by hand for years and never notice the drag. For me it was cover images. Each new post: open a design tool, stare at a blank canvas, export a PNG, wire it to the post. Not hard, just enough friction to make publishing feel heavier than it should.&lt;&#x2F;p&gt;
+&lt;p&gt;This is a short note about shaving that yak with a tiny toolchain: a context‑aware prompt, an image model, and some guardrails in CI. No heroics—just removing a repeated decision so the writing flows.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;why-automate-covers&quot;&gt;Why automate covers&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Consistency: 1200×630 every time. No more odd crops in link unfurls.&lt;&#x2F;li&gt;
+&lt;li&gt;Momentum: publishing shouldn’t wait for “design time”.&lt;&#x2F;li&gt;
+&lt;li&gt;Style: light background, a single accent, abstract shapes. Enough personality, zero fuss.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Over time the manual step was turning into a speed bump. That was the whole motivation.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-bumps-along-the-road-the-important-part&quot;&gt;The bumps along the road (the important part)&lt;&#x2F;h2&gt;
+&lt;p&gt;I didn’t get it right on the first try. Here are the lessons that actually mattered.&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;Model and limits&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;At first I used Stable Horde for SDXL. It’s great and free, but CI doesn’t love queues. I kept seeing 400&#x2F;429s in the logs (invalid payload or rate‑limited). Switched to Replicate with an API token; still got rate limits sometimes, but at least the errors were predictable.&lt;&#x2F;p&gt;
+&lt;ol start=&quot;2&quot;&gt;
+&lt;li&gt;Exact sizing&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;SDXL likes multiples of 64. I request 1024×576, then downscale to 1200×630 with Sharp. Crisp edges, correct aspect for social cards.&lt;&#x2F;p&gt;
+&lt;ol start=&quot;3&quot;&gt;
+&lt;li&gt;Slugs vs. filenames&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;My fallback logic assumed &lt;code&gt;page.slug&lt;&#x2F;code&gt; exactly matched the filename. It didn’t—some posts derive the slug from the permalink. I fixed the template to compute &lt;code&gt;slug-from-permalink&lt;&#x2F;code&gt; and look for &lt;code&gt;&#x2F;images&#x2F;covers&#x2F;{slug}.png&lt;&#x2F;code&gt;. Simple, but that bug cost the most time.&lt;&#x2F;p&gt;
+&lt;ol start=&quot;4&quot;&gt;
+&lt;li&gt;“Why is it regenerating?”&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;CI starts from a clean checkout. If covers aren’t in Git, they disappear each run. I added a cache step that restores &lt;code&gt;static&#x2F;images&#x2F;covers&lt;&#x2F;code&gt; keyed to &lt;code&gt;content&#x2F;posts&#x2F;**&#x2F;*.md&lt;&#x2F;code&gt;. Now the generator truly skips when a PNG already exists.&lt;&#x2F;p&gt;
+&lt;ol start=&quot;5&quot;&gt;
+&lt;li&gt;Context in prompts&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;Pure tags produced vague images. I added a little context: title + ~240 chars of summary (description if present, otherwise a clean slice of the body). Still abstract, just more grounded.&lt;&#x2F;p&gt;
+&lt;ol start=&quot;6&quot;&gt;
+&lt;li&gt;One‑time resets&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;Sometimes you do want a full refresh. There’s a manual “Run workflow” input (&lt;code&gt;force_regenerate=true&lt;&#x2F;code&gt;) that bypasses the “file exists” check once. Good for style changes or a model upgrade.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;how-we-decided-on-ai-at-all&quot;&gt;How we decided on AI at all&lt;&#x2F;h2&gt;
+&lt;p&gt;I tried three options in order:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Hand‑made banners (historically): high quality, low velocity.&lt;&#x2F;li&gt;
+&lt;li&gt;Programmatic shapes: reliable, but too repetitive.&lt;&#x2F;li&gt;
+&lt;li&gt;AI with guardrails: abstract, brand‑aware, hands‑off once it’s set.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;The third option hit the balance. The prompt constrains style; the model supplies variation. It’s not “art direction”, but it serves the post—and that’s the only job here.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-pipeline-nuts-and-bolts&quot;&gt;The pipeline (nuts and bolts)&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Script: &lt;code&gt;scripts&#x2F;generate-ai-covers.mjs&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Scans &lt;code&gt;content&#x2F;posts&#x2F;*.md&lt;&#x2F;code&gt;, pulls &lt;code&gt;tags&lt;&#x2F;code&gt;, &lt;code&gt;title&lt;&#x2F;code&gt;, and a short summary.&lt;&#x2F;li&gt;
+&lt;li&gt;Prompt (simplified):
+&lt;blockquote&gt;
+&lt;p&gt;Abstract, minimal illustration. Tags: {tags}. Title: {title}. Context: {summary}. Vector‑like, clean geometric shapes, high contrast, brand accent #d64a48 on #f6f7f4. No text.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;Calls Replicate SDXL (model version from a secret), requests 1024×576, saves 1200×630 as &lt;code&gt;static&#x2F;images&#x2F;covers&#x2F;{slug}.png&lt;&#x2F;code&gt;.&lt;&#x2F;li&gt;
+&lt;li&gt;Skips generation if the PNG already exists (unless &lt;code&gt;FORCE_REGENERATE_COVERS=1&lt;&#x2F;code&gt;).&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;Template: &lt;code&gt;themes&#x2F;radion&#x2F;templates&#x2F;page.html&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;If a post doesn’t specify a cover, it tries &lt;code&gt;&#x2F;images&#x2F;covers&#x2F;{slug-from-permalink}.png&lt;&#x2F;code&gt; and hides the figure if missing.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;CI: &lt;code&gt;.github&#x2F;workflows&#x2F;deploy.yml&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Restores a covers cache before generation; saves it after.&lt;&#x2F;li&gt;
+&lt;li&gt;Optional manual input &lt;code&gt;force_regenerate&lt;&#x2F;code&gt; for a one‑time refresh.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;what-github-actions-brings&quot;&gt;What GitHub Actions brings&lt;&#x2F;h2&gt;
+&lt;p&gt;The boring kind of power: reliability.&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Every run restores the previous covers, generates only what’s missing, and embeds without a front‑matter tweak.&lt;&#x2F;li&gt;
+&lt;li&gt;When rate‑limited, the post still publishes—missing images pick up on the next run.&lt;&#x2F;li&gt;
+&lt;li&gt;A small verification stage lists the covers in &lt;code&gt;public&#x2F;images&#x2F;covers&lt;&#x2F;code&gt; and checks that posts actually reference them.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;closing-the-loop&quot;&gt;Closing the loop&lt;&#x2F;h2&gt;
+&lt;p&gt;This wasn’t about making the site “AI‑powered”. It was about removing a tiny friction point that kept breaking the flow. The rule of thumb I keep coming back to: automate anything that steals attention from writing. Covers were stealing attention. Now they aren’t.&lt;&#x2F;p&gt;
+&lt;p&gt;And if the art ever needs a new feel? I flip the model or tweak the prompt, hit “Run workflow”, and let the pipeline repaint the edges while I get back to words.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+</feed>

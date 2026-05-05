@@ -1,0 +1,629 @@
+<!doctype html>
+<html lang="en" data-theme="toggle">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <!-- Enable responsiveness on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;rls&#x2F;" />
+    
+    <!-- Robots meta -->
+    
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    
+
+    
+      
+        <meta name="description" content="PostgreSQL Row-Level Security (RLS) implementation guide for multi-tenant applications. Real-world lessons, surprises, and best practices for database security." />
+        <meta property="og:description" content="PostgreSQL Row-Level Security (RLS) implementation guide for multi-tenant applications. Real-world lessons, surprises, and best practices for database security." />
+        <meta property="twitter:description" content="PostgreSQL Row-Level Security (RLS) implementation guide for multi-tenant applications. Real-world lessons, surprises, and best practices for database security." />
+      
+    
+
+    <!-- Title -->
+    
+      
+    
+    <title>
+    
+    Exploring PostgreSQL Row-Level Security | Noos - Where Thought, Code, and Craft Converge
+    
+</title>
+    
+    <!-- Author -->
+    
+    <meta name="author" content="Oshadha G" />
+    
+    
+    <!-- Article specific meta tags -->
+    
+    
+    <meta property="article:published_time" content="2026-01-06T00:00:00+00:00" />
+    
+    
+    
+    
+    <meta property="article:tag" content="postgresql" />
+    
+    <meta property="article:tag" content="rls" />
+    
+    <meta property="article:tag" content="security" />
+    
+    <meta property="article:tag" content="database" />
+    
+    
+    
+    
+    <meta property="article:section" content="Database" />
+    
+    
+    
+
+    <!-- Additional Facebook Meta Tags -->
+    <meta property="og:site_name" content="Noos - Where Thought, Code, and Craft Converge" />
+    <meta
+      property="og:url"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;rls&#x2F;"
+    />
+    <meta
+      property="og:type"
+      content="article"
+    />
+    <meta property="og:title" content="Exploring PostgreSQL Row-Level Security | Noos - Where Thought, Code, and Craft Converge" />
+
+    <!-- Additional Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      property="twitter:url"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;rls&#x2F;"
+    />
+    <meta name="twitter:title" content="Exploring PostgreSQL Row-Level Security | Noos - Where Thought, Code, and Craft Converge" />
+
+    <!-- Cover images -->
+           
+           
+           
+           
+      
+      
+      
+      
+      
+    
+
+    <meta
+      property="og:image"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;rls.png"
+    />
+
+    <meta
+      name="twitter:image"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;rls.png"
+    />
+
+
+
+    <!-- Favicons -->
+           
+           <!-- PNG + ICO (some clients ignore SVG favicons) -->
+           <link
+             rel="icon"
+             type="image/png"
+             sizes="96x96"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/favicon-96x96.png?v=3"
+           />
+           <link
+             rel="apple-touch-icon"
+             sizes="180x180"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/apple-touch-icon.png?v=3"
+           />
+           <link
+             rel="shortcut icon"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/favicon.ico?v=3"
+           />
+           
+
+    <!-- RSS Feed -->
+    
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      title="RSS"
+      href="https://noos.blog/atom.xml"
+    />
+    
+
+    <!-- Load Styles -->
+    
+      <link
+        rel="stylesheet"
+        href="https://noos.blog/site.css"
+      />
+    
+
+    <!-- Load Fonts -->
+    
+
+  
+
+
+
+
+
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+  
+
+
+
+<!-- Forcing Font -->
+<style>
+body {
+  font-family:
+    "JetBrains Mono", Menlo, Monaco, Lucida Console, Liberation Mono,
+    DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New,
+    monospace, serif !important;
+}
+</style>
+
+
+    <!-- Pass Theme Preference as Data Attribute -->
+    <script src="https://noos.blog/js/init-theme.js"></script>
+
+    <!-- Reference return to click position script -->
+    <script defer src="https://noos.blog/js/reference-return.js"></script>
+
+    <!-- Additional scripts -->
+    
+      
+        <script defer src="https://noos.blog/js/codeblock.js"></script>
+      
+            
+              <script defer src="https://noos.blog/js/toggle-theme.js"></script>
+            
+      
+<!-- MathJax script for rendering LaTeX math equations -->
+<script src="https://noos.blog/js/mathjax-config.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+  async
+></script>
+
+
+      
+<script type="text/javascript" src="https://noos.blog/elasticlunr.min.js"></script>
+<script type="text/javascript" src="https://noos.blog/js/search.js"></script>
+
+    
+    
+    <!-- Structured Data (JSON-LD) -->
+    
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Exploring PostgreSQL Row-Level Security",
+  
+  "description": "PostgreSQL Row-Level Security (RLS) implementation guide for multi-tenant applications. Real-world lessons, surprises, and best practices for database security.",
+  
+  
+  "datePublished": "2026-01-06T00:00:00+00:00",
+  
+  
+  "author": {
+    "@type": "Person",
+    "name": "Oshadha G"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Noos - Where Thought, Code, and Craft Converge",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https:&#x2F;&#x2F;noos.blog/icons/favicon/web-app-manifest-512x512.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;rls&#x2F;"
+  },
+  "url": "https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;rls&#x2F;",
+  
+  "keywords": "postgresql, rls, security, database",
+  
+  "inLanguage": "en"
+}
+</script>
+
+
+    
+    <!-- Google Analytics (GA4) -->
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-54YK7R04LX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-54YK7R04LX', {
+        'anonymize_ip': true,
+        'respect_dnt': true
+      });
+    </script>
+    
+  </head>
+
+  <!-- Body element (contents of the page) -->
+  <body class="hack main container">
+    
+  
+    
+    
+      
+  
+  <section class="nav-header">
+    <nav
+      itemscope
+      itemtype="http://schema.org/SiteNavigationElement"
+      class="navbar"
+    >
+      <section class="nav-links">
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/"
+        >
+          <span itemprop="name">Home</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/about"
+        >
+          <span itemprop="name">About</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/categories"
+        >
+          <span itemprop="name">Categories</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/tags"
+        >
+          <span itemprop="name">Tags</span>
+        </a>
+        
+      </section>
+    </nav>
+    <aside class="user-actions-container">
+      
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        class="search-icon"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+        />
+      </svg>
+      <input type="text" id="search" placeholder="Search..." />
+      <section class="search-results" aria-live="polite">
+        <article class="search-results__items" role="list"></article>
+      </section>
+       
+      <a id="dark-mode-toggle" href="#">
+        <img
+          src="https://noos.blog/icons/sun.svg"
+          id="sun-icon"
+          style="filter: invert(1)"
+          alt="Light mode"
+        />
+        <img
+          src="https://noos.blog/icons/moon.svg"
+          id="moon-icon"
+          alt="Dark mode"
+        />
+      </a>
+       
+      <a
+        href="https://noos.blog/atom.xml"
+        class="feed-icon"
+        rel="noopener noreferrer"
+      >
+        <img
+          src="https://noos.blog/icons/rss.svg"
+          id="rss-icon"
+          alt="RSS feed"
+          class="social-icon"
+        />
+      </a>
+       
+    </aside>
+  </section>
+  
+
+    
+
+
+    <main>
+      
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">Exploring PostgreSQL Row-Level Security</h1>
+        
+        <data class="muted">
+    <svg class="icon i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <data>5 minute read</data>
+    
+    
+    <svg class="icon i-calendar" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <!-- Calendar outline -->
+        <rect x="3" y="6" width="26" height="23" rx="2" ry="2"/>
+        <!-- Binding rings -->
+        <line x1="10" y1="3" x2="10" y2="9"/>
+        <line x1="22" y1="3" x2="22" y2="9"/>
+        <!-- Top separator -->
+        <line x1="3" y1="12" x2="29" y2="12"/>
+    </svg>
+
+    Published: 2026-01-06
+    
+</data>
+        
+        
+        
+        
+        
+        
+          
+          
+          
+          
+          
+        
+        
+        <figure class="post-cover" style="margin: 1.25rem 0;">
+          <img src="&#x2F;images&#x2F;covers&#x2F;rls.png" alt="Exploring PostgreSQL Row-Level Security cover" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--color-border-default, #e5e7eb);" onerror="this.parentNode.style.display='none'" />
+        </figure>
+        
+    </header>
+
+    <article itemprop="articleBody">
+        
+            <!-- If no summary separate from content, just render content -->
+            <p>I recently needed to implement data isolation for a multi-tenant application. The usual approach—filtering in application code—felt fragile. What if someone forgets to add the filter? What if a new service is added and the pattern isn't followed? These questions led me to explore PostgreSQL's Row-Level Security (RLS).</p>
+<p>This is what I learned along the way.</p>
+<hr />
+<h2 id="the-problem">The Problem</h2>
+<p>The application had multiple tenants sharing the same database tables. Each tenant's data needed to be completely isolated—users from one tenant shouldn't see or modify data from another, even if they somehow bypassed application-level checks.</p>
+<p>The traditional approach would be to add <code>WHERE tenant_id = ?</code> filters everywhere in the application code. But that's error-prone. A missed filter in one query, and you have a data leak. I wanted something that would enforce isolation at the database level, regardless of where the query came from.</p>
+<p>That's where RLS comes in.</p>
+<hr />
+<h2 id="what-is-rls">What is RLS?</h2>
+<p>Row-Level Security lets you define policies that control which rows can be returned by queries. These policies run at the database level, so they apply whether the query comes from your application, a direct database connection, or even a third-party tool.</p>
+<p>Think of it as a bouncer for your tables. Even if your application forgets to check credentials, the database won't.</p>
+<hr />
+<h2 id="the-implementation">The Implementation</h2>
+<p>For this example, let's say we have a <code>documents</code> table where each document belongs to an <code>owner_id</code>. The goal: users should only see and modify their own documents. (These are example table and column names—adapt to your schema.)</p>
+<h3 id="enabling-rls">Enabling RLS</h3>
+<p>The first step is straightforward:</p>
+<pre data-lang="sql" style="background-color:#2b303b;color:#c0c5ce;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#b48ead;">ALTER TABLE </span><span>documents ENABLE ROW LEVEL SECURITY;
+</span></code></pre>
+<p>Once enabled, RLS blocks all access by default. You need to create policies to allow specific operations.</p>
+<h3 id="creating-policies">Creating Policies</h3>
+<p>I decided to use a session variable to pass the current user ID. This keeps the policies simple and avoids fragile string matching or role-based approaches.</p>
+<pre data-lang="sql" style="background-color:#2b303b;color:#c0c5ce;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#65737e;">-- Users can only see their own documents
+</span><span>CREATE POLICY user_documents_select ON documents
+</span><span>  FOR </span><span style="color:#b48ead;">SELECT
+</span><span>  </span><span style="color:#b48ead;">USING</span><span> (owner_id = current_setting(&#39;</span><span style="color:#a3be8c;">myapp.current_user_id</span><span>&#39;)::</span><span style="color:#b48ead;">int</span><span>);
+</span><span>
+</span><span style="color:#65737e;">-- Users can only update their own documents
+</span><span>CREATE POLICY user_documents_update ON documents
+</span><span>  FOR </span><span style="color:#b48ead;">UPDATE
+</span><span>  </span><span style="color:#b48ead;">USING</span><span> (owner_id = current_setting(&#39;</span><span style="color:#a3be8c;">myapp.current_user_id</span><span>&#39;)::</span><span style="color:#b48ead;">int</span><span>);
+</span><span>
+</span><span style="color:#65737e;">-- Users can only delete their own documents
+</span><span>CREATE POLICY user_documents_delete ON documents
+</span><span>  FOR </span><span style="color:#b48ead;">DELETE
+</span><span>  </span><span style="color:#b48ead;">USING</span><span> (owner_id = current_setting(&#39;</span><span style="color:#a3be8c;">myapp.current_user_id</span><span>&#39;)::</span><span style="color:#b48ead;">int</span><span>);
+</span><span>
+</span><span style="color:#65737e;">-- Users can only insert documents with their own owner_id
+</span><span>CREATE POLICY user_documents_insert ON documents
+</span><span>  FOR </span><span style="color:#b48ead;">INSERT
+</span><span>  </span><span style="color:#b48ead;">WITH CHECK</span><span> (owner_id = current_setting(&#39;</span><span style="color:#a3be8c;">myapp.current_user_id</span><span>&#39;)::</span><span style="color:#b48ead;">int</span><span>);
+</span></code></pre>
+<p>The <code>USING</code> clause controls which rows are visible for SELECT, UPDATE, and DELETE. The <code>WITH CHECK</code> clause ensures new rows respect the policy on INSERT.</p>
+<h3 id="setting-the-session-variable">Setting the Session Variable</h3>
+<p>The tricky part was ensuring the session variable is set correctly in the application. I ended up setting it at the start of each database connection or transaction:</p>
+<pre data-lang="sql" style="background-color:#2b303b;color:#c0c5ce;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#b48ead;">BEGIN</span><span>;
+</span><span style="color:#b48ead;">SET</span><span> LOCAL </span><span style="color:#d08770;">myapp</span><span>.</span><span style="color:#d08770;">current_user_id </span><span>= &#39;</span><span style="color:#a3be8c;">42</span><span>&#39;;  </span><span style="color:#65737e;">-- Example user ID
+</span><span style="color:#b48ead;">SELECT </span><span style="color:#bf616a;">* </span><span style="color:#b48ead;">FROM</span><span> documents;  </span><span style="color:#65737e;">-- Only sees documents where owner_id = 42
+</span><span style="color:#b48ead;">COMMIT</span><span>;
+</span></code></pre>
+<p>In the application code (Node.js with <code>pg</code>), it looked like:</p>
+<pre data-lang="js" style="background-color:#2b303b;color:#c0c5ce;" class="language-js "><code class="language-js" data-lang="js"><span style="color:#b48ead;">await </span><span style="color:#bf616a;">client</span><span>.</span><span style="color:#8fa1b3;">query</span><span>(&quot;</span><span style="color:#a3be8c;">SELECT set_config(&#39;myapp.current_user_id&#39;, $1, false)</span><span>&quot;, [&#39;</span><span style="color:#a3be8c;">42</span><span>&#39;]);  </span><span style="color:#65737e;">// Example user ID
+</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">rows </span><span>= </span><span style="color:#b48ead;">await </span><span style="color:#bf616a;">client</span><span>.</span><span style="color:#8fa1b3;">query</span><span>(&#39;</span><span style="color:#a3be8c;">SELECT * FROM documents</span><span>&#39;);
+</span></code></pre>
+<hr />
+<h2 id="what-surprised-me">What Surprised Me</h2>
+<h3 id="the-insert-policy-gotcha">The INSERT Policy Gotcha</h3>
+<p>Initially, I only created SELECT, UPDATE, and DELETE policies. I assumed INSERT would just work. It didn't. Without an INSERT policy with <code>WITH CHECK</code>, users couldn't insert rows at all—RLS blocked everything.</p>
+<p>The <code>WITH CHECK</code> clause is crucial for INSERT operations. It ensures that new rows being inserted actually match the policy criteria.</p>
+<h3 id="performance-considerations">Performance Considerations</h3>
+<p>I was worried about performance. Would RLS policies slow down queries? In my testing, the overhead was minimal for simple policies like <code>owner_id = current_setting(...)</code>. But I can see how complex policies with joins or subqueries could become a bottleneck.</p>
+<p>The key is to keep policies simple and efficient. If you need complex logic, consider materialized views or application-level filters.</p>
+<h3 id="testing-is-critical">Testing is Critical</h3>
+<p>RLS policies can be subtle. A policy that looks correct might have edge cases. I spent time testing different scenarios:</p>
+<ul>
+<li>What happens if the session variable isn't set?</li>
+<li>What if it's set to a non-existent user ID?</li>
+<li>What if multiple policies apply to the same operation?</li>
+</ul>
+<p>Testing revealed that forgetting to set the session variable results in users seeing no data (or all data, depending on your policy setup). This is something you need to catch early.</p>
+<hr />
+<h2 id="rls-vs-application-filters">RLS vs Application Filters</h2>
+<p>I found myself thinking about the trade-offs. RLS centralizes security logic in the database, which is great for consistency. But it also means your security logic lives in the database, which can be harder to version control, test, and reason about compared to application code.</p>
+<p>For this project, I went with RLS for the core isolation requirements. Business-specific filtering still happens in the application layer. It's a hybrid approach, but it feels like the right balance.</p>
+<hr />
+<h2 id="looking-back">Looking Back</h2>
+<p>If I were starting over:</p>
+<ol>
+<li>
+<p><strong>Start with a single table</strong>: I tried to enable RLS on multiple tables at once. Starting with one table would have made debugging easier.</p>
+</li>
+<li>
+<p><strong>Add better error handling</strong>: When the session variable isn't set, queries fail silently or return unexpected results. Better error messages would help.</p>
+</li>
+<li>
+<p><strong>Document the session variable pattern</strong>: This is now part of our database connection setup, but it wasn't obvious at first. Clear documentation would have saved time.</p>
+</li>
+<li>
+<p><strong>Test with different connection patterns</strong>: I initially tested with simple queries, but real applications use connection pooling, transactions, and prepared statements. Testing those scenarios earlier would have caught issues sooner.</p>
+</li>
+</ol>
+<hr />
+<h2 id="the-bottom-line">The Bottom Line</h2>
+<p>RLS solved the problem I set out to solve. Data isolation is now enforced at the database level, which gives me confidence that even if application code has bugs, the database won't leak data between tenants.</p>
+<p>It's not a silver bullet—there are trade-offs, and it requires careful implementation and testing. But for multi-tenant applications where data isolation is critical, RLS is worth exploring.</p>
+<hr />
+<h3 id="further-reading">Further Reading</h3>
+<ul>
+<li><a href="https://www.postgresql.org/docs/current/ddl-rowsecurity.html">PostgreSQL RLS Documentation</a> – Official documentation</li>
+<li><a href="https://www.postgresql.org/docs/current/sql-createpolicy.html">RLS Policies</a> – Policy syntax and options</li>
+</ul>
+
+        
+    </article>
+
+    <!-- Comment section -->
+    
+      
+        
+          <script
+  src="https://giscus.app/client.js"
+  data-repo="nooscraft&#x2F;personal-blog"
+  data-repo-id="R_kgDOQJ_XNg"
+  data-category="General"
+  data-category-id="DIC_kwDOQJ_XNs4CxOmG"
+  data-mapping="pathname"
+  data-strict="0"
+  data-reactions-enabled="1"
+  data-emit-metadata="0"
+  data-input-position="bottom"
+
+  
+  data-theme="https:&#x2F;&#x2F;noos.blog&#x2F;css&#x2F;giscus-theme.css"
+  
+
+  data-lang="en"
+  data-loading="lazy"
+  crossorigin="anonymous"
+  async
+></script>
+
+        
+      
+    
+
+
+    <!-- Page footer -->
+    
+    <footer>
+        <hr>
+        <p>
+            
+            
+                
+                in <a href="https://noos.blog/categories/database/">Database</a>
+            
+            
+                and
+                tagged
+                
+                    <a href="https://noos.blog/tags/postgresql/">postgresql</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/rls/">rls</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/security/">security</a>
+                    
+                        
+                            
+                                and
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/database/">database</a>
+                    
+                        
+                    
+                
+            
+        </p>
+
+        <!-- Revision history (optional) -->
+        
+          
+            
+              
+            
+          
+        
+
+        
+        
+    </footer>
+
+
+</article>
+
+
+    </main>
+    
+
+  </body>
+</html>
