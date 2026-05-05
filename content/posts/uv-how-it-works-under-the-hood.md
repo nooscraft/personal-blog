@@ -1,21 +1,23 @@
 +++
 title = "How uv Works Under the Hood"
 date = 2026-04-08
-updated = 2026-04-19
-description = "A thorough walkthrough of uv's internals: the Rust crate architecture, what uv init actually does on disk, the two-thread resolver design, how PubGrub's CDCL algorithm works, batch prefetching, the forking resolver, and why these Rust-specific patterns make it 10–100x faster than pip."
+updated = 2026-05-05
+description = "A thorough walkthrough of uv's internals: the Rust crate architecture, what uv init actually does on disk, the two-thread resolver design, how PubGrub's CDCL algorithm works, batch prefetching, the forking resolver, and why these Rust-specific patterns make it 10-100x faster than pip."
 draft = false
 [taxonomies]
 tags = ["python", "rust", "uv", "package-manager", "pubgrub", "dependency-resolution", "open-source", "tokio"]
 categories = ["Engineering"]
 +++
 
-> *Updated 2026-04-19: revised for accuracy after reader feedback. All claims now verified against uv v0.11.7; the `uv add` example output, the `resolve()` source excerpt, and several stylistic rough edges have been corrected.*
+> *Updated 2026-05-05: re-verified against uv v0.11.8. I refreshed the release references, fixed inconsistent package versions in the lockfile excerpt, updated build backend examples, and cleaned up punctuation/style issues.*
 
-I started using [uv](https://github.com/astral-sh/uv) because the benchmarks seemed too good to be true: 10–100x faster than `pip`, resolves and installs in milliseconds. So I spent a weekend reading the source. This post is what I wish I'd had on day one.
+I started using [uv](https://github.com/astral-sh/uv) because the benchmarks seemed too good to be true: 10-100x faster than `pip`, resolves and installs in milliseconds. So I spent a weekend reading the source. This post is what I wish I'd had on day one.
 
 It traces every layer: the repository structure, what actually happens when you type `uv init` or `uv add requests`, and the Rust concurrency patterns the resolver uses. No prior Rust experience needed, but if you've seen Rust before I'll point to the specific patterns in the source.
 
-Everything below was verified against uv [v0.11.7](https://github.com/astral-sh/uv/releases/tag/0.11.7) (April 2026). Specific numbers and code excerpts come from that tag; if you're reading this much later, the line numbers in linked source files may have drifted, but the high-level architecture has been stable for many releases.
+Everything below was verified against uv [v0.11.8](https://github.com/astral-sh/uv/releases/tag/0.11.8) (April 2026). Specific numbers and code excerpts come from that tag; if you're reading this much later, the line numbers in linked source files may have drifted, but the high-level architecture has been stable for many releases.
+
+Quick release note: 0.11.8 mostly shipped CLI, lockfile, and configuration improvements (`pip uninstall -y`, `UV_NO_PROJECT`, `UV_PYTHON_SEARCH_PATH`, and `exclude-newer` lock handling fixes). It did not materially change the resolver architecture discussed in this post.
 
 ---
 
@@ -32,7 +34,7 @@ uv is an **extremely fast Python package and project manager**, written in Rust 
 | `pipx run` | `uvx` / `uv tool run` |
 | `poetry` / `rye` | `uv init` + `uv add` |
 
-It has 83k+ stars, is used in production at scale, and the underlying [`pubgrub-rs`](https://github.com/pubgrub-rs/pubgrub) crate it depends on is the [designated basis for Cargo's next dependency solver](https://rust-lang.github.io/rust-project-goals/2025h1/pubgrub-in-cargo.html). The same algorithm and largely the same Rust crate will eventually power both `uv` and `cargo` resolutions.
+It has 84k+ stars, is used in production at scale, and the underlying [`pubgrub-rs`](https://github.com/pubgrub-rs/pubgrub) crate it depends on is the [designated basis for Cargo's next dependency solver](https://rust-lang.github.io/rust-project-goals/2025h1/pubgrub-in-cargo.html). The same algorithm and largely the same Rust crate will eventually power both `uv` and `cargo` resolutions.
 
 ---
 
@@ -51,11 +53,11 @@ uv/
 └── pyproject.toml   # uv manages itself with uv
 ```
 
-The real action is in `crates/`. There are 68 of them in v0.11.7 (`ls crates/ | wc -l` says so). Rust does not allow circular dependencies between crates, so the uv team structured the code as a directed acyclic graph of focused crates. Each does one thing:
+The real action is in `crates/`. There are 67 crate directories in v0.11.8. Rust does not allow circular dependencies between crates, so the uv team structured the code as a directed acyclic graph of focused crates. Each does one thing:
 
 ```
 crates/
-├── uv/                  # CLI binary — entry point, argument parsing (clap)
+├── uv/                  # CLI binary: entry point and argument parsing (clap)
 ├── uv-resolver/         # Dependency resolution engine (PubGrub)
 ├── uv-installer/        # Installing packages into environments
 ├── uv-client/           # Async HTTP client for PyPI and registries
@@ -100,7 +102,7 @@ For `uv init my-project`, uv writes these files to disk:
 
 ```
 my-project/
-├── .python-version    # e.g., "3.12" — pins the Python version
+├── .python-version    # e.g., "3.12", pins the Python version
 ├── README.md
 ├── main.py            # boilerplate main() function
 └── pyproject.toml
@@ -124,7 +126,7 @@ If you pass `--lib` or `--package`, uv adds a `src/` layout and a `[build-system
 
 ```toml
 [build-system]
-requires = ["uv_build>=0.11.4,<0.12"]
+requires = ["uv_build>=0.11.8,<0.12"]
 build-backend = "uv_build"
 ```
 
@@ -162,7 +164,7 @@ Two things worth noticing about that output. "Resolved 6 packages" includes the 
 
 ### Stage 2: Update `pyproject.toml` (`pyproject_mut`)
 
-uv adds `requests` to the `dependencies` list in `pyproject.toml`. At this point it doesn't know the version yet, so it records it as a bare requirement. After resolution (Stage 3), it rewrites the specifier with the resolved version. The exact form depends on the `--bounds` flag; the default (`AddBoundsKind::Lower` in [`pyproject_mut.rs`](https://github.com/astral-sh/uv/blob/0.11.7/crates/uv-workspace/src/pyproject_mut.rs)) is a single lower bound:
+uv adds `requests` to the `dependencies` list in `pyproject.toml`. At this point it doesn't know the version yet, so it records it as a bare requirement. After resolution (Stage 3), it rewrites the specifier with the resolved version. The exact form depends on the `--bounds` flag; the default (`AddBoundsKind::Lower` in [`pyproject_mut.rs`](https://github.com/astral-sh/uv/blob/0.11.8/crates/uv-workspace/src/pyproject_mut.rs)) is a single lower bound:
 
 ```toml
 dependencies = [
@@ -188,7 +190,7 @@ requires-python = ">=3.12"
 
 [[package]]
 name = "requests"
-version = "2.32.3"
+version = "2.33.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "certifi" },
@@ -196,19 +198,19 @@ dependencies = [
     { name = "idna" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/.../requests-2.32.3.tar.gz", hash = "sha256:55365417734eb18255590a9f9bf5f8f4a9a2e6bf7119580b895a78a75a4a8802", size = 131218 }
+sdist = { url = "https://files.pythonhosted.org/packages/5f/a4/98b9c7c6428a668bf7e42ebb7c79d576a1c3c1e3ae2d47e674b468388871/requests-2.33.1.tar.gz", hash = "sha256:18817f8c57c6263968bc123d237e3b8b08ac046f5456bd1e307ee8f4250d3517", size = 134120 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/.../requests-2.32.3-py3-none-any.whl", hash = "sha256:70761cfe03c773ceb22aa2f671b4757976145175cdfed9ef6f2eedb0a1600cf9" },
+    { url = "https://files.pythonhosted.org/packages/d7/8e/7540e8a2036f79a125c1d2ebadf69ed7901608859186c856fa0388ef4197/requests-2.33.1-py3-none-any.whl", hash = "sha256:4e6d1ef462f3626a1f0a0a9c42dd93c63bad33f9f1c1937509b8c5c8718ab56a" },
 ]
 
 [[package]]
 name = "urllib3"
-version = "2.4.0"
+version = "2.6.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = []
-sdist = { url = "https://files.pythonhosted.org/packages/.../urllib3-2.4.0.tar.gz", hash = "sha256:...", size = 200288 }
+sdist = { url = "https://files.pythonhosted.org/packages/c7/24/5f1b3bdffd70275f6661c76461e25f024d5a38a46f04aaca912426a2b1d3/urllib3-2.6.3.tar.gz", hash = "sha256:1b62b6884944a57dbe321509ab94fd4d3b307075e0c2eae991ac71ee15ad38ed", size = 435556 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/.../urllib3-2.4.0-py3-none-any.whl", hash = "sha256:..." },
+    { url = "https://files.pythonhosted.org/packages/39/08/aaaad47bc4e9dc8c725e68f9d04865dbcb2052843ff09c97b08904852d84/urllib3-2.6.3-py3-none-any.whl", hash = "sha256:bf272323e553dfb2e87d9bfd225ca7b0f467b919d7bbd355436d3fd37cb0acd4" },
 ]
 ```
 
@@ -216,7 +218,7 @@ The lockfile is **universal**: one `uv.lock` works on macOS, Linux, and Windows.
 
 The hashes serve two purposes: integrity verification when downloading, and cache lookup keying.
 
-> **Note:** `uv.lock` is an internal format that may change between versions. If you need to read it programmatically, the experimental `uv workspace metadata --preview-features workspace-metadata` command outputs a stable JSON representation of the same dependency graph (it's still preview as of v0.11.7, so don't rely on its schema being final).
+> **Note:** `uv.lock` is an internal format that may change between versions. If you need to read it programmatically, the experimental `uv workspace metadata --preview-features workspace-metadata` command outputs a stable JSON representation of the same dependency graph (it's still preview as of v0.11.8, so don't rely on its schema being final).
 
 ### Stage 5: Download packages (`uv-client` + Tokio)
 
@@ -268,7 +270,7 @@ The naive approach is to serialize everything: decide package, fetch metadata, d
 
 ### Two threads communicating via channels
 
-The `resolve()` function in [`crates/uv-resolver/src/resolver/mod.rs`](https://github.com/astral-sh/uv/blob/0.11.7/crates/uv-resolver/src/resolver/mod.rs#L277-L309) is short enough to quote verbatim:
+The `resolve()` function in [`crates/uv-resolver/src/resolver/mod.rs`](https://github.com/astral-sh/uv/blob/0.11.8/crates/uv-resolver/src/resolver/mod.rs#L250-L282) is short enough to quote verbatim:
 
 ```rust
 pub async fn resolve(self) -> Result<ResolverOutput, ResolveError> {
@@ -319,7 +321,7 @@ The architecture is:
                    ▼
 ┌────────────────────────────────────────────┐
 │  Tokio async runtime                        │
-│  Runs fetch() — handles request_stream      │
+│  Runs fetch() - handles request_stream      │
 │  Fires concurrent HTTP requests             │
 │  Writes results into Arc<InMemoryIndex>     │
 └────────────────────────────────────────────┘
@@ -385,7 +387,7 @@ This ensures direct dependencies are decided before transitive ones.
 
 ### The conflict-priority heuristic
 
-The `CONFLICT_THRESHOLD` constant in [`resolver/mod.rs`](https://github.com/astral-sh/uv/blob/0.11.7/crates/uv-resolver/src/resolver/mod.rs#L97-L98) is set to `5`:
+The `CONFLICT_THRESHOLD` constant in [`resolver/mod.rs`](https://github.com/astral-sh/uv/blob/0.11.8/crates/uv-resolver/src/resolver/mod.rs#L98) is set to `5`:
 
 ```rust
 /// The number of conflicts a package may accumulate before we re-prioritize and backtrack.
@@ -415,11 +417,11 @@ This is the single feature most likely to make you fall in love with PubGrub. Mo
 
 ## 7. Batch prefetching: the boto3 optimization
 
-The `BatchPrefetcher` in [`crates/uv-resolver/src/resolver/batch_prefetch.rs`](https://github.com/astral-sh/uv/blob/0.11.7/crates/uv-resolver/src/resolver/batch_prefetch.rs) is a targeted optimization for packages with many versions that cause a lot of backtracking. The canonical example is `boto3`/`botocore`/`urllib3`.
+The `BatchPrefetcher` in [`crates/uv-resolver/src/resolver/batch_prefetch.rs`](https://github.com/astral-sh/uv/blob/0.11.8/crates/uv-resolver/src/resolver/batch_prefetch.rs) is a targeted optimization for packages with many versions that cause a lot of backtracking. The canonical example is `boto3`/`botocore`/`urllib3`.
 
 The problem: the resolver tries a version, fetches its metadata, discovers a conflict, tries the next version, fetches *its* metadata, discovers a conflict, and so on. For botocore, which has hundreds of releases, this can mean hundreds of sequential fetch-then-reject cycles on a cold cache.
 
-The fix: after the resolver has tried a few versions of a package, the `BatchPrefetcher` speculatively sends fetch requests for several upcoming versions ahead of time. The schedule from the source ([line 178](https://github.com/astral-sh/uv/blob/0.11.7/crates/uv-resolver/src/resolver/batch_prefetch.rs#L162-L183)):
+The fix: after the resolver has tried a few versions of a package, the `BatchPrefetcher` speculatively sends fetch requests for several upcoming versions ahead of time. The schedule from the source ([line 178](https://github.com/astral-sh/uv/blob/0.11.8/crates/uv-resolver/src/resolver/batch_prefetch.rs#L162-L183)):
 
 ```rust
 /// After 5, 10, 20, 40 tried versions, prefetch that many versions to start early but not
@@ -626,18 +628,18 @@ A few things I didn't expect going in, in case they're useful as anchors when yo
 - The `BatchPrefetcher` doc comment doesn't quite match its code. Small thing, but it's the kind of detail that convinces you the rest is hand-written by people, not regenerated.
 - The "metadata consistency" assumption (Section 8) feels load-bearing but is technically not guaranteed by any PEP. uv is essentially betting on a behaviour packaging tooling has converged on without ever standardising.
 
-If you want to poke at any of this, the entry points to read first are [`crates/uv-resolver/src/resolver/mod.rs`](https://github.com/astral-sh/uv/blob/0.11.7/crates/uv-resolver/src/resolver/mod.rs) (the `resolve()` and `solve()` functions) and [`batch_prefetch.rs`](https://github.com/astral-sh/uv/blob/0.11.7/crates/uv-resolver/src/resolver/batch_prefetch.rs). After that, the rest of the codebase mostly explains itself.
+If you want to poke at any of this, the entry points to read first are [`crates/uv-resolver/src/resolver/mod.rs`](https://github.com/astral-sh/uv/blob/0.11.8/crates/uv-resolver/src/resolver/mod.rs) (the `resolve()` and `solve()` functions) and [`batch_prefetch.rs`](https://github.com/astral-sh/uv/blob/0.11.8/crates/uv-resolver/src/resolver/batch_prefetch.rs). After that, the rest of the codebase mostly explains itself.
 
 ---
 
 ## Further reading
 
-- [uv resolver internals](https://docs.astral.sh/uv/reference/internals/resolver/) — the official deep dive, written by the uv team; the primary source for Section 6
-- [PubGrub blog post by Natalie Weizenbaum](https://nex3.medium.com/pubgrub-2fb6470504f) — the original algorithm explanation; very approachable
-- [pubgrub-rs internals guide](https://pubgrub-rs-guide.pages.dev/internals/intro) — the Rust implementation's own documentation
-- [uv resolver source: `resolver/mod.rs`](https://github.com/astral-sh/uv/blob/0.11.7/crates/uv-resolver/src/resolver/mod.rs) — start here if you want to read the resolver code; the `resolve()` function is the entry point
-- [uv resolver source: `batch_prefetch.rs`](https://github.com/astral-sh/uv/blob/0.11.7/crates/uv-resolver/src/resolver/batch_prefetch.rs) — the `BatchPrefetcher` implementation
-- [uv CONTRIBUTING.md](https://github.com/astral-sh/uv/blob/main/CONTRIBUTING.md) — setup, testing, profiling, snapshot testing
-- [Tokio async runtime](https://tokio.rs/) — the async runtime underlying uv's concurrent I/O
-- [DashMap](https://docs.rs/dashmap/latest/dashmap/) — the concurrent hashmap used in `InMemoryIndex`
-- [insta snapshot testing](https://insta.rs/) — the testing library used throughout uv's test suite
+- [uv resolver internals](https://docs.astral.sh/uv/reference/internals/resolver/): the official deep dive, written by the uv team; primary source for Section 6
+- [PubGrub blog post by Natalie Weizenbaum](https://nex3.medium.com/pubgrub-2fb6470504f): the original algorithm explanation; very approachable
+- [pubgrub-rs internals guide](https://pubgrub-rs-guide.pages.dev/internals/intro): the Rust implementation's own documentation
+- [uv resolver source: `resolver/mod.rs`](https://github.com/astral-sh/uv/blob/0.11.8/crates/uv-resolver/src/resolver/mod.rs): start here if you want to read the resolver code; `resolve()` is the entry point
+- [uv resolver source: `batch_prefetch.rs`](https://github.com/astral-sh/uv/blob/0.11.8/crates/uv-resolver/src/resolver/batch_prefetch.rs): the `BatchPrefetcher` implementation
+- [uv CONTRIBUTING.md](https://github.com/astral-sh/uv/blob/0.11.8/CONTRIBUTING.md): setup, testing, profiling, snapshot testing
+- [Tokio async runtime](https://tokio.rs/): the async runtime underlying uv's concurrent I/O
+- [DashMap](https://docs.rs/dashmap/latest/dashmap/): the concurrent hashmap used in `InMemoryIndex`
+- [insta snapshot testing](https://insta.rs/): the testing library used throughout uv's test suite
