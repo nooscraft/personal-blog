@@ -42,9 +42,22 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: static/images/covers
-          key: covers-${{ runner.os }}-${{ hashFiles('content/posts/**/*.md') }}
+          key: covers-${{ runner.os }}-${{ hashFiles('content/posts/**/*.md') }}-${{ hashFiles('static/images/covers/**') }}
           restore-keys: |
             covers-${{ runner.os }}-
+
+      # Committed covers (e.g. illo/Volt set) must win over a stale Actions cache.
+      # Cache key is post-content-only, so a cache hit would otherwise overwrite git files.
+      - name: Prefer committed covers over cache
+        run: |
+          if git ls-files --error-unmatch static/images/covers >/dev/null 2>&1 || \
+             git ls-files 'static/images/covers/*' | grep -q .; then
+            echo "Restoring tracked cover files from the commit (override cache if present)"
+            git checkout -- static/images/covers/ || true
+            ls -la static/images/covers | head -20
+          else
+            echo "No tracked covers in git; using cache/generator only"
+          fi
 
       - name: Install cover generator deps
         run: |
@@ -69,7 +82,7 @@ jobs:
         if: steps.covers-cache.outputs.cache-hit != 'true'
         with:
           path: static/images/covers
-          key: covers-${{ runner.os }}-${{ hashFiles('content/posts/**/*.md') }}
+          key: covers-${{ runner.os }}-${{ hashFiles('content/posts/**/*.md') }}-${{ hashFiles('static/images/covers/**') }}
 
       # Removed social/icon-based cover generator – AI only now
 
