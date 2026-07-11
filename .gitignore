@@ -17,9 +17,10 @@ node_modules/
 package-lock.json
 npm-debug.log*
 
-# Generated cover images (created during CI/local run; not tracked on main)
-static/images/covers/*.png
-static/images/covers/*.jpg
+# Cover images are tracked (illo/Volt set). CI still skips Replicate when a PNG exists.
+# Uncomment to stop tracking generated covers again:
+# static/images/covers/*.png
+# static/images/covers/*.jpg
 
 # Local env files (API keys)
 .env
