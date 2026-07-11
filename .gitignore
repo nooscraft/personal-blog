@@ -12,6 +12,9 @@ sitemap.xml
 .vscode/
 .idea/
 
+# Cursor (local editor config, never committed)
+.cursor/
+
 # Node (local tooling for generators)
 node_modules/
 package-lock.json
