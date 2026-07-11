@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       force_regenerate:
-        description: "Force AI to regenerate all covers (ignore existing)"
+        description: "Force illo to regenerate all covers (ignore existing PNGs)"
         required: false
         default: "false"
 
@@ -32,10 +32,17 @@ jobs:
           sudo mv zola /usr/local/bin/
           zola --version
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          node-version: '20'
+          python-version: '3.12'
+
+      - name: Install cover tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq imagemagick
+          # Pillow is a fallback resize path if ImageMagick is unavailable
+          python3 -m pip install --quiet 'Pillow>=10,<12'
 
       - name: Restore covers cache
         id: covers-cache
@@ -46,12 +53,10 @@ jobs:
           restore-keys: |
             covers-${{ runner.os }}-
 
-      # Committed covers (e.g. illo/Volt set) must win over a stale Actions cache.
-      # Cache key is post-content-only, so a cache hit would otherwise overwrite git files.
+      # Committed covers (e.g. illo/Blip set) must win over a stale Actions cache.
       - name: Prefer committed covers over cache
         run: |
-          if git ls-files --error-unmatch static/images/covers >/dev/null 2>&1 || \
-             git ls-files 'static/images/covers/*' | grep -q .; then
+          if git ls-files 'static/images/covers/*' | grep -q .; then
             echo "Restoring tracked cover files from the commit (override cache if present)"
             git checkout -- static/images/covers/ || true
             ls -la static/images/covers | head -20
@@ -59,23 +64,27 @@ jobs:
             echo "No tracked covers in git; using cache/generator only"
           fi
 
-      - name: Install cover generator deps
-        run: |
-          if [ -f package.json ]; then
-            npm install --no-audit --no-fund
-          fi
-
-      - name: Generate AI covers (Replicate)
+      - name: Bootstrap illo (Blip character)
         env:
-          REPLICATE_API_TOKEN: ${{ secrets.REPLICATE_API_TOKEN }}
-          REPLICATE_MODEL_VERSION: ${{ secrets.REPLICATE_MODEL_VERSION }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          ILLO_CHARACTER: blip
+        run: bash scripts/illo-bootstrap.sh
+
+      - name: Generate covers (illo / Blip)
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          ILLO_BACKEND: openrouter
+          ILLO_CHARACTER: blip
+          ILLO_MODEL: x-ai/grok-imagine-image-quality
           FORCE_REGENERATE_COVERS: ${{ inputs.force_regenerate }}
-          MAX_AI_COVERS:
+          MAX_ILLO_COVERS: ${{ vars.MAX_ILLO_COVERS }}
         run: |
-          if [ -f scripts/generate-ai-covers.mjs ]; then
-            echo "Generating AI covers via Replicate (skip if PNG exists in static/images/covers)"
-            npm run generate:ai || echo "AI cover generation skipped"
+          if [ -z "${OPENROUTER_API_KEY:-}" ]; then
+            echo "OPENROUTER_API_KEY secret not set — skipping illo cover generation"
+            echo "Add the secret under repo Settings → Secrets, then re-run if new posts need covers."
+            exit 0
           fi
+          python3 scripts/generate-illo-covers.py
 
       - name: Save covers cache (if new)
         uses: actions/cache/save@v3
@@ -83,10 +92,6 @@ jobs:
         with:
           path: static/images/covers
           key: covers-${{ runner.os }}-${{ hashFiles('content/posts/**/*.md') }}-${{ hashFiles('static/images/covers/**') }}
-
-      # Removed social/icon-based cover generator – AI only now
-
-      # (Removed favicon regeneration step)
       
       - name: Build site
         run: |

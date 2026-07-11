@@ -17,7 +17,7 @@ Personal blog about programming, technology, and engineering insights. Topics in
 - 🌓 **Dark/Light Mode**: Toggle between light and dark themes
 - 🔍 **Search Functionality**: Built-in search for easy content discovery
 - 💬 **Comments**: Giscus integration for post discussions
-- 🎨 **AI-Generated Covers**: Automatic cover image generation using Replicate
+- 🎨 **AI-Generated Covers**: Automatic cover images via [illo](https://www.illo-skill.com/) (Blip mascot)
 - 📱 **Mobile Responsive**: Optimized for all device sizes
 - 🔗 **RSS Feed**: Atom feed for subscribers
 - 📊 **Analytics**: Google Analytics (GA4) integration
@@ -31,7 +31,7 @@ Personal blog about programming, technology, and engineering insights. Topics in
 - **Deployment**: GitHub Pages with GitHub Actions
 - **Content**: Markdown with TOML front matter
 - **Comments**: [Giscus](https://giscus.app/)
-- **Cover Generation**: [Replicate](https://replicate.com/) (SDXL)
+- **Cover Generation**: [illo](https://www.illo-skill.com/) + OpenRouter (Blip)
 
 ---
 
@@ -128,7 +128,7 @@ The site is automatically deployed to GitHub Pages using GitHub Actions whenever
 1. Push to `main` branch
 2. GitHub Actions triggers the build workflow
 3. Zola builds the static site
-4. AI covers are generated for posts without covers (if configured)
+4. Missing covers are generated with illo/Blip (if `OPENROUTER_API_KEY` is set)
 5. Built site is pushed to `gh-pages` branch
 6. GitHub Pages serves the site
 
@@ -138,7 +138,7 @@ The site is automatically deployed to GitHub Pages using GitHub Actions whenever
 
 You can manually trigger the workflow with optional parameters:
 
-- `force_regenerate`: Force regeneration of all AI covers (ignores existing)
+- `force_regenerate`: Force illo to regenerate all covers (ignores existing PNGs)
 
 ---
 
@@ -158,13 +158,23 @@ See `config.toml` for all available options.
 
 ## Features Details
 
-### AI Cover Generation
+### AI Cover Generation (illo / Blip)
 
-Cover images are automatically generated for posts missing a PNG at `static/images/covers/{slug}.png`. Uses Replicate (SDXL) to generate 1200×630 PNG images.
+Cover images are automatically generated for posts missing a PNG at `static/images/covers/{slug}.png`. Uses [illo](https://www.illo-skill.com/) with the **Blip** character (risograph style) via OpenRouter.
 
-**Script**: `scripts/generate-ai-covers.mjs`  
-**CI Step**: Runs during GitHub Actions build  
-**Config**: Requires `REPLICATE_API_TOKEN` secret in GitHub
+**Scripts**: `scripts/generate-illo-covers.py`, `scripts/illo-bootstrap.sh`  
+**Engine**: vendored `scripts/vendor/illo.py`  
+**CI Step**: “Generate covers (illo / Blip)” during GitHub Actions build  
+**Config**: Requires `OPENROUTER_API_KEY` secret in GitHub  
+
+Locally:
+
+```bash
+bash scripts/illo-bootstrap.sh
+# OpenRouter: export OPENROUTER_API_KEY=...
+# or use a logged-in Grok CLI
+python3 scripts/generate-illo-covers.py
+```
 
 ### Giscus Comments
 
@@ -210,4 +220,4 @@ This project is open source and available under the [MIT License](LICENSE).
 - [Zola](https://www.getzola.org/) - Static site generator
 - [Radion Theme](https://github.com/aaranxu/radion) - Blog theme
 - [Giscus](https://giscus.app/) - Comments system
-- [Replicate](https://replicate.com/) - AI cover generation
+- [illo](https://www.illo-skill.com/) / [OpenRouter](https://openrouter.ai/) - Cover generation (Blip)
