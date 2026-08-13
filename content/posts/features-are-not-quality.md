@@ -77,3 +77,15 @@ The honest other half: the long, patient engagement software used to earn seems 
 I am not quitting. I use these tools most days and I plan to keep using them; they earn their place for boilerplate and getting unstuck. What is hyped and not yet proven, at least for work like mine, is the ten-times-faster story. I have not tried quitting the way Brett did, so I do not know what that would do to my work.
 
 His question is the right one to sit with: what is the cost, and who pays it. He cites Cal Newport's Slow Productivity and its encouragement to work at a natural pace; he says he does not see the need to work faster. He also writes about the true cost of AI, "from the data centers to the water usage and beyond", and says it is "largely hidden". I have not verified any of those figures myself, so I will not quote numbers. It deserves more attention than it gets, though. I will keep using the tools, and keep asking what they cost. Let's see how it goes.
+
+---
+
+### References
+
+- [I'm done using AI](https://brettcodes.com/im-done-using-ai/): Brett Chalupa's post, published 10 August 2026
+- [Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity](https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/): METR's write-up of the randomized controlled trial
+- [The same study on arXiv](https://arxiv.org/abs/2507.09089): full paper, arXiv:2507.09089
+- [We are Changing our Developer Productivity Experiment Design](https://metr.org/blog/2026-02-24-uplift-update/): METR's follow-up on selection bias, 24 February 2026
+- [Slow Productivity](https://calnewport.com/my-new-book-slow-productivity/): Cal Newport on the book Brett cites
+- [Make Games for Playdate with Lua](https://pdbook.net): the book he finished
+- [Usagi](https://usagiengine.com/): his 2D Lua game engine, with the [source on GitHub](https://github.com/brettchalupa/usagi)
