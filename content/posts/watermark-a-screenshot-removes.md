@@ -3,10 +3,13 @@ title = "The watermark a screenshot removes"
 date = 2026-08-14
 description = "Claude now marks its output with watermarks and C2PA metadata to meet the EU AI Act. The marking is real and useful, and Anthropic's own documentation explains how little it can prove."
 draft = false
+updated = 2026-08-14
 [taxonomies]
 tags = ["ai", "eu-ai-act", "regulation", "c2pa", "watermarking", "provenance", "anthropic"]
 categories = ["Engineering"]
 +++
+
+> *Updated 2026-08-14: gave the opt-in question a fuller hearing.*
 
 Anthropic has published a [support article](https://support.claude.com/en/articles/16266773-how-claude-marks-ai-generated-content) on how Claude marks AI-generated content. The rule behind it is Article 50 of the EU AI Act, and it started applying on 2 August 2026. Today is 14 August 2026, so the obligation is twelve days old. My reaction is split: the marking is a genuine step forward, and the job it is asked to do cannot be done with the tools available.
 
@@ -32,7 +35,7 @@ Article 50's transparency obligations apply from 2 August 2026. For generative s
 
 In plain terms, the law only asks for this to work as far as the technology allows, with content type, cost, and the state of the art factored in. That qualifier tells you the drafters knew the technology was not there.
 
-Standard assistive editing, input the AI does not substantially alter, and legally authorised criminal investigations are exempt. Article 50(4) on deep fakes carves out satire, fiction, and text under human editorial responsibility.
+Standard assistive editing, input the AI does not substantially alter, and legally authorised criminal investigations are exempt. Article 50(4) on deep fakes carves out satire and fiction, along with text that remains under human editorial responsibility.
 
 The AI Omnibus reached provisional agreement on 7 May 2026, Parliament voted to adopt it on 16 June 2026, and Council approval is still pending. It delays the machine-readable marking duty until 2 December 2026 for generative systems placed on the market before 2 August 2026.
 
@@ -42,7 +45,7 @@ The Commission has published guidelines and a Code of Practice on Transparency o
 
 ## The admissions in the documentation
 
-A mark does not mean what most people will assume: Anthropic states that a detected mark is "not fully conclusive". Claude may not be the original author at all; people use it to proofread, translate, summarize and convert. The article says it directly:
+A mark does not mean what most people will assume: Anthropic states that a detected mark is "not fully conclusive". Claude may not be the original author at all, since plenty of people hand it work that was already theirs. The article says it directly:
 
 > Claude may not be the original author. People often use Claude to proofread, translate, summarize, or convert files. The output can carry a Claude mark even if the underlying ideas, text, or data originated from another source
 
@@ -62,13 +65,19 @@ And none of it can be checked today: Anthropic says detection tooling is coming 
 
 ## Who the rule actually lands on
 
-Claude is a paid product. I pay for it, and the marking applies worldwide, not only where the AI Act reaches. Someone outside the EU on a paid plan gets output marked to satisfy a rule that does not govern them.
+Claude is a paid product and I pay for it. I live outside the EU. My output gets marked all the same. What this post has not said yet: the law's own reach is narrower than the rollout. The scope provision is Article 2, with two limbs:
 
-I looked for an off switch in the article. I also looked for an opt-in, or a difference between plans, and found nothing. That is an absence in one document, not proof about the product, but as described, marking is applied to you rather than chosen by you.
+> providers placing on the market or putting into service AI systems or placing on the market general-purpose AI models in the Union, irrespective of whether those providers are established or located within the Union or in a third country [...] providers and deployers of AI systems that have their place of establishment or are located in a third country, where the output produced by the AI system is used in the Union
 
-My instinct is that marking my own paid output would sit better as a setting I turn on. The honest objection is real: a mark you can decline is worth very little. Anyone intending to pass generated work off as their own would decline it first.
+The second limb covers output used in the Union, and mine never goes there; I am one of those users outside the EU. But the marking duty has no territorial qualifier of its own: Article 2 decides the whole question, and its first limb covers providers placing general-purpose AI models on the Union market wherever they are based. Anthropic is such a provider, so the duty could be read as attaching at the model, not per user. Which reading is right I cannot settle: I am not a lawyer, this is a reading, not a ruling. What survives both readings is the point: on the narrow one, marking my output is a product choice rather than a compelled one; on the broad one, the law sets a floor for output tied to the Union and says nothing about choice for people it was never written to protect. Either way, no rule in it forbids a setting for those users. I am not attacking Anthropic; it may well be the right call, but a decision can be questioned in a way an obligation cannot.
 
-I do not have a tidy resolution: the people who keep the mark are the ones who were never going to lie about it. The absence of a mark proves nothing; the article says so itself. A marked file and an unmarked file tell a reader much less than they appear to, and the real risk is false confidence.
+Why is this not a setting? I looked in the support article for an off switch, an opt-in, a difference between plans. Nothing. An absence in one document is not proof about the product. As described, marking is applied to you rather than chosen by you.
+
+The standard objection: a mark you can decline is worth little, because anyone passing generated work off as their own would decline it first. I felt its force. But it assumes the mark must resist someone who does not want it there, and the support article already says it does not: a screenshot strips the file credential, a paraphrase strips the text watermark. The mark is already declinable by anyone who reads the documentation; a setting would change the price of declining, from one screenshot to one checkbox, and it would not change who ends up unmarked. Someone who takes the screenshot is unaffected either way; someone who never thinks about it is marked either way. The only group a setting reaches is the middle one: people who want a deliberate choice about their paid output and cannot make one. That group is small, I am in it, and that is worth admitting.
+
+Three counters I cannot dismiss. Defaults move behaviour in aggregate even when trivially defeatable: taking a screenshot is not the same act as ticking a box, and I suspect, with no numbers published, fewer people would do the first. A per-region or per-account switch means locating the user, and being wrong in the wrong direction points at the penalty ceiling quoted earlier in this post; one worldwide code path has no such failure mode. That is speculation about a decision I was not in the room for. The signed credential on images is different: it lets you show a file has not been altered, something for the owner rather than just about them, so opting out is odd in a way declining an invisible text watermark is not.
+
+The question stays open because the article does not answer it: no reason for worldwide marking, none for the missing setting. Not knowing the reason is not the same as there being none.
 
 ## Where the EU really does look slower
 
@@ -92,7 +101,7 @@ A norm that generated media carries provenance seems worth having even when the 
 
 ## Where I land
 
-The marking is worth doing, and it cannot carry what people will ask of it. I am glad it applies worldwide rather than only where the law bites. I would rather read honest limits in a support article than a confident claim that would not survive contact with a screenshot.
+The marking is worth doing and cannot carry what people will ask of it. I am glad it was not fenced off to Europe only. The switch still seems fair to ask for on output I pay to generate outside the rule's reach. Both can be true. I would rather read honest limits in a support article than a confident claim that would not survive contact with a screenshot.
 
 When the detection documentation lands, I will feed the watermark some heavy editing and see what survives. Let's see how it goes.
 
@@ -101,6 +110,7 @@ When the detection documentation lands, I will feed the watermark some heavy edi
 ### References
 
 - [How Claude marks AI-generated content](https://support.claude.com/en/articles/16266773-how-claude-marks-ai-generated-content): Anthropic's support article, the source for every claim here about Claude's marking and its limits
+- [AI Act Article 2](https://artificialintelligenceact.eu/article/2/): the territorial scope, quoted in the section on who the rule lands on
 - [AI Act Article 50](https://artificialintelligenceact.eu/article/50/): the transparency obligations, including the marking requirement in 50(2) and the deep fake disclosure in 50(4)
 - [AI Act Article 99](https://artificialintelligenceact.eu/article/99/): the penalty tiers
 - [Commission guidelines on transparency of AI-generated content](https://digital-strategy.ec.europa.eu/en/policies/guidelines-transparency-ai-generated-content): the guidelines and the Code of Practice that Anthropic signed
