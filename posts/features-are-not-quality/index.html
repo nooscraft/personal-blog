@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="en" data-theme="toggle">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <!-- Enable responsiveness on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;features-are-not-quality&#x2F;" />
+    
+    <!-- Robots meta -->
+    
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    
+
+    
+      
+        <meta name="description" content="A developer with 20 years of experience quit AI coding tools entirely. What stuck with me was not the decision but one line about what actually makes software good." />
+        <meta property="og:description" content="A developer with 20 years of experience quit AI coding tools entirely. What stuck with me was not the decision but one line about what actually makes software good." />
+        <meta property="twitter:description" content="A developer with 20 years of experience quit AI coding tools entirely. What stuck with me was not the decision but one line about what actually makes software good." />
+      
+    
+
+    <!-- Title -->
+    
+      
+    
+    <title>
+    
+    Features are not quality | Noos - Where Thought, Code, and Craft Converge
+    
+</title>
+    
+    <!-- Author -->
+    
+    <meta name="author" content="Oshadha G" />
+    
+    
+    <!-- Article specific meta tags -->
+    
+    
+    <meta property="article:published_time" content="2026-08-13T00:00:00+00:00" />
+    
+    
+    
+    
+    <meta property="article:tag" content="ai" />
+    
+    <meta property="article:tag" content="craftsmanship" />
+    
+    <meta property="article:tag" content="software-quality" />
+    
+    <meta property="article:tag" content="feature-bloat" />
+    
+    <meta property="article:tag" content="simplicity" />
+    
+    <meta property="article:tag" content="developer-tools" />
+    
+    
+    
+    
+    <meta property="article:section" content="Engineering" />
+    
+    
+    
+
+    <!-- Additional Facebook Meta Tags -->
+    <meta property="og:site_name" content="Noos - Where Thought, Code, and Craft Converge" />
+    <meta
+      property="og:url"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;features-are-not-quality&#x2F;"
+    />
+    <meta
+      property="og:type"
+      content="article"
+    />
+    <meta property="og:title" content="Features are not quality | Noos - Where Thought, Code, and Craft Converge" />
+
+    <!-- Additional Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      property="twitter:url"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;features-are-not-quality&#x2F;"
+    />
+    <meta name="twitter:title" content="Features are not quality | Noos - Where Thought, Code, and Craft Converge" />
+
+    <!-- Cover images -->
+           
+           
+           
+           
+      
+      
+      
+      
+      
+    
+
+    <meta
+      property="og:image"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;features-are-not-quality.png"
+    />
+
+    <meta
+      name="twitter:image"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;features-are-not-quality.png"
+    />
+
+
+
+    <!-- Favicons -->
+           
+           <!-- PNG + ICO (some clients ignore SVG favicons) -->
+           <link
+             rel="icon"
+             type="image/png"
+             sizes="96x96"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/favicon-96x96.png?v=3"
+           />
+           <link
+             rel="apple-touch-icon"
+             sizes="180x180"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/apple-touch-icon.png?v=3"
+           />
+           <link
+             rel="shortcut icon"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/favicon.ico?v=3"
+           />
+           
+
+    <!-- RSS Feed -->
+    
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      title="RSS"
+      href="https://noos.blog/atom.xml"
+    />
+    
+
+    <!-- Load Styles -->
+    
+      <link
+        rel="stylesheet"
+        href="https://noos.blog/site.css"
+      />
+    
+
+    <!-- Load Fonts -->
+    
+
+  
+
+
+
+
+
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+  
+
+
+
+<!-- Forcing Font -->
+<style>
+body {
+  font-family:
+    "JetBrains Mono", Menlo, Monaco, Lucida Console, Liberation Mono,
+    DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New,
+    monospace, serif !important;
+}
+</style>
+
+
+    <!-- Pass Theme Preference as Data Attribute -->
+    <script src="https://noos.blog/js/init-theme.js"></script>
+
+    <!-- Reference return to click position script -->
+    <script defer src="https://noos.blog/js/reference-return.js"></script>
+
+    <!-- Additional scripts -->
+    
+      
+        <script defer src="https://noos.blog/js/codeblock.js"></script>
+      
+            
+              <script defer src="https://noos.blog/js/toggle-theme.js"></script>
+            
+      
+<!-- MathJax script for rendering LaTeX math equations -->
+<script src="https://noos.blog/js/mathjax-config.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+  async
+></script>
+
+
+      
+<script type="text/javascript" src="https://noos.blog/elasticlunr.min.js"></script>
+<script type="text/javascript" src="https://noos.blog/js/search.js"></script>
+
+    
+    
+    <!-- Structured Data (JSON-LD) -->
+    
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Features are not quality",
+  
+  "description": "A developer with 20 years of experience quit AI coding tools entirely. What stuck with me was not the decision but one line about what actually makes software good.",
+  
+  
+  "datePublished": "2026-08-13T00:00:00+00:00",
+  
+  
+  "author": {
+    "@type": "Person",
+    "name": "Oshadha G"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Noos - Where Thought, Code, and Craft Converge",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https:&#x2F;&#x2F;noos.blog/icons/favicon/web-app-manifest-512x512.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;features-are-not-quality&#x2F;"
+  },
+  "url": "https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;features-are-not-quality&#x2F;",
+  
+  "keywords": "ai, craftsmanship, software-quality, feature-bloat, simplicity, developer-tools",
+  
+  "inLanguage": "en"
+}
+</script>
+
+
+    
+    <!-- Google Analytics (GA4) -->
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-54YK7R04LX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-54YK7R04LX', {
+        'anonymize_ip': true,
+        'respect_dnt': true
+      });
+    </script>
+    
+  </head>
+
+  <!-- Body element (contents of the page) -->
+  <body class="hack main container">
+    
+  
+    
+    
+      
+  
+  <section class="nav-header">
+    <nav
+      itemscope
+      itemtype="http://schema.org/SiteNavigationElement"
+      class="navbar"
+    >
+      <section class="nav-links">
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/"
+        >
+          <span itemprop="name">Home</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/about"
+        >
+          <span itemprop="name">About</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/categories"
+        >
+          <span itemprop="name">Categories</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/tags"
+        >
+          <span itemprop="name">Tags</span>
+        </a>
+        
+      </section>
+    </nav>
+    <aside class="user-actions-container">
+      
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        class="search-icon"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+        />
+      </svg>
+      <input type="text" id="search" placeholder="Search..." />
+      <section class="search-results" aria-live="polite">
+        <article class="search-results__items" role="list"></article>
+      </section>
+       
+      <a id="dark-mode-toggle" href="#">
+        <img
+          src="https://noos.blog/icons/sun.svg"
+          id="sun-icon"
+          style="filter: invert(1)"
+          alt="Light mode"
+        />
+        <img
+          src="https://noos.blog/icons/moon.svg"
+          id="moon-icon"
+          alt="Dark mode"
+        />
+      </a>
+       
+      <a
+        href="https://noos.blog/atom.xml"
+        class="feed-icon"
+        rel="noopener noreferrer"
+      >
+        <img
+          src="https://noos.blog/icons/rss.svg"
+          id="rss-icon"
+          alt="RSS feed"
+          class="social-icon"
+        />
+      </a>
+       
+    </aside>
+  </section>
+  
+
+    
+
+
+    <main>
+      
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">Features are not quality</h1>
+        
+        <data class="muted">
+    <svg class="icon i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <data>9 minute read</data>
+    
+    
+    <svg class="icon i-calendar" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <!-- Calendar outline -->
+        <rect x="3" y="6" width="26" height="23" rx="2" ry="2"/>
+        <!-- Binding rings -->
+        <line x1="10" y1="3" x2="10" y2="9"/>
+        <line x1="22" y1="3" x2="22" y2="9"/>
+        <!-- Top separator -->
+        <line x1="3" y1="12" x2="29" y2="12"/>
+    </svg>
+
+    Published: 2026-08-13
+    
+</data>
+        
+        
+        
+        
+        
+        
+          
+          
+          
+          
+          
+        
+        
+        <figure class="post-cover" style="margin: 1.25rem 0;">
+          <img src="&#x2F;images&#x2F;covers&#x2F;features-are-not-quality.png" alt="Features are not quality cover" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--color-border-default, #e5e7eb);" onerror="this.parentNode.style.display='none'" />
+        </figure>
+        
+    </header>
+
+    <article itemprop="articleBody">
+        
+            <!-- If no summary separate from content, just render content -->
+            <p>I recently read <a href="https://brettcodes.com/im-done-using-ai/">I'm done using AI</a> by Brett Chalupa, published 10 August 2026, where he announces he has stopped using AI tools, for coding and everything else. I use these tools myself, so I expected to skim it and move on. What stayed with me was not the decision to quit. It was one line about what makes software good.</p>
+<h2 id="twenty-years-then-eighteen-months">Twenty years, then eighteen months</h2>
+<p>Chalupa has been programming for 20 years, starting as a teenager making fansites and little video games before it became a career. Over the past 18 months, he writes, his working life and his craft were drastically changed by LLM-powered coding harnesses and what is often called agentic programming.</p>
+<p>He first met the idea through GitHub Copilot in Visual Studio Code and found it "distracting and basically useless". A colleague using an early chat interface watched the model invent a version of a software library that did not exist, so it could not be installed or used. No version number was ever named, and I will not invent one.</p>
+<p>In early 2025, management asked what he thought of AI coding. His answer: it is "often wrong, gets in my way, and doesn't help me code faster, so I don't use it." Management went to a conference, came back sold on LLMs revolutionising knowledge work, and issued a mandate: use AI tools or be left behind.</p>
+<p>So he tried in earnest. Cursor "didn't click" and, in his words, "ran horribly on Linux". He moved to Zed, using sidebar chat with auto-edit, and says it "honestly felt magical" at that time. By mid-2026 he could connect Linear to Claude Code and have it build a non-trivial project start to finish without editing a line of code. The work got done faster than he could have done alone, and he "barely had to think".</p>
+<h2 id="where-the-trust-actually-broke">Where the trust actually broke</h2>
+<p>The moment that broke it for him had nothing to do with code. He got sick one night and described his symptoms to the chat. I will let him tell it.</p>
+<blockquote>
+<p>I'm embarrassed to admit this, but one night when I was sick, I described all my symptoms and it told me to go to the Emergency Department at the hospital.</p>
+</blockquote>
+<p>The chat told him to go to the Emergency Department. He drove at midnight with the flu, waited two hours in the waiting room while his ibuprofen kicked in, and was told to go home and rest; he did not need to be there. It cost him hundreds of dollars.</p>
+<p>This was not a coding failure at all. It was a confident answer in a place where confidence is not the same as knowing. It landed because he had been treating the chat like a friend for months: book recommendations, career advice, business ideas, always supportive. Of course he trusted it; I probably would have too.</p>
+<h2 id="from-building-to-reviewing">From building to reviewing</h2>
+<p>His role at work had quietly changed. He describes becoming "just a code reviewer and a quality assurance tester" for what the harness produced, "basically just a hamster on a wheel, checking boxes, getting tickets done with no real purpose". On review he is blunt: "it's impossible to review the quantity of code the AI writes, and we've got a different AI to review it anyway!"</p>
+<p>He sums up where that left him like this.</p>
+<blockquote>
+<p>So what did this do? Well, it made me lazy. It made me stop caring. It made me a worse programmer. It made me depressed. Because I stopped doing the hard work, I stopped learning, I stopped growing, I stopped being the one making the software.</p>
+</blockquote>
+<p>He felt distant from the software. He could not explain precisely how something worked without asking the AI first. Underneath sits the question the post is really about: if the job is feeding Linear tickets into a CLI, why is he needed at all? He wondered about becoming an electrician.</p>
+<h2 id="what-the-one-good-study-says">What the one good study says</h2>
+<p>The best evidence I know of here is METR's <a href="https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/">randomized controlled trial</a>, published 10 July 2025. The setup: 16 experienced open-source developers, 246 real tasks in mature repositories they already knew well, run between February and June 2025, using primarily Cursor Pro with Claude 3.5 or 3.7 Sonnet. The finding: developers took 19% longer to complete issues when allowed to use AI tools. Afterwards, those same developers estimated AI had made them 20% faster. They were wrong in the opposite direction.</p>
+<p>The gap between what they felt and what was measured is the part I cannot leave alone. The tools feel fast. I have never once timed myself.</p>
+<p>Now the other side, because this cuts both ways. METR's own caveats: these developers and repositories do not represent most software development work, AI may speed up other groups, and the result may not hold for later models. In a <a href="https://metr.org/blog/2026-02-24-uplift-update/">follow-up posted on 24 February 2026</a>, they say they now believe developers are likely more sped up by AI in early 2026 than in early 2025, though they call the new data "very weak evidence". They are redesigning the experiment because selection bias got severe: developers now decline to participate rather than work without AI, and 30% to 50% told them they were not submitting tasks they did not want to do without AI.</p>
+<p>I will not use it as a hammer. 16 developers on projects they knew deeply is a real limitation, not a footnote.</p>
+<h2 id="my-two-cents-features-are-not-quality">My two cents: features are not quality</h2>
+<p>The sentence that started all this for me is his line about cared-for software.</p>
+<blockquote>
+<p>Upon reflection, I've come to believe that quality software is not about how many features something has or how quickly it is built but rather how cared for it is by the designers, developers, and product people who work on it.</p>
+</blockquote>
+<p>Quitting AI did not push him out of software. He went back to game programming. He finished his book on coding games for the Playdate, made some small games, and built Usagi, a 2D Lua game engine written in Rust. When he tried cutting AI back to trivial tasks only, it never held; he slid back into using it for everything, and he calls it an all or nothing decision. He is plain about the risk: "It is possible I will be terminated." His closing line is "Here's to writing code by hand."</p>
+<p>His line says something I had felt without saying out loud: a feature list is not a product. The software I actually like does a small number of things and gets out of the way. My editor, my terminal and the generator behind this blog have barely changed shape in years, and I am grateful for it. This is an observation from using software, not a measured result. When a tool I rely on ships another panel or assistant I did not ask for, I do not feel served; I feel managed.</p>
+<h2 id="we-build-for-ourselves-and-call-it-a-product">We build for ourselves and call it a product</h2>
+<p>My suspicion, after years of using and building software: a lot of features get shipped to satisfy the people building them, not the people using them. It feels like progress. The roadmap looks full, the changelog looks healthy, everyone feels productive. Then the thing that arrives at the user is heavier, slower and harder to understand than what it replaced.</p>
+<p>Complexity gets added by people who will never have to live inside it. The person who built the new panel knows exactly where everything is; the user opens the app one morning and their tool has moved. None of this is malicious. Adding is easier than subtracting, and adding is what gets rewarded. I have shipped my share of it. This is not a law, but the pattern keeps showing up in my own work, and I do not love what that says about me.</p>
+<h2 id="simple-keeps-winning">Simple keeps winning</h2>
+<p>Given a real choice, people reach for the simpler thing. Not always, but often enough that I trust the pattern.</p>
+<p>The honest other half: the long, patient engagement software used to earn seems mostly gone. The main thing that still holds attention for hours is the stuff engineered for scrolling, and that is not a model anyone building a tool should want to copy. I wrote about my own version of this in <a href="https://noos.blog/posts/losing-interest-in-everything/">when nothing feels fun any more</a>, after noticing I was bouncing off things that used to absorb me for days.</p>
+<h2 id="where-i-land">Where I land</h2>
+<p>I am not quitting. I use these tools most days and I plan to keep using them; they earn their place for boilerplate and getting unstuck. What is hyped and not yet proven, at least for work like mine, is the ten-times-faster story. I have not tried quitting the way Brett did, so I do not know what that would do to my work.</p>
+<p>His question is the right one to sit with: what is the cost, and who pays it. He cites Cal Newport's Slow Productivity and its encouragement to work at a natural pace; he says he does not see the need to work faster. He also writes about the true cost of AI, "from the data centers to the water usage and beyond", and says it is "largely hidden". I have not verified any of those figures myself, so I will not quote numbers. It deserves more attention than it gets, though. I will keep using the tools, and keep asking what they cost. Let's see how it goes.</p>
+<hr />
+<h3 id="references">References</h3>
+<ul>
+<li><a href="https://brettcodes.com/im-done-using-ai/">I'm done using AI</a>: Brett Chalupa's post, published 10 August 2026</li>
+<li><a href="https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/">Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity</a>: METR's write-up of the randomized controlled trial</li>
+<li><a href="https://arxiv.org/abs/2507.09089">The same study on arXiv</a>: full paper, arXiv:2507.09089</li>
+<li><a href="https://metr.org/blog/2026-02-24-uplift-update/">We are Changing our Developer Productivity Experiment Design</a>: METR's follow-up on selection bias, 24 February 2026</li>
+<li><a href="https://calnewport.com/my-new-book-slow-productivity/">Slow Productivity</a>: Cal Newport on the book Brett cites</li>
+<li><a href="https://pdbook.net">Make Games for Playdate with Lua</a>: the book he finished</li>
+<li><a href="https://usagiengine.com/">Usagi</a>: his 2D Lua game engine, with the <a href="https://github.com/brettchalupa/usagi">source on GitHub</a></li>
+</ul>
+
+        
+    </article>
+
+    <!-- Comment section -->
+    
+      
+        
+          <script
+  src="https://giscus.app/client.js"
+  data-repo="nooscraft&#x2F;personal-blog"
+  data-repo-id="R_kgDOQJ_XNg"
+  data-category="General"
+  data-category-id="DIC_kwDOQJ_XNs4CxOmG"
+  data-mapping="pathname"
+  data-strict="0"
+  data-reactions-enabled="1"
+  data-emit-metadata="0"
+  data-input-position="bottom"
+
+  
+  data-theme="https:&#x2F;&#x2F;noos.blog&#x2F;css&#x2F;giscus-theme.css"
+  
+
+  data-lang="en"
+  data-loading="lazy"
+  crossorigin="anonymous"
+  async
+></script>
+
+        
+      
+    
+
+
+    <!-- Page footer -->
+    
+    <footer>
+        <hr>
+        <p>
+            
+            
+                
+                in <a href="https://noos.blog/categories/engineering/">Engineering</a>
+            
+            
+                and
+                tagged
+                
+                    <a href="https://noos.blog/tags/ai/">ai</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/craftsmanship/">craftsmanship</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/software-quality/">software-quality</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/feature-bloat/">feature-bloat</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/simplicity/">simplicity</a>
+                    
+                        
+                            
+                                and
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/developer-tools/">developer-tools</a>
+                    
+                        
+                    
+                
+            
+        </p>
+
+        <!-- Revision history (optional) -->
+        
+          
+            
+              
+            
+          
+        
+
+        
+        
+    </footer>
+
+
+</article>
+
+
+    </main>
+    
+
+  </body>
+</html>

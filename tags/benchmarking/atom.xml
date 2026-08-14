@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Noos - Where Thought, Code, and Craft Converge - benchmarking</title>
+    <subtitle>Personal blog about programming, technology, and engineering insights. Topics include Rust, DevOps, Linux, and software craftsmanship.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://noos.blog/tags/benchmarking/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://noos.blog"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2025-11-02T00:00:00+00:00</updated>
+    <id>https://noos.blog/tags/benchmarking/atom.xml</id>
+    <entry xml:lang="en">
+        <title>Java vs Rust: A ROUGE-L Performance Comparison</title>
+        <published>2025-11-02T00:00:00+00:00</published>
+        <updated>2025-11-02T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/java-vs-rust-rouge-l-performance/"/>
+        <id>https://noos.blog/posts/java-vs-rust-rouge-l-performance/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/java-vs-rust-rouge-l-performance/">&lt;h3 id=&quot;the-experiment&quot;&gt;The Experiment&lt;&#x2F;h3&gt;
+&lt;p&gt;I was curious about the performance differences between Java and Rust for a specific workload. So I built identical ROUGE-L implementations in both languages and ran some benchmarks. The code was AI-generated, the algorithm was the same, and the results were mathematically equivalent. But the performance? That&#x27;s where it gets interesting.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;what-is-rouge-l&quot;&gt;What is ROUGE-L?&lt;&#x2F;h3&gt;
+&lt;p&gt;ROUGE-L (Recall-Oriented Understudy for Gisting Evaluation - Longest Common Subsequence) is a metric used to evaluate text summarization quality. It&#x27;s part of the &lt;a href=&quot;https:&#x2F;&#x2F;aclanthology.org&#x2F;W04-1013&#x2F;&quot;&gt;ROUGE evaluation suite&lt;&#x2F;a&gt; developed by Chin-Yew Lin in 2004, which has become a standard in natural language processing for assessing how well generated summaries match reference summaries.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;How it works:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;ROUGE-L measures similarity based on the Longest Common Subsequence (LCS) between sequences of words. It calculates three metrics:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Precision&lt;&#x2F;strong&gt;: LCS &#x2F; (number of words in candidate summary)&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Recall&lt;&#x2F;strong&gt;: LCS &#x2F; (number of words in reference summary)&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;F-Measure&lt;&#x2F;strong&gt;: 2 × (Precision × Recall) &#x2F; (Precision + Recall)&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;The algorithm uses dynamic programming with O(m × n) time complexity, where m and n are the lengths of the two sequences. It&#x27;s a straightforward implementation, which makes it a good candidate for comparing language performance.&lt;&#x2F;p&gt;
+&lt;p&gt;ROUGE-L is particularly useful because it doesn&#x27;t require exact word matches—it finds the longest sequence of words that appear in the same order in both texts, making it more flexible than n-gram overlap methods like ROUGE-1 or ROUGE-2.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;the-setup&quot;&gt;The Setup&lt;&#x2F;h3&gt;
+&lt;p&gt;Both implementations:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Use the same dynamic programming algorithm for LCS calculation&lt;&#x2F;li&gt;
+&lt;li&gt;Tokenize text the same way (lowercase, whitespace-based splitting)&lt;&#x2F;li&gt;
+&lt;li&gt;Handle the same 16 test examples across 6 complexity levels&lt;&#x2F;li&gt;
+&lt;li&gt;Produce identical mathematical results&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;The only difference is the language they&#x27;re written in.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;Test scenarios include:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Basic text comparisons&lt;&#x2F;li&gt;
+&lt;li&gt;Structured data (JSON, HTML)&lt;&#x2F;li&gt;
+&lt;li&gt;Mixed content with embedded structures&lt;&#x2F;li&gt;
+&lt;li&gt;Real-world technical documentation&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;You can find the full comparison project on &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;nooscraft&#x2F;rouge-l-comparison&quot;&gt;GitHub&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;the-results&quot;&gt;The Results&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;strong&gt;Accuracy:&lt;&#x2F;strong&gt; Both implementations produced &lt;strong&gt;100% identical results&lt;&#x2F;strong&gt; across all 16 test cases. Every F-Measure, Precision, and Recall value matched perfectly. This confirms the algorithms are mathematically equivalent.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;Performance:&lt;&#x2F;strong&gt; That&#x27;s where things get interesting.&lt;&#x2F;p&gt;
+&lt;p&gt;After multiple benchmark runs with 10 iterations each:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;Java:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Average: 52-62ms per run&lt;&#x2F;li&gt;
+&lt;li&gt;Median: 51-61ms&lt;&#x2F;li&gt;
+&lt;li&gt;Standard deviation: 1.5-13ms (relatively consistent)&lt;&#x2F;li&gt;
+&lt;li&gt;Includes JVM startup time in every run&lt;&#x2F;li&gt;
+&lt;li&gt;Performance stabilizes quickly after first iteration&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;strong&gt;Rust:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Average: 21-40ms (heavily skewed by first cold start)&lt;&#x2F;li&gt;
+&lt;li&gt;Median: 2.5-4ms (after warmup)&lt;&#x2F;li&gt;
+&lt;li&gt;First iteration: 190-360ms (cold start overhead including compilation)&lt;&#x2F;li&gt;
+&lt;li&gt;Warm average: 2.4-4.4ms (excluding first run)&lt;&#x2F;li&gt;
+&lt;li&gt;Standard deviation: 60-115ms (largely due to cold start variability)&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;strong&gt;The speedup:&lt;&#x2F;strong&gt; After warmup, Rust was consistently &lt;strong&gt;12-25x faster&lt;&#x2F;strong&gt; than Java for this workload. For example, in one run: Java median 56.66ms vs Rust warm average 2.50ms = &lt;strong&gt;24.76x speedup&lt;&#x2F;strong&gt;. The median Rust time (2.5-3ms) versus Java&#x27;s median (52-56ms) tells the story.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;what-this-means&quot;&gt;What This Means&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;strong&gt;For Java:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;JVM startup adds significant overhead (~50-60ms)&lt;&#x2F;li&gt;
+&lt;li&gt;Once running, performance is consistent&lt;&#x2F;li&gt;
+&lt;li&gt;The runtime environment is predictable but has a fixed cost&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;strong&gt;For Rust:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Cold start includes compilation&#x2F;optimization overhead (~200-350ms)&lt;&#x2F;li&gt;
+&lt;li&gt;Once warmed up, execution is extremely fast (~2.5-3ms)&lt;&#x2F;li&gt;
+&lt;li&gt;Compiled binary runs without runtime interpretation overhead&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;strong&gt;The reality:&lt;&#x2F;strong&gt; In production, both would run with warmup periods. Java would maintain its ~55ms average. Rust would settle into its ~2.5-3ms sweet spot. The performance difference would still be substantial.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;observations&quot;&gt;Observations&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;strong&gt;Tradeoffs:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Startup time:&lt;&#x2F;strong&gt; Java has consistent startup overhead. Rust has a larger initial cold start but negligible warm overhead.&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Consistency:&lt;&#x2F;strong&gt; Java&#x27;s performance is more predictable from run to run. Rust&#x27;s cold start variability makes early measurements misleading.&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Warm performance:&lt;&#x2F;strong&gt; Once both are warmed up, Rust&#x27;s compiled nature provides significant advantages for CPU-bound work.&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Ecosystem:&lt;&#x2F;strong&gt; Java has mature NLP libraries. Rust has growing ecosystem support. For this isolated algorithm, both worked well.&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;&lt;strong&gt;The &quot;just for fun&quot; part:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;This was an experiment. I wanted to see what would happen if you took the same algorithm, implemented it identically in two languages, and compared performance. The answer: same results, dramatically different performance characteristics.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;why-this-matters&quot;&gt;Why This Matters&lt;&#x2F;h3&gt;
+&lt;p&gt;For production systems evaluating summarization quality:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Throughput matters:&lt;&#x2F;strong&gt; Processing thousands of summaries per second benefits from Rust&#x27;s speed&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Latency matters:&lt;&#x2F;strong&gt; If this runs in a request path, 2.5ms vs 55ms is significant&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Infrastructure matters:&lt;&#x2F;strong&gt; Java&#x27;s JVM ecosystem vs Rust&#x27;s compiled binary have different deployment considerations&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Neither is &quot;better&quot; in absolute terms. They have different tradeoffs. Understanding those tradeoffs is what matters.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;references&quot;&gt;References&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;aclanthology.org&#x2F;W04-1013&#x2F;&quot;&gt;Lin, C.-Y. (2004). ROUGE: A Package for Automatic Evaluation of Summaries&lt;&#x2F;a&gt; - The original paper introducing ROUGE metrics&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;ROUGE_(metric)&quot;&gt;ROUGE Metrics Documentation&lt;&#x2F;a&gt; - Wikipedia overview of ROUGE evaluation metrics&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;nooscraft&#x2F;rouge-l-comparison&quot;&gt;Comparison Project on GitHub&lt;&#x2F;a&gt; - Full source code and benchmarks&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;The code is &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;nooscraft&#x2F;rouge-l-comparison&quot;&gt;available on GitHub&lt;&#x2F;a&gt; if you want to run your own benchmarks. Same algorithm, same results, different performance characteristics. Sometimes the fun experiments teach you the most.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+</feed>

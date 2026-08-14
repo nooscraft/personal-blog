@@ -1,0 +1,550 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Noos - Where Thought, Code, and Craft Converge - ai</title>
+    <subtitle>Personal blog about programming, technology, and engineering insights. Topics include Rust, DevOps, Linux, and software craftsmanship.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://noos.blog/tags/ai/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://noos.blog"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2026-08-14T00:00:00+00:00</updated>
+    <id>https://noos.blog/tags/ai/atom.xml</id>
+    <entry xml:lang="en">
+        <title>The watermark a screenshot removes</title>
+        <published>2026-08-14T00:00:00+00:00</published>
+        <updated>2026-08-14T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/watermark-a-screenshot-removes/"/>
+        <id>https://noos.blog/posts/watermark-a-screenshot-removes/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/watermark-a-screenshot-removes/">&lt;blockquote&gt;
+&lt;p&gt;&lt;em&gt;Updated 2026-08-14: gave the opt-in question a fuller hearing.&lt;&#x2F;em&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;Anthropic has published a &lt;a href=&quot;https:&#x2F;&#x2F;support.claude.com&#x2F;en&#x2F;articles&#x2F;16266773-how-claude-marks-ai-generated-content&quot;&gt;support article&lt;&#x2F;a&gt; on how Claude marks AI-generated content. The rule behind it is Article 50 of the EU AI Act, and it started applying on 2 August 2026. Today is 14 August 2026, so the obligation is twelve days old. My reaction is split: the marking is a genuine step forward, and the job it is asked to do cannot be done with the tools available.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;what-claude-actually-marks&quot;&gt;What Claude actually marks&lt;&#x2F;h2&gt;
+&lt;p&gt;The article describes two techniques: a watermark embedded in the text itself, and signed provenance metadata attached to files. Here is how the article describes the text watermark:&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;When a supported Claude model generates text, it weaves an imperceptible watermark directly into the text itself. You won&#x27;t see it, and it doesn&#x27;t change the meaning, quality, or readability of Claude&#x27;s response.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;The watermark is applied at the model level, so it appears whatever Claude product or surface produced the text. It is part of the text, so it travels with copy and paste, and Anthropic says it &quot;may persist through some editing&quot;. That is not a number, and I will not invent one.&lt;&#x2F;p&gt;
+&lt;p&gt;On the file side, provenance metadata attaches to three supported types: .svg, .png and .jpg. It follows the Coalition for Content Provenance and Authenticity (C2PA) open standard. If present, it signals Claude processed the file and lets you detect tampering afterwards.&lt;&#x2F;p&gt;
+&lt;p&gt;Coverage spans Claude Platform (API), Claude, Claude Code, Claude Cowork, and Claude Tag. The watermarks also follow supported models into AWS, Google Cloud, and Microsoft Foundry; provenance metadata may not be supported on every platform. Models launched on or after 2 August 2026 have marking at launch; older models are still being worked on under a legal transition period.&lt;&#x2F;p&gt;
+&lt;p&gt;One detail matters for later: marking applies wherever Claude is offered, worldwide, not only in the EU.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;what-the-law-asks-for&quot;&gt;What the law asks for&lt;&#x2F;h2&gt;
+&lt;p&gt;Article 50&#x27;s transparency obligations apply from 2 August 2026. For generative systems, output must carry a machine-readable marking that identifies it as artificial. The paragraph then adds a qualifier, quoted here:&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;[Providers] shall ensure that the outputs of the AI system are marked in a machine-readable format and detectable as artificially generated or manipulated. [...] Such solutions shall be effective, interoperable, robust and reliable as far as this is technically feasible.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;In plain terms, the law only asks for this to work as far as the technology allows, with content type, cost, and the state of the art factored in. That qualifier tells you the drafters knew the technology was not there.&lt;&#x2F;p&gt;
+&lt;p&gt;Standard assistive editing, input the AI does not substantially alter, and legally authorised criminal investigations are exempt. Article 50(4) on deep fakes carves out satire and fiction, along with text that remains under human editorial responsibility.&lt;&#x2F;p&gt;
+&lt;p&gt;The AI Omnibus reached provisional agreement on 7 May 2026, Parliament voted to adopt it on 16 June 2026, and Council approval is still pending. It delays the machine-readable marking duty until 2 December 2026 for generative systems placed on the market before 2 August 2026.&lt;&#x2F;p&gt;
+&lt;p&gt;Penalties sit in Article 99. Breaches of Article 50 cost up to 15 million euro or 3% of total worldwide annual turnover, whichever is higher. For SMEs and small mid-caps it is the lower of the two.&lt;&#x2F;p&gt;
+&lt;p&gt;The Commission has published guidelines and a Code of Practice on Transparency of AI-generated Content. Anthropic signed it as a provider of both generative models and generative systems; adhering demonstrates compliance, and declining requires equivalently adequate alternatives. I have not read the full Code, only the Commission material and Anthropic&#x27;s summary.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-admissions-in-the-documentation&quot;&gt;The admissions in the documentation&lt;&#x2F;h2&gt;
+&lt;p&gt;A mark does not mean what most people will assume: Anthropic states that a detected mark is &quot;not fully conclusive&quot;. Claude may not be the original author at all, since plenty of people hand it work that was already theirs. The article says it directly:&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Claude may not be the original author. People often use Claude to proofread, translate, summarize, or convert files. The output can carry a Claude mark even if the underlying ideas, text, or data originated from another source&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;Read that again. Someone who writes their own work and uses Claude to tidy it carries the same mark as a fully generated draft. The signal cannot tell those two apart.&lt;&#x2F;p&gt;
+&lt;p&gt;Then there are the ways a mark goes missing, and the article lists them:&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Lack of a detected mark doesn&#x27;t mean the content wasn&#x27;t AI-generated or processed. Content generated by Claude may not carry a detectable mark if, for example:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;The text has been heavily edited, paraphrased, translated, or mixed into other writing;&lt;&#x2F;li&gt;
+&lt;li&gt;The passage is very short, leaving too little text for a reliable signal;&lt;&#x2F;li&gt;
+&lt;li&gt;A file&#x27;s metadata was stripped through format conversion, re-saving, screenshots, or other means;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;So a screenshot defeats the image credential, and a paraphrase from another model defeats the text watermark. Neither takes any skill.&lt;&#x2F;p&gt;
+&lt;p&gt;And none of it can be checked today: Anthropic says detection tooling is coming in forthcoming technical documentation, but none is published yet. Nobody outside Anthropic can verify how well it holds up, and that includes me: I have not tested it, because there is nothing public to test with.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;who-the-rule-actually-lands-on&quot;&gt;Who the rule actually lands on&lt;&#x2F;h2&gt;
+&lt;p&gt;Claude is a paid product and I pay for it. I live outside the EU. My output gets marked all the same. What this post has not said yet: the law&#x27;s own reach is narrower than the rollout. The scope provision is Article 2, with two limbs:&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;providers placing on the market or putting into service AI systems or placing on the market general-purpose AI models in the Union, irrespective of whether those providers are established or located within the Union or in a third country [...] providers and deployers of AI systems that have their place of establishment or are located in a third country, where the output produced by the AI system is used in the Union&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;The second limb covers output used in the Union, and mine never goes there; I am one of those users outside the EU. But the marking duty has no territorial qualifier of its own: Article 2 decides the whole question, and its first limb covers providers placing general-purpose AI models on the Union market wherever they are based. Anthropic is such a provider, so the duty could be read as attaching at the model, not per user. Which reading is right I cannot settle: I am not a lawyer, this is a reading, not a ruling. What survives both readings is the point: on the narrow one, marking my output is a product choice rather than a compelled one; on the broad one, the law sets a floor for output tied to the Union and says nothing about choice for people it was never written to protect. Either way, no rule in it forbids a setting for those users. I am not attacking Anthropic; it may well be the right call, but a decision can be questioned in a way an obligation cannot.&lt;&#x2F;p&gt;
+&lt;p&gt;Why is this not a setting? I looked in the support article for an off switch, an opt-in, a difference between plans. Nothing. An absence in one document is not proof about the product. As described, marking is applied to you rather than chosen by you.&lt;&#x2F;p&gt;
+&lt;p&gt;The standard objection: a mark you can decline is worth little, because anyone passing generated work off as their own would decline it first. I felt its force. But it assumes the mark must resist someone who does not want it there, and the support article already says it does not: a screenshot strips the file credential, a paraphrase strips the text watermark. The mark is already declinable by anyone who reads the documentation; a setting would change the price of declining, from one screenshot to one checkbox, and it would not change who ends up unmarked. Someone who takes the screenshot is unaffected either way; someone who never thinks about it is marked either way. The only group a setting reaches is the middle one: people who want a deliberate choice about their paid output and cannot make one. That group is small, I am in it, and that is worth admitting.&lt;&#x2F;p&gt;
+&lt;p&gt;Three counters I cannot dismiss. Defaults move behaviour in aggregate even when trivially defeatable: taking a screenshot is not the same act as ticking a box, and I suspect, with no numbers published, fewer people would do the first. A per-region or per-account switch means locating the user, and being wrong in the wrong direction points at the penalty ceiling quoted earlier in this post; one worldwide code path has no such failure mode. That is speculation about a decision I was not in the room for. The signed credential on images is different: it lets you show a file has not been altered, something for the owner rather than just about them, so opting out is odd in a way declining an invisible text watermark is not.&lt;&#x2F;p&gt;
+&lt;p&gt;The question stays open because the article does not answer it: no reason for worldwide marking, none for the missing setting. Not knowing the reason is not the same as there being none.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;where-the-eu-really-does-look-slower&quot;&gt;Where the EU really does look slower&lt;&#x2F;h2&gt;
+&lt;p&gt;Now the case that fuels the &quot;EU holds AI back&quot; talk. It is a different law, and conflating the two is a mistake I want to avoid. On 8 June 2026 Apple published a newsroom post: Siri AI is delayed in the EU for iOS 27 and iPadOS 27. The regulation named is the Digital Markets Act, not the AI Act.&lt;&#x2F;p&gt;
+&lt;p&gt;The delayed list is not small: Siri AI, a dedicated app to revisit conversations, the expanded Visual Intelligence experience, integrated writing tools, Siri mode in Camera on iOS, and Siri AI on watchOS 27. EU users keep Siri AI on macOS 27 and visionOS 27.&lt;&#x2F;p&gt;
+&lt;p&gt;Under EU regulators&#x27; &quot;extreme interpretation of the DMA&quot;, Apple says it would have to give any virtual assistant direct access to users&#x27; private data. It would also have to let them directly control other installed applications once Siri AI shipped in the EU. All of this, in Apple&#x27;s words, &quot;without the essential protections necessary to keep users and their data safe&quot;. Apple closes with &quot;there is currently no timeline for Siri AI&#x27;s availability in the EU on iOS and iPadOS.&quot;&lt;&#x2F;p&gt;
+&lt;p&gt;This is the strongest evidence that EU rules cost European users access to things other people have.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-case-for-it&quot;&gt;The case for it&lt;&#x2F;h2&gt;
+&lt;p&gt;The other side deserves a fair hearing. Anthropic could have geofenced all of this to Europe. It did not. The marking applies worldwide, so an EU rule raised the floor everywhere, including for people who never voted on it.&lt;&#x2F;p&gt;
+&lt;p&gt;C2PA is an open standard used across the industry, not one vendor&#x27;s proprietary tag, and an open standard is what lets anyone else build detectors.&lt;&#x2F;p&gt;
+&lt;p&gt;Provenance on images has a clearer job than watermarking text: a signed credential that shows tampering answers a concrete question.&lt;&#x2F;p&gt;
+&lt;p&gt;A norm that generated media carries provenance seems worth having even when the mechanism is weak, because the alternative was nothing at all.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;where-i-land&quot;&gt;Where I land&lt;&#x2F;h2&gt;
+&lt;p&gt;The marking is worth doing and cannot carry what people will ask of it. I am glad it was not fenced off to Europe only. The switch still seems fair to ask for on output I pay to generate outside the rule&#x27;s reach. Both can be true. I would rather read honest limits in a support article than a confident claim that would not survive contact with a screenshot.&lt;&#x2F;p&gt;
+&lt;p&gt;When the detection documentation lands, I will feed the watermark some heavy editing and see what survives. Let&#x27;s see how it goes.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h3 id=&quot;references&quot;&gt;References&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;support.claude.com&#x2F;en&#x2F;articles&#x2F;16266773-how-claude-marks-ai-generated-content&quot;&gt;How Claude marks AI-generated content&lt;&#x2F;a&gt;: Anthropic&#x27;s support article, the source for every claim here about Claude&#x27;s marking and its limits&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;artificialintelligenceact.eu&#x2F;article&#x2F;2&#x2F;&quot;&gt;AI Act Article 2&lt;&#x2F;a&gt;: the territorial scope, quoted in the section on who the rule lands on&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;artificialintelligenceact.eu&#x2F;article&#x2F;50&#x2F;&quot;&gt;AI Act Article 50&lt;&#x2F;a&gt;: the transparency obligations, including the marking requirement in 50(2) and the deep fake disclosure in 50(4)&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;artificialintelligenceact.eu&#x2F;article&#x2F;99&#x2F;&quot;&gt;AI Act Article 99&lt;&#x2F;a&gt;: the penalty tiers&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;digital-strategy.ec.europa.eu&#x2F;en&#x2F;policies&#x2F;guidelines-transparency-ai-generated-content&quot;&gt;Commission guidelines on transparency of AI-generated content&lt;&#x2F;a&gt;: the guidelines and the Code of Practice that Anthropic signed&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;www.apple.com&#x2F;newsroom&#x2F;2026&#x2F;06&#x2F;due-to-dma-siri-ai-delayed-in-eu-for-ios-27-and-ipados-27&#x2F;&quot;&gt;Due to DMA, Siri AI delayed in EU for iOS 27 and iPadOS 27&lt;&#x2F;a&gt;: Apple&#x27;s newsroom post, 8 June 2026&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;c2pa.org&quot;&gt;C2PA&lt;&#x2F;a&gt;: the Coalition for Content Provenance and Authenticity and its open standard&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Features are not quality</title>
+        <published>2026-08-13T00:00:00+00:00</published>
+        <updated>2026-08-13T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/features-are-not-quality/"/>
+        <id>https://noos.blog/posts/features-are-not-quality/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/features-are-not-quality/">&lt;p&gt;I recently read &lt;a href=&quot;https:&#x2F;&#x2F;brettcodes.com&#x2F;im-done-using-ai&#x2F;&quot;&gt;I&#x27;m done using AI&lt;&#x2F;a&gt; by Brett Chalupa, published 10 August 2026, where he announces he has stopped using AI tools, for coding and everything else. I use these tools myself, so I expected to skim it and move on. What stayed with me was not the decision to quit. It was one line about what makes software good.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;twenty-years-then-eighteen-months&quot;&gt;Twenty years, then eighteen months&lt;&#x2F;h2&gt;
+&lt;p&gt;Chalupa has been programming for 20 years, starting as a teenager making fansites and little video games before it became a career. Over the past 18 months, he writes, his working life and his craft were drastically changed by LLM-powered coding harnesses and what is often called agentic programming.&lt;&#x2F;p&gt;
+&lt;p&gt;He first met the idea through GitHub Copilot in Visual Studio Code and found it &quot;distracting and basically useless&quot;. A colleague using an early chat interface watched the model invent a version of a software library that did not exist, so it could not be installed or used. No version number was ever named, and I will not invent one.&lt;&#x2F;p&gt;
+&lt;p&gt;In early 2025, management asked what he thought of AI coding. His answer: it is &quot;often wrong, gets in my way, and doesn&#x27;t help me code faster, so I don&#x27;t use it.&quot; Management went to a conference, came back sold on LLMs revolutionising knowledge work, and issued a mandate: use AI tools or be left behind.&lt;&#x2F;p&gt;
+&lt;p&gt;So he tried in earnest. Cursor &quot;didn&#x27;t click&quot; and, in his words, &quot;ran horribly on Linux&quot;. He moved to Zed, using sidebar chat with auto-edit, and says it &quot;honestly felt magical&quot; at that time. By mid-2026 he could connect Linear to Claude Code and have it build a non-trivial project start to finish without editing a line of code. The work got done faster than he could have done alone, and he &quot;barely had to think&quot;.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;where-the-trust-actually-broke&quot;&gt;Where the trust actually broke&lt;&#x2F;h2&gt;
+&lt;p&gt;The moment that broke it for him had nothing to do with code. He got sick one night and described his symptoms to the chat. I will let him tell it.&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;I&#x27;m embarrassed to admit this, but one night when I was sick, I described all my symptoms and it told me to go to the Emergency Department at the hospital.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;The chat told him to go to the Emergency Department. He drove at midnight with the flu, waited two hours in the waiting room while his ibuprofen kicked in, and was told to go home and rest; he did not need to be there. It cost him hundreds of dollars.&lt;&#x2F;p&gt;
+&lt;p&gt;This was not a coding failure at all. It was a confident answer in a place where confidence is not the same as knowing. It landed because he had been treating the chat like a friend for months: book recommendations, career advice, business ideas, always supportive. Of course he trusted it; I probably would have too.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;from-building-to-reviewing&quot;&gt;From building to reviewing&lt;&#x2F;h2&gt;
+&lt;p&gt;His role at work had quietly changed. He describes becoming &quot;just a code reviewer and a quality assurance tester&quot; for what the harness produced, &quot;basically just a hamster on a wheel, checking boxes, getting tickets done with no real purpose&quot;. On review he is blunt: &quot;it&#x27;s impossible to review the quantity of code the AI writes, and we&#x27;ve got a different AI to review it anyway!&quot;&lt;&#x2F;p&gt;
+&lt;p&gt;He sums up where that left him like this.&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;So what did this do? Well, it made me lazy. It made me stop caring. It made me a worse programmer. It made me depressed. Because I stopped doing the hard work, I stopped learning, I stopped growing, I stopped being the one making the software.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;He felt distant from the software. He could not explain precisely how something worked without asking the AI first. Underneath sits the question the post is really about: if the job is feeding Linear tickets into a CLI, why is he needed at all? He wondered about becoming an electrician.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;what-the-one-good-study-says&quot;&gt;What the one good study says&lt;&#x2F;h2&gt;
+&lt;p&gt;The best evidence I know of here is METR&#x27;s &lt;a href=&quot;https:&#x2F;&#x2F;metr.org&#x2F;blog&#x2F;2025-07-10-early-2025-ai-experienced-os-dev-study&#x2F;&quot;&gt;randomized controlled trial&lt;&#x2F;a&gt;, published 10 July 2025. The setup: 16 experienced open-source developers, 246 real tasks in mature repositories they already knew well, run between February and June 2025, using primarily Cursor Pro with Claude 3.5 or 3.7 Sonnet. The finding: developers took 19% longer to complete issues when allowed to use AI tools. Afterwards, those same developers estimated AI had made them 20% faster. They were wrong in the opposite direction.&lt;&#x2F;p&gt;
+&lt;p&gt;The gap between what they felt and what was measured is the part I cannot leave alone. The tools feel fast. I have never once timed myself.&lt;&#x2F;p&gt;
+&lt;p&gt;Now the other side, because this cuts both ways. METR&#x27;s own caveats: these developers and repositories do not represent most software development work, AI may speed up other groups, and the result may not hold for later models. In a &lt;a href=&quot;https:&#x2F;&#x2F;metr.org&#x2F;blog&#x2F;2026-02-24-uplift-update&#x2F;&quot;&gt;follow-up posted on 24 February 2026&lt;&#x2F;a&gt;, they say they now believe developers are likely more sped up by AI in early 2026 than in early 2025, though they call the new data &quot;very weak evidence&quot;. They are redesigning the experiment because selection bias got severe: developers now decline to participate rather than work without AI, and 30% to 50% told them they were not submitting tasks they did not want to do without AI.&lt;&#x2F;p&gt;
+&lt;p&gt;I will not use it as a hammer. 16 developers on projects they knew deeply is a real limitation, not a footnote.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;my-two-cents-features-are-not-quality&quot;&gt;My two cents: features are not quality&lt;&#x2F;h2&gt;
+&lt;p&gt;The sentence that started all this for me is his line about cared-for software.&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Upon reflection, I&#x27;ve come to believe that quality software is not about how many features something has or how quickly it is built but rather how cared for it is by the designers, developers, and product people who work on it.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;Quitting AI did not push him out of software. He went back to game programming. He finished his book on coding games for the Playdate, made some small games, and built Usagi, a 2D Lua game engine written in Rust. When he tried cutting AI back to trivial tasks only, it never held; he slid back into using it for everything, and he calls it an all or nothing decision. He is plain about the risk: &quot;It is possible I will be terminated.&quot; His closing line is &quot;Here&#x27;s to writing code by hand.&quot;&lt;&#x2F;p&gt;
+&lt;p&gt;His line says something I had felt without saying out loud: a feature list is not a product. The software I actually like does a small number of things and gets out of the way. My editor, my terminal and the generator behind this blog have barely changed shape in years, and I am grateful for it. This is an observation from using software, not a measured result. When a tool I rely on ships another panel or assistant I did not ask for, I do not feel served; I feel managed.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;we-build-for-ourselves-and-call-it-a-product&quot;&gt;We build for ourselves and call it a product&lt;&#x2F;h2&gt;
+&lt;p&gt;My suspicion, after years of using and building software: a lot of features get shipped to satisfy the people building them, not the people using them. It feels like progress. The roadmap looks full, the changelog looks healthy, everyone feels productive. Then the thing that arrives at the user is heavier, slower and harder to understand than what it replaced.&lt;&#x2F;p&gt;
+&lt;p&gt;Complexity gets added by people who will never have to live inside it. The person who built the new panel knows exactly where everything is; the user opens the app one morning and their tool has moved. None of this is malicious. Adding is easier than subtracting, and adding is what gets rewarded. I have shipped my share of it. This is not a law, but the pattern keeps showing up in my own work, and I do not love what that says about me.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;simple-keeps-winning&quot;&gt;Simple keeps winning&lt;&#x2F;h2&gt;
+&lt;p&gt;Given a real choice, people reach for the simpler thing. Not always, but often enough that I trust the pattern.&lt;&#x2F;p&gt;
+&lt;p&gt;The honest other half: the long, patient engagement software used to earn seems mostly gone. The main thing that still holds attention for hours is the stuff engineered for scrolling, and that is not a model anyone building a tool should want to copy. I wrote about my own version of this in &lt;a href=&quot;https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;losing-interest-in-everything&#x2F;&quot;&gt;when nothing feels fun any more&lt;&#x2F;a&gt;, after noticing I was bouncing off things that used to absorb me for days.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;where-i-land&quot;&gt;Where I land&lt;&#x2F;h2&gt;
+&lt;p&gt;I am not quitting. I use these tools most days and I plan to keep using them; they earn their place for boilerplate and getting unstuck. What is hyped and not yet proven, at least for work like mine, is the ten-times-faster story. I have not tried quitting the way Brett did, so I do not know what that would do to my work.&lt;&#x2F;p&gt;
+&lt;p&gt;His question is the right one to sit with: what is the cost, and who pays it. He cites Cal Newport&#x27;s Slow Productivity and its encouragement to work at a natural pace; he says he does not see the need to work faster. He also writes about the true cost of AI, &quot;from the data centers to the water usage and beyond&quot;, and says it is &quot;largely hidden&quot;. I have not verified any of those figures myself, so I will not quote numbers. It deserves more attention than it gets, though. I will keep using the tools, and keep asking what they cost. Let&#x27;s see how it goes.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h3 id=&quot;references&quot;&gt;References&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;brettcodes.com&#x2F;im-done-using-ai&#x2F;&quot;&gt;I&#x27;m done using AI&lt;&#x2F;a&gt;: Brett Chalupa&#x27;s post, published 10 August 2026&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;metr.org&#x2F;blog&#x2F;2025-07-10-early-2025-ai-experienced-os-dev-study&#x2F;&quot;&gt;Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity&lt;&#x2F;a&gt;: METR&#x27;s write-up of the randomized controlled trial&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;arxiv.org&#x2F;abs&#x2F;2507.09089&quot;&gt;The same study on arXiv&lt;&#x2F;a&gt;: full paper, arXiv:2507.09089&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;metr.org&#x2F;blog&#x2F;2026-02-24-uplift-update&#x2F;&quot;&gt;We are Changing our Developer Productivity Experiment Design&lt;&#x2F;a&gt;: METR&#x27;s follow-up on selection bias, 24 February 2026&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;calnewport.com&#x2F;my-new-book-slow-productivity&#x2F;&quot;&gt;Slow Productivity&lt;&#x2F;a&gt;: Cal Newport on the book Brett cites&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;pdbook.net&quot;&gt;Make Games for Playdate with Lua&lt;&#x2F;a&gt;: the book he finished&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;usagiengine.com&#x2F;&quot;&gt;Usagi&lt;&#x2F;a&gt;: his 2D Lua game engine, with the &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;brettchalupa&#x2F;usagi&quot;&gt;source on GitHub&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>When two solutions are the same, which one do you pick?</title>
+        <published>2026-06-05T00:00:00+00:00</published>
+        <updated>2026-06-05T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/when-two-solutions-are-the-same/"/>
+        <id>https://noos.blog/posts/when-two-solutions-are-the-same/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/when-two-solutions-are-the-same/">&lt;p&gt;Here is a small thing that has been bugging me lately. Two model outputs solve the same problem, in the same way, with the same result. One of them does a little extra: it pulls some repeated validation out into a small private helper method. When I have to pick one, I almost always reach for the tidier one. The question I keep coming back to is whether that reach is backed by anything real, or whether it is just my taste talking.&lt;&#x2F;p&gt;
+&lt;p&gt;So I wrote the two versions out and ran them, because it is easier to think about something concrete than something abstract.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-two-versions&quot;&gt;The two versions&lt;&#x2F;h2&gt;
+&lt;p&gt;Same tiny problem: create a user and update a user, both guarded by the same name and email checks. The first version repeats the checks in both methods.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;java&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-java &quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Inline &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public static &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;createUser&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;email&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(name &lt;&#x2F;span&gt;&lt;span&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null &lt;&#x2F;span&gt;&lt;span&gt;||&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; name.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;isBlank&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;()) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;rejected: name is required&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(email &lt;&#x2F;span&gt;&lt;span&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null &lt;&#x2F;span&gt;&lt;span&gt;|| !&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;email.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;contains&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;@&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;)) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;rejected: email looks invalid&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;created user &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; +&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; name;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public static &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;updateUser&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;email&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(name &lt;&#x2F;span&gt;&lt;span&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null &lt;&#x2F;span&gt;&lt;span&gt;||&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; name.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;isBlank&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;()) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;rejected: name is required&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(email &lt;&#x2F;span&gt;&lt;span&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null &lt;&#x2F;span&gt;&lt;span&gt;|| !&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;email.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;contains&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;@&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;)) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;rejected: email looks invalid&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;updated user &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; +&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; name;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The second version is the one most of us would call &quot;nicer&quot;. It moves the checks into a private &lt;code&gt;validate&lt;&#x2F;code&gt; method and calls it from both places.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;java&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-java &quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Helper &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;private static &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;validate&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;email&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(name &lt;&#x2F;span&gt;&lt;span&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null &lt;&#x2F;span&gt;&lt;span&gt;||&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; name.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;isBlank&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;()) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;name is required&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(email &lt;&#x2F;span&gt;&lt;span&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null &lt;&#x2F;span&gt;&lt;span&gt;|| !&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;email.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;contains&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;@&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;)) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;email looks invalid&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public static &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;createUser&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;email&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; error &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;validate&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(name, email);
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(error &lt;&#x2F;span&gt;&lt;span&gt;!= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;rejected: &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; +&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; error;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;created user &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; +&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; name;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public static &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;updateUser&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;email&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; error &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;validate&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(name, email);
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(error &lt;&#x2F;span&gt;&lt;span&gt;!= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;rejected: &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; +&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; error;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;updated user &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; +&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; name;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;I gave both the same &lt;code&gt;main&lt;&#x2F;code&gt;, compiled them with &lt;code&gt;javac 21.0.2&lt;&#x2F;code&gt;, and ran them side by side:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;javac&lt;&#x2F;span&gt;&lt;span&gt; Inline.java Helper.java
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;java&lt;&#x2F;span&gt;&lt;span&gt; Inline &amp;gt; inline.out
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;java&lt;&#x2F;span&gt;&lt;span&gt; Helper &amp;gt; helper.out
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;diff&lt;&#x2F;span&gt;&lt;span&gt; inline.out helper.out
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Both print exactly this:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;created user Ada
+&lt;&#x2F;span&gt;&lt;span&gt;rejected: name is required
+&lt;&#x2F;span&gt;&lt;span&gt;rejected: email looks invalid
+&lt;&#x2F;span&gt;&lt;span&gt;updated user Grace
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The &lt;code&gt;diff&lt;&#x2F;code&gt; came back empty. From the caller&#x27;s point of view, these two programs are the same program. Nothing observable changes. The only difference is that one has a &lt;code&gt;validate&lt;&#x2F;code&gt; method and the other does not.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;so-why-do-i-lean-toward-the-helper&quot;&gt;So why do I lean toward the helper?&lt;&#x2F;h2&gt;
+&lt;p&gt;If the behaviour is identical, my preference is about the shape of the code, not what it does. And the shape does carry some real value, at least in the cases I have actually run into:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;If a third caller shows up later, it reuses &lt;code&gt;validate&lt;&#x2F;code&gt; instead of copying the checks a third time.&lt;&#x2F;li&gt;
+&lt;li&gt;If the email rule changes (and &quot;contains an @&quot; is obviously not a real email rule), I edit one method instead of hunting for every copy.&lt;&#x2F;li&gt;
+&lt;li&gt;The two copies in the inline version can drift apart. One day someone fixes a check in &lt;code&gt;createUser&lt;&#x2F;code&gt; and forgets &lt;code&gt;updateUser&lt;&#x2F;code&gt;. Now they disagree, and nobody notices until something breaks.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;That last one is the part I actually trust. Duplicated logic that is supposed to stay in sync, but has no mechanism forcing it to, is a slow leak. The helper closes that gap.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;but-i-want-to-be-honest-about-the-other-side&quot;&gt;But I want to be honest about the other side&lt;&#x2F;h2&gt;
+&lt;p&gt;For this exact example, the checks are four lines and used in two places. Pulling them out is close to the line where &quot;good practice&quot; turns into &quot;abstraction I did not need yet&quot;. There is a real argument for leaving it inline:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Two copies of four lines is not a crisis. You can see both at a glance.&lt;&#x2F;li&gt;
+&lt;li&gt;The helper returns &lt;code&gt;null&lt;&#x2F;code&gt; to mean &quot;all good&quot;, which is its own small smell. Now the caller has to remember to null-check.&lt;&#x2F;li&gt;
+&lt;li&gt;If the two call sites later need slightly different rules, the shared helper becomes the thing you have to fight, and you end up adding flags to it.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;So the tidy version is not free, and it is not obviously correct. Whether extraction is the right call depends on where the code is going, and at the moment I pick, I usually do not know where it is going. I am guessing. The guess happens to match what has worked for me before, but it is still a guess.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;where-the-bias-question-actually-lives&quot;&gt;Where the bias question actually lives&lt;&#x2F;h2&gt;
+&lt;p&gt;This is the part the whole thing is really about. When I pick the helper version, am I rewarding better engineering, or am I rewarding code that looks like code I would have written?&lt;&#x2F;p&gt;
+&lt;p&gt;Those two can point the same direction often enough that it is hard to tell them apart. The danger is when they come apart and I do not notice. A few cases I can think of:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;The inline version is genuinely clearer for a throwaway script, but I mark it down because it &quot;repeats itself&quot;.&lt;&#x2F;li&gt;
+&lt;li&gt;A model writes the helper but names it badly or puts the null-return smell in, and I still prefer it because the silhouette looks senior.&lt;&#x2F;li&gt;
+&lt;li&gt;I prefer whichever style matches the language I am most comfortable in, and quietly penalise idioms I just have not seen much.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;None of those are about value. They are about familiarity wearing value&#x27;s clothes. And when these preferences get collected up, for example when someone ranks two model outputs and that ranking becomes training signal, my taste stops being a private quirk and starts shaping what the next model thinks &quot;good&quot; looks like. That is the point where I would like to know whether I am measuring something or just voting for myself.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;is-it-a-problem-or-is-it-judgment&quot;&gt;Is it a problem, or is it judgment?&lt;&#x2F;h2&gt;
+&lt;p&gt;Here is the honest tension, and I do not have a clean answer. If my bias toward the extracted helper consistently lands on code that is easier to change later, then calling it &quot;bias&quot; feels unfair. That is just experience doing its job. Pattern recognition built from getting burned by drifting copies is exactly the thing you want a reviewer to have.&lt;&#x2F;p&gt;
+&lt;p&gt;The catch is the word &quot;consistently&quot;. I cannot actually prove my preferences are consistent without checking them against something outside my own taste: did the codebase get easier or harder to change, did the duplicated checks actually drift, did the abstraction get in the way later. When I have that kind of feedback, the preference earns the name &quot;judgment&quot;. When I do not, I am just trusting that taste and value line up, and writing the result down as if it were measured.&lt;&#x2F;p&gt;
+&lt;p&gt;So the rule I am trying to hold myself to, for now, is small: when two outputs do the same thing and I find myself preferring one, say out loud what the preference is buying. If I can name the value (one place to change the rule, no chance of drift), keep it. If the best I can do is &quot;it feels more polished&quot;, treat that as a flag, not a verdict. I have not used this on anything large enough to call it a method. Let&#x27;s see how it holds up.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Stacked PRs go native in GitHub, and what that means for AI-assisted work</title>
+        <published>2026-04-19T00:00:00+00:00</published>
+        <updated>2026-04-19T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/stacked-prs-go-native-and-the-ai-angle/"/>
+        <id>https://noos.blog/posts/stacked-prs-go-native-and-the-ai-angle/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/stacked-prs-go-native-and-the-ai-angle/">&lt;p&gt;GitHub announced &lt;a href=&quot;https:&#x2F;&#x2F;github.github.com&#x2F;gh-stack&quot;&gt;native Stacked PRs&lt;&#x2F;a&gt;, still in private preview. I wanted to write about it for two reasons. First, it bakes in a workflow some of us have been doing for a while, either manually or via third-party tools, mostly to keep PRs small enough that reviewers actually read them. Second, it lands at a moment when AI agents are producing more of the diffs, and the gap between &quot;diff size&quot; and &quot;what a human can review well&quot; is getting wider every month.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;what-a-stack-is-quickly&quot;&gt;What a stack is, quickly&lt;&#x2F;h2&gt;
+&lt;p&gt;A stack is a chain of pull requests in the same repo where each PR targets the branch of the PR below it. Instead of one giant PR that touches the database layer, the API, and the UI, you get three smaller ones that build on each other:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;main
+&lt;&#x2F;span&gt;&lt;span&gt; ↑
+&lt;&#x2F;span&gt;&lt;span&gt; PR #1: auth-layer
+&lt;&#x2F;span&gt;&lt;span&gt; ↑
+&lt;&#x2F;span&gt;&lt;span&gt; PR #2: api-endpoints
+&lt;&#x2F;span&gt;&lt;span&gt; ↑
+&lt;&#x2F;span&gt;&lt;span&gt; PR #3: frontend
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Each layer is reviewed on its own. When the bottom is ready you can merge the bottom couple, or all of them at once, and the rest auto-rebase onto the new base. That auto-rebase is one of the things that makes a stack worth the trouble; doing it by hand across five branches is the part that always made me give up before.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;what-is-actually-new&quot;&gt;What is actually new&lt;&#x2F;h2&gt;
+&lt;p&gt;Stacking as a workflow is not new. &lt;a href=&quot;https:&#x2F;&#x2F;graphite.dev&#x2F;stacking&quot;&gt;Graphite&lt;&#x2F;a&gt; has built a polished CLI (&lt;code&gt;gt&lt;&#x2F;code&gt;), a VS Code extension, a PR inbox, and an AI review product around it. Meta&#x27;s &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;ezyang&#x2F;ghstack&quot;&gt;&lt;code&gt;ghstack&lt;&#x2F;code&gt;&lt;&#x2F;a&gt; by Edward Yang has been around for years and powers a lot of the PyTorch workflow. There is also &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;ejoffe&#x2F;spr&quot;&gt;&lt;code&gt;spr&lt;&#x2F;code&gt;&lt;&#x2F;a&gt;, and historically Phabricator did this before Meta sunset it.&lt;&#x2F;p&gt;
+&lt;p&gt;What GitHub adds, going by the &lt;a href=&quot;https:&#x2F;&#x2F;github.github.com&#x2F;gh-stack&#x2F;?ref=console.dev&quot;&gt;overview docs&lt;&#x2F;a&gt;, is the bits that previous tools could only approximate from the outside:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;A stack map in the PR header so reviewers can navigate between layers.&lt;&#x2F;li&gt;
+&lt;li&gt;Branch protection rules enforced against the &lt;strong&gt;final target branch&lt;&#x2F;strong&gt; (usually &lt;code&gt;main&lt;&#x2F;code&gt;), not just the immediate parent branch of each PR.&lt;&#x2F;li&gt;
+&lt;li&gt;CI runs each PR as if it were targeting the final branch, so green checks actually mean something.&lt;&#x2F;li&gt;
+&lt;li&gt;One-click merge of multiple layers, with automatic rebase of the rest of the stack afterwards.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;The &quot;branch protection against the final target&quot; point is the one that quietly matters. With third-party tools, your PR #3 in a stack technically targets PR #2&#x27;s branch, which often does not have the same protection rules as &lt;code&gt;main&lt;&#x2F;code&gt;. Teams used to work around this with naming conventions, bots, or just hoping reviewers paid attention. Native handling closes that gap.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;trying-the-cli-right-now&quot;&gt;Trying the CLI right now&lt;&#x2F;h2&gt;
+&lt;p&gt;The feature is in private preview as of April 2026, and you need to be allowlisted on a repo for the server-side bits (&lt;code&gt;submit&lt;&#x2F;code&gt;, &lt;code&gt;merge&lt;&#x2F;code&gt;, the stack map UI) to work. But the CLI itself is publicly installable. I poked at it a bit:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; gh extension install github&#x2F;gh-stack
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; gh stack&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --help
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Create,&lt;&#x2F;span&gt;&lt;span&gt; navigate, and manage stacks of branches and pull requests.
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Usage:
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;gh&lt;&#x2F;span&gt;&lt;span&gt; stack &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;[&lt;&#x2F;span&gt;&lt;span&gt;command&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;]
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Available&lt;&#x2F;span&gt;&lt;span&gt; Commands:
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;add&lt;&#x2F;span&gt;&lt;span&gt;         Add a new branch on top of the current stack
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;alias       &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;Create &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;a shell alias for gh stack
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;bottom&lt;&#x2F;span&gt;&lt;span&gt;      Check out the bottom branch of the stack
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;checkout&lt;&#x2F;span&gt;&lt;span&gt;    Checkout a stack from a PR number or branch name
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;down&lt;&#x2F;span&gt;&lt;span&gt;        Check out a branch further down in the stack
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;feedback&lt;&#x2F;span&gt;&lt;span&gt;    Submit feedback for gh-stack
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;init&lt;&#x2F;span&gt;&lt;span&gt;        Initialize a new stack
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;merge&lt;&#x2F;span&gt;&lt;span&gt;       Merge a stack of PRs
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;push&lt;&#x2F;span&gt;&lt;span&gt;        Push all branches in the current stack to the remote
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;rebase&lt;&#x2F;span&gt;&lt;span&gt;      Rebase a stack of branches
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;submit&lt;&#x2F;span&gt;&lt;span&gt;      Create a stack of PRs on GitHub
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sync&lt;&#x2F;span&gt;&lt;span&gt;        Sync the current stack with the remote
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;top&lt;&#x2F;span&gt;&lt;span&gt;         Check out the top branch of the stack
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;unstack&lt;&#x2F;span&gt;&lt;span&gt;     Delete a stack locally and on GitHub
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The local workflow works without any preview access. In a throwaway repo:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; git init&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -q &lt;&#x2F;span&gt;&lt;span&gt;&amp;amp;&amp;amp; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span&gt; commit&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --allow-empty -m &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;init&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -q
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; gh stack init test-stack-bottom
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;✓&lt;&#x2F;span&gt;&lt;span&gt; Creating stack with trunk main and branch test-stack-bottom
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Switched&lt;&#x2F;span&gt;&lt;span&gt; to branch test-stack-bottom
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;To&lt;&#x2F;span&gt;&lt;span&gt; add a new layer to your stack, run `&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;gh&lt;&#x2F;span&gt;&lt;span&gt; stack add`
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;When&lt;&#x2F;span&gt;&lt;span&gt; you&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;re ready to push to GitHub and open a stack of PRs, run `gh stack submit`
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;$ echo &amp;quot;auth&amp;quot; &amp;gt; auth.txt &amp;amp;&amp;amp; git add . &amp;amp;&amp;amp; git commit -m &amp;quot;auth layer&amp;quot; -q
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;$ gh stack add api-layer
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;✓ Created and checked out branch &amp;quot;api-layer&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;$ git log --oneline --all --decorate
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;463808f (HEAD -&amp;gt; api-layer, test-stack-bottom) auth layer
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;2b6a4ea (main) init
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;So you can install it, play with &lt;code&gt;init&lt;&#x2F;code&gt;, &lt;code&gt;add&lt;&#x2F;code&gt;, &lt;code&gt;bottom&lt;&#x2F;code&gt;, &lt;code&gt;top&lt;&#x2F;code&gt;, &lt;code&gt;down&lt;&#x2F;code&gt;, &lt;code&gt;up&lt;&#x2F;code&gt;, &lt;code&gt;rebase&lt;&#x2F;code&gt;, &lt;code&gt;unstack&lt;&#x2F;code&gt; locally today. The bits that need GitHub-side support are the actual &lt;code&gt;submit&lt;&#x2F;code&gt; and &lt;code&gt;merge&lt;&#x2F;code&gt;, and that part is gated by the &lt;a href=&quot;https:&#x2F;&#x2F;github.github.com&#x2F;gh-stack&#x2F;?ref=console.dev&quot;&gt;waitlist&lt;&#x2F;a&gt;. Prerequisites are &lt;code&gt;gh&lt;&#x2F;code&gt; v2.0+ and Git 2.20+ (&lt;a href=&quot;https:&#x2F;&#x2F;github.github.com&#x2F;gh-stack&#x2F;getting-started&#x2F;quick-start&#x2F;&quot;&gt;Quick Start&lt;&#x2F;a&gt;), both pretty undemanding.&lt;&#x2F;p&gt;
+&lt;p&gt;There is also a &lt;code&gt;gh stack alias&lt;&#x2F;code&gt; command that wires up &lt;code&gt;gs&lt;&#x2F;code&gt; as a shorter alias, which I will probably end up using because typing &lt;code&gt;gh stack add&lt;&#x2F;code&gt; thirty times a day gets old.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-ai-assisted-angle&quot;&gt;The AI-assisted angle&lt;&#x2F;h2&gt;
+&lt;p&gt;Here is the part I actually wanted to think out loud about.&lt;&#x2F;p&gt;
+&lt;p&gt;If you have reviewed a PR opened by an AI agent (Cursor, Codex, Claude Code, Copilot, or any of the cloud agents), you know the failure mode. The agent gets asked to &quot;add user profiles&quot;, and twenty minutes later there is a PR with a migration, a schema, a service layer, three endpoints, two React components, a settings page, and seventeen unit tests. All in one or two commits. Reviewing that with any rigour is an afternoon&#x27;s work, and the path of least resistance is to skim, push back on a couple of obvious things, and merge.&lt;&#x2F;p&gt;
+&lt;p&gt;Stacked PRs are a structural answer to that problem. If the agent (or the human supervising it) is encouraged to land the migration first, then the service, then the endpoints, then the UI, each layer is something a person can actually read in one sitting. Conflicts get smaller. Reverts get surgical. The cost of &quot;actually let&#x27;s redo the data model&quot; drops from &quot;throw away the whole PR&quot; to &quot;throw away the bottom layer and rebase&quot;.&lt;&#x2F;p&gt;
+&lt;p&gt;GitHub seems to know this is the angle. The docs include an AI agent integration step:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;npx&lt;&#x2F;span&gt;&lt;span&gt; skills add github&#x2F;gh-stack
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;That installs a skill telling the agent how to author and manage stacks. I have not tried it yet (no preview access), so I cannot tell you how good it is in practice. The bet is interesting though: instead of teaching humans to slice their AI-generated work after the fact, teach the agent to slice its own work and produce a stack from the start.&lt;&#x2F;p&gt;
+&lt;p&gt;A few honest reservations:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;AI agents can mechanically split a diff (one file per commit, one logical component per commit). They are still not great at deciding &lt;em&gt;where&lt;&#x2F;em&gt; the right review boundaries are. That is exactly the kind of architectural judgment they tend to miss. A stack of five PRs split in the wrong places is arguably worse than one large PR, because reviewers context-switch between layers without the layering actually helping them.&lt;&#x2F;li&gt;
+&lt;li&gt;A stack is only as solid as its bottom layer. If the data model in PR #1 is wrong, every later PR is built on sand. AI-authored stacks raise that risk because the agent often does not pause long enough to question the foundation.&lt;&#x2F;li&gt;
+&lt;li&gt;Merge queues, codeowners, and stacks together are still a frontier. I expect most of the next round of papercuts will be in that intersection.&lt;&#x2F;li&gt;
+&lt;li&gt;This is GitHub&#x27;s native version, but there are mature alternatives. If your team already pays for Graphite, the stack-management half of what they sell is now duplicated in GitHub itself, but the review queue, dashboards, and Diamond AI review are not. Whether you switch is more of a procurement question than a tooling question.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;what-i-am-going-to-actually-try&quot;&gt;What I am going to actually try&lt;&#x2F;h2&gt;
+&lt;p&gt;Some small experiments I have lined up once I get preview access:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Use &lt;code&gt;gh stack init&lt;&#x2F;code&gt; for any change that touches more than one logical layer (data, service, UI). One layer per PR.&lt;&#x2F;li&gt;
+&lt;li&gt;For AI-generated work, ask the agent to produce a plan first, treat each plan step as a layer, and only let it write code one layer at a time.&lt;&#x2F;li&gt;
+&lt;li&gt;Test the merge-multiple-layers-at-once flow on a low-stakes change before relying on it for anything serious.&lt;&#x2F;li&gt;
+&lt;li&gt;See whether the GitHub skill (&lt;code&gt;npx skills add github&#x2F;gh-stack&lt;&#x2F;code&gt;) actually gets the agent to author stacks unprompted, or whether it still needs hand-holding.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;If any of these turn out interesting, I will come back with an update.&lt;&#x2F;p&gt;
+&lt;p&gt;For now the &lt;a href=&quot;https:&#x2F;&#x2F;github.github.com&#x2F;gh-stack&quot;&gt;overview&lt;&#x2F;a&gt; and the &lt;a href=&quot;https:&#x2F;&#x2F;github.github.com&#x2F;gh-stack&#x2F;getting-started&#x2F;quick-start&#x2F;&quot;&gt;Quick Start&lt;&#x2F;a&gt; are the two pages worth reading. The waitlist is on the same page.&lt;&#x2F;p&gt;
+&lt;p&gt;Let&#x27;s see how it goes once it is open.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>What Happens When Prototypes Try to Go to Production</title>
+        <published>2025-11-02T00:00:00+00:00</published>
+        <updated>2025-11-02T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/when-prototypes-become-production/"/>
+        <id>https://noos.blog/posts/when-prototypes-become-production/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/when-prototypes-become-production/">&lt;h3 id=&quot;the-conversation&quot;&gt;The Conversation&lt;&#x2F;h3&gt;
+&lt;p&gt;You&#x27;ve built a production-ready AI system with proper architecture, traceability, and acceptable latency. Then someone suggests &quot;why not just use a prompt?&quot;&lt;&#x2F;p&gt;
+&lt;p&gt;You don&#x27;t need to explain why that won&#x27;t work. The industry has already documented what happens when prototypes become production.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;why-not-just-give-an-opinion&quot;&gt;Why Not Just Give an Opinion?&lt;&#x2F;h3&gt;
+&lt;p&gt;There&#x27;s a temptation to push back when surface-level decisions ignore architecture, scalability, edge cases, and maintainability. But opinions based on current trends or individual preferences don&#x27;t help. They just add noise.&lt;&#x2F;p&gt;
+&lt;p&gt;The current landscape is filled with quick takes and hot takes. Everyone has an opinion, often shaped more by what&#x27;s trending than by systematic thinking. Narcissistic individualism—the idea that one person&#x27;s perspective matters more than collective experience—creates an environment where strong opinions win even when they&#x27;re wrong.&lt;&#x2F;p&gt;
+&lt;p&gt;The problem isn&#x27;t trends themselves. It&#x27;s choosing tools or approaches because they&#x27;re trending, rather than because they solve real problems. The distinction matters.&lt;&#x2F;p&gt;
+&lt;p&gt;Research and data exist. Patterns repeat. The industry has documented what works and what doesn&#x27;t. Why add another opinion when we can point to what&#x27;s already been proven?&lt;&#x2F;p&gt;
+&lt;p&gt;That&#x27;s why this isn&#x27;t about pushing back with opinions. It&#x27;s about pointing to what the industry already knows: prototypes that skip architecture rarely become production systems. The data is public. The patterns are clear.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;the-statistics&quot;&gt;The Statistics&lt;&#x2F;h3&gt;
+&lt;p&gt;According to recent research, &lt;strong&gt;87% of machine learning models never make it past the prototype stage&lt;&#x2F;strong&gt;. Reasons include technical debt, edge cases that break everything, scale issues, and maintainability collapses.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;why-just-a-prompt-rarely-works&quot;&gt;Why &quot;Just a Prompt&quot; Rarely Works&lt;&#x2F;h3&gt;
+&lt;p&gt;When you build a direct LLM solution, you&#x27;re coding logic into prompts. This creates brittleness—small changes require rewriting entire prompts. It&#x27;s impossible to debug—you can&#x27;t see intermediate steps. And there&#x27;s no observability—production needs monitoring, logging, and metrics that a single prompt can&#x27;t provide.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;what-actually-ships&quot;&gt;What Actually Ships&lt;&#x2F;h3&gt;
+&lt;p&gt;AI systems that reach production are rarely &quot;just a prompt.&quot; They have structured workflows, error handling, observability, modularity, and scalability. These frameworks and architectures exist because production systems need structure—not because they&#x27;re trendy, but because they solve real problems that prototypes ignore.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;the-numbers-don-t-lie&quot;&gt;The Numbers Don&#x27;t Lie&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;www.gartner.com&#x2F;en&#x2F;articles&#x2F;how-to-make-your-ai-projects-production-ready&quot;&gt;Gartner&lt;&#x2F;a&gt;: Over 80% of organizations will struggle to operationalize AI systems by 2026&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;mitsloan.mit.edu&#x2F;ideas-made-to-matter&#x2F;how-companies-are-putting-ai-work&quot;&gt;MIT Sloan&lt;&#x2F;a&gt;: 85% experiment with AI, but only 37% deploy at scale&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;hbr.org&#x2F;2023&#x2F;04&#x2F;how-to-avoid-the-ai-maturity-problem&quot;&gt;Harvard Business Review&lt;&#x2F;a&gt;: &quot;Failure to move beyond proof of concept&quot; is the primary cause of AI failures&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;strong&gt;Architecture matters.&lt;&#x2F;strong&gt; Prototypes skip it. Production requires it.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;the-hard-truth&quot;&gt;The Hard Truth&lt;&#x2F;h3&gt;
+&lt;p&gt;There&#x27;s a mismatch between demos and production. Prototypes optimize for speed. Production optimizes for reliability, scalability, and maintainability.&lt;&#x2F;p&gt;
+&lt;p&gt;The question isn&#x27;t whether your prototype works. It&#x27;s whether it works when you have 100x more users, need unanticipated features, or an edge case breaks everything.&lt;&#x2F;p&gt;
+&lt;p&gt;Prototypes optimize for the first week. Production systems need to survive years.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;&lt;em&gt;Sometimes the most important lessons are the ones you learn before you make the mistake.&lt;&#x2F;em&gt;&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Covers on Autopilot — Why I Let AI Paint the Edges</title>
+        <published>2025-10-30T00:00:00+00:00</published>
+        <updated>2025-10-30T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/ai-covers-on-autopilot/"/>
+        <id>https://noos.blog/posts/ai-covers-on-autopilot/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/ai-covers-on-autopilot/">&lt;p&gt;There are jobs you can do by hand for years and never notice the drag. For me it was cover images. Each new post: open a design tool, stare at a blank canvas, export a PNG, wire it to the post. Not hard, just enough friction to make publishing feel heavier than it should.&lt;&#x2F;p&gt;
+&lt;p&gt;This is a short note about shaving that yak with a tiny toolchain: a context‑aware prompt, an image model, and some guardrails in CI. No heroics—just removing a repeated decision so the writing flows.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;why-automate-covers&quot;&gt;Why automate covers&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Consistency: 1200×630 every time. No more odd crops in link unfurls.&lt;&#x2F;li&gt;
+&lt;li&gt;Momentum: publishing shouldn’t wait for “design time”.&lt;&#x2F;li&gt;
+&lt;li&gt;Style: light background, a single accent, abstract shapes. Enough personality, zero fuss.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Over time the manual step was turning into a speed bump. That was the whole motivation.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-bumps-along-the-road-the-important-part&quot;&gt;The bumps along the road (the important part)&lt;&#x2F;h2&gt;
+&lt;p&gt;I didn’t get it right on the first try. Here are the lessons that actually mattered.&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;Model and limits&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;At first I used Stable Horde for SDXL. It’s great and free, but CI doesn’t love queues. I kept seeing 400&#x2F;429s in the logs (invalid payload or rate‑limited). Switched to Replicate with an API token; still got rate limits sometimes, but at least the errors were predictable.&lt;&#x2F;p&gt;
+&lt;ol start=&quot;2&quot;&gt;
+&lt;li&gt;Exact sizing&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;SDXL likes multiples of 64. I request 1024×576, then downscale to 1200×630 with Sharp. Crisp edges, correct aspect for social cards.&lt;&#x2F;p&gt;
+&lt;ol start=&quot;3&quot;&gt;
+&lt;li&gt;Slugs vs. filenames&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;My fallback logic assumed &lt;code&gt;page.slug&lt;&#x2F;code&gt; exactly matched the filename. It didn’t—some posts derive the slug from the permalink. I fixed the template to compute &lt;code&gt;slug-from-permalink&lt;&#x2F;code&gt; and look for &lt;code&gt;&#x2F;images&#x2F;covers&#x2F;{slug}.png&lt;&#x2F;code&gt;. Simple, but that bug cost the most time.&lt;&#x2F;p&gt;
+&lt;ol start=&quot;4&quot;&gt;
+&lt;li&gt;“Why is it regenerating?”&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;CI starts from a clean checkout. If covers aren’t in Git, they disappear each run. I added a cache step that restores &lt;code&gt;static&#x2F;images&#x2F;covers&lt;&#x2F;code&gt; keyed to &lt;code&gt;content&#x2F;posts&#x2F;**&#x2F;*.md&lt;&#x2F;code&gt;. Now the generator truly skips when a PNG already exists.&lt;&#x2F;p&gt;
+&lt;ol start=&quot;5&quot;&gt;
+&lt;li&gt;Context in prompts&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;Pure tags produced vague images. I added a little context: title + ~240 chars of summary (description if present, otherwise a clean slice of the body). Still abstract, just more grounded.&lt;&#x2F;p&gt;
+&lt;ol start=&quot;6&quot;&gt;
+&lt;li&gt;One‑time resets&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;Sometimes you do want a full refresh. There’s a manual “Run workflow” input (&lt;code&gt;force_regenerate=true&lt;&#x2F;code&gt;) that bypasses the “file exists” check once. Good for style changes or a model upgrade.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;how-we-decided-on-ai-at-all&quot;&gt;How we decided on AI at all&lt;&#x2F;h2&gt;
+&lt;p&gt;I tried three options in order:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Hand‑made banners (historically): high quality, low velocity.&lt;&#x2F;li&gt;
+&lt;li&gt;Programmatic shapes: reliable, but too repetitive.&lt;&#x2F;li&gt;
+&lt;li&gt;AI with guardrails: abstract, brand‑aware, hands‑off once it’s set.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;The third option hit the balance. The prompt constrains style; the model supplies variation. It’s not “art direction”, but it serves the post—and that’s the only job here.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-pipeline-nuts-and-bolts&quot;&gt;The pipeline (nuts and bolts)&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Script: &lt;code&gt;scripts&#x2F;generate-ai-covers.mjs&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Scans &lt;code&gt;content&#x2F;posts&#x2F;*.md&lt;&#x2F;code&gt;, pulls &lt;code&gt;tags&lt;&#x2F;code&gt;, &lt;code&gt;title&lt;&#x2F;code&gt;, and a short summary.&lt;&#x2F;li&gt;
+&lt;li&gt;Prompt (simplified):
+&lt;blockquote&gt;
+&lt;p&gt;Abstract, minimal illustration. Tags: {tags}. Title: {title}. Context: {summary}. Vector‑like, clean geometric shapes, high contrast, brand accent #d64a48 on #f6f7f4. No text.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;Calls Replicate SDXL (model version from a secret), requests 1024×576, saves 1200×630 as &lt;code&gt;static&#x2F;images&#x2F;covers&#x2F;{slug}.png&lt;&#x2F;code&gt;.&lt;&#x2F;li&gt;
+&lt;li&gt;Skips generation if the PNG already exists (unless &lt;code&gt;FORCE_REGENERATE_COVERS=1&lt;&#x2F;code&gt;).&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;Template: &lt;code&gt;themes&#x2F;radion&#x2F;templates&#x2F;page.html&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;If a post doesn’t specify a cover, it tries &lt;code&gt;&#x2F;images&#x2F;covers&#x2F;{slug-from-permalink}.png&lt;&#x2F;code&gt; and hides the figure if missing.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;CI: &lt;code&gt;.github&#x2F;workflows&#x2F;deploy.yml&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Restores a covers cache before generation; saves it after.&lt;&#x2F;li&gt;
+&lt;li&gt;Optional manual input &lt;code&gt;force_regenerate&lt;&#x2F;code&gt; for a one‑time refresh.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;what-github-actions-brings&quot;&gt;What GitHub Actions brings&lt;&#x2F;h2&gt;
+&lt;p&gt;The boring kind of power: reliability.&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Every run restores the previous covers, generates only what’s missing, and embeds without a front‑matter tweak.&lt;&#x2F;li&gt;
+&lt;li&gt;When rate‑limited, the post still publishes—missing images pick up on the next run.&lt;&#x2F;li&gt;
+&lt;li&gt;A small verification stage lists the covers in &lt;code&gt;public&#x2F;images&#x2F;covers&lt;&#x2F;code&gt; and checks that posts actually reference them.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;closing-the-loop&quot;&gt;Closing the loop&lt;&#x2F;h2&gt;
+&lt;p&gt;This wasn’t about making the site “AI‑powered”. It was about removing a tiny friction point that kept breaking the flow. The rule of thumb I keep coming back to: automate anything that steals attention from writing. Covers were stealing attention. Now they aren’t.&lt;&#x2F;p&gt;
+&lt;p&gt;And if the art ever needs a new feel? I flip the model or tweak the prompt, hit “Run workflow”, and let the pipeline repaint the edges while I get back to words.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+</feed>

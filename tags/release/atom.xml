@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Noos - Where Thought, Code, and Craft Converge - release</title>
+    <subtitle>Personal blog about programming, technology, and engineering insights. Topics include Rust, DevOps, Linux, and software craftsmanship.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://noos.blog/tags/release/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://noos.blog"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2013-10-07T00:00:00+00:00</updated>
+    <id>https://noos.blog/tags/release/atom.xml</id>
+    <entry xml:lang="en">
+        <title>openSUSE 13.1 – almost here [updated]</title>
+        <published>2013-10-07T00:00:00+00:00</published>
+        <updated>2013-10-07T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/opensuse-13-1-almost-here/"/>
+        <id>https://noos.blog/posts/opensuse-13-1-almost-here/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/opensuse-13-1-almost-here/">&lt;p&gt;It&#x27;s been a while since the &lt;a href=&quot;http:&#x2F;&#x2F;news.opensuse.org&#x2F;2013&#x2F;09&#x2F;19&#x2F;opensuse-13-1-beta-is-out&#x2F;&quot;&gt;openSUSE 13.1 beta&lt;&#x2F;a&gt; is released. And now it&#x27;s just a matter of time until the official release. [RC1 is coming on Thursday]
+Anyhow I managed to get it run on own and have tried few exercises too. Here, take a look&lt;&#x2F;p&gt;
+&lt;p&gt;So as a SUSE user I&#x27;m putting my blog&#x27;s background picture to a nice art work made by the community. You can see the gecko face in between the posts, well it didn&#x27;t work as I expected but still it look pretty sleek.&lt;&#x2F;p&gt;
+&lt;p&gt;You can check out other &lt;a href=&quot;https:&#x2F;&#x2F;news.opensuse.org&#x2F;2013&#x2F;10&#x2F;07&#x2F;help-promote-opensuse-13-1&#x2F;&quot;&gt;promotion&lt;&#x2F;a&gt; fun sparks and suggested &lt;a href=&quot;https:&#x2F;&#x2F;en.opensuse.org&#x2F;openSUSE:Goals_13.1&quot;&gt;goals&lt;&#x2F;a&gt; for openSUSE 13.1&lt;&#x2F;p&gt;
+&lt;p&gt;Have fun..!&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;Update:&lt;&#x2F;strong&gt; It&#x27;s out..! But I didn&#x27;t have much time on checking it out. Hoping to do a run through, let&#x27;s see how it goes this time.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+</feed>

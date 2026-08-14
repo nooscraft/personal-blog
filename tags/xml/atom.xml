@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Noos - Where Thought, Code, and Craft Converge - xml</title>
+    <subtitle>Personal blog about programming, technology, and engineering insights. Topics include Rust, DevOps, Linux, and software craftsmanship.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://noos.blog/tags/xml/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://noos.blog"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2013-09-02T00:00:00+00:00</updated>
+    <id>https://noos.blog/tags/xml/atom.xml</id>
+    <entry xml:lang="en">
+        <title>JAXB + Maven – Xml to Java</title>
+        <published>2013-09-02T00:00:00+00:00</published>
+        <updated>2013-09-02T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/jaxb-maven-xml-to-java/"/>
+        <id>https://noos.blog/posts/jaxb-maven-xml-to-java/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/jaxb-maven-xml-to-java/">&lt;h3 id=&quot;situation&quot;&gt;Situation&lt;&#x2F;h3&gt;
+&lt;p&gt;Assume there&#x27;s a situation where you want to generate Java sources from a xml schema definition (xsd).  And generate it constantly whenever you want it if the xsd&#x27;s got updated.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;solution&quot;&gt;Solution&lt;&#x2F;h3&gt;
+&lt;p&gt;There are quiet a few out tools&#x2F;libs out there but I found this particulate set (Maven and JAXB2) works well for me, just because it&#x27;s pretty straight forward. But you may prefer a different approach.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;in-to-the-action&quot;&gt;In to the action&lt;&#x2F;h3&gt;
+&lt;p&gt;Let&#x27;s create a very basic maven project (assume you have already set up Maven and Java)&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;mvn archetype:generate -DgroupId={com.jaxb.hello} -DartifactId={HelloJAXB2}
+&lt;&#x2F;span&gt;&lt;span&gt; -DarchetypeArtifactId=maven-archetype-quickstart  -DinteractiveMode=false
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Once the project is created open the pom.xml file in edit mode and add following two plugins&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http:&#x2F;&#x2F;mojo.codehaus.org&#x2F;jaxb2-maven-plugin&#x2F;&quot;&gt;JAXB-2 Maven Plugin&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;http:&#x2F;&#x2F;maven.apache.org&#x2F;plugins&#x2F;maven-source-plugin&#x2F;&quot;&gt;Maven Source Plugin&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;[Since this is a sample project you may have to define the maven &lt;code&gt;&amp;lt;plugins &#x2F;&amp;gt;&lt;&#x2F;code&gt; sections]&lt;&#x2F;p&gt;
+&lt;img src=&quot;&#x2F;public&#x2F;images&#x2F;plugins-section.png&quot; alt=&quot;img&quot; class=&quot;inline&quot;&#x2F;&gt;
+&lt;p&gt;Carefully notice the sections&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;&amp;lt;generatePackage&amp;gt;&lt;&#x2F;code&gt; defines the place where you want to put the generated sources for the xsd&#x27;s&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;&amp;lt;schemaIncludes&amp;gt;&lt;&#x2F;code&gt; defines the place where you place your .xsd files.&lt;&#x2F;p&gt;
+&lt;p&gt;Now keep all that in mine lets see the project structure&lt;&#x2F;p&gt;
+&lt;img src=&quot;&#x2F;public&#x2F;images&#x2F;project-structure.png&quot; alt=&quot;img&quot; class=&quot;inline&quot;&#x2F;&gt;
+&lt;p&gt;As you can see I just added a single .xsd to the location helloschema&#x2F;&lt;&#x2F;p&gt;
+&lt;p&gt;Once all these are in place you just have run the Maven target.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;mvn package&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;img src=&quot;&#x2F;public&#x2F;images&#x2F;final-build.png&quot; alt=&quot;img&quot; class=&quot;inline&quot;&#x2F;&gt;
+&lt;p&gt;[Here I have skipped the tests for the convenience]&lt;&#x2F;p&gt;
+&lt;p&gt;If everything goes smoothly you&#x27;ll see two .jar files in the target folder&lt;&#x2F;p&gt;
+&lt;img src=&quot;&#x2F;public&#x2F;images&#x2F;maven-build.png&quot; alt=&quot;img&quot; class=&quot;inline&quot;&#x2F;&gt;
+&lt;p&gt;Sources are bundled in the &lt;code&gt;HelloJAXB2-1.1-SNAPSHOT-sources.jar&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;and you can find it also in &lt;code&gt;generated-sources&lt;&#x2F;code&gt; folder as well&lt;&#x2F;p&gt;
+&lt;img src=&quot;&#x2F;public&#x2F;images&#x2F;generated-sources.png&quot; alt=&quot;img&quot; class=&quot;inline&quot;&#x2F;&gt;
+</content>
+        
+    </entry>
+</feed>
