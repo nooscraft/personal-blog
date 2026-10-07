@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Noos - Where Thought, Code, and Craft Converge - opensuse</title>
+    <subtitle>Personal blog about programming, technology, and engineering insights. Topics include Rust, DevOps, Linux, and software craftsmanship.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://noos.blog/tags/opensuse/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://noos.blog"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2013-10-07T00:00:00+00:00</updated>
+    <id>https://noos.blog/tags/opensuse/atom.xml</id>
+    <entry xml:lang="en">
+        <title>openSUSE 13.1 – almost here [updated]</title>
+        <published>2013-10-07T00:00:00+00:00</published>
+        <updated>2013-10-07T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/opensuse-13-1-almost-here/"/>
+        <id>https://noos.blog/posts/opensuse-13-1-almost-here/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/opensuse-13-1-almost-here/">&lt;p&gt;It&#x27;s been a while since the &lt;a href=&quot;http:&#x2F;&#x2F;news.opensuse.org&#x2F;2013&#x2F;09&#x2F;19&#x2F;opensuse-13-1-beta-is-out&#x2F;&quot;&gt;openSUSE 13.1 beta&lt;&#x2F;a&gt; is released. And now it&#x27;s just a matter of time until the official release. [RC1 is coming on Thursday]
+Anyhow I managed to get it run on own and have tried few exercises too. Here, take a look&lt;&#x2F;p&gt;
+&lt;p&gt;So as a SUSE user I&#x27;m putting my blog&#x27;s background picture to a nice art work made by the community. You can see the gecko face in between the posts, well it didn&#x27;t work as I expected but still it look pretty sleek.&lt;&#x2F;p&gt;
+&lt;p&gt;You can check out other &lt;a href=&quot;https:&#x2F;&#x2F;news.opensuse.org&#x2F;2013&#x2F;10&#x2F;07&#x2F;help-promote-opensuse-13-1&#x2F;&quot;&gt;promotion&lt;&#x2F;a&gt; fun sparks and suggested &lt;a href=&quot;https:&#x2F;&#x2F;en.opensuse.org&#x2F;openSUSE:Goals_13.1&quot;&gt;goals&lt;&#x2F;a&gt; for openSUSE 13.1&lt;&#x2F;p&gt;
+&lt;p&gt;Have fun..!&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;Update:&lt;&#x2F;strong&gt; It&#x27;s out..! But I didn&#x27;t have much time on checking it out. Hoping to do a run through, let&#x27;s see how it goes this time.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Google Go on OpenSUSE 12.1</title>
+        <published>2012-01-29T00:00:00+00:00</published>
+        <updated>2012-01-29T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/google-go-on-opensuse-12-1/"/>
+        <id>https://noos.blog/posts/google-go-on-opensuse-12-1/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/google-go-on-opensuse-12-1/">&lt;h3 id=&quot;intro&quot;&gt;Intro&lt;&#x2F;h3&gt;
+&lt;p&gt;As you may have already know the latest distribution release of &lt;a href=&quot;http:&#x2F;&#x2F;en.opensuse.org&#x2F;Portal:12.1&quot;&gt;OpenSUSE 12.1&lt;&#x2F;a&gt; ships with Google Go language. &lt;a href=&quot;http:&#x2F;&#x2F;golang.org&#x2F;&quot;&gt;Go language&lt;&#x2F;a&gt; was founded by Google as their very own programming language. It works like an interpreter language yet it has to be compiled in order to execute. This small introduction will show you how to set up the environment and run your first Go language program.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;installing-go&quot;&gt;Installing Go&lt;&#x2F;h3&gt;
+&lt;p&gt;Actually Go language is a part of the SUSE 12.1 distribution so you will not get it out of the box that is you have to install it first in order to use it. So lets begin installing Go&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;sudo zypper install go&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Here I have issued the zypper command to install the Go (usual SUSE way of installing packages from repos). It will probably install two packages. Ok after the successful installation lets check if it&#x27;s available&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;whereis go&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;outputs&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;go: &#x2F;usr&#x2F;lib&#x2F;go &#x2F;usr&#x2F;share&#x2F;go&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Voila.! so we got installed Go&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;setting-up-the-environment&quot;&gt;Setting up the environment&lt;&#x2F;h3&gt;
+&lt;p&gt;As in the Go guided &lt;a href=&quot;http:&#x2F;&#x2F;golang.org&#x2F;doc&#x2F;install.html#introduction&quot;&gt;tutorial&lt;&#x2F;a&gt; mentioned we need to set up three environment variables in order to successfully compile and execute a Go program. So lets open up the &lt;code&gt;&#x2F;.bashrc&lt;&#x2F;code&gt; file where you usually place your environment variables (because &lt;code&gt;&#x2F;.bashrc&lt;&#x2F;code&gt; file executes with every new session)&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;sudo nano ~&#x2F;.bashrc&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;place three environment variables on the bottom of the file:-&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;export GOROOT=&#x2F;usr&#x2F;lib&#x2F;go
+&lt;&#x2F;span&gt;&lt;span&gt;export GOOS=linux
+&lt;&#x2F;span&gt;&lt;span&gt;export GOARCH=386
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;[ctrl + x to save the file]&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;export GOROOT&lt;&#x2F;code&gt; – location of your Go source installation (&#x2F;usr&#x2F;lib&#x2F;go) use whereis command to see that as used before.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;export GOOS&lt;&#x2F;code&gt; – Your OS type which is Linux&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;export GOARCH&lt;&#x2F;code&gt; – Your OS architecture, in my case x86-32 (32-bit) so it goes as 386 [see here for more details]. Issue lscpu to check your sys-architecture.&lt;&#x2F;p&gt;
+&lt;p&gt;Ok now everything is setup up. All you have to do now is open a new session, simply logout and re-login. or simply do a &lt;code&gt;source ~&#x2F;.bashrc&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;first-program&quot;&gt;First program&lt;&#x2F;h3&gt;
+&lt;p&gt;As this is an introduction I will grab the same &quot;Hello&quot; program listed on &lt;a href=&quot;http:&#x2F;&#x2F;golang.org&#x2F;doc&#x2F;install.html#writing&quot;&gt;http:&#x2F;&#x2F;golang.org&#x2F;doc&#x2F;install.html#writing&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;nano hello.go&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;go&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-go &quot;&gt;&lt;code class=&quot;language-go&quot; data-lang=&quot;go&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;package &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;main
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;fmt&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;func &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;fmt&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Printf&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;hello, world&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;[ctrl + x to save the file]&lt;&#x2F;p&gt;
+&lt;p&gt;As I did mentioned earlier Go is a compile and run language like C or C++. So you&#x27;ll have to to take the necessary steps before you make your Go code to be executed.&lt;&#x2F;p&gt;
+&lt;p&gt;Compiling, linking and executing&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;8g hello.go
+&lt;&#x2F;span&gt;&lt;span&gt;8l hello.8
+&lt;&#x2F;span&gt;&lt;span&gt;.&#x2F;8.out
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Will gives you&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;hello, world&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Note: here I have used 8g, 8l because my arc-type is 32-bit (386).
+You will notice a different formation on the guide.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;Now you have successfully completed your first Google Go language program. Pretty straight forward hah? To me it seems like that it follows a familiar executing process as in assembly language. So this is just a little heads up you can find more tutorials and code sample on &lt;a href=&quot;http:&#x2F;&#x2F;golang.org&#x2F;doc&#x2F;&quot;&gt;http:&#x2F;&#x2F;golang.org&#x2F;doc&#x2F;&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+</feed>

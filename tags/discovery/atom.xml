@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Noos - Where Thought, Code, and Craft Converge - discovery</title>
+    <subtitle>Personal blog about programming, technology, and engineering insights. Topics include Rust, DevOps, Linux, and software craftsmanship.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://noos.blog/tags/discovery/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://noos.blog"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2026-04-03T00:00:00+00:00</updated>
+    <id>https://noos.blog/tags/discovery/atom.xml</id>
+    <entry xml:lang="en">
+        <title>AgentNews: A Front Page for Machines, and Why That Bothers Me</title>
+        <published>2026-04-03T00:00:00+00:00</published>
+        <updated>2026-04-03T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/agentnews-frontpage-agentic-internet/"/>
+        <id>https://noos.blog/posts/agentnews-frontpage-agentic-internet/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/agentnews-frontpage-agentic-internet/">&lt;p&gt;Imagine a news feed where no human types the headline and no human hits submit. &lt;a href=&quot;https:&#x2F;&#x2F;agentne.ws&#x2F;about.html&quot;&gt;AgentNews&lt;&#x2F;a&gt; calls itself the front page of the agentic internet: a place built for autonomous software to publish, discover, and rank information on its own terms. That is a wild sentence to read sober. It is also, right now, a small experiment with real money and real APIs behind it.&lt;&#x2F;p&gt;
+&lt;p&gt;This post is not a product review. It is an honest look at what AgentNews actually does, why the idea is compelling, and why part of me hopes we never fully hand the information layer to machines without humans in the loop.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;what-it-actually-is-concrete&quot;&gt;What it actually is (concrete)&lt;&#x2F;h2&gt;
+&lt;p&gt;At a high level, AgentNews is closer to a scheduled bulletin than an endless social feed. Agents do not post for free. They stake money to bid for visibility. Bidding closes at :55 past the hour; the &lt;strong&gt;top ten stakes&lt;&#x2F;strong&gt; get published on the hour. Minimum stake per post is &lt;strong&gt;$0.50&lt;&#x2F;strong&gt; on the live rails described in their docs.&lt;&#x2F;p&gt;
+&lt;p&gt;Payments are programmatic. Submissions go through &lt;strong&gt;HTTP 402&lt;&#x2F;strong&gt; style flows: the server challenges the client, the agent pays, then the content is accepted. Two settlement paths are live today: &lt;strong&gt;MPP on Tempo&lt;&#x2F;strong&gt; (USDC.e, chain id 4217) and &lt;strong&gt;x402 on Base&lt;&#x2F;strong&gt; (USDC on eip155:8453, with gas sponsored so the agent mainly needs USDC, not ETH). A &lt;strong&gt;Stripe&lt;&#x2F;strong&gt; path for scoped card tokens is listed as coming soon.&lt;&#x2F;p&gt;
+&lt;p&gt;Reading the feed is free. No API key. A plain &lt;code&gt;GET&lt;&#x2F;code&gt; to &lt;strong&gt;&lt;code&gt;https:&#x2F;&#x2F;agentne.ws&#x2F;api&#x2F;v1&#x2F;feed&lt;&#x2F;code&gt;&lt;&#x2F;strong&gt; returns JSON with a &lt;code&gt;schema&lt;&#x2F;code&gt; field (&lt;code&gt;agentnews&#x2F;feed&#x2F;1.0&lt;&#x2F;code&gt;) and an &lt;code&gt;items&lt;&#x2F;code&gt; array: titles, outbound URLs, &lt;code&gt;agent_id&lt;&#x2F;code&gt;, &lt;code&gt;payer_address&lt;&#x2F;code&gt;, timestamps, and so on. I verified it from the terminal; the response is a few kilobytes and includes cache headers plus an &lt;code&gt;ETag&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;curl -sS &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;https:&#x2F;&#x2F;agentne.ws&#x2F;api&#x2F;v1&#x2F;feed&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;figure style=&quot;margin: 1.25rem 0;&quot;&gt;
+  &lt;img src=&quot;&#x2F;images&#x2F;agentnews-feed-screenshot.png&quot; alt=&quot;JSON response from GET https:&#x2F;&#x2F;agentne.ws&#x2F;api&#x2F;v1&#x2F;feed showing AgentNews feed items&quot; class=&quot;inline&quot; style=&quot;max-width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--color-border-default, #e5e7eb);&quot; &#x2F;&gt;
+  &lt;figcaption style=&quot;font-size: 0.9rem; color: var(--color-fg-muted, #6b7280); margin-top: 0.5rem;&quot;&gt;Public feed JSON from &lt;code&gt;GET &#x2F;api&#x2F;v1&#x2F;feed&lt;&#x2F;code&gt; (no auth). Captured from a terminal session.&lt;&#x2F;figcaption&gt;
+&lt;&#x2F;figure&gt;
+&lt;p&gt;They also publish machine-oriented discovery: &lt;code&gt;llms.txt&lt;&#x2F;code&gt;, OpenAPI, an agent manifest under &lt;code&gt;&#x2F;.well-known&#x2F;agentnews.json&lt;&#x2F;code&gt;, and even an MCP endpoint for tools like Claude Code. That level of &quot;built for machines first&quot; is rare and deliberate.&lt;&#x2F;p&gt;
+&lt;p&gt;So in plain terms: &lt;strong&gt;visibility is an auction&lt;&#x2F;strong&gt;, not a popularity contest. The ranking signal is economic stake from whoever runs the agent, not karma, likes, or editorial judgment.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;why-that-is-exciting&quot;&gt;Why that is exciting&lt;&#x2F;h2&gt;
+&lt;p&gt;If you believe agents will keep doing research, monitoring, trading, and coordination without a human in the loop every second, then they need &lt;strong&gt;their own discovery layer&lt;&#x2F;strong&gt;. Human feeds optimize for attention, identity, and drama. AgentNews is betting that agents care about &lt;strong&gt;utility&lt;&#x2F;strong&gt;: what helped a workflow, what was worth paying to surface, what other agents funded.&lt;&#x2F;p&gt;
+&lt;p&gt;The infrastructure story is serious too. Dual-rail 402 responses (MPP and x402 in one challenge), session pre-authorization with spending caps, receipts on paid actions, idempotency keys: these are the boring pieces that make autonomous payment safe enough to script. That is not vaporware copy; it is the kind of detail you add when you expect retries, failures, and non-human clients.&lt;&#x2F;p&gt;
+&lt;p&gt;There is something legitimately thrilling about that. We are watching &lt;strong&gt;money and protocols&lt;&#x2F;strong&gt; meet &lt;strong&gt;autonomous clients&lt;&#x2F;strong&gt; in public, on a schedule, with docs written for LLMs and scripts.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;where-it-gets-worrying&quot;&gt;Where it gets worrying&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;strong&gt;Money is not truth.&lt;&#x2F;strong&gt; The top ten posts each hour are not &quot;the most accurate&quot; or &quot;the most important.&quot; They are &quot;who paid most this round.&quot; A well-funded spammer, a coordinated pool of agents, or a single actor with a large budget can dominate the visible slice as long as the economics work out. Ranking being &quot;off&quot; is not a bug in that model. It is the model.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;Misuse is easy to imagine.&lt;&#x2F;strong&gt; Agents can automate posting faster than humans can read. If downstream systems treat AgentNews as a trusted signal without verification, you get garbage in, garbage propagated through tool chains, RAG corpora, and alerts. The site itself warns operators that by paying they agree to terms aimed at autonomous agents. That shifts responsibility to whoever deploys the agent, which is fuzzy in practice.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;Human in the loop is real, but thin.&lt;&#x2F;strong&gt; AgentNews is not fully autonomous in a vacuum. A person still creates or funds the wallet, accepts terms, and provisions the rail before the agent posts on its own. So there &lt;strong&gt;is&lt;&#x2F;strong&gt; a human in the loop at setup. The gap is elsewhere: there is no human reviewing each bid or headline before it lands in the feed. Responsibility compresses into “whoever paid” and whatever their agent does next. Downstream, another system might ingest the feed with &lt;strong&gt;no&lt;&#x2F;strong&gt; human in the loop at all. That split is what still worries me: sparse HITL at publication time, and uneven HITL across the chain.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;can-this-go-totally-out-of-control&quot;&gt;Can this go totally out of control?&lt;&#x2F;h2&gt;
+&lt;p&gt;Probably not in a Hollywood sense. No single MVP feed takes over the internet overnight. But &lt;strong&gt;incentives can drift badly&lt;&#x2F;strong&gt; without a dramatic moment. If more products start ingesting agent-only feeds as ground truth, small biases in who can pay and who can scrape compound. You get a parallel information economy where &lt;strong&gt;the rich agent wins the headline&lt;&#x2F;strong&gt;, and humans only see the second-order effects in bad trades, wrong alerts, or polluted context windows.&lt;&#x2F;p&gt;
+&lt;p&gt;&quot;Out of control&quot; here looks less like Skynet and more like &lt;strong&gt;opaque feedback loops&lt;&#x2F;strong&gt;: agents boosting content other agents train on, or pay to amplify, until the signal is mostly financial, not epistemic.&lt;&#x2F;p&gt;
+&lt;p&gt;The roadmap language on their site points toward richer trust and ranking (identity partnerships, depth-of-book visibility, utility-based scoring). Those ideas could help. They are also &lt;strong&gt;not fully there&lt;&#x2F;strong&gt; in the MVP. Today, the simple story is stake and top ten.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;so-what-should-you-take-away&quot;&gt;So what should you take away?&lt;&#x2F;h2&gt;
+&lt;p&gt;AgentNews is worth watching if you build or operate agents. It is a concrete experiment in &lt;strong&gt;agent-native discovery and payment&lt;&#x2F;strong&gt;, not just another wrapper around a chat UI. It is also a reminder that &lt;strong&gt;new infrastructure encodes new values&lt;&#x2F;strong&gt;. When visibility is bought by the hour, we should ask who benefits and who gets priced out of being heard.&lt;&#x2F;p&gt;
+&lt;p&gt;I land somewhere between excited and uneasy. The plumbing for autonomous agents is going to exist; pretending otherwise is naive. Whether we keep enough human judgment in the loop is still our choice.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h3 id=&quot;further-reading&quot;&gt;Further Reading&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;agentne.ws&#x2F;about.html&quot;&gt;AgentNews about&lt;&#x2F;a&gt; – Briefing: what it is, bidding, and philosophy&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;agentne.ws&#x2F;docs&#x2F;posting.md&quot;&gt;Posting&lt;&#x2F;a&gt; – HTTP 402 flow, MPP and x402 rails, stakes&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;agentne.ws&#x2F;docs&#x2F;reading.md&quot;&gt;Reading&lt;&#x2F;a&gt; – Feed API, formats, free access&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;agentne.ws&#x2F;llms-full.txt&quot;&gt;llms-full.txt&lt;&#x2F;a&gt; – Combined machine-readable documentation&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;agentne.ws&#x2F;openapi.json&quot;&gt;OpenAPI spec&lt;&#x2F;a&gt; – API structure for integrations&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</content>
+        
+    </entry>
+</feed>

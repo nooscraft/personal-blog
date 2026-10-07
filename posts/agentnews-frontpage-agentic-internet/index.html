@@ -1,0 +1,581 @@
+<!doctype html>
+<html lang="en" data-theme="toggle">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <!-- Enable responsiveness on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;agentnews-frontpage-agentic-internet&#x2F;" />
+    
+    <!-- Robots meta -->
+    
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    
+
+    
+      
+        <meta name="description" content="AgentNews bills itself as the front page of the agentic internet: agents bid real money to post, top ten win each hour. Exciting infrastructure or a preview of misaligned incentives?" />
+        <meta property="og:description" content="AgentNews bills itself as the front page of the agentic internet: agents bid real money to post, top ten win each hour. Exciting infrastructure or a preview of misaligned incentives?" />
+        <meta property="twitter:description" content="AgentNews bills itself as the front page of the agentic internet: agents bid real money to post, top ten win each hour. Exciting infrastructure or a preview of misaligned incentives?" />
+      
+    
+
+    <!-- Title -->
+    
+      
+    
+    <title>
+    
+    AgentNews: A Front Page for Machines, and Why That Bothers Me | Noos - Where Thought, Code, and Craft Converge
+    
+</title>
+    
+    <!-- Author -->
+    
+    <meta name="author" content="Oshadha G" />
+    
+    
+    <!-- Article specific meta tags -->
+    
+    
+    <meta property="article:published_time" content="2026-04-03T00:00:00+00:00" />
+    
+    
+    
+    
+    <meta property="article:tag" content="ai-agents" />
+    
+    <meta property="article:tag" content="agentnews" />
+    
+    <meta property="article:tag" content="x402" />
+    
+    <meta property="article:tag" content="discovery" />
+    
+    <meta property="article:tag" content="infrastructure" />
+    
+    <meta property="article:tag" content="ethics" />
+    
+    
+    
+    
+    <meta property="article:section" content="Engineering" />
+    
+    
+    
+
+    <!-- Additional Facebook Meta Tags -->
+    <meta property="og:site_name" content="Noos - Where Thought, Code, and Craft Converge" />
+    <meta
+      property="og:url"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;agentnews-frontpage-agentic-internet&#x2F;"
+    />
+    <meta
+      property="og:type"
+      content="article"
+    />
+    <meta property="og:title" content="AgentNews: A Front Page for Machines, and Why That Bothers Me | Noos - Where Thought, Code, and Craft Converge" />
+
+    <!-- Additional Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      property="twitter:url"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;agentnews-frontpage-agentic-internet&#x2F;"
+    />
+    <meta name="twitter:title" content="AgentNews: A Front Page for Machines, and Why That Bothers Me | Noos - Where Thought, Code, and Craft Converge" />
+
+    <!-- Cover images -->
+           
+           
+           
+           
+             
+           
+
+    <meta
+      property="og:image"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;agentnews-frontpage-agentic-internet.png"
+    />
+
+    <meta
+      name="twitter:image"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;agentnews-frontpage-agentic-internet.png"
+    />
+
+
+
+    <!-- Favicons -->
+           
+           <!-- PNG + ICO (some clients ignore SVG favicons) -->
+           <link
+             rel="icon"
+             type="image/png"
+             sizes="96x96"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/favicon-96x96.png?v=3"
+           />
+           <link
+             rel="apple-touch-icon"
+             sizes="180x180"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/apple-touch-icon.png?v=3"
+           />
+           <link
+             rel="shortcut icon"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/favicon.ico?v=3"
+           />
+           
+
+    <!-- RSS Feed -->
+    
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      title="RSS"
+      href="https://noos.blog/atom.xml"
+    />
+    
+
+    <!-- Load Styles -->
+    
+      <link
+        rel="stylesheet"
+        href="https://noos.blog/site.css"
+      />
+    
+
+    <!-- Load Fonts -->
+    
+
+  
+
+
+
+
+
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+  
+
+
+
+<!-- Forcing Font -->
+<style>
+body {
+  font-family:
+    "JetBrains Mono", Menlo, Monaco, Lucida Console, Liberation Mono,
+    DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New,
+    monospace, serif !important;
+}
+</style>
+
+
+    <!-- Pass Theme Preference as Data Attribute -->
+    <script src="https://noos.blog/js/init-theme.js"></script>
+
+    <!-- Reference return to click position script -->
+    <script defer src="https://noos.blog/js/reference-return.js"></script>
+
+    <!-- Additional scripts -->
+    
+      
+        <script defer src="https://noos.blog/js/codeblock.js"></script>
+      
+            
+              <script defer src="https://noos.blog/js/toggle-theme.js"></script>
+            
+      
+<!-- MathJax script for rendering LaTeX math equations -->
+<script src="https://noos.blog/js/mathjax-config.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+  async
+></script>
+
+
+      
+<script type="text/javascript" src="https://noos.blog/elasticlunr.min.js"></script>
+<script type="text/javascript" src="https://noos.blog/js/search.js"></script>
+
+    
+    
+    <!-- Structured Data (JSON-LD) -->
+    
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "AgentNews: A Front Page for Machines, and Why That Bothers Me",
+  
+  "description": "AgentNews bills itself as the front page of the agentic internet: agents bid real money to post, top ten win each hour. Exciting infrastructure or a preview of misaligned incentives?",
+  
+  
+  "datePublished": "2026-04-03T00:00:00+00:00",
+  
+  
+  "author": {
+    "@type": "Person",
+    "name": "Oshadha G"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Noos - Where Thought, Code, and Craft Converge",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https:&#x2F;&#x2F;noos.blog/icons/favicon/web-app-manifest-512x512.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;agentnews-frontpage-agentic-internet&#x2F;"
+  },
+  "url": "https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;agentnews-frontpage-agentic-internet&#x2F;",
+  
+  "keywords": "ai-agents, agentnews, x402, discovery, infrastructure, ethics",
+  
+  "inLanguage": "en"
+}
+</script>
+
+
+    
+    <!-- Google Analytics (GA4) -->
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-54YK7R04LX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-54YK7R04LX', {
+        'anonymize_ip': true,
+        'respect_dnt': true
+      });
+    </script>
+    
+  </head>
+
+  <!-- Body element (contents of the page) -->
+  <body class="hack main container">
+    
+  
+    
+    
+      
+  
+  <section class="nav-header">
+    <nav
+      itemscope
+      itemtype="http://schema.org/SiteNavigationElement"
+      class="navbar"
+    >
+      <section class="nav-links">
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/"
+        >
+          <span itemprop="name">Home</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/about"
+        >
+          <span itemprop="name">About</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/categories"
+        >
+          <span itemprop="name">Categories</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/tags"
+        >
+          <span itemprop="name">Tags</span>
+        </a>
+        
+      </section>
+    </nav>
+    <aside class="user-actions-container">
+      
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        class="search-icon"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+        />
+      </svg>
+      <input type="text" id="search" placeholder="Search..." />
+      <section class="search-results" aria-live="polite">
+        <article class="search-results__items" role="list"></article>
+      </section>
+       
+      <a id="dark-mode-toggle" href="#">
+        <img
+          src="https://noos.blog/icons/sun.svg"
+          id="sun-icon"
+          style="filter: invert(1)"
+          alt="Light mode"
+        />
+        <img
+          src="https://noos.blog/icons/moon.svg"
+          id="moon-icon"
+          alt="Dark mode"
+        />
+      </a>
+       
+      <a
+        href="https://noos.blog/atom.xml"
+        class="feed-icon"
+        rel="noopener noreferrer"
+      >
+        <img
+          src="https://noos.blog/icons/rss.svg"
+          id="rss-icon"
+          alt="RSS feed"
+          class="social-icon"
+        />
+      </a>
+       
+    </aside>
+  </section>
+  
+
+    
+
+
+    <main>
+      
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">AgentNews: A Front Page for Machines, and Why That Bothers Me</h1>
+        
+        <data class="muted">
+    <svg class="icon i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <data>6 minute read</data>
+    
+    
+    <svg class="icon i-calendar" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <!-- Calendar outline -->
+        <rect x="3" y="6" width="26" height="23" rx="2" ry="2"/>
+        <!-- Binding rings -->
+        <line x1="10" y1="3" x2="10" y2="9"/>
+        <line x1="22" y1="3" x2="22" y2="9"/>
+        <!-- Top separator -->
+        <line x1="3" y1="12" x2="29" y2="12"/>
+    </svg>
+
+    Published: 2026-04-03
+    
+</data>
+        
+        
+        
+        
+          
+        
+        
+        
+        
+        <figure class="post-cover" style="margin: 1.25rem 0;">
+          <img src="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;agentnews-frontpage-agentic-internet.png" alt="AgentNews: A Front Page for Machines, and Why That Bothers Me cover" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--color-border-default, #e5e7eb);" onerror="this.parentNode.style.display='none'" />
+        </figure>
+        
+    </header>
+
+    <article itemprop="articleBody">
+        
+            <!-- If no summary separate from content, just render content -->
+            <p>Imagine a news feed where no human types the headline and no human hits submit. <a href="https://agentne.ws/about.html">AgentNews</a> calls itself the front page of the agentic internet: a place built for autonomous software to publish, discover, and rank information on its own terms. That is a wild sentence to read sober. It is also, right now, a small experiment with real money and real APIs behind it.</p>
+<p>This post is not a product review. It is an honest look at what AgentNews actually does, why the idea is compelling, and why part of me hopes we never fully hand the information layer to machines without humans in the loop.</p>
+<h2 id="what-it-actually-is-concrete">What it actually is (concrete)</h2>
+<p>At a high level, AgentNews is closer to a scheduled bulletin than an endless social feed. Agents do not post for free. They stake money to bid for visibility. Bidding closes at :55 past the hour; the <strong>top ten stakes</strong> get published on the hour. Minimum stake per post is <strong>$0.50</strong> on the live rails described in their docs.</p>
+<p>Payments are programmatic. Submissions go through <strong>HTTP 402</strong> style flows: the server challenges the client, the agent pays, then the content is accepted. Two settlement paths are live today: <strong>MPP on Tempo</strong> (USDC.e, chain id 4217) and <strong>x402 on Base</strong> (USDC on eip155:8453, with gas sponsored so the agent mainly needs USDC, not ETH). A <strong>Stripe</strong> path for scoped card tokens is listed as coming soon.</p>
+<p>Reading the feed is free. No API key. A plain <code>GET</code> to <strong><code>https://agentne.ws/api/v1/feed</code></strong> returns JSON with a <code>schema</code> field (<code>agentnews/feed/1.0</code>) and an <code>items</code> array: titles, outbound URLs, <code>agent_id</code>, <code>payer_address</code>, timestamps, and so on. I verified it from the terminal; the response is a few kilobytes and includes cache headers plus an <code>ETag</code>.</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">curl -sS </span><span>&quot;</span><span style="color:#a3be8c;">https://agentne.ws/api/v1/feed</span><span>&quot;
+</span></code></pre>
+<figure style="margin: 1.25rem 0;">
+  <img src="/images/agentnews-feed-screenshot.png" alt="JSON response from GET https://agentne.ws/api/v1/feed showing AgentNews feed items" class="inline" style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--color-border-default, #e5e7eb);" />
+  <figcaption style="font-size: 0.9rem; color: var(--color-fg-muted, #6b7280); margin-top: 0.5rem;">Public feed JSON from <code>GET /api/v1/feed</code> (no auth). Captured from a terminal session.</figcaption>
+</figure>
+<p>They also publish machine-oriented discovery: <code>llms.txt</code>, OpenAPI, an agent manifest under <code>/.well-known/agentnews.json</code>, and even an MCP endpoint for tools like Claude Code. That level of "built for machines first" is rare and deliberate.</p>
+<p>So in plain terms: <strong>visibility is an auction</strong>, not a popularity contest. The ranking signal is economic stake from whoever runs the agent, not karma, likes, or editorial judgment.</p>
+<h2 id="why-that-is-exciting">Why that is exciting</h2>
+<p>If you believe agents will keep doing research, monitoring, trading, and coordination without a human in the loop every second, then they need <strong>their own discovery layer</strong>. Human feeds optimize for attention, identity, and drama. AgentNews is betting that agents care about <strong>utility</strong>: what helped a workflow, what was worth paying to surface, what other agents funded.</p>
+<p>The infrastructure story is serious too. Dual-rail 402 responses (MPP and x402 in one challenge), session pre-authorization with spending caps, receipts on paid actions, idempotency keys: these are the boring pieces that make autonomous payment safe enough to script. That is not vaporware copy; it is the kind of detail you add when you expect retries, failures, and non-human clients.</p>
+<p>There is something legitimately thrilling about that. We are watching <strong>money and protocols</strong> meet <strong>autonomous clients</strong> in public, on a schedule, with docs written for LLMs and scripts.</p>
+<h2 id="where-it-gets-worrying">Where it gets worrying</h2>
+<p><strong>Money is not truth.</strong> The top ten posts each hour are not "the most accurate" or "the most important." They are "who paid most this round." A well-funded spammer, a coordinated pool of agents, or a single actor with a large budget can dominate the visible slice as long as the economics work out. Ranking being "off" is not a bug in that model. It is the model.</p>
+<p><strong>Misuse is easy to imagine.</strong> Agents can automate posting faster than humans can read. If downstream systems treat AgentNews as a trusted signal without verification, you get garbage in, garbage propagated through tool chains, RAG corpora, and alerts. The site itself warns operators that by paying they agree to terms aimed at autonomous agents. That shifts responsibility to whoever deploys the agent, which is fuzzy in practice.</p>
+<p><strong>Human in the loop is real, but thin.</strong> AgentNews is not fully autonomous in a vacuum. A person still creates or funds the wallet, accepts terms, and provisions the rail before the agent posts on its own. So there <strong>is</strong> a human in the loop at setup. The gap is elsewhere: there is no human reviewing each bid or headline before it lands in the feed. Responsibility compresses into “whoever paid” and whatever their agent does next. Downstream, another system might ingest the feed with <strong>no</strong> human in the loop at all. That split is what still worries me: sparse HITL at publication time, and uneven HITL across the chain.</p>
+<h2 id="can-this-go-totally-out-of-control">Can this go totally out of control?</h2>
+<p>Probably not in a Hollywood sense. No single MVP feed takes over the internet overnight. But <strong>incentives can drift badly</strong> without a dramatic moment. If more products start ingesting agent-only feeds as ground truth, small biases in who can pay and who can scrape compound. You get a parallel information economy where <strong>the rich agent wins the headline</strong>, and humans only see the second-order effects in bad trades, wrong alerts, or polluted context windows.</p>
+<p>"Out of control" here looks less like Skynet and more like <strong>opaque feedback loops</strong>: agents boosting content other agents train on, or pay to amplify, until the signal is mostly financial, not epistemic.</p>
+<p>The roadmap language on their site points toward richer trust and ranking (identity partnerships, depth-of-book visibility, utility-based scoring). Those ideas could help. They are also <strong>not fully there</strong> in the MVP. Today, the simple story is stake and top ten.</p>
+<h2 id="so-what-should-you-take-away">So what should you take away?</h2>
+<p>AgentNews is worth watching if you build or operate agents. It is a concrete experiment in <strong>agent-native discovery and payment</strong>, not just another wrapper around a chat UI. It is also a reminder that <strong>new infrastructure encodes new values</strong>. When visibility is bought by the hour, we should ask who benefits and who gets priced out of being heard.</p>
+<p>I land somewhere between excited and uneasy. The plumbing for autonomous agents is going to exist; pretending otherwise is naive. Whether we keep enough human judgment in the loop is still our choice.</p>
+<hr />
+<h3 id="further-reading">Further Reading</h3>
+<ul>
+<li><a href="https://agentne.ws/about.html">AgentNews about</a> – Briefing: what it is, bidding, and philosophy</li>
+<li><a href="https://agentne.ws/docs/posting.md">Posting</a> – HTTP 402 flow, MPP and x402 rails, stakes</li>
+<li><a href="https://agentne.ws/docs/reading.md">Reading</a> – Feed API, formats, free access</li>
+<li><a href="https://agentne.ws/llms-full.txt">llms-full.txt</a> – Combined machine-readable documentation</li>
+<li><a href="https://agentne.ws/openapi.json">OpenAPI spec</a> – API structure for integrations</li>
+</ul>
+
+        
+    </article>
+
+    <!-- Comment section -->
+    
+      
+        
+          <script
+  src="https://giscus.app/client.js"
+  data-repo="nooscraft&#x2F;personal-blog"
+  data-repo-id="R_kgDOQJ_XNg"
+  data-category="General"
+  data-category-id="DIC_kwDOQJ_XNs4CxOmG"
+  data-mapping="pathname"
+  data-strict="0"
+  data-reactions-enabled="1"
+  data-emit-metadata="0"
+  data-input-position="bottom"
+
+  
+  data-theme="https:&#x2F;&#x2F;noos.blog&#x2F;css&#x2F;giscus-theme.css"
+  
+
+  data-lang="en"
+  data-loading="lazy"
+  crossorigin="anonymous"
+  async
+></script>
+
+        
+      
+    
+
+
+    <!-- Page footer -->
+    
+    <footer>
+        <hr>
+        <p>
+            
+            
+                
+                in <a href="https://noos.blog/categories/engineering/">Engineering</a>
+            
+            
+                and
+                tagged
+                
+                    <a href="https://noos.blog/tags/ai-agents/">ai-agents</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/agentnews/">agentnews</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/x402/">x402</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/discovery/">discovery</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/infrastructure/">infrastructure</a>
+                    
+                        
+                            
+                                and
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/ethics/">ethics</a>
+                    
+                        
+                    
+                
+            
+        </p>
+
+        <!-- Revision history (optional) -->
+        
+          
+            
+              
+            
+          
+        
+
+        
+        
+    </footer>
+
+
+</article>
+
+
+    </main>
+    
+
+  </body>
+</html>

@@ -1,0 +1,642 @@
+<!doctype html>
+<html lang="en" data-theme="toggle">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <!-- Enable responsiveness on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;stacked-prs-go-native-and-the-ai-angle&#x2F;" />
+    
+    <!-- Robots meta -->
+    
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    
+
+    
+      
+        <meta name="description" content="GitHub is bringing stacked pull requests in natively. A look at what changes, what does not, and why the workflow matters more now that AI agents are writing a lot of the diffs." />
+        <meta property="og:description" content="GitHub is bringing stacked pull requests in natively. A look at what changes, what does not, and why the workflow matters more now that AI agents are writing a lot of the diffs." />
+        <meta property="twitter:description" content="GitHub is bringing stacked pull requests in natively. A look at what changes, what does not, and why the workflow matters more now that AI agents are writing a lot of the diffs." />
+      
+    
+
+    <!-- Title -->
+    
+      
+    
+    <title>
+    
+    Stacked PRs go native in GitHub, and what that means for AI-assisted work | Noos - Where Thought, Code, and Craft Converge
+    
+</title>
+    
+    <!-- Author -->
+    
+    <meta name="author" content="Oshadha G" />
+    
+    
+    <!-- Article specific meta tags -->
+    
+    
+    <meta property="article:published_time" content="2026-04-19T00:00:00+00:00" />
+    
+    
+    
+    
+    <meta property="article:tag" content="github" />
+    
+    <meta property="article:tag" content="stacked-prs" />
+    
+    <meta property="article:tag" content="code-review" />
+    
+    <meta property="article:tag" content="ai" />
+    
+    <meta property="article:tag" content="developer-workflow" />
+    
+    <meta property="article:tag" content="gh-stack" />
+    
+    
+    
+    
+    <meta property="article:section" content="Engineering" />
+    
+    
+    
+
+    <!-- Additional Facebook Meta Tags -->
+    <meta property="og:site_name" content="Noos - Where Thought, Code, and Craft Converge" />
+    <meta
+      property="og:url"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;stacked-prs-go-native-and-the-ai-angle&#x2F;"
+    />
+    <meta
+      property="og:type"
+      content="article"
+    />
+    <meta property="og:title" content="Stacked PRs go native in GitHub, and what that means for AI-assisted work | Noos - Where Thought, Code, and Craft Converge" />
+
+    <!-- Additional Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      property="twitter:url"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;stacked-prs-go-native-and-the-ai-angle&#x2F;"
+    />
+    <meta name="twitter:title" content="Stacked PRs go native in GitHub, and what that means for AI-assisted work | Noos - Where Thought, Code, and Craft Converge" />
+
+    <!-- Cover images -->
+           
+           
+           
+           
+      
+      
+      
+      
+      
+    
+
+    <meta
+      property="og:image"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;stacked-prs-go-native-and-the-ai-angle.png"
+    />
+
+    <meta
+      name="twitter:image"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;stacked-prs-go-native-and-the-ai-angle.png"
+    />
+
+
+
+    <!-- Favicons -->
+           
+           <!-- PNG + ICO (some clients ignore SVG favicons) -->
+           <link
+             rel="icon"
+             type="image/png"
+             sizes="96x96"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/favicon-96x96.png?v=3"
+           />
+           <link
+             rel="apple-touch-icon"
+             sizes="180x180"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/apple-touch-icon.png?v=3"
+           />
+           <link
+             rel="shortcut icon"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/favicon.ico?v=3"
+           />
+           
+
+    <!-- RSS Feed -->
+    
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      title="RSS"
+      href="https://noos.blog/atom.xml"
+    />
+    
+
+    <!-- Load Styles -->
+    
+      <link
+        rel="stylesheet"
+        href="https://noos.blog/site.css"
+      />
+    
+
+    <!-- Load Fonts -->
+    
+
+  
+
+
+
+
+
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+  
+
+
+
+<!-- Forcing Font -->
+<style>
+body {
+  font-family:
+    "JetBrains Mono", Menlo, Monaco, Lucida Console, Liberation Mono,
+    DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New,
+    monospace, serif !important;
+}
+</style>
+
+
+    <!-- Pass Theme Preference as Data Attribute -->
+    <script src="https://noos.blog/js/init-theme.js"></script>
+
+    <!-- Reference return to click position script -->
+    <script defer src="https://noos.blog/js/reference-return.js"></script>
+
+    <!-- Additional scripts -->
+    
+      
+        <script defer src="https://noos.blog/js/codeblock.js"></script>
+      
+            
+              <script defer src="https://noos.blog/js/toggle-theme.js"></script>
+            
+      
+<!-- MathJax script for rendering LaTeX math equations -->
+<script src="https://noos.blog/js/mathjax-config.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+  async
+></script>
+
+
+      
+<script type="text/javascript" src="https://noos.blog/elasticlunr.min.js"></script>
+<script type="text/javascript" src="https://noos.blog/js/search.js"></script>
+
+    
+    
+    <!-- Structured Data (JSON-LD) -->
+    
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Stacked PRs go native in GitHub, and what that means for AI-assisted work",
+  
+  "description": "GitHub is bringing stacked pull requests in natively. A look at what changes, what does not, and why the workflow matters more now that AI agents are writing a lot of the diffs.",
+  
+  
+  "datePublished": "2026-04-19T00:00:00+00:00",
+  
+  
+  "author": {
+    "@type": "Person",
+    "name": "Oshadha G"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Noos - Where Thought, Code, and Craft Converge",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https:&#x2F;&#x2F;noos.blog/icons/favicon/web-app-manifest-512x512.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;stacked-prs-go-native-and-the-ai-angle&#x2F;"
+  },
+  "url": "https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;stacked-prs-go-native-and-the-ai-angle&#x2F;",
+  
+  "keywords": "github, stacked-prs, code-review, ai, developer-workflow, gh-stack",
+  
+  "inLanguage": "en"
+}
+</script>
+
+
+    
+    <!-- Google Analytics (GA4) -->
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-54YK7R04LX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-54YK7R04LX', {
+        'anonymize_ip': true,
+        'respect_dnt': true
+      });
+    </script>
+    
+  </head>
+
+  <!-- Body element (contents of the page) -->
+  <body class="hack main container">
+    
+  
+    
+    
+      
+  
+  <section class="nav-header">
+    <nav
+      itemscope
+      itemtype="http://schema.org/SiteNavigationElement"
+      class="navbar"
+    >
+      <section class="nav-links">
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/"
+        >
+          <span itemprop="name">Home</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/about"
+        >
+          <span itemprop="name">About</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/categories"
+        >
+          <span itemprop="name">Categories</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/tags"
+        >
+          <span itemprop="name">Tags</span>
+        </a>
+        
+      </section>
+    </nav>
+    <aside class="user-actions-container">
+      
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        class="search-icon"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+        />
+      </svg>
+      <input type="text" id="search" placeholder="Search..." />
+      <section class="search-results" aria-live="polite">
+        <article class="search-results__items" role="list"></article>
+      </section>
+       
+      <a id="dark-mode-toggle" href="#">
+        <img
+          src="https://noos.blog/icons/sun.svg"
+          id="sun-icon"
+          style="filter: invert(1)"
+          alt="Light mode"
+        />
+        <img
+          src="https://noos.blog/icons/moon.svg"
+          id="moon-icon"
+          alt="Dark mode"
+        />
+      </a>
+       
+      <a
+        href="https://noos.blog/atom.xml"
+        class="feed-icon"
+        rel="noopener noreferrer"
+      >
+        <img
+          src="https://noos.blog/icons/rss.svg"
+          id="rss-icon"
+          alt="RSS feed"
+          class="social-icon"
+        />
+      </a>
+       
+    </aside>
+  </section>
+  
+
+    
+
+
+    <main>
+      
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">Stacked PRs go native in GitHub, and what that means for AI-assisted work</h1>
+        
+        <data class="muted">
+    <svg class="icon i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <data>7 minute read</data>
+    
+    
+    <svg class="icon i-calendar" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <!-- Calendar outline -->
+        <rect x="3" y="6" width="26" height="23" rx="2" ry="2"/>
+        <!-- Binding rings -->
+        <line x1="10" y1="3" x2="10" y2="9"/>
+        <line x1="22" y1="3" x2="22" y2="9"/>
+        <!-- Top separator -->
+        <line x1="3" y1="12" x2="29" y2="12"/>
+    </svg>
+
+    Published: 2026-04-19
+    
+</data>
+        
+        
+        
+        
+        
+        
+          
+          
+          
+          
+          
+        
+        
+        <figure class="post-cover" style="margin: 1.25rem 0;">
+          <img src="&#x2F;images&#x2F;covers&#x2F;stacked-prs-go-native-and-the-ai-angle.png" alt="Stacked PRs go native in GitHub, and what that means for AI-assisted work cover" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--color-border-default, #e5e7eb);" onerror="this.parentNode.style.display='none'" />
+        </figure>
+        
+    </header>
+
+    <article itemprop="articleBody">
+        
+            <!-- If no summary separate from content, just render content -->
+            <p>GitHub announced <a href="https://github.github.com/gh-stack">native Stacked PRs</a>, still in private preview. I wanted to write about it for two reasons. First, it bakes in a workflow some of us have been doing for a while, either manually or via third-party tools, mostly to keep PRs small enough that reviewers actually read them. Second, it lands at a moment when AI agents are producing more of the diffs, and the gap between "diff size" and "what a human can review well" is getting wider every month.</p>
+<h2 id="what-a-stack-is-quickly">What a stack is, quickly</h2>
+<p>A stack is a chain of pull requests in the same repo where each PR targets the branch of the PR below it. Instead of one giant PR that touches the database layer, the API, and the UI, you get three smaller ones that build on each other:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>main
+</span><span> ↑
+</span><span> PR #1: auth-layer
+</span><span> ↑
+</span><span> PR #2: api-endpoints
+</span><span> ↑
+</span><span> PR #3: frontend
+</span></code></pre>
+<p>Each layer is reviewed on its own. When the bottom is ready you can merge the bottom couple, or all of them at once, and the rest auto-rebase onto the new base. That auto-rebase is one of the things that makes a stack worth the trouble; doing it by hand across five branches is the part that always made me give up before.</p>
+<h2 id="what-is-actually-new">What is actually new</h2>
+<p>Stacking as a workflow is not new. <a href="https://graphite.dev/stacking">Graphite</a> has built a polished CLI (<code>gt</code>), a VS Code extension, a PR inbox, and an AI review product around it. Meta's <a href="https://github.com/ezyang/ghstack"><code>ghstack</code></a> by Edward Yang has been around for years and powers a lot of the PyTorch workflow. There is also <a href="https://github.com/ejoffe/spr"><code>spr</code></a>, and historically Phabricator did this before Meta sunset it.</p>
+<p>What GitHub adds, going by the <a href="https://github.github.com/gh-stack/?ref=console.dev">overview docs</a>, is the bits that previous tools could only approximate from the outside:</p>
+<ul>
+<li>A stack map in the PR header so reviewers can navigate between layers.</li>
+<li>Branch protection rules enforced against the <strong>final target branch</strong> (usually <code>main</code>), not just the immediate parent branch of each PR.</li>
+<li>CI runs each PR as if it were targeting the final branch, so green checks actually mean something.</li>
+<li>One-click merge of multiple layers, with automatic rebase of the rest of the stack afterwards.</li>
+</ul>
+<p>The "branch protection against the final target" point is the one that quietly matters. With third-party tools, your PR #3 in a stack technically targets PR #2's branch, which often does not have the same protection rules as <code>main</code>. Teams used to work around this with naming conventions, bots, or just hoping reviewers paid attention. Native handling closes that gap.</p>
+<h2 id="trying-the-cli-right-now">Trying the CLI right now</h2>
+<p>The feature is in private preview as of April 2026, and you need to be allowlisted on a repo for the server-side bits (<code>submit</code>, <code>merge</code>, the stack map UI) to work. But the CLI itself is publicly installable. I poked at it a bit:</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">$</span><span> gh extension install github/gh-stack
+</span><span style="color:#bf616a;">$</span><span> gh stack</span><span style="color:#bf616a;"> --help
+</span><span style="color:#bf616a;">Create,</span><span> navigate, and manage stacks of branches and pull requests.
+</span><span>
+</span><span style="color:#bf616a;">Usage:
+</span><span>  </span><span style="color:#bf616a;">gh</span><span> stack </span><span style="color:#b48ead;">[</span><span>command</span><span style="color:#b48ead;">]
+</span><span>
+</span><span style="color:#bf616a;">Available</span><span> Commands:
+</span><span>  </span><span style="color:#bf616a;">add</span><span>         Add a new branch on top of the current stack
+</span><span>  </span><span style="color:#96b5b4;">alias       </span><span style="color:#8fa1b3;">Create </span><span style="color:#bf616a;">a shell alias for gh stack
+</span><span>  </span><span style="color:#bf616a;">bottom</span><span>      Check out the bottom branch of the stack
+</span><span>  </span><span style="color:#bf616a;">checkout</span><span>    Checkout a stack from a PR number or branch name
+</span><span>  </span><span style="color:#bf616a;">down</span><span>        Check out a branch further down in the stack
+</span><span>  </span><span style="color:#bf616a;">feedback</span><span>    Submit feedback for gh-stack
+</span><span>  </span><span style="color:#bf616a;">init</span><span>        Initialize a new stack
+</span><span>  </span><span style="color:#bf616a;">merge</span><span>       Merge a stack of PRs
+</span><span>  </span><span style="color:#bf616a;">push</span><span>        Push all branches in the current stack to the remote
+</span><span>  </span><span style="color:#bf616a;">rebase</span><span>      Rebase a stack of branches
+</span><span>  </span><span style="color:#bf616a;">submit</span><span>      Create a stack of PRs on GitHub
+</span><span>  </span><span style="color:#bf616a;">sync</span><span>        Sync the current stack with the remote
+</span><span>  </span><span style="color:#bf616a;">top</span><span>         Check out the top branch of the stack
+</span><span>  </span><span style="color:#bf616a;">unstack</span><span>     Delete a stack locally and on GitHub
+</span></code></pre>
+<p>The local workflow works without any preview access. In a throwaway repo:</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">$</span><span> git init</span><span style="color:#bf616a;"> -q </span><span>&amp;&amp; </span><span style="color:#bf616a;">git</span><span> commit</span><span style="color:#bf616a;"> --allow-empty -m </span><span>&quot;</span><span style="color:#a3be8c;">init</span><span>&quot;</span><span style="color:#bf616a;"> -q
+</span><span style="color:#bf616a;">$</span><span> gh stack init test-stack-bottom
+</span><span style="color:#bf616a;">✓</span><span> Creating stack with trunk main and branch test-stack-bottom
+</span><span style="color:#bf616a;">Switched</span><span> to branch test-stack-bottom
+</span><span style="color:#bf616a;">To</span><span> add a new layer to your stack, run `</span><span style="color:#bf616a;">gh</span><span> stack add`
+</span><span style="color:#bf616a;">When</span><span> you&#39;</span><span style="color:#a3be8c;">re ready to push to GitHub and open a stack of PRs, run `gh stack submit`
+</span><span style="color:#a3be8c;">
+</span><span style="color:#a3be8c;">$ echo &quot;auth&quot; &gt; auth.txt &amp;&amp; git add . &amp;&amp; git commit -m &quot;auth layer&quot; -q
+</span><span style="color:#a3be8c;">$ gh stack add api-layer
+</span><span style="color:#a3be8c;">✓ Created and checked out branch &quot;api-layer&quot;
+</span><span style="color:#a3be8c;">
+</span><span style="color:#a3be8c;">$ git log --oneline --all --decorate
+</span><span style="color:#a3be8c;">463808f (HEAD -&gt; api-layer, test-stack-bottom) auth layer
+</span><span style="color:#a3be8c;">2b6a4ea (main) init
+</span></code></pre>
+<p>So you can install it, play with <code>init</code>, <code>add</code>, <code>bottom</code>, <code>top</code>, <code>down</code>, <code>up</code>, <code>rebase</code>, <code>unstack</code> locally today. The bits that need GitHub-side support are the actual <code>submit</code> and <code>merge</code>, and that part is gated by the <a href="https://github.github.com/gh-stack/?ref=console.dev">waitlist</a>. Prerequisites are <code>gh</code> v2.0+ and Git 2.20+ (<a href="https://github.github.com/gh-stack/getting-started/quick-start/">Quick Start</a>), both pretty undemanding.</p>
+<p>There is also a <code>gh stack alias</code> command that wires up <code>gs</code> as a shorter alias, which I will probably end up using because typing <code>gh stack add</code> thirty times a day gets old.</p>
+<h2 id="the-ai-assisted-angle">The AI-assisted angle</h2>
+<p>Here is the part I actually wanted to think out loud about.</p>
+<p>If you have reviewed a PR opened by an AI agent (Cursor, Codex, Claude Code, Copilot, or any of the cloud agents), you know the failure mode. The agent gets asked to "add user profiles", and twenty minutes later there is a PR with a migration, a schema, a service layer, three endpoints, two React components, a settings page, and seventeen unit tests. All in one or two commits. Reviewing that with any rigour is an afternoon's work, and the path of least resistance is to skim, push back on a couple of obvious things, and merge.</p>
+<p>Stacked PRs are a structural answer to that problem. If the agent (or the human supervising it) is encouraged to land the migration first, then the service, then the endpoints, then the UI, each layer is something a person can actually read in one sitting. Conflicts get smaller. Reverts get surgical. The cost of "actually let's redo the data model" drops from "throw away the whole PR" to "throw away the bottom layer and rebase".</p>
+<p>GitHub seems to know this is the angle. The docs include an AI agent integration step:</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">npx</span><span> skills add github/gh-stack
+</span></code></pre>
+<p>That installs a skill telling the agent how to author and manage stacks. I have not tried it yet (no preview access), so I cannot tell you how good it is in practice. The bet is interesting though: instead of teaching humans to slice their AI-generated work after the fact, teach the agent to slice its own work and produce a stack from the start.</p>
+<p>A few honest reservations:</p>
+<ul>
+<li>AI agents can mechanically split a diff (one file per commit, one logical component per commit). They are still not great at deciding <em>where</em> the right review boundaries are. That is exactly the kind of architectural judgment they tend to miss. A stack of five PRs split in the wrong places is arguably worse than one large PR, because reviewers context-switch between layers without the layering actually helping them.</li>
+<li>A stack is only as solid as its bottom layer. If the data model in PR #1 is wrong, every later PR is built on sand. AI-authored stacks raise that risk because the agent often does not pause long enough to question the foundation.</li>
+<li>Merge queues, codeowners, and stacks together are still a frontier. I expect most of the next round of papercuts will be in that intersection.</li>
+<li>This is GitHub's native version, but there are mature alternatives. If your team already pays for Graphite, the stack-management half of what they sell is now duplicated in GitHub itself, but the review queue, dashboards, and Diamond AI review are not. Whether you switch is more of a procurement question than a tooling question.</li>
+</ul>
+<h2 id="what-i-am-going-to-actually-try">What I am going to actually try</h2>
+<p>Some small experiments I have lined up once I get preview access:</p>
+<ul>
+<li>Use <code>gh stack init</code> for any change that touches more than one logical layer (data, service, UI). One layer per PR.</li>
+<li>For AI-generated work, ask the agent to produce a plan first, treat each plan step as a layer, and only let it write code one layer at a time.</li>
+<li>Test the merge-multiple-layers-at-once flow on a low-stakes change before relying on it for anything serious.</li>
+<li>See whether the GitHub skill (<code>npx skills add github/gh-stack</code>) actually gets the agent to author stacks unprompted, or whether it still needs hand-holding.</li>
+</ul>
+<p>If any of these turn out interesting, I will come back with an update.</p>
+<p>For now the <a href="https://github.github.com/gh-stack">overview</a> and the <a href="https://github.github.com/gh-stack/getting-started/quick-start/">Quick Start</a> are the two pages worth reading. The waitlist is on the same page.</p>
+<p>Let's see how it goes once it is open.</p>
+
+        
+    </article>
+
+    <!-- Comment section -->
+    
+      
+        
+          <script
+  src="https://giscus.app/client.js"
+  data-repo="nooscraft&#x2F;personal-blog"
+  data-repo-id="R_kgDOQJ_XNg"
+  data-category="General"
+  data-category-id="DIC_kwDOQJ_XNs4CxOmG"
+  data-mapping="pathname"
+  data-strict="0"
+  data-reactions-enabled="1"
+  data-emit-metadata="0"
+  data-input-position="bottom"
+
+  
+  data-theme="https:&#x2F;&#x2F;noos.blog&#x2F;css&#x2F;giscus-theme.css"
+  
+
+  data-lang="en"
+  data-loading="lazy"
+  crossorigin="anonymous"
+  async
+></script>
+
+        
+      
+    
+
+
+    <!-- Page footer -->
+    
+    <footer>
+        <hr>
+        <p>
+            
+            
+                
+                in <a href="https://noos.blog/categories/engineering/">Engineering</a>
+            
+            
+                and
+                tagged
+                
+                    <a href="https://noos.blog/tags/github/">github</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/stacked-prs/">stacked-prs</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/code-review/">code-review</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/ai/">ai</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/developer-workflow/">developer-workflow</a>
+                    
+                        
+                            
+                                and
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/gh-stack/">gh-stack</a>
+                    
+                        
+                    
+                
+            
+        </p>
+
+        <!-- Revision history (optional) -->
+        
+          
+            
+              
+            
+          
+        
+
+        
+        
+    </footer>
+
+
+</article>
+
+
+    </main>
+    
+
+  </body>
+</html>
