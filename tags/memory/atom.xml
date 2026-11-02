@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Noos - Where Thought, Code, and Craft Converge - memory</title>
+    <subtitle>Personal blog about programming, technology, and engineering insights. Topics include Rust, DevOps, Linux, and software craftsmanship.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://noos.blog/tags/memory/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://noos.blog"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2026-10-02T00:00:00+00:00</updated>
+    <id>https://noos.blog/tags/memory/atom.xml</id>
+    <entry xml:lang="en">
+        <title>Answering the last question first</title>
+        <published>2026-10-02T00:00:00+00:00</published>
+        <updated>2026-10-02T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/answering-the-last-question-first/"/>
+        <id>https://noos.blog/posts/answering-the-last-question-first/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/answering-the-last-question-first/">&lt;p&gt;A while ago I was following an interview and noticed something in the way the person answered. They were asked three questions in one go, and they started with the last one. The most recent question got answered first.&lt;&#x2F;p&gt;
+&lt;p&gt;It got me wondering why. A mental shortcut? Natural behaviour that everyone shares? Some primal instinct? Or just a personal quirk? And because I spend a lot of time around language models, a second question followed: do they do something similar?&lt;&#x2F;p&gt;
+&lt;p&gt;Both sides turn out to be studied, and I ran a small test of my own on top. Here is what the research says, and what I saw.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-habit-has-a-name&quot;&gt;The habit has a name&lt;&#x2F;h2&gt;
+&lt;p&gt;Conversation analysts noticed this decades ago. Harvey Sacks wrote about it in a 1987 chapter on preferences for agreement and contiguity. Contiguity is the idea that an answer sits right next to the question it answers, with nothing in between.&lt;&#x2F;p&gt;
+&lt;p&gt;The Encyclopedia of Terminology for Conversation Analysis (entry by Katariina Harjunpää, 2023) gives exactly this case as a well-known example: when a turn contains two questions, &quot;the latter question tends to be responded first&quot;. The reason is neat. If you answer the last question first, that question and its answer stay next to each other. If you answer in the order asked, every question gets separated from its answer by the talk in between.&lt;&#x2F;p&gt;
+&lt;p&gt;The same entry mentions that most confirming answers to questions arrive within 0 to 200 milliseconds of the question ending, based on a study of ten languages by Stivers and colleagues (2009). Conversation moves fast, and adjacency matters.&lt;&#x2F;p&gt;
+&lt;p&gt;One honest note: I could not read Sacks&#x27;s chapter itself (it sits behind a publisher paywall), so I am going by the encyclopedia&#x27;s summary. Also note the wording, &quot;tends to&quot;. A tendency, not a rule.&lt;&#x2F;p&gt;
+&lt;p&gt;Skovholt and colleagues (2021, Journal of Pragmatics) studied video-recorded oral exams in Norwegian secondary schools. When examiners asked several questions in one turn, the questions scaffolded the students&#x27; answers. But when the questions were separated by more talk across turns, &quot;candidates typically addressed only the final question&quot;. The high-performing candidates overruled this and gave fuller answers.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;memory-has-a-hand-in-it-too&quot;&gt;Memory has a hand in it too&lt;&#x2F;h2&gt;
+&lt;p&gt;Memory is the other part of the story, and it is older still.&lt;&#x2F;p&gt;
+&lt;p&gt;In 1962, Murdock gave people lists of words and asked them to recall the words in any order they liked. The pattern is known as the serial position effect: people remembered the first items (primacy) and the last items (recency) better than the middle.&lt;&#x2F;p&gt;
+&lt;p&gt;Glanzer and Cunitz took this further in 1966. They inserted a delay filled with counting before recall. After 30 seconds of counting, the recency effect was gone, while the beginning of the list was mostly unaffected. Their reading: the last items sit in a short-term store that fades fast; the early ones had already made it into longer-term memory.&lt;&#x2F;p&gt;
+&lt;p&gt;How much fits in that short-term store? Cowan (2001) put the capacity at about four chunks.&lt;&#x2F;p&gt;
+&lt;p&gt;Here is my own connection, my reading rather than a finding from any paper. Three questions fit comfortably under four chunks, so just holding them is not the problem. But while someone thinks through the answer to the first question, the other two have to wait somewhere. The third one is the freshest. Answering it first is cheap; it is right there at the top.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;shortcut-instinct-or-just-a-quirk&quot;&gt;Shortcut, instinct, or just a quirk?&lt;&#x2F;h2&gt;
+&lt;p&gt;So which of the four options holds up?&lt;&#x2F;p&gt;
+&lt;p&gt;Shortcut: partly, maybe. Answering the freshest question first does cost less memory. But conversation analysis frames the same behaviour as social: keeping question and answer together so the exchange stays coherent. It is not only laziness.&lt;&#x2F;p&gt;
+&lt;p&gt;Natural behaviour: there is a good argument here. Anderson and Schooler (1991) looked at environmental sources, the New York Times, parental speech and electronic mail, and found that the chance a piece of information is needed again follows recency, frequency and the pattern of past exposure, much the way human memory does. Their argument: memory has the form it does because it is adapted to the environment. If recent things are more likely to matter again soon, favouring the recent is a sensible design, not a bug.&lt;&#x2F;p&gt;
+&lt;p&gt;Primal instinct: I did not find evidence for an instinct specific to answering order. The Anderson and Schooler result is about memory in general, not about this habit. Connecting the two is my own leap.&lt;&#x2F;p&gt;
+&lt;p&gt;Personal bias: here I have to say I do not know. I did not find a study that measures how often people answer the last question first, or how much it varies from person to person. The oral exam study at least shows some people override the tendency.&lt;&#x2F;p&gt;
+&lt;p&gt;My bet: a mix of the first two, a social convention that also happens to be cheap for memory. But that is a guess.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;language-models-have-the-same-curve&quot;&gt;Language models have the same curve&lt;&#x2F;h2&gt;
+&lt;p&gt;Now the machine side. The best-known paper is &quot;Lost in the Middle&quot; by Liu and colleagues (TACL, 2024). They took multi-document question answering and moved the relevant document around inside a long prompt. Performance was highest when the answer sat at the very beginning (primacy) or very end (recency), and dropped when it sat in the middle. A U-shaped curve.&lt;&#x2F;p&gt;
+&lt;p&gt;One number stuck with me. With the relevant information placed in the middle, GPT-3.5-Turbo did worse than when it was given no documents at all; the closed-book setting scored 56.1%. Handing the model the answer made things worse, as long as it sat in the wrong place.&lt;&#x2F;p&gt;
+&lt;p&gt;The authors connect this to the serial position effect and cite Murdock. They say observing it in language models is &quot;perhaps surprising&quot;, because self-attention is technically equally capable of retrieving any token. Technically capable, yes; in practice, not evenly.&lt;&#x2F;p&gt;
+&lt;p&gt;In their tests, the smallest Llama-2 models (7B) were only recency-biased, while the 13B and 70B versions showed the full U-shape. And extended-context versions of models often performed the same as their shorter-context counterparts. That second point is the hyped but not proven part: a long context window is not the same thing as using it well.&lt;&#x2F;p&gt;
+&lt;p&gt;Recency shows up in simpler settings too. Zhao and colleagues (2021) found that GPT-3 tends to repeat answers that appear towards the end of a few-shot prompt. With the training examples ordered &quot;P P P N&quot; (three positive, one negative last), nearly 90% of predictions were Negative, even though three quarters of the examples were Positive.&lt;&#x2F;p&gt;
+&lt;p&gt;And some of this is built in on purpose. ALiBi (Press, Smith and Lewis, 2022) is a position method whose authors say it has an &quot;inductive bias towards recency&quot;: attention between tokens is penalized the further apart they are. Not every model uses ALiBi, and I have not checked which of the models I tested do.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;several-questions-in-one-prompt&quot;&gt;Several questions in one prompt&lt;&#x2F;h2&gt;
+&lt;p&gt;The papers above are about documents and examples; closer to my question are studies with several items in one prompt.&lt;&#x2F;p&gt;
+&lt;p&gt;Compound-QA (Hou and colleagues, accepted to ICASSP 2026) is a benchmark of compound questions: several sub-questions packed into a single turn. They rotated three-part questions so every sub-question got a turn in each position, and tested LLaMA and InternLM models. Sub-questions did best in the first and last positions, usually best first, and declined in the middle. The authors link this to the lost in the middle finding.&lt;&#x2F;p&gt;
+&lt;p&gt;BatchPrompt (Lin and colleagues, ICLR 2024) took a different angle. They batched many data points into one prompt to save tokens, and found the same data point can get a different answer depending on where it sits. Their fix is practical: run several permutations and take a majority vote.&lt;&#x2F;p&gt;
+&lt;p&gt;Across turns, Laban and colleagues (2025) simulated over 200,000 conversations and found an average 39% drop in performance when a task is spread over multiple turns instead of given all at once. They also found that models lose track of the middle turns of a conversation: by the eighth turn of a summary task, 20% of citations pointed to documents from turn 8 and only 8% to documents from turns 2 and 3. More capable models showed a milder effect.&lt;&#x2F;p&gt;
+&lt;p&gt;Notice the difference, though. All of this research asks which question gets answered well, depending on where it sits. The habit from the interview is about which question gets answered first. Accuracy by position is not the same thing as answering order, and I did not find an LLM study that measures the order directly.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;what-i-saw-when-i-tried-it&quot;&gt;What I saw when I tried it&lt;&#x2F;h2&gt;
+&lt;p&gt;Reading papers is one thing; I wanted to see the order question directly. So I wrote a small Python script, run.py, that posts one prompt to the local Ollama API at temperature 0.8 and prints the response:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;python&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-python &quot;&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span&gt;json, sys, urllib.request, time
+&lt;&#x2F;span&gt;&lt;span&gt;prompt = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;open&lt;&#x2F;span&gt;&lt;span&gt;(sys.argv[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;]).&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;read&lt;&#x2F;span&gt;&lt;span&gt;().&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;strip&lt;&#x2F;span&gt;&lt;span&gt;()
+&lt;&#x2F;span&gt;&lt;span&gt;model = sys.argv[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;2&lt;&#x2F;span&gt;&lt;span&gt;]
+&lt;&#x2F;span&gt;&lt;span&gt;req = urllib.request.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Request&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;http:&#x2F;&#x2F;localhost:11434&#x2F;api&#x2F;generate&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;data&lt;&#x2F;span&gt;&lt;span&gt;=json.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;dumps&lt;&#x2F;span&gt;&lt;span&gt;({&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;model&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: model, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;prompt&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: prompt, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;stream&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;False&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;                     &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;options&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: {&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;temperature&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0.8&lt;&#x2F;span&gt;&lt;span&gt;}}).&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;encode&lt;&#x2F;span&gt;&lt;span&gt;(),
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;headers&lt;&#x2F;span&gt;&lt;span&gt;={&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Content-Type&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;application&#x2F;json&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;})
+&lt;&#x2F;span&gt;&lt;span&gt;d = json.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;load&lt;&#x2F;span&gt;&lt;span&gt;(urllib.request.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;urlopen&lt;&#x2F;span&gt;&lt;span&gt;(req, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;timeout&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;300&lt;&#x2F;span&gt;&lt;span&gt;))
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span&gt;(d.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;get&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;response&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &amp;quot;&amp;quot;).&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;strip&lt;&#x2F;span&gt;&lt;span&gt;() or &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;ERROR &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; + &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;str&lt;&#x2F;span&gt;&lt;span&gt;(d.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;get&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;error&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)))
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The first test: one plain line with three easy questions (capital of Australia, bits in a byte, year of the first Moon landing). I ran it three times on each of the four models my Ollama setup can reach: Kimi K3, GLM 5.2, MiniMax M2.7 and Gemma 4 31B. These are cloud models; my local Ollama is just how I reach them. Here is the prompt and one Kimi K3 answer (Canberra, 8 bits, 1969, in that order):&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;text&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-text &quot;&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&lt;span&gt;$ cat q3.txt
+&lt;&#x2F;span&gt;&lt;span&gt;Quick ones: what&amp;#39;s the capital of Australia, how many bits are in a byte, and what year did humans first land on the Moon?
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;$ python3 run.py q3.txt kimi-k3:cloud
+&lt;&#x2F;span&gt;&lt;span&gt;1. **Canberra** (not Sydney, as many assume!)
+&lt;&#x2F;span&gt;&lt;span&gt;2. **8 bits** in a byte
+&lt;&#x2F;span&gt;&lt;span&gt;3. **1969** — Apollo 11, with Neil Armstrong and Buzz Aldrin landing on July 20
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The second test was closer to how people actually write. I wrote a rambling morning message with the first question at the very start (the PostgreSQL default port), the second buried in the middle of a long sentence (which git command shows who last changed each line), and the third at the end, explicitly flagged as &quot;the one that&#x27;s actually blocking me right now&quot; (what is holding port 8080 on macOS). If any model was going to jump to the blocker, the way a person might, it would be here. The full message:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;text&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-text &quot;&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&lt;span&gt;$ cat buried.txt
+&lt;&#x2F;span&gt;&lt;span&gt;Morning! First thing, what&amp;#39;s the default port PostgreSQL listens on? I am setting up a small side project this weekend and the plan is to keep it boring: one Postgres database, a tiny API, nothing fancy. I spent most of last night reading old commits in the repo I forked, trying to figure out why someone had hard-coded a timeout of 37 seconds in the connection pool, and by the way which git command shows who last changed each line of a file, because I want to find out who did that and ask them. Anyway the commit messages were not very helpful, most of them just say &amp;quot;fix&amp;quot; or &amp;quot;wip&amp;quot;, which I have also been guilty of more times than I want to admit. The coffee machine at home broke too so it has been a slow start. Last one, and this is the one that&amp;#39;s actually blocking me right now: how do I see which process is holding port 8080 on macOS? Something is already sitting on it and my API won&amp;#39;t start.
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Then a tiny script checked where in each response the answer to each question first appears:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;text&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-text &quot;&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&lt;span&gt;$ python3 tally.py
+&lt;&#x2F;span&gt;&lt;span&gt;q3_gemma4_1.txt          answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;q3_gemma4_2.txt          answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;q3_gemma4_3.txt          answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;q3_glm-5.2_1.txt         answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;q3_glm-5.2_2.txt         answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;q3_glm-5.2_3.txt         answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;q3_kimi-k3_1.txt         answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;q3_kimi-k3_2.txt         answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;q3_kimi-k3_3.txt         answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;q3_minimax-m2.7_1.txt    answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;q3_minimax-m2.7_2.txt    answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;q3_minimax-m2.7_3.txt    answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;b_gemma4_1.txt           answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;b_gemma4_2.txt           answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;b_gemma4_3.txt           answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;b_glm-5.2_1.txt          answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;b_glm-5.2_2.txt          answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;b_glm-5.2_3.txt          answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;b_kimi-k3_1.txt          answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;b_kimi-k3_2.txt          answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;b_kimi-k3_3.txt          answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;b_minimax-m2.7_1.txt     answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;b_minimax-m2.7_2.txt     answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;b_minimax-m2.7_3.txt     answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The result, in words: 24 out of 24 responses answered in the written order, first question, then second, then third. Not one skipped the buried middle question. And even with the third question flagged as the blocker, every model answered it last. One Kimi K3 reply said good morning and sympathised about the coffee machine; then, before getting to the answers, it said &quot;Three answers, in order&quot;. That made me laugh.&lt;&#x2F;p&gt;
+&lt;p&gt;Caveats, because they matter. This is a tiny test: two prompts, three runs per model, four models, short prompts nowhere near the long contexts in the papers. It says nothing about accuracy at long context, and nothing about Claude, GPT or Gemini, which I have not tested here; only the four models on my Ollama setup.&lt;&#x2F;p&gt;
+&lt;p&gt;Why the difference? My guess, not checked: assistant models are trained on lots of tidy, numbered answers, so following the written order is the polite default. A person in a chat optimises for the conversation; the model optimises for a complete, structured answer.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;where-i-land&quot;&gt;Where I land&lt;&#x2F;h2&gt;
+&lt;p&gt;For people, answering the last question first looks like part social habit (contiguity keeps a question glued to its answer) and part memory (the last one is the freshest). Not a flaw, as far as I can tell. How much of it is personal, I cannot say.&lt;&#x2F;p&gt;
+&lt;p&gt;For models, the picture is almost the reverse. In my little test they kept the written order perfectly, all 24 times. But the research says the middle of a long prompt gets less attention, so the thing to watch is not the order but the middle.&lt;&#x2F;p&gt;
+&lt;p&gt;What I plan to try (not tested yet): put the question that matters first or last, number the questions, or send them separately when they really matter. One caution from Lost in the Middle: they tried placing the query both before and after the documents, and while it helped a lot on a synthetic key-value task, it barely changed the multi-document results. So even that is not a cure.&lt;&#x2F;p&gt;
+&lt;p&gt;Anyhow. Next time someone answers three questions in one go, or the next time someone asks me three, I will pay attention to which one comes first. Let&#x27;s see how it goes.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h3 id=&quot;references&quot;&gt;References&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Harvey Sacks, &lt;a href=&quot;https:&#x2F;&#x2F;doi.org&#x2F;10.21832&#x2F;9781800418226-004&quot;&gt;On the Preferences for Agreement and Contiguity in Sequences in Conversation&lt;&#x2F;a&gt;, in G. Button and J. R. E. Lee (eds.), &lt;em&gt;Talk and Social Organisation&lt;&#x2F;em&gt;, Multilingual Matters, 1987, pp. 54-69&lt;&#x2F;li&gt;
+&lt;li&gt;Katariina Harjunpää, &lt;a href=&quot;https:&#x2F;&#x2F;emcawiki.net&#x2F;Contiguity&quot;&gt;Contiguity&lt;&#x2F;a&gt;, Encyclopedia of Terminology for Conversation Analysis and Interactional Linguistics, ISCA, 2023&lt;&#x2F;li&gt;
+&lt;li&gt;Karianne Skovholt, Marit Skarbø Solem, Maria Njølstad Vonen, Rein Ove Sikveland and Elizabeth Stokoe, &lt;a href=&quot;https:&#x2F;&#x2F;doi.org&#x2F;10.1016&#x2F;j.pragma.2021.05.020&quot;&gt;Asking more than one question in one turn in oral examinations and its impact on examination quality&lt;&#x2F;a&gt;, &lt;em&gt;Journal of Pragmatics&lt;&#x2F;em&gt; 181, 2021, pp. 100-119&lt;&#x2F;li&gt;
+&lt;li&gt;Bennet B. Murdock Jr., &lt;a href=&quot;https:&#x2F;&#x2F;doi.org&#x2F;10.1037&#x2F;h0045106&quot;&gt;The serial position effect of free recall&lt;&#x2F;a&gt;, &lt;em&gt;Journal of Experimental Psychology&lt;&#x2F;em&gt; 64(5), 1962, pp. 482-488&lt;&#x2F;li&gt;
+&lt;li&gt;Murray Glanzer and Anita R. Cunitz, &lt;a href=&quot;https:&#x2F;&#x2F;doi.org&#x2F;10.1016&#x2F;S0022-5371(66)80044-0&quot;&gt;Two storage mechanisms in free recall&lt;&#x2F;a&gt;, &lt;em&gt;Journal of Verbal Learning and Verbal Behavior&lt;&#x2F;em&gt; 5(4), 1966, pp. 351-360&lt;&#x2F;li&gt;
+&lt;li&gt;Nelson Cowan, &lt;a href=&quot;https:&#x2F;&#x2F;pubmed.ncbi.nlm.nih.gov&#x2F;11515286&#x2F;&quot;&gt;The magical number 4 in short-term memory&lt;&#x2F;a&gt;, &lt;em&gt;Behavioral and Brain Sciences&lt;&#x2F;em&gt; 24(1), 2001, pp. 87-114&lt;&#x2F;li&gt;
+&lt;li&gt;John R. Anderson and Lael J. Schooler, &lt;a href=&quot;https:&#x2F;&#x2F;doi.org&#x2F;10.1111&#x2F;j.1467-9280.1991.tb00174.x&quot;&gt;Reflections of the Environment in Memory&lt;&#x2F;a&gt;, &lt;em&gt;Psychological Science&lt;&#x2F;em&gt; 2(6), 1991, pp. 396-408&lt;&#x2F;li&gt;
+&lt;li&gt;Nelson F. Liu et al., &lt;a href=&quot;https:&#x2F;&#x2F;aclanthology.org&#x2F;2024.tacl-1.9&#x2F;&quot;&gt;Lost in the Middle: How Language Models Use Long Contexts&lt;&#x2F;a&gt;, &lt;em&gt;TACL&lt;&#x2F;em&gt; 12, 2024, pp. 157-173&lt;&#x2F;li&gt;
+&lt;li&gt;Tony Z. Zhao et al., &lt;a href=&quot;https:&#x2F;&#x2F;proceedings.mlr.press&#x2F;v139&#x2F;zhao21c.html&quot;&gt;Calibrate Before Use: Improving Few-Shot Performance of Language Models&lt;&#x2F;a&gt;, ICML 2021&lt;&#x2F;li&gt;
+&lt;li&gt;Ofir Press, Noah A. Smith and Mike Lewis, &lt;a href=&quot;https:&#x2F;&#x2F;arxiv.org&#x2F;abs&#x2F;2108.12409&quot;&gt;Train Short, Test Long: Attention with Linear Biases Enables Input Length Extrapolation&lt;&#x2F;a&gt;, ICLR 2022&lt;&#x2F;li&gt;
+&lt;li&gt;Yutao Hou et al., &lt;a href=&quot;https:&#x2F;&#x2F;arxiv.org&#x2F;abs&#x2F;2411.10163&quot;&gt;Compound-QA: A Benchmark for Evaluating LLMs on Compound Questions&lt;&#x2F;a&gt;, accepted to ICASSP 2026&lt;&#x2F;li&gt;
+&lt;li&gt;Jianzhe Lin et al., &lt;a href=&quot;https:&#x2F;&#x2F;arxiv.org&#x2F;abs&#x2F;2309.00384&quot;&gt;BatchPrompt: Accomplish more with less&lt;&#x2F;a&gt;, ICLR 2024&lt;&#x2F;li&gt;
+&lt;li&gt;Philippe Laban, Hiroaki Hayashi, Yingbo Zhou and Jennifer Neville, &lt;a href=&quot;https:&#x2F;&#x2F;arxiv.org&#x2F;abs&#x2F;2505.06120&quot;&gt;LLMs Get Lost In Multi-Turn Conversation&lt;&#x2F;a&gt;, 2025&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</content>
+        
+    </entry>
+</feed>

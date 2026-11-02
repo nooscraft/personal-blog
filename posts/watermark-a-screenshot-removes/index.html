@@ -1,0 +1,640 @@
+<!doctype html>
+<html lang="en" data-theme="toggle">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <!-- Enable responsiveness on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;watermark-a-screenshot-removes&#x2F;" />
+    
+    <!-- Robots meta -->
+    
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    
+
+    
+      
+        <meta name="description" content="Claude now marks its output with watermarks and C2PA metadata to meet the EU AI Act. The marking is real and useful, and Anthropic&#x27;s own documentation explains how little it can prove." />
+        <meta property="og:description" content="Claude now marks its output with watermarks and C2PA metadata to meet the EU AI Act. The marking is real and useful, and Anthropic&#x27;s own documentation explains how little it can prove." />
+        <meta property="twitter:description" content="Claude now marks its output with watermarks and C2PA metadata to meet the EU AI Act. The marking is real and useful, and Anthropic&#x27;s own documentation explains how little it can prove." />
+      
+    
+
+    <!-- Title -->
+    
+      
+    
+    <title>
+    
+    The watermark a screenshot removes | Noos - Where Thought, Code, and Craft Converge
+    
+</title>
+    
+    <!-- Author -->
+    
+    <meta name="author" content="Oshadha G" />
+    
+    
+    <!-- Article specific meta tags -->
+    
+    
+    <meta property="article:published_time" content="2026-08-14T00:00:00+00:00" />
+    
+    
+    <meta property="article:modified_time" content="2026-08-14T00:00:00+00:00" />
+    
+    
+    
+    <meta property="article:tag" content="ai" />
+    
+    <meta property="article:tag" content="eu-ai-act" />
+    
+    <meta property="article:tag" content="regulation" />
+    
+    <meta property="article:tag" content="c2pa" />
+    
+    <meta property="article:tag" content="watermarking" />
+    
+    <meta property="article:tag" content="provenance" />
+    
+    <meta property="article:tag" content="anthropic" />
+    
+    
+    
+    
+    <meta property="article:section" content="Engineering" />
+    
+    
+    
+
+    <!-- Additional Facebook Meta Tags -->
+    <meta property="og:site_name" content="Noos - Where Thought, Code, and Craft Converge" />
+    <meta
+      property="og:url"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;watermark-a-screenshot-removes&#x2F;"
+    />
+    <meta
+      property="og:type"
+      content="article"
+    />
+    <meta property="og:title" content="The watermark a screenshot removes | Noos - Where Thought, Code, and Craft Converge" />
+
+    <!-- Additional Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      property="twitter:url"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;watermark-a-screenshot-removes&#x2F;"
+    />
+    <meta name="twitter:title" content="The watermark a screenshot removes | Noos - Where Thought, Code, and Craft Converge" />
+
+    <!-- Cover images -->
+           
+           
+           
+           
+      
+      
+      
+      
+      
+    
+
+    <meta
+      property="og:image"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;watermark-a-screenshot-removes.png"
+    />
+
+    <meta
+      name="twitter:image"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;watermark-a-screenshot-removes.png"
+    />
+
+
+
+    <!-- Favicons -->
+           
+           <!-- PNG + ICO (some clients ignore SVG favicons) -->
+           <link
+             rel="icon"
+             type="image/png"
+             sizes="96x96"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/favicon-96x96.png?v=3"
+           />
+           <link
+             rel="apple-touch-icon"
+             sizes="180x180"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/apple-touch-icon.png?v=3"
+           />
+           <link
+             rel="shortcut icon"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/favicon.ico?v=3"
+           />
+           
+
+    <!-- RSS Feed -->
+    
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      title="RSS"
+      href="https://noos.blog/atom.xml"
+    />
+    
+
+    <!-- Load Styles -->
+    
+      <link
+        rel="stylesheet"
+        href="https://noos.blog/site.css"
+      />
+    
+
+    <!-- Load Fonts -->
+    
+
+  
+
+
+
+
+
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+  
+
+
+
+<!-- Forcing Font -->
+<style>
+body {
+  font-family:
+    "JetBrains Mono", Menlo, Monaco, Lucida Console, Liberation Mono,
+    DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New,
+    monospace, serif !important;
+}
+</style>
+
+
+    <!-- Pass Theme Preference as Data Attribute -->
+    <script src="https://noos.blog/js/init-theme.js"></script>
+
+    <!-- Reference return to click position script -->
+    <script defer src="https://noos.blog/js/reference-return.js"></script>
+
+    <!-- Additional scripts -->
+    
+      
+        <script defer src="https://noos.blog/js/codeblock.js"></script>
+      
+            
+              <script defer src="https://noos.blog/js/toggle-theme.js"></script>
+            
+      
+<!-- MathJax script for rendering LaTeX math equations -->
+<script src="https://noos.blog/js/mathjax-config.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+  async
+></script>
+
+
+      
+<script type="text/javascript" src="https://noos.blog/elasticlunr.min.js"></script>
+<script type="text/javascript" src="https://noos.blog/js/search.js"></script>
+
+    
+    
+    <!-- Structured Data (JSON-LD) -->
+    
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "The watermark a screenshot removes",
+  
+  "description": "Claude now marks its output with watermarks and C2PA metadata to meet the EU AI Act. The marking is real and useful, and Anthropic&#x27;s own documentation explains how little it can prove.",
+  
+  
+  "datePublished": "2026-08-14T00:00:00+00:00",
+  
+  
+  "dateModified": "2026-08-14T00:00:00+00:00",
+  
+  "author": {
+    "@type": "Person",
+    "name": "Oshadha G"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Noos - Where Thought, Code, and Craft Converge",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https:&#x2F;&#x2F;noos.blog/icons/favicon/web-app-manifest-512x512.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;watermark-a-screenshot-removes&#x2F;"
+  },
+  "url": "https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;watermark-a-screenshot-removes&#x2F;",
+  
+  "keywords": "ai, eu-ai-act, regulation, c2pa, watermarking, provenance, anthropic",
+  
+  "inLanguage": "en"
+}
+</script>
+
+
+    
+    <!-- Google Analytics (GA4) -->
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-54YK7R04LX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-54YK7R04LX', {
+        'anonymize_ip': true,
+        'respect_dnt': true
+      });
+    </script>
+    
+  </head>
+
+  <!-- Body element (contents of the page) -->
+  <body class="hack main container">
+    
+  
+    
+    
+      
+  
+  <section class="nav-header">
+    <nav
+      itemscope
+      itemtype="http://schema.org/SiteNavigationElement"
+      class="navbar"
+    >
+      <section class="nav-links">
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/"
+        >
+          <span itemprop="name">Home</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/about"
+        >
+          <span itemprop="name">About</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/categories"
+        >
+          <span itemprop="name">Categories</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/tags"
+        >
+          <span itemprop="name">Tags</span>
+        </a>
+        
+      </section>
+    </nav>
+    <aside class="user-actions-container">
+      
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        class="search-icon"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+        />
+      </svg>
+      <input type="text" id="search" placeholder="Search..." />
+      <section class="search-results" aria-live="polite">
+        <article class="search-results__items" role="list"></article>
+      </section>
+       
+      <a id="dark-mode-toggle" href="#">
+        <img
+          src="https://noos.blog/icons/sun.svg"
+          id="sun-icon"
+          style="filter: invert(1)"
+          alt="Light mode"
+        />
+        <img
+          src="https://noos.blog/icons/moon.svg"
+          id="moon-icon"
+          alt="Dark mode"
+        />
+      </a>
+       
+      <a
+        href="https://noos.blog/atom.xml"
+        class="feed-icon"
+        rel="noopener noreferrer"
+      >
+        <img
+          src="https://noos.blog/icons/rss.svg"
+          id="rss-icon"
+          alt="RSS feed"
+          class="social-icon"
+        />
+      </a>
+       
+    </aside>
+  </section>
+  
+
+    
+
+
+    <main>
+      
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">The watermark a screenshot removes</h1>
+        
+        <data class="muted">
+    <svg class="icon i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <data>11 minute read</data>
+    
+    
+    <svg class="icon i-calendar" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <!-- Calendar outline -->
+        <rect x="3" y="6" width="26" height="23" rx="2" ry="2"/>
+        <!-- Binding rings -->
+        <line x1="10" y1="3" x2="10" y2="9"/>
+        <line x1="22" y1="3" x2="22" y2="9"/>
+        <!-- Top separator -->
+        <line x1="3" y1="12" x2="29" y2="12"/>
+    </svg>
+
+    Published: 2026-08-14
+    
+</data>
+        
+        
+        
+        
+        
+        
+          
+          
+          
+          
+          
+        
+        
+        <figure class="post-cover" style="margin: 1.25rem 0;">
+          <img src="&#x2F;images&#x2F;covers&#x2F;watermark-a-screenshot-removes.png" alt="The watermark a screenshot removes cover" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--color-border-default, #e5e7eb);" onerror="this.parentNode.style.display='none'" />
+        </figure>
+        
+    </header>
+
+    <article itemprop="articleBody">
+        
+            <!-- If no summary separate from content, just render content -->
+            <blockquote>
+<p><em>Updated 2026-08-14: gave the opt-in question a fuller hearing.</em></p>
+</blockquote>
+<p>Anthropic has published a <a href="https://support.claude.com/en/articles/16266773-how-claude-marks-ai-generated-content">support article</a> on how Claude marks AI-generated content. The rule behind it is Article 50 of the EU AI Act, and it started applying on 2 August 2026. Today is 14 August 2026, so the obligation is twelve days old. My reaction is split: the marking is a genuine step forward, and the job it is asked to do cannot be done with the tools available.</p>
+<h2 id="what-claude-actually-marks">What Claude actually marks</h2>
+<p>The article describes two techniques: a watermark embedded in the text itself, and signed provenance metadata attached to files. Here is how the article describes the text watermark:</p>
+<blockquote>
+<p>When a supported Claude model generates text, it weaves an imperceptible watermark directly into the text itself. You won't see it, and it doesn't change the meaning, quality, or readability of Claude's response.</p>
+</blockquote>
+<p>The watermark is applied at the model level, so it appears whatever Claude product or surface produced the text. It is part of the text, so it travels with copy and paste, and Anthropic says it "may persist through some editing". That is not a number, and I will not invent one.</p>
+<p>On the file side, provenance metadata attaches to three supported types: .svg, .png and .jpg. It follows the Coalition for Content Provenance and Authenticity (C2PA) open standard. If present, it signals Claude processed the file and lets you detect tampering afterwards.</p>
+<p>Coverage spans Claude Platform (API), Claude, Claude Code, Claude Cowork, and Claude Tag. The watermarks also follow supported models into AWS, Google Cloud, and Microsoft Foundry; provenance metadata may not be supported on every platform. Models launched on or after 2 August 2026 have marking at launch; older models are still being worked on under a legal transition period.</p>
+<p>One detail matters for later: marking applies wherever Claude is offered, worldwide, not only in the EU.</p>
+<h2 id="what-the-law-asks-for">What the law asks for</h2>
+<p>Article 50's transparency obligations apply from 2 August 2026. For generative systems, output must carry a machine-readable marking that identifies it as artificial. The paragraph then adds a qualifier, quoted here:</p>
+<blockquote>
+<p>[Providers] shall ensure that the outputs of the AI system are marked in a machine-readable format and detectable as artificially generated or manipulated. [...] Such solutions shall be effective, interoperable, robust and reliable as far as this is technically feasible.</p>
+</blockquote>
+<p>In plain terms, the law only asks for this to work as far as the technology allows, with content type, cost, and the state of the art factored in. That qualifier tells you the drafters knew the technology was not there.</p>
+<p>Standard assistive editing, input the AI does not substantially alter, and legally authorised criminal investigations are exempt. Article 50(4) on deep fakes carves out satire and fiction, along with text that remains under human editorial responsibility.</p>
+<p>The AI Omnibus reached provisional agreement on 7 May 2026, Parliament voted to adopt it on 16 June 2026, and Council approval is still pending. It delays the machine-readable marking duty until 2 December 2026 for generative systems placed on the market before 2 August 2026.</p>
+<p>Penalties sit in Article 99. Breaches of Article 50 cost up to 15 million euro or 3% of total worldwide annual turnover, whichever is higher. For SMEs and small mid-caps it is the lower of the two.</p>
+<p>The Commission has published guidelines and a Code of Practice on Transparency of AI-generated Content. Anthropic signed it as a provider of both generative models and generative systems; adhering demonstrates compliance, and declining requires equivalently adequate alternatives. I have not read the full Code, only the Commission material and Anthropic's summary.</p>
+<h2 id="the-admissions-in-the-documentation">The admissions in the documentation</h2>
+<p>A mark does not mean what most people will assume: Anthropic states that a detected mark is "not fully conclusive". Claude may not be the original author at all, since plenty of people hand it work that was already theirs. The article says it directly:</p>
+<blockquote>
+<p>Claude may not be the original author. People often use Claude to proofread, translate, summarize, or convert files. The output can carry a Claude mark even if the underlying ideas, text, or data originated from another source</p>
+</blockquote>
+<p>Read that again. Someone who writes their own work and uses Claude to tidy it carries the same mark as a fully generated draft. The signal cannot tell those two apart.</p>
+<p>Then there are the ways a mark goes missing, and the article lists them:</p>
+<blockquote>
+<p>Lack of a detected mark doesn't mean the content wasn't AI-generated or processed. Content generated by Claude may not carry a detectable mark if, for example:</p>
+<ul>
+<li>The text has been heavily edited, paraphrased, translated, or mixed into other writing;</li>
+<li>The passage is very short, leaving too little text for a reliable signal;</li>
+<li>A file's metadata was stripped through format conversion, re-saving, screenshots, or other means;</li>
+</ul>
+</blockquote>
+<p>So a screenshot defeats the image credential, and a paraphrase from another model defeats the text watermark. Neither takes any skill.</p>
+<p>And none of it can be checked today: Anthropic says detection tooling is coming in forthcoming technical documentation, but none is published yet. Nobody outside Anthropic can verify how well it holds up, and that includes me: I have not tested it, because there is nothing public to test with.</p>
+<h2 id="who-the-rule-actually-lands-on">Who the rule actually lands on</h2>
+<p>Claude is a paid product and I pay for it. I live outside the EU. My output gets marked all the same. What this post has not said yet: the law's own reach is narrower than the rollout. The scope provision is Article 2, with two limbs:</p>
+<blockquote>
+<p>providers placing on the market or putting into service AI systems or placing on the market general-purpose AI models in the Union, irrespective of whether those providers are established or located within the Union or in a third country [...] providers and deployers of AI systems that have their place of establishment or are located in a third country, where the output produced by the AI system is used in the Union</p>
+</blockquote>
+<p>The second limb covers output used in the Union, and mine never goes there; I am one of those users outside the EU. But the marking duty has no territorial qualifier of its own: Article 2 decides the whole question, and its first limb covers providers placing general-purpose AI models on the Union market wherever they are based. Anthropic is such a provider, so the duty could be read as attaching at the model, not per user. Which reading is right I cannot settle: I am not a lawyer, this is a reading, not a ruling. What survives both readings is the point: on the narrow one, marking my output is a product choice rather than a compelled one; on the broad one, the law sets a floor for output tied to the Union and says nothing about choice for people it was never written to protect. Either way, no rule in it forbids a setting for those users. I am not attacking Anthropic; it may well be the right call, but a decision can be questioned in a way an obligation cannot.</p>
+<p>Why is this not a setting? I looked in the support article for an off switch, an opt-in, a difference between plans. Nothing. An absence in one document is not proof about the product. As described, marking is applied to you rather than chosen by you.</p>
+<p>The standard objection: a mark you can decline is worth little, because anyone passing generated work off as their own would decline it first. I felt its force. But it assumes the mark must resist someone who does not want it there, and the support article already says it does not: a screenshot strips the file credential, a paraphrase strips the text watermark. The mark is already declinable by anyone who reads the documentation; a setting would change the price of declining, from one screenshot to one checkbox, and it would not change who ends up unmarked. Someone who takes the screenshot is unaffected either way; someone who never thinks about it is marked either way. The only group a setting reaches is the middle one: people who want a deliberate choice about their paid output and cannot make one. That group is small, I am in it, and that is worth admitting.</p>
+<p>Three counters I cannot dismiss. Defaults move behaviour in aggregate even when trivially defeatable: taking a screenshot is not the same act as ticking a box, and I suspect, with no numbers published, fewer people would do the first. A per-region or per-account switch means locating the user, and being wrong in the wrong direction points at the penalty ceiling quoted earlier in this post; one worldwide code path has no such failure mode. That is speculation about a decision I was not in the room for. The signed credential on images is different: it lets you show a file has not been altered, something for the owner rather than just about them, so opting out is odd in a way declining an invisible text watermark is not.</p>
+<p>The question stays open because the article does not answer it: no reason for worldwide marking, none for the missing setting. Not knowing the reason is not the same as there being none.</p>
+<h2 id="where-the-eu-really-does-look-slower">Where the EU really does look slower</h2>
+<p>Now the case that fuels the "EU holds AI back" talk. It is a different law, and conflating the two is a mistake I want to avoid. On 8 June 2026 Apple published a newsroom post: Siri AI is delayed in the EU for iOS 27 and iPadOS 27. The regulation named is the Digital Markets Act, not the AI Act.</p>
+<p>The delayed list is not small: Siri AI, a dedicated app to revisit conversations, the expanded Visual Intelligence experience, integrated writing tools, Siri mode in Camera on iOS, and Siri AI on watchOS 27. EU users keep Siri AI on macOS 27 and visionOS 27.</p>
+<p>Under EU regulators' "extreme interpretation of the DMA", Apple says it would have to give any virtual assistant direct access to users' private data. It would also have to let them directly control other installed applications once Siri AI shipped in the EU. All of this, in Apple's words, "without the essential protections necessary to keep users and their data safe". Apple closes with "there is currently no timeline for Siri AI's availability in the EU on iOS and iPadOS."</p>
+<p>This is the strongest evidence that EU rules cost European users access to things other people have.</p>
+<h2 id="the-case-for-it">The case for it</h2>
+<p>The other side deserves a fair hearing. Anthropic could have geofenced all of this to Europe. It did not. The marking applies worldwide, so an EU rule raised the floor everywhere, including for people who never voted on it.</p>
+<p>C2PA is an open standard used across the industry, not one vendor's proprietary tag, and an open standard is what lets anyone else build detectors.</p>
+<p>Provenance on images has a clearer job than watermarking text: a signed credential that shows tampering answers a concrete question.</p>
+<p>A norm that generated media carries provenance seems worth having even when the mechanism is weak, because the alternative was nothing at all.</p>
+<h2 id="where-i-land">Where I land</h2>
+<p>The marking is worth doing and cannot carry what people will ask of it. I am glad it was not fenced off to Europe only. The switch still seems fair to ask for on output I pay to generate outside the rule's reach. Both can be true. I would rather read honest limits in a support article than a confident claim that would not survive contact with a screenshot.</p>
+<p>When the detection documentation lands, I will feed the watermark some heavy editing and see what survives. Let's see how it goes.</p>
+<hr />
+<h3 id="references">References</h3>
+<ul>
+<li><a href="https://support.claude.com/en/articles/16266773-how-claude-marks-ai-generated-content">How Claude marks AI-generated content</a>: Anthropic's support article, the source for every claim here about Claude's marking and its limits</li>
+<li><a href="https://artificialintelligenceact.eu/article/2/">AI Act Article 2</a>: the territorial scope, quoted in the section on who the rule lands on</li>
+<li><a href="https://artificialintelligenceact.eu/article/50/">AI Act Article 50</a>: the transparency obligations, including the marking requirement in 50(2) and the deep fake disclosure in 50(4)</li>
+<li><a href="https://artificialintelligenceact.eu/article/99/">AI Act Article 99</a>: the penalty tiers</li>
+<li><a href="https://digital-strategy.ec.europa.eu/en/policies/guidelines-transparency-ai-generated-content">Commission guidelines on transparency of AI-generated content</a>: the guidelines and the Code of Practice that Anthropic signed</li>
+<li><a href="https://www.apple.com/newsroom/2026/06/due-to-dma-siri-ai-delayed-in-eu-for-ios-27-and-ipados-27/">Due to DMA, Siri AI delayed in EU for iOS 27 and iPadOS 27</a>: Apple's newsroom post, 8 June 2026</li>
+<li><a href="https://c2pa.org">C2PA</a>: the Coalition for Content Provenance and Authenticity and its open standard</li>
+</ul>
+
+        
+    </article>
+
+    <!-- Comment section -->
+    
+      
+        
+          <script
+  src="https://giscus.app/client.js"
+  data-repo="nooscraft&#x2F;personal-blog"
+  data-repo-id="R_kgDOQJ_XNg"
+  data-category="General"
+  data-category-id="DIC_kwDOQJ_XNs4CxOmG"
+  data-mapping="pathname"
+  data-strict="0"
+  data-reactions-enabled="1"
+  data-emit-metadata="0"
+  data-input-position="bottom"
+
+  
+  data-theme="https:&#x2F;&#x2F;noos.blog&#x2F;css&#x2F;giscus-theme.css"
+  
+
+  data-lang="en"
+  data-loading="lazy"
+  crossorigin="anonymous"
+  async
+></script>
+
+        
+      
+    
+
+
+    <!-- Page footer -->
+    
+    <footer>
+        <hr>
+        <p>
+            
+            
+                
+                in <a href="https://noos.blog/categories/engineering/">Engineering</a>
+            
+            
+                and
+                tagged
+                
+                    <a href="https://noos.blog/tags/ai/">ai</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/eu-ai-act/">eu-ai-act</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/regulation/">regulation</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/c2pa/">c2pa</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/watermarking/">watermarking</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/provenance/">provenance</a>
+                    
+                        
+                            
+                                and
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/anthropic/">anthropic</a>
+                    
+                        
+                    
+                
+            
+        </p>
+
+        <!-- Revision history (optional) -->
+        
+          
+            
+              
+            
+          
+        
+
+        
+        
+    </footer>
+
+
+</article>
+
+
+    </main>
+    
+
+  </body>
+</html>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Noos - Where Thought, Code, and Craft Converge - ec2</title>
+    <subtitle>Personal blog about programming, technology, and engineering insights. Topics include Rust, DevOps, Linux, and software craftsmanship.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://noos.blog/tags/ec2/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://noos.blog"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2013-09-15T00:00:00+00:00</updated>
+    <id>https://noos.blog/tags/ec2/atom.xml</id>
+    <entry xml:lang="en">
+        <title>Amazon WS EC2 – connect via SSH RSA</title>
+        <published>2013-09-15T00:00:00+00:00</published>
+        <updated>2013-09-15T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/amazon-ws-ec2-connect-via-ssh-rsa/"/>
+        <id>https://noos.blog/posts/amazon-ws-ec2-connect-via-ssh-rsa/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/amazon-ws-ec2-connect-via-ssh-rsa/">&lt;h3 id=&quot;intro&quot;&gt;Intro&lt;&#x2F;h3&gt;
+&lt;p&gt;So you own an up and running Amazon EC2 instance. And you want it to access via hassle free way. This guided post will describe on how you can do it with few steps.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;&#x2F;strong&gt; Just for the convenience I&#x27;m referring some steps from this blog &lt;a href=&quot;http:&#x2F;&#x2F;thekeesh.com&#x2F;2011&#x2F;05&#x2F;setting-up-user-accounts-password-authentication-and-ssh-keys-on-a-new-ec2-instance&#x2F;&quot;&gt;here&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;OK before I start assume you have an up and running EC2 instance. If so grab the public DNS from your AWS management console&lt;&#x2F;p&gt;
+&lt;img src=&quot;&#x2F;public&#x2F;images&#x2F;ec2-management-console-2013-09-15-15-54-28.png&quot; alt=&quot;img&quot; class=&quot;inline&quot;&#x2F;&gt;
+&lt;p&gt;It will be probably something like&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;ec2-#############.compute-1.amazonaws.com&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Once that is acquired I again assume you have already made your Key-pair and saved it while you are in the process of creating a new instance&lt;&#x2F;p&gt;
+&lt;img src=&quot;&#x2F;public&#x2F;images&#x2F;ec2-management-console-2013-09-15-16-01-07.png&quot; alt=&quot;img&quot; class=&quot;inline&quot;&#x2F;&gt;
+&lt;p&gt;Once that is also in place go to your terminal and CD to the location you saved your Key [your-key-pair.pem] and try to do &lt;strong&gt;SSH&lt;&#x2F;strong&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;$ ssh -i your-key-pair.pem ubuntu@ec2-#############.compute-1.amazonaws.com&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;[the default user will be ubuntu for &lt;a href=&quot;http:&#x2F;&#x2F;memoverkill.com&#x2F;2013&#x2F;09&#x2F;15&#x2F;Amazon%20Machine%20Images%20(AMIs)&quot;&gt;Amazon Machine Images (AMIs)&lt;&#x2F;a&gt;]&lt;&#x2F;p&gt;
+&lt;p&gt;Now you should be inside the AMS terminal&lt;&#x2F;p&gt;
+&lt;img src=&quot;&#x2F;public&#x2F;images&#x2F;aws-terminal1.png&quot; alt=&quot;img&quot; class=&quot;inline&quot;&#x2F;&gt;
+&lt;p&gt;Ok now you have to do is add your self up as a new user and give the root privileges (sudoers). Simply follow execute the following commands on to the AWS terminal&lt;&#x2F;p&gt;
+&lt;p&gt;Adding yourself as a user:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;$ adduser yourself&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;granting privileges&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;$ sudo visudo&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;find the line root  &lt;code&gt;ALL=(ALL:ALL) ALL&lt;&#x2F;code&gt; and the line yourself &lt;code&gt;ALL=(ALL) ALL&lt;&#x2F;code&gt; under it.&lt;&#x2F;p&gt;
+&lt;p&gt;Then enable password authentication via (I used the nano editor)&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;$ sudo nano &#x2F;etc&#x2F;ssh&#x2F;sshd_config&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;PasswordAuthentication no to PasswordAuthentication yes&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Afterward reload the ssh configuration&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;$ sudo &#x2F;etc&#x2F;init.d&#x2F;ssh reload&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;OK now logout from the current session and log back as yourself&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;$ ssh yourself@ec2-#############.compute-1.amazonaws.com&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;And to make sure everything is working just fine, execute following&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;$ sudo -v&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;You will be promted to enter the password you have provided while creating the user(yourself). Enter that and if everything went well you will get no output on terminal.&lt;&#x2F;p&gt;
+&lt;p&gt;Now lets remove this troublesome password authentication replacing SSH RSA public key authentication&lt;&#x2F;p&gt;
+&lt;p&gt;To do that first you need to create a SSH RSA public key&lt;&#x2F;p&gt;
+&lt;p&gt;So logout from the AWS terminal and from your local terminal execute the following command (Just press return for all the steps)&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;local-host$ ssh-keygen -t rsa&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;And you will be promted as below&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Enter&lt;&#x2F;span&gt;&lt;span&gt; file in which to save the key (&#x2F;home&#x2F;yourself&#x2F;.ssh&#x2F;id_rsa)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;:
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Created&lt;&#x2F;span&gt;&lt;span&gt; directory &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;home&#x2F;yourself&#x2F;.ssh&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;.
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Enter&lt;&#x2F;span&gt;&lt;span&gt; passphrase (empty for no passphrase)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;:
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Enter&lt;&#x2F;span&gt;&lt;span&gt; same passphrase again:
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Your&lt;&#x2F;span&gt;&lt;span&gt; identification has been saved in &#x2F;home&#x2F;yourself&#x2F;.ssh&#x2F;id_rsa.
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Your&lt;&#x2F;span&gt;&lt;span&gt; public key has been saved in &#x2F;home&#x2F;yourself&#x2F;.ssh&#x2F;id_rsa.pub.
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;The&lt;&#x2F;span&gt;&lt;span&gt; key fingerprint is:
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;58:3a:80:a5:df:17:b0:af:4f:90:07:c5:3c:01:50:c2&lt;&#x2F;span&gt;&lt;span&gt; yourself@inux-cc6a
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Your&lt;&#x2F;span&gt;&lt;span&gt; public key will be stored in &#x2F;home&#x2F;yourself&#x2F;.ssh&#x2F;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Now what you have to do is add that key to AWS in order to identify yourself as authorize user.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;local-host$ scp ~&#x2F;.ssh&#x2F;id_rsa.pub yourself@ec2-#############..compute-1.amazonaws.com:&#x2F;home&#x2F;yourself&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Then again login to the AWS&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;local-host$ ssh yourself@ec2-#############..compute-1.amazonaws.com:&#x2F;home&#x2F;yourself&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;And place the key file in right place&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;$ mkdir .ssh
+&lt;&#x2F;span&gt;&lt;span&gt;$ mv id_rsa.pub .ssh&#x2F;authorized_keys
+&lt;&#x2F;span&gt;&lt;span&gt;$ chmod 700 .ssh
+&lt;&#x2F;span&gt;&lt;span&gt;$ chmod 600 .ssh&#x2F;authorized_keys
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Now you should be able to login without using a password&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;local-host$ ssh yourself@ec2-#############.compute-1.amazonaws.com&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Finally remove the password authentication and root user access&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;$ sudo vim &#x2F;etc&#x2F;ssh&#x2F;sshd_config&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Find the line &lt;code&gt;PasswordAuthentication yes&lt;&#x2F;code&gt; and change it to &lt;code&gt;PasswordAuthentication no&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Also &lt;code&gt;PermitRootLogin yes&lt;&#x2F;code&gt; to &lt;code&gt;PermitRootLogin no&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Finally reload the SSH configurations again&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;$ sudo &#x2F;etc&#x2F;init.d&#x2F;ssh reload&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;That&#x27;s all you need for crating a new user account and allowing authentication via SSH RSA.&lt;&#x2F;p&gt;
+&lt;p&gt;If you are still lazy enough to type that long public DNS you can simply assign it to an alias and place it in the &lt;code&gt;~&#x2F;.bash_proflle&lt;&#x2F;code&gt;  or &lt;code&gt;~&#x2F;.bashrc&lt;&#x2F;code&gt; to make it permanent.&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;amazon cloud ssh
+&lt;&#x2F;span&gt;&lt;span&gt;alias connect-amazon=&amp;#39;ssh yourself@ec2-#############..compute-1.amazonaws.com&amp;#39;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;code&gt;$ connect-amazon&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+</feed>

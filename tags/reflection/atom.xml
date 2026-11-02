@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Noos - Where Thought, Code, and Craft Converge - reflection</title>
+    <subtitle>Personal blog about programming, technology, and engineering insights. Topics include Rust, DevOps, Linux, and software craftsmanship.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://noos.blog/tags/reflection/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://noos.blog"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2026-10-02T00:00:00+00:00</updated>
+    <id>https://noos.blog/tags/reflection/atom.xml</id>
+    <entry xml:lang="en">
+        <title>Answering the last question first</title>
+        <published>2026-10-02T00:00:00+00:00</published>
+        <updated>2026-10-02T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/answering-the-last-question-first/"/>
+        <id>https://noos.blog/posts/answering-the-last-question-first/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/answering-the-last-question-first/">&lt;p&gt;A while ago I was following an interview and noticed something in the way the person answered. They were asked three questions in one go, and they started with the last one. The most recent question got answered first.&lt;&#x2F;p&gt;
+&lt;p&gt;It got me wondering why. A mental shortcut? Natural behaviour that everyone shares? Some primal instinct? Or just a personal quirk? And because I spend a lot of time around language models, a second question followed: do they do something similar?&lt;&#x2F;p&gt;
+&lt;p&gt;Both sides turn out to be studied, and I ran a small test of my own on top. Here is what the research says, and what I saw.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-habit-has-a-name&quot;&gt;The habit has a name&lt;&#x2F;h2&gt;
+&lt;p&gt;Conversation analysts noticed this decades ago. Harvey Sacks wrote about it in a 1987 chapter on preferences for agreement and contiguity. Contiguity is the idea that an answer sits right next to the question it answers, with nothing in between.&lt;&#x2F;p&gt;
+&lt;p&gt;The Encyclopedia of Terminology for Conversation Analysis (entry by Katariina Harjunpää, 2023) gives exactly this case as a well-known example: when a turn contains two questions, &quot;the latter question tends to be responded first&quot;. The reason is neat. If you answer the last question first, that question and its answer stay next to each other. If you answer in the order asked, every question gets separated from its answer by the talk in between.&lt;&#x2F;p&gt;
+&lt;p&gt;The same entry mentions that most confirming answers to questions arrive within 0 to 200 milliseconds of the question ending, based on a study of ten languages by Stivers and colleagues (2009). Conversation moves fast, and adjacency matters.&lt;&#x2F;p&gt;
+&lt;p&gt;One honest note: I could not read Sacks&#x27;s chapter itself (it sits behind a publisher paywall), so I am going by the encyclopedia&#x27;s summary. Also note the wording, &quot;tends to&quot;. A tendency, not a rule.&lt;&#x2F;p&gt;
+&lt;p&gt;Skovholt and colleagues (2021, Journal of Pragmatics) studied video-recorded oral exams in Norwegian secondary schools. When examiners asked several questions in one turn, the questions scaffolded the students&#x27; answers. But when the questions were separated by more talk across turns, &quot;candidates typically addressed only the final question&quot;. The high-performing candidates overruled this and gave fuller answers.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;memory-has-a-hand-in-it-too&quot;&gt;Memory has a hand in it too&lt;&#x2F;h2&gt;
+&lt;p&gt;Memory is the other part of the story, and it is older still.&lt;&#x2F;p&gt;
+&lt;p&gt;In 1962, Murdock gave people lists of words and asked them to recall the words in any order they liked. The pattern is known as the serial position effect: people remembered the first items (primacy) and the last items (recency) better than the middle.&lt;&#x2F;p&gt;
+&lt;p&gt;Glanzer and Cunitz took this further in 1966. They inserted a delay filled with counting before recall. After 30 seconds of counting, the recency effect was gone, while the beginning of the list was mostly unaffected. Their reading: the last items sit in a short-term store that fades fast; the early ones had already made it into longer-term memory.&lt;&#x2F;p&gt;
+&lt;p&gt;How much fits in that short-term store? Cowan (2001) put the capacity at about four chunks.&lt;&#x2F;p&gt;
+&lt;p&gt;Here is my own connection, my reading rather than a finding from any paper. Three questions fit comfortably under four chunks, so just holding them is not the problem. But while someone thinks through the answer to the first question, the other two have to wait somewhere. The third one is the freshest. Answering it first is cheap; it is right there at the top.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;shortcut-instinct-or-just-a-quirk&quot;&gt;Shortcut, instinct, or just a quirk?&lt;&#x2F;h2&gt;
+&lt;p&gt;So which of the four options holds up?&lt;&#x2F;p&gt;
+&lt;p&gt;Shortcut: partly, maybe. Answering the freshest question first does cost less memory. But conversation analysis frames the same behaviour as social: keeping question and answer together so the exchange stays coherent. It is not only laziness.&lt;&#x2F;p&gt;
+&lt;p&gt;Natural behaviour: there is a good argument here. Anderson and Schooler (1991) looked at environmental sources, the New York Times, parental speech and electronic mail, and found that the chance a piece of information is needed again follows recency, frequency and the pattern of past exposure, much the way human memory does. Their argument: memory has the form it does because it is adapted to the environment. If recent things are more likely to matter again soon, favouring the recent is a sensible design, not a bug.&lt;&#x2F;p&gt;
+&lt;p&gt;Primal instinct: I did not find evidence for an instinct specific to answering order. The Anderson and Schooler result is about memory in general, not about this habit. Connecting the two is my own leap.&lt;&#x2F;p&gt;
+&lt;p&gt;Personal bias: here I have to say I do not know. I did not find a study that measures how often people answer the last question first, or how much it varies from person to person. The oral exam study at least shows some people override the tendency.&lt;&#x2F;p&gt;
+&lt;p&gt;My bet: a mix of the first two, a social convention that also happens to be cheap for memory. But that is a guess.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;language-models-have-the-same-curve&quot;&gt;Language models have the same curve&lt;&#x2F;h2&gt;
+&lt;p&gt;Now the machine side. The best-known paper is &quot;Lost in the Middle&quot; by Liu and colleagues (TACL, 2024). They took multi-document question answering and moved the relevant document around inside a long prompt. Performance was highest when the answer sat at the very beginning (primacy) or very end (recency), and dropped when it sat in the middle. A U-shaped curve.&lt;&#x2F;p&gt;
+&lt;p&gt;One number stuck with me. With the relevant information placed in the middle, GPT-3.5-Turbo did worse than when it was given no documents at all; the closed-book setting scored 56.1%. Handing the model the answer made things worse, as long as it sat in the wrong place.&lt;&#x2F;p&gt;
+&lt;p&gt;The authors connect this to the serial position effect and cite Murdock. They say observing it in language models is &quot;perhaps surprising&quot;, because self-attention is technically equally capable of retrieving any token. Technically capable, yes; in practice, not evenly.&lt;&#x2F;p&gt;
+&lt;p&gt;In their tests, the smallest Llama-2 models (7B) were only recency-biased, while the 13B and 70B versions showed the full U-shape. And extended-context versions of models often performed the same as their shorter-context counterparts. That second point is the hyped but not proven part: a long context window is not the same thing as using it well.&lt;&#x2F;p&gt;
+&lt;p&gt;Recency shows up in simpler settings too. Zhao and colleagues (2021) found that GPT-3 tends to repeat answers that appear towards the end of a few-shot prompt. With the training examples ordered &quot;P P P N&quot; (three positive, one negative last), nearly 90% of predictions were Negative, even though three quarters of the examples were Positive.&lt;&#x2F;p&gt;
+&lt;p&gt;And some of this is built in on purpose. ALiBi (Press, Smith and Lewis, 2022) is a position method whose authors say it has an &quot;inductive bias towards recency&quot;: attention between tokens is penalized the further apart they are. Not every model uses ALiBi, and I have not checked which of the models I tested do.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;several-questions-in-one-prompt&quot;&gt;Several questions in one prompt&lt;&#x2F;h2&gt;
+&lt;p&gt;The papers above are about documents and examples; closer to my question are studies with several items in one prompt.&lt;&#x2F;p&gt;
+&lt;p&gt;Compound-QA (Hou and colleagues, accepted to ICASSP 2026) is a benchmark of compound questions: several sub-questions packed into a single turn. They rotated three-part questions so every sub-question got a turn in each position, and tested LLaMA and InternLM models. Sub-questions did best in the first and last positions, usually best first, and declined in the middle. The authors link this to the lost in the middle finding.&lt;&#x2F;p&gt;
+&lt;p&gt;BatchPrompt (Lin and colleagues, ICLR 2024) took a different angle. They batched many data points into one prompt to save tokens, and found the same data point can get a different answer depending on where it sits. Their fix is practical: run several permutations and take a majority vote.&lt;&#x2F;p&gt;
+&lt;p&gt;Across turns, Laban and colleagues (2025) simulated over 200,000 conversations and found an average 39% drop in performance when a task is spread over multiple turns instead of given all at once. They also found that models lose track of the middle turns of a conversation: by the eighth turn of a summary task, 20% of citations pointed to documents from turn 8 and only 8% to documents from turns 2 and 3. More capable models showed a milder effect.&lt;&#x2F;p&gt;
+&lt;p&gt;Notice the difference, though. All of this research asks which question gets answered well, depending on where it sits. The habit from the interview is about which question gets answered first. Accuracy by position is not the same thing as answering order, and I did not find an LLM study that measures the order directly.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;what-i-saw-when-i-tried-it&quot;&gt;What I saw when I tried it&lt;&#x2F;h2&gt;
+&lt;p&gt;Reading papers is one thing; I wanted to see the order question directly. So I wrote a small Python script, run.py, that posts one prompt to the local Ollama API at temperature 0.8 and prints the response:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;python&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-python &quot;&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span&gt;json, sys, urllib.request, time
+&lt;&#x2F;span&gt;&lt;span&gt;prompt = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;open&lt;&#x2F;span&gt;&lt;span&gt;(sys.argv[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;]).&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;read&lt;&#x2F;span&gt;&lt;span&gt;().&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;strip&lt;&#x2F;span&gt;&lt;span&gt;()
+&lt;&#x2F;span&gt;&lt;span&gt;model = sys.argv[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;2&lt;&#x2F;span&gt;&lt;span&gt;]
+&lt;&#x2F;span&gt;&lt;span&gt;req = urllib.request.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Request&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;http:&#x2F;&#x2F;localhost:11434&#x2F;api&#x2F;generate&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;data&lt;&#x2F;span&gt;&lt;span&gt;=json.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;dumps&lt;&#x2F;span&gt;&lt;span&gt;({&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;model&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: model, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;prompt&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: prompt, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;stream&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;False&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;                     &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;options&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: {&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;temperature&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0.8&lt;&#x2F;span&gt;&lt;span&gt;}}).&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;encode&lt;&#x2F;span&gt;&lt;span&gt;(),
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;headers&lt;&#x2F;span&gt;&lt;span&gt;={&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Content-Type&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;application&#x2F;json&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;})
+&lt;&#x2F;span&gt;&lt;span&gt;d = json.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;load&lt;&#x2F;span&gt;&lt;span&gt;(urllib.request.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;urlopen&lt;&#x2F;span&gt;&lt;span&gt;(req, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;timeout&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;300&lt;&#x2F;span&gt;&lt;span&gt;))
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span&gt;(d.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;get&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;response&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &amp;quot;&amp;quot;).&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;strip&lt;&#x2F;span&gt;&lt;span&gt;() or &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;ERROR &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; + &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;str&lt;&#x2F;span&gt;&lt;span&gt;(d.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;get&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;error&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)))
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The first test: one plain line with three easy questions (capital of Australia, bits in a byte, year of the first Moon landing). I ran it three times on each of the four models my Ollama setup can reach: Kimi K3, GLM 5.2, MiniMax M2.7 and Gemma 4 31B. These are cloud models; my local Ollama is just how I reach them. Here is the prompt and one Kimi K3 answer (Canberra, 8 bits, 1969, in that order):&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;text&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-text &quot;&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&lt;span&gt;$ cat q3.txt
+&lt;&#x2F;span&gt;&lt;span&gt;Quick ones: what&amp;#39;s the capital of Australia, how many bits are in a byte, and what year did humans first land on the Moon?
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;$ python3 run.py q3.txt kimi-k3:cloud
+&lt;&#x2F;span&gt;&lt;span&gt;1. **Canberra** (not Sydney, as many assume!)
+&lt;&#x2F;span&gt;&lt;span&gt;2. **8 bits** in a byte
+&lt;&#x2F;span&gt;&lt;span&gt;3. **1969** — Apollo 11, with Neil Armstrong and Buzz Aldrin landing on July 20
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The second test was closer to how people actually write. I wrote a rambling morning message with the first question at the very start (the PostgreSQL default port), the second buried in the middle of a long sentence (which git command shows who last changed each line), and the third at the end, explicitly flagged as &quot;the one that&#x27;s actually blocking me right now&quot; (what is holding port 8080 on macOS). If any model was going to jump to the blocker, the way a person might, it would be here. The full message:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;text&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-text &quot;&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&lt;span&gt;$ cat buried.txt
+&lt;&#x2F;span&gt;&lt;span&gt;Morning! First thing, what&amp;#39;s the default port PostgreSQL listens on? I am setting up a small side project this weekend and the plan is to keep it boring: one Postgres database, a tiny API, nothing fancy. I spent most of last night reading old commits in the repo I forked, trying to figure out why someone had hard-coded a timeout of 37 seconds in the connection pool, and by the way which git command shows who last changed each line of a file, because I want to find out who did that and ask them. Anyway the commit messages were not very helpful, most of them just say &amp;quot;fix&amp;quot; or &amp;quot;wip&amp;quot;, which I have also been guilty of more times than I want to admit. The coffee machine at home broke too so it has been a slow start. Last one, and this is the one that&amp;#39;s actually blocking me right now: how do I see which process is holding port 8080 on macOS? Something is already sitting on it and my API won&amp;#39;t start.
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Then a tiny script checked where in each response the answer to each question first appears:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;text&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-text &quot;&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&lt;span&gt;$ python3 tally.py
+&lt;&#x2F;span&gt;&lt;span&gt;q3_gemma4_1.txt          answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;q3_gemma4_2.txt          answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;q3_gemma4_3.txt          answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;q3_glm-5.2_1.txt         answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;q3_glm-5.2_2.txt         answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;q3_glm-5.2_3.txt         answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;q3_kimi-k3_1.txt         answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;q3_kimi-k3_2.txt         answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;q3_kimi-k3_3.txt         answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;q3_minimax-m2.7_1.txt    answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;q3_minimax-m2.7_2.txt    answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;q3_minimax-m2.7_3.txt    answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;b_gemma4_1.txt           answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;b_gemma4_2.txt           answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;b_gemma4_3.txt           answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;b_glm-5.2_1.txt          answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;b_glm-5.2_2.txt          answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;b_glm-5.2_3.txt          answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;b_kimi-k3_1.txt          answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;b_kimi-k3_2.txt          answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;b_kimi-k3_3.txt          answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;b_minimax-m2.7_1.txt     answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;b_minimax-m2.7_2.txt     answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;b_minimax-m2.7_3.txt     answered in order: 1 -&amp;gt; 2 -&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The result, in words: 24 out of 24 responses answered in the written order, first question, then second, then third. Not one skipped the buried middle question. And even with the third question flagged as the blocker, every model answered it last. One Kimi K3 reply said good morning and sympathised about the coffee machine; then, before getting to the answers, it said &quot;Three answers, in order&quot;. That made me laugh.&lt;&#x2F;p&gt;
+&lt;p&gt;Caveats, because they matter. This is a tiny test: two prompts, three runs per model, four models, short prompts nowhere near the long contexts in the papers. It says nothing about accuracy at long context, and nothing about Claude, GPT or Gemini, which I have not tested here; only the four models on my Ollama setup.&lt;&#x2F;p&gt;
+&lt;p&gt;Why the difference? My guess, not checked: assistant models are trained on lots of tidy, numbered answers, so following the written order is the polite default. A person in a chat optimises for the conversation; the model optimises for a complete, structured answer.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;where-i-land&quot;&gt;Where I land&lt;&#x2F;h2&gt;
+&lt;p&gt;For people, answering the last question first looks like part social habit (contiguity keeps a question glued to its answer) and part memory (the last one is the freshest). Not a flaw, as far as I can tell. How much of it is personal, I cannot say.&lt;&#x2F;p&gt;
+&lt;p&gt;For models, the picture is almost the reverse. In my little test they kept the written order perfectly, all 24 times. But the research says the middle of a long prompt gets less attention, so the thing to watch is not the order but the middle.&lt;&#x2F;p&gt;
+&lt;p&gt;What I plan to try (not tested yet): put the question that matters first or last, number the questions, or send them separately when they really matter. One caution from Lost in the Middle: they tried placing the query both before and after the documents, and while it helped a lot on a synthetic key-value task, it barely changed the multi-document results. So even that is not a cure.&lt;&#x2F;p&gt;
+&lt;p&gt;Anyhow. Next time someone answers three questions in one go, or the next time someone asks me three, I will pay attention to which one comes first. Let&#x27;s see how it goes.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h3 id=&quot;references&quot;&gt;References&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Harvey Sacks, &lt;a href=&quot;https:&#x2F;&#x2F;doi.org&#x2F;10.21832&#x2F;9781800418226-004&quot;&gt;On the Preferences for Agreement and Contiguity in Sequences in Conversation&lt;&#x2F;a&gt;, in G. Button and J. R. E. Lee (eds.), &lt;em&gt;Talk and Social Organisation&lt;&#x2F;em&gt;, Multilingual Matters, 1987, pp. 54-69&lt;&#x2F;li&gt;
+&lt;li&gt;Katariina Harjunpää, &lt;a href=&quot;https:&#x2F;&#x2F;emcawiki.net&#x2F;Contiguity&quot;&gt;Contiguity&lt;&#x2F;a&gt;, Encyclopedia of Terminology for Conversation Analysis and Interactional Linguistics, ISCA, 2023&lt;&#x2F;li&gt;
+&lt;li&gt;Karianne Skovholt, Marit Skarbø Solem, Maria Njølstad Vonen, Rein Ove Sikveland and Elizabeth Stokoe, &lt;a href=&quot;https:&#x2F;&#x2F;doi.org&#x2F;10.1016&#x2F;j.pragma.2021.05.020&quot;&gt;Asking more than one question in one turn in oral examinations and its impact on examination quality&lt;&#x2F;a&gt;, &lt;em&gt;Journal of Pragmatics&lt;&#x2F;em&gt; 181, 2021, pp. 100-119&lt;&#x2F;li&gt;
+&lt;li&gt;Bennet B. Murdock Jr., &lt;a href=&quot;https:&#x2F;&#x2F;doi.org&#x2F;10.1037&#x2F;h0045106&quot;&gt;The serial position effect of free recall&lt;&#x2F;a&gt;, &lt;em&gt;Journal of Experimental Psychology&lt;&#x2F;em&gt; 64(5), 1962, pp. 482-488&lt;&#x2F;li&gt;
+&lt;li&gt;Murray Glanzer and Anita R. Cunitz, &lt;a href=&quot;https:&#x2F;&#x2F;doi.org&#x2F;10.1016&#x2F;S0022-5371(66)80044-0&quot;&gt;Two storage mechanisms in free recall&lt;&#x2F;a&gt;, &lt;em&gt;Journal of Verbal Learning and Verbal Behavior&lt;&#x2F;em&gt; 5(4), 1966, pp. 351-360&lt;&#x2F;li&gt;
+&lt;li&gt;Nelson Cowan, &lt;a href=&quot;https:&#x2F;&#x2F;pubmed.ncbi.nlm.nih.gov&#x2F;11515286&#x2F;&quot;&gt;The magical number 4 in short-term memory&lt;&#x2F;a&gt;, &lt;em&gt;Behavioral and Brain Sciences&lt;&#x2F;em&gt; 24(1), 2001, pp. 87-114&lt;&#x2F;li&gt;
+&lt;li&gt;John R. Anderson and Lael J. Schooler, &lt;a href=&quot;https:&#x2F;&#x2F;doi.org&#x2F;10.1111&#x2F;j.1467-9280.1991.tb00174.x&quot;&gt;Reflections of the Environment in Memory&lt;&#x2F;a&gt;, &lt;em&gt;Psychological Science&lt;&#x2F;em&gt; 2(6), 1991, pp. 396-408&lt;&#x2F;li&gt;
+&lt;li&gt;Nelson F. Liu et al., &lt;a href=&quot;https:&#x2F;&#x2F;aclanthology.org&#x2F;2024.tacl-1.9&#x2F;&quot;&gt;Lost in the Middle: How Language Models Use Long Contexts&lt;&#x2F;a&gt;, &lt;em&gt;TACL&lt;&#x2F;em&gt; 12, 2024, pp. 157-173&lt;&#x2F;li&gt;
+&lt;li&gt;Tony Z. Zhao et al., &lt;a href=&quot;https:&#x2F;&#x2F;proceedings.mlr.press&#x2F;v139&#x2F;zhao21c.html&quot;&gt;Calibrate Before Use: Improving Few-Shot Performance of Language Models&lt;&#x2F;a&gt;, ICML 2021&lt;&#x2F;li&gt;
+&lt;li&gt;Ofir Press, Noah A. Smith and Mike Lewis, &lt;a href=&quot;https:&#x2F;&#x2F;arxiv.org&#x2F;abs&#x2F;2108.12409&quot;&gt;Train Short, Test Long: Attention with Linear Biases Enables Input Length Extrapolation&lt;&#x2F;a&gt;, ICLR 2022&lt;&#x2F;li&gt;
+&lt;li&gt;Yutao Hou et al., &lt;a href=&quot;https:&#x2F;&#x2F;arxiv.org&#x2F;abs&#x2F;2411.10163&quot;&gt;Compound-QA: A Benchmark for Evaluating LLMs on Compound Questions&lt;&#x2F;a&gt;, accepted to ICASSP 2026&lt;&#x2F;li&gt;
+&lt;li&gt;Jianzhe Lin et al., &lt;a href=&quot;https:&#x2F;&#x2F;arxiv.org&#x2F;abs&#x2F;2309.00384&quot;&gt;BatchPrompt: Accomplish more with less&lt;&#x2F;a&gt;, ICLR 2024&lt;&#x2F;li&gt;
+&lt;li&gt;Philippe Laban, Hiroaki Hayashi, Yingbo Zhou and Jennifer Neville, &lt;a href=&quot;https:&#x2F;&#x2F;arxiv.org&#x2F;abs&#x2F;2505.06120&quot;&gt;LLMs Get Lost In Multi-Turn Conversation&lt;&#x2F;a&gt;, 2025&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>When two solutions are the same, which one do you pick?</title>
+        <published>2026-06-05T00:00:00+00:00</published>
+        <updated>2026-06-05T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/when-two-solutions-are-the-same/"/>
+        <id>https://noos.blog/posts/when-two-solutions-are-the-same/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/when-two-solutions-are-the-same/">&lt;p&gt;Here is a small thing that has been bugging me lately. Two model outputs solve the same problem, in the same way, with the same result. One of them does a little extra: it pulls some repeated validation out into a small private helper method. When I have to pick one, I almost always reach for the tidier one. The question I keep coming back to is whether that reach is backed by anything real, or whether it is just my taste talking.&lt;&#x2F;p&gt;
+&lt;p&gt;So I wrote the two versions out and ran them, because it is easier to think about something concrete than something abstract.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-two-versions&quot;&gt;The two versions&lt;&#x2F;h2&gt;
+&lt;p&gt;Same tiny problem: create a user and update a user, both guarded by the same name and email checks. The first version repeats the checks in both methods.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;java&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-java &quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Inline &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public static &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;createUser&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;email&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(name &lt;&#x2F;span&gt;&lt;span&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null &lt;&#x2F;span&gt;&lt;span&gt;||&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; name.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;isBlank&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;()) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;rejected: name is required&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(email &lt;&#x2F;span&gt;&lt;span&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null &lt;&#x2F;span&gt;&lt;span&gt;|| !&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;email.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;contains&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;@&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;)) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;rejected: email looks invalid&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;created user &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; +&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; name;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public static &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;updateUser&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;email&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(name &lt;&#x2F;span&gt;&lt;span&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null &lt;&#x2F;span&gt;&lt;span&gt;||&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; name.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;isBlank&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;()) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;rejected: name is required&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(email &lt;&#x2F;span&gt;&lt;span&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null &lt;&#x2F;span&gt;&lt;span&gt;|| !&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;email.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;contains&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;@&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;)) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;rejected: email looks invalid&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;updated user &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; +&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; name;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The second version is the one most of us would call &quot;nicer&quot;. It moves the checks into a private &lt;code&gt;validate&lt;&#x2F;code&gt; method and calls it from both places.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;java&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-java &quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Helper &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;private static &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;validate&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;email&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(name &lt;&#x2F;span&gt;&lt;span&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null &lt;&#x2F;span&gt;&lt;span&gt;||&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; name.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;isBlank&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;()) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;name is required&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(email &lt;&#x2F;span&gt;&lt;span&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null &lt;&#x2F;span&gt;&lt;span&gt;|| !&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;email.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;contains&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;@&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;)) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;email looks invalid&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public static &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;createUser&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;email&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; error &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;validate&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(name, email);
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(error &lt;&#x2F;span&gt;&lt;span&gt;!= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;rejected: &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; +&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; error;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;created user &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; +&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; name;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public static &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;updateUser&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;email&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; error &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;validate&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(name, email);
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(error &lt;&#x2F;span&gt;&lt;span&gt;!= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;rejected: &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; +&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; error;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;updated user &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; +&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; name;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;I gave both the same &lt;code&gt;main&lt;&#x2F;code&gt;, compiled them with &lt;code&gt;javac 21.0.2&lt;&#x2F;code&gt;, and ran them side by side:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;javac&lt;&#x2F;span&gt;&lt;span&gt; Inline.java Helper.java
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;java&lt;&#x2F;span&gt;&lt;span&gt; Inline &amp;gt; inline.out
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;java&lt;&#x2F;span&gt;&lt;span&gt; Helper &amp;gt; helper.out
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;diff&lt;&#x2F;span&gt;&lt;span&gt; inline.out helper.out
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Both print exactly this:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;created user Ada
+&lt;&#x2F;span&gt;&lt;span&gt;rejected: name is required
+&lt;&#x2F;span&gt;&lt;span&gt;rejected: email looks invalid
+&lt;&#x2F;span&gt;&lt;span&gt;updated user Grace
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The &lt;code&gt;diff&lt;&#x2F;code&gt; came back empty. From the caller&#x27;s point of view, these two programs are the same program. Nothing observable changes. The only difference is that one has a &lt;code&gt;validate&lt;&#x2F;code&gt; method and the other does not.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;so-why-do-i-lean-toward-the-helper&quot;&gt;So why do I lean toward the helper?&lt;&#x2F;h2&gt;
+&lt;p&gt;If the behaviour is identical, my preference is about the shape of the code, not what it does. And the shape does carry some real value, at least in the cases I have actually run into:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;If a third caller shows up later, it reuses &lt;code&gt;validate&lt;&#x2F;code&gt; instead of copying the checks a third time.&lt;&#x2F;li&gt;
+&lt;li&gt;If the email rule changes (and &quot;contains an @&quot; is obviously not a real email rule), I edit one method instead of hunting for every copy.&lt;&#x2F;li&gt;
+&lt;li&gt;The two copies in the inline version can drift apart. One day someone fixes a check in &lt;code&gt;createUser&lt;&#x2F;code&gt; and forgets &lt;code&gt;updateUser&lt;&#x2F;code&gt;. Now they disagree, and nobody notices until something breaks.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;That last one is the part I actually trust. Duplicated logic that is supposed to stay in sync, but has no mechanism forcing it to, is a slow leak. The helper closes that gap.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;but-i-want-to-be-honest-about-the-other-side&quot;&gt;But I want to be honest about the other side&lt;&#x2F;h2&gt;
+&lt;p&gt;For this exact example, the checks are four lines and used in two places. Pulling them out is close to the line where &quot;good practice&quot; turns into &quot;abstraction I did not need yet&quot;. There is a real argument for leaving it inline:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Two copies of four lines is not a crisis. You can see both at a glance.&lt;&#x2F;li&gt;
+&lt;li&gt;The helper returns &lt;code&gt;null&lt;&#x2F;code&gt; to mean &quot;all good&quot;, which is its own small smell. Now the caller has to remember to null-check.&lt;&#x2F;li&gt;
+&lt;li&gt;If the two call sites later need slightly different rules, the shared helper becomes the thing you have to fight, and you end up adding flags to it.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;So the tidy version is not free, and it is not obviously correct. Whether extraction is the right call depends on where the code is going, and at the moment I pick, I usually do not know where it is going. I am guessing. The guess happens to match what has worked for me before, but it is still a guess.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;where-the-bias-question-actually-lives&quot;&gt;Where the bias question actually lives&lt;&#x2F;h2&gt;
+&lt;p&gt;This is the part the whole thing is really about. When I pick the helper version, am I rewarding better engineering, or am I rewarding code that looks like code I would have written?&lt;&#x2F;p&gt;
+&lt;p&gt;Those two can point the same direction often enough that it is hard to tell them apart. The danger is when they come apart and I do not notice. A few cases I can think of:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;The inline version is genuinely clearer for a throwaway script, but I mark it down because it &quot;repeats itself&quot;.&lt;&#x2F;li&gt;
+&lt;li&gt;A model writes the helper but names it badly or puts the null-return smell in, and I still prefer it because the silhouette looks senior.&lt;&#x2F;li&gt;
+&lt;li&gt;I prefer whichever style matches the language I am most comfortable in, and quietly penalise idioms I just have not seen much.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;None of those are about value. They are about familiarity wearing value&#x27;s clothes. And when these preferences get collected up, for example when someone ranks two model outputs and that ranking becomes training signal, my taste stops being a private quirk and starts shaping what the next model thinks &quot;good&quot; looks like. That is the point where I would like to know whether I am measuring something or just voting for myself.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;is-it-a-problem-or-is-it-judgment&quot;&gt;Is it a problem, or is it judgment?&lt;&#x2F;h2&gt;
+&lt;p&gt;Here is the honest tension, and I do not have a clean answer. If my bias toward the extracted helper consistently lands on code that is easier to change later, then calling it &quot;bias&quot; feels unfair. That is just experience doing its job. Pattern recognition built from getting burned by drifting copies is exactly the thing you want a reviewer to have.&lt;&#x2F;p&gt;
+&lt;p&gt;The catch is the word &quot;consistently&quot;. I cannot actually prove my preferences are consistent without checking them against something outside my own taste: did the codebase get easier or harder to change, did the duplicated checks actually drift, did the abstraction get in the way later. When I have that kind of feedback, the preference earns the name &quot;judgment&quot;. When I do not, I am just trusting that taste and value line up, and writing the result down as if it were measured.&lt;&#x2F;p&gt;
+&lt;p&gt;So the rule I am trying to hold myself to, for now, is small: when two outputs do the same thing and I find myself preferring one, say out loud what the preference is buying. If I can name the value (one place to change the rule, no chance of drift), keep it. If the best I can do is &quot;it feels more polished&quot;, treat that as a flag, not a verdict. I have not used this on anything large enough to call it a method. Let&#x27;s see how it holds up.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>When nothing feels fun any more</title>
+        <published>2026-04-26T00:00:00+00:00</published>
+        <updated>2026-04-26T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/losing-interest-in-everything/"/>
+        <id>https://noos.blog/posts/losing-interest-in-everything/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/losing-interest-in-everything/">&lt;p&gt;I watched a video recently where a former tech engineer talks about something I have been feeling in myself and seeing in people around me. It is this growing emptiness, where things that used to bring joy now feel flat. Gaming, traveling, hobbies, even just relaxing; everything feels like it has lost its color.&lt;&#x2F;p&gt;
+&lt;p&gt;The video calls it a clinical name, but I do not know if that is what I have or if it is just a phase. What I do know is the feeling is real, and I am not sure if it is going to stay or pass.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;the-pressure-to-keep-building&quot;&gt;The pressure to keep building&lt;&#x2F;h3&gt;
+&lt;p&gt;This hits harder when you work in tech. There is this constant push to keep building, keep shipping, keep getting better. A former Google engineer in that video said even after leaving the job, the habit of always producing followed him. I get that. Even when I am supposed to rest, some part of my brain is thinking about the next thing to build or learn.&lt;&#x2F;p&gt;
+&lt;p&gt;Big win or small win, the joy fades fast. You finish something, feel good for a few hours, then start worrying about the next thing. It is like the moment you stop, you start falling behind.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;time-feels-strange&quot;&gt;Time feels strange&lt;&#x2F;h3&gt;
+&lt;p&gt;Time has felt strange for a while now. I think this has been building for years, but we are moving so fast that it creates this quiet gap. Days blur together. You look back and wonder where the month went. It is not just being busy; it is something deeper. A kind of worry that creeps in when you realize you are pushing yourself hard without knowing what happens after.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;why-this-might-be-happening&quot;&gt;Why this might be happening&lt;&#x2F;h3&gt;
+&lt;p&gt;The video pointed to a few things that clicked with me. First is how everything is about money now. Every hobby has someone trying to sell you a course or a side hustle plan. You cannot just enjoy photography; you have to think about building a brand. You cannot just play a game; you have to consider streaming it. The natural fun gets drained because everything becomes a way to make money.&lt;&#x2F;p&gt;
+&lt;p&gt;Then there is the social media trap. Doom-scrolling eats up whatever free time you have left, and the constant comparison makes hobbies feel like a race. When everything becomes about status and attention, the fun goes away.&lt;&#x2F;p&gt;
+&lt;p&gt;And there is the noise online. We get hit with biased content and ads all day. The mind builds a wall to protect itself. It is a defense, but it also makes you stop caring about good things.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;what-i-am-trying&quot;&gt;What I am trying&lt;&#x2F;h3&gt;
+&lt;p&gt;I do not have answers, but I have been trying a few things that help a little.&lt;&#x2F;p&gt;
+&lt;p&gt;I cut social media down a lot. Not just time limits, but choosing which sites I even open. I stick to places that give me something real, where I learn, not just scroll through fake updates.&lt;&#x2F;p&gt;
+&lt;p&gt;I read more about things outside tech. Fiction, history, random essays about stuff I know nothing about. It reminds me the world is bigger than my work bubble.&lt;&#x2F;p&gt;
+&lt;p&gt;Sleep is the obvious one everyone skips. I am trying to sleep more so my body actually rests. Still working on this, but the nights where I get enough sleep, the next day feels different.&lt;&#x2F;p&gt;
+&lt;p&gt;And family time. Just being around people who knew me before I was a programmer. Talks that have nothing to do with work or getting better at things. That helps more than I expected.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;not-sure-where-this-goes&quot;&gt;Not sure where this goes&lt;&#x2F;h3&gt;
+&lt;p&gt;I do not know if this emptiness is a short reaction to our world now or something that stays. Maybe it is a shared thing that will shift as things change. Maybe it is personal and everyone has to find their own way.&lt;&#x2F;p&gt;
+&lt;p&gt;What I do know is noticing it is the first step. Taking back your attention feels like pushing back against a world that wants to make money from every second of it. I am still figuring out what that looks like day to day.&lt;&#x2F;p&gt;
+&lt;p&gt;The video that got me thinking is &lt;a href=&quot;https:&#x2F;&#x2F;youtu.be&#x2F;mlukRm6ywnA&quot;&gt;here&lt;&#x2F;a&gt;. Worth a watch if this sounds familiar.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;&lt;em&gt;Let us see how it goes.&lt;&#x2F;em&gt;&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Connecting Dots</title>
+        <published>2013-09-15T00:00:00+00:00</published>
+        <updated>2013-09-15T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/connecting-dots/"/>
+        <id>https://noos.blog/posts/connecting-dots/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/connecting-dots/">&lt;p&gt;While I was fooling around the Play store I found this recently released nice, simple and very addictive game. It&#x27;s called the Dots. The funny thing about this game is that once you get started playing it you won&#x27;t feel bored even it just has to do the same thing over and over again.&lt;&#x2F;p&gt;
+&lt;p&gt;The experience that I felt was somewhat different from other games I have played before (but this could be only me). I think the main psychological factor that keeps me in the game is its simplicity and the options you get to boost your score and the opportunity you get to use those options. So there should be also a bit of a planning involved.&lt;&#x2F;p&gt;
+&lt;p&gt;Talking about the game basics there are two game mods &quot;Time mode&quot; and &quot;Moves mode&quot;. In time mode there&#x27;s a timer which runs for 60 seconds for a single round, so all your connecting skills should be used in this time frame. And in moves mode you&#x27;ll get 30 moves to scream at in a round. I usually go with the Time mode because it is fun and challenging.&lt;&#x2F;p&gt;
+&lt;p&gt;Once you filled your bucket with enough earned dots you can go ahead and acquire one or more above mentioned options. They call these options as Power Ups.&lt;&#x2F;p&gt;
+&lt;p&gt;Here I will list those Power Ups&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Time Stops: With this Power Up you can hold off your timer for 5 seconds and it requires 1000 dots for 5 tryouts. It&#x27;s a pretty neat Power Up by the way. (In moves mode you&#x27;ll get extra five moves)&lt;&#x2F;li&gt;
+&lt;li&gt;Shrinkers: This Power Up just shrinks any dot from the board. You just have to double tap on a dot. It requires 500 dots for five tryouts and can be used only once in a round.&lt;&#x2F;li&gt;
+&lt;li&gt;Expanders: This Power Up I haven&#x27;t used yet. As described it removes all the same color dots. It requires 5000 dots for five tryouts. This Power Up will definitely come in handy.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;That&#x27;s pretty much it about this beautiful game. If you are bored or trying to eat up some free time this game will certainly do the job for you.&lt;&#x2F;p&gt;
+&lt;p&gt;So here&#x27;s the Play store &lt;a href=&quot;https:&#x2F;&#x2F;play.google.com&#x2F;store&#x2F;apps&#x2F;details?id=com.nerdyoctopus.gamedots&quot;&gt;URL&lt;&#x2F;a&gt; give it a try&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;UPDATE&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;I noticed something new in the game&#x27;s About section. Actually it was already there but I wasn&#x27;t so curious to check it out.
+There are few sections, most of them has quotes of wisdom by an admired person.  But one of them has this funny little dots of all colors and you can tap on them, which will eventually makes a unique sound for each dot.&lt;&#x2F;p&gt;
+&lt;img src=&quot;&#x2F;public&#x2F;images&#x2F;dots_screenshot_2013-09-15-22-32-05.png&quot; alt=&quot;img&quot; class=&quot;inline&quot;&#x2F;&gt;
+&lt;img src=&quot;&#x2F;public&#x2F;images&#x2F;dots_screenshot_2013-09-15-22-32-19.png&quot; alt=&quot;img&quot; class=&quot;inline&quot;&#x2F;&gt;
+</content>
+        
+    </entry>
+</feed>

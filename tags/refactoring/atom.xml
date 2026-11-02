@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Noos - Where Thought, Code, and Craft Converge - refactoring</title>
+    <subtitle>Personal blog about programming, technology, and engineering insights. Topics include Rust, DevOps, Linux, and software craftsmanship.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://noos.blog/tags/refactoring/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://noos.blog"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2026-06-05T00:00:00+00:00</updated>
+    <id>https://noos.blog/tags/refactoring/atom.xml</id>
+    <entry xml:lang="en">
+        <title>When two solutions are the same, which one do you pick?</title>
+        <published>2026-06-05T00:00:00+00:00</published>
+        <updated>2026-06-05T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/when-two-solutions-are-the-same/"/>
+        <id>https://noos.blog/posts/when-two-solutions-are-the-same/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/when-two-solutions-are-the-same/">&lt;p&gt;Here is a small thing that has been bugging me lately. Two model outputs solve the same problem, in the same way, with the same result. One of them does a little extra: it pulls some repeated validation out into a small private helper method. When I have to pick one, I almost always reach for the tidier one. The question I keep coming back to is whether that reach is backed by anything real, or whether it is just my taste talking.&lt;&#x2F;p&gt;
+&lt;p&gt;So I wrote the two versions out and ran them, because it is easier to think about something concrete than something abstract.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-two-versions&quot;&gt;The two versions&lt;&#x2F;h2&gt;
+&lt;p&gt;Same tiny problem: create a user and update a user, both guarded by the same name and email checks. The first version repeats the checks in both methods.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;java&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-java &quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Inline &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public static &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;createUser&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;email&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(name &lt;&#x2F;span&gt;&lt;span&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null &lt;&#x2F;span&gt;&lt;span&gt;||&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; name.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;isBlank&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;()) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;rejected: name is required&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(email &lt;&#x2F;span&gt;&lt;span&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null &lt;&#x2F;span&gt;&lt;span&gt;|| !&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;email.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;contains&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;@&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;)) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;rejected: email looks invalid&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;created user &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; +&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; name;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public static &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;updateUser&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;email&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(name &lt;&#x2F;span&gt;&lt;span&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null &lt;&#x2F;span&gt;&lt;span&gt;||&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; name.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;isBlank&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;()) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;rejected: name is required&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(email &lt;&#x2F;span&gt;&lt;span&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null &lt;&#x2F;span&gt;&lt;span&gt;|| !&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;email.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;contains&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;@&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;)) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;rejected: email looks invalid&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;updated user &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; +&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; name;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The second version is the one most of us would call &quot;nicer&quot;. It moves the checks into a private &lt;code&gt;validate&lt;&#x2F;code&gt; method and calls it from both places.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;java&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-java &quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Helper &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;private static &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;validate&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;email&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(name &lt;&#x2F;span&gt;&lt;span&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null &lt;&#x2F;span&gt;&lt;span&gt;||&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; name.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;isBlank&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;()) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;name is required&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(email &lt;&#x2F;span&gt;&lt;span&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null &lt;&#x2F;span&gt;&lt;span&gt;|| !&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;email.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;contains&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;@&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;)) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;email looks invalid&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public static &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;createUser&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;email&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; error &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;validate&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(name, email);
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(error &lt;&#x2F;span&gt;&lt;span&gt;!= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;rejected: &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; +&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; error;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;created user &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; +&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; name;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public static &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;updateUser&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;email&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; error &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;validate&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(name, email);
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(error &lt;&#x2F;span&gt;&lt;span&gt;!= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;rejected: &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; +&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; error;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;updated user &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; +&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; name;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;I gave both the same &lt;code&gt;main&lt;&#x2F;code&gt;, compiled them with &lt;code&gt;javac 21.0.2&lt;&#x2F;code&gt;, and ran them side by side:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;javac&lt;&#x2F;span&gt;&lt;span&gt; Inline.java Helper.java
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;java&lt;&#x2F;span&gt;&lt;span&gt; Inline &amp;gt; inline.out
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;java&lt;&#x2F;span&gt;&lt;span&gt; Helper &amp;gt; helper.out
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;diff&lt;&#x2F;span&gt;&lt;span&gt; inline.out helper.out
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Both print exactly this:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;created user Ada
+&lt;&#x2F;span&gt;&lt;span&gt;rejected: name is required
+&lt;&#x2F;span&gt;&lt;span&gt;rejected: email looks invalid
+&lt;&#x2F;span&gt;&lt;span&gt;updated user Grace
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The &lt;code&gt;diff&lt;&#x2F;code&gt; came back empty. From the caller&#x27;s point of view, these two programs are the same program. Nothing observable changes. The only difference is that one has a &lt;code&gt;validate&lt;&#x2F;code&gt; method and the other does not.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;so-why-do-i-lean-toward-the-helper&quot;&gt;So why do I lean toward the helper?&lt;&#x2F;h2&gt;
+&lt;p&gt;If the behaviour is identical, my preference is about the shape of the code, not what it does. And the shape does carry some real value, at least in the cases I have actually run into:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;If a third caller shows up later, it reuses &lt;code&gt;validate&lt;&#x2F;code&gt; instead of copying the checks a third time.&lt;&#x2F;li&gt;
+&lt;li&gt;If the email rule changes (and &quot;contains an @&quot; is obviously not a real email rule), I edit one method instead of hunting for every copy.&lt;&#x2F;li&gt;
+&lt;li&gt;The two copies in the inline version can drift apart. One day someone fixes a check in &lt;code&gt;createUser&lt;&#x2F;code&gt; and forgets &lt;code&gt;updateUser&lt;&#x2F;code&gt;. Now they disagree, and nobody notices until something breaks.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;That last one is the part I actually trust. Duplicated logic that is supposed to stay in sync, but has no mechanism forcing it to, is a slow leak. The helper closes that gap.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;but-i-want-to-be-honest-about-the-other-side&quot;&gt;But I want to be honest about the other side&lt;&#x2F;h2&gt;
+&lt;p&gt;For this exact example, the checks are four lines and used in two places. Pulling them out is close to the line where &quot;good practice&quot; turns into &quot;abstraction I did not need yet&quot;. There is a real argument for leaving it inline:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Two copies of four lines is not a crisis. You can see both at a glance.&lt;&#x2F;li&gt;
+&lt;li&gt;The helper returns &lt;code&gt;null&lt;&#x2F;code&gt; to mean &quot;all good&quot;, which is its own small smell. Now the caller has to remember to null-check.&lt;&#x2F;li&gt;
+&lt;li&gt;If the two call sites later need slightly different rules, the shared helper becomes the thing you have to fight, and you end up adding flags to it.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;So the tidy version is not free, and it is not obviously correct. Whether extraction is the right call depends on where the code is going, and at the moment I pick, I usually do not know where it is going. I am guessing. The guess happens to match what has worked for me before, but it is still a guess.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;where-the-bias-question-actually-lives&quot;&gt;Where the bias question actually lives&lt;&#x2F;h2&gt;
+&lt;p&gt;This is the part the whole thing is really about. When I pick the helper version, am I rewarding better engineering, or am I rewarding code that looks like code I would have written?&lt;&#x2F;p&gt;
+&lt;p&gt;Those two can point the same direction often enough that it is hard to tell them apart. The danger is when they come apart and I do not notice. A few cases I can think of:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;The inline version is genuinely clearer for a throwaway script, but I mark it down because it &quot;repeats itself&quot;.&lt;&#x2F;li&gt;
+&lt;li&gt;A model writes the helper but names it badly or puts the null-return smell in, and I still prefer it because the silhouette looks senior.&lt;&#x2F;li&gt;
+&lt;li&gt;I prefer whichever style matches the language I am most comfortable in, and quietly penalise idioms I just have not seen much.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;None of those are about value. They are about familiarity wearing value&#x27;s clothes. And when these preferences get collected up, for example when someone ranks two model outputs and that ranking becomes training signal, my taste stops being a private quirk and starts shaping what the next model thinks &quot;good&quot; looks like. That is the point where I would like to know whether I am measuring something or just voting for myself.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;is-it-a-problem-or-is-it-judgment&quot;&gt;Is it a problem, or is it judgment?&lt;&#x2F;h2&gt;
+&lt;p&gt;Here is the honest tension, and I do not have a clean answer. If my bias toward the extracted helper consistently lands on code that is easier to change later, then calling it &quot;bias&quot; feels unfair. That is just experience doing its job. Pattern recognition built from getting burned by drifting copies is exactly the thing you want a reviewer to have.&lt;&#x2F;p&gt;
+&lt;p&gt;The catch is the word &quot;consistently&quot;. I cannot actually prove my preferences are consistent without checking them against something outside my own taste: did the codebase get easier or harder to change, did the duplicated checks actually drift, did the abstraction get in the way later. When I have that kind of feedback, the preference earns the name &quot;judgment&quot;. When I do not, I am just trusting that taste and value line up, and writing the result down as if it were measured.&lt;&#x2F;p&gt;
+&lt;p&gt;So the rule I am trying to hold myself to, for now, is small: when two outputs do the same thing and I find myself preferring one, say out loud what the preference is buying. If I can name the value (one place to change the rule, no chance of drift), keep it. If the best I can do is &quot;it feels more polished&quot;, treat that as a flag, not a verdict. I have not used this on anything large enough to call it a method. Let&#x27;s see how it holds up.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+</feed>

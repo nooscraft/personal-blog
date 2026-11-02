@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Noos - Where Thought, Code, and Craft Converge - feature-bloat</title>
+    <subtitle>Personal blog about programming, technology, and engineering insights. Topics include Rust, DevOps, Linux, and software craftsmanship.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://noos.blog/tags/feature-bloat/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://noos.blog"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2026-08-13T00:00:00+00:00</updated>
+    <id>https://noos.blog/tags/feature-bloat/atom.xml</id>
+    <entry xml:lang="en">
+        <title>Features are not quality</title>
+        <published>2026-08-13T00:00:00+00:00</published>
+        <updated>2026-08-13T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/features-are-not-quality/"/>
+        <id>https://noos.blog/posts/features-are-not-quality/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/features-are-not-quality/">&lt;p&gt;I recently read &lt;a href=&quot;https:&#x2F;&#x2F;brettcodes.com&#x2F;im-done-using-ai&#x2F;&quot;&gt;I&#x27;m done using AI&lt;&#x2F;a&gt; by Brett Chalupa, published 10 August 2026, where he announces he has stopped using AI tools, for coding and everything else. I use these tools myself, so I expected to skim it and move on. What stayed with me was not the decision to quit. It was one line about what makes software good.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;twenty-years-then-eighteen-months&quot;&gt;Twenty years, then eighteen months&lt;&#x2F;h2&gt;
+&lt;p&gt;Chalupa has been programming for 20 years, starting as a teenager making fansites and little video games before it became a career. Over the past 18 months, he writes, his working life and his craft were drastically changed by LLM-powered coding harnesses and what is often called agentic programming.&lt;&#x2F;p&gt;
+&lt;p&gt;He first met the idea through GitHub Copilot in Visual Studio Code and found it &quot;distracting and basically useless&quot;. A colleague using an early chat interface watched the model invent a version of a software library that did not exist, so it could not be installed or used. No version number was ever named, and I will not invent one.&lt;&#x2F;p&gt;
+&lt;p&gt;In early 2025, management asked what he thought of AI coding. His answer: it is &quot;often wrong, gets in my way, and doesn&#x27;t help me code faster, so I don&#x27;t use it.&quot; Management went to a conference, came back sold on LLMs revolutionising knowledge work, and issued a mandate: use AI tools or be left behind.&lt;&#x2F;p&gt;
+&lt;p&gt;So he tried in earnest. Cursor &quot;didn&#x27;t click&quot; and, in his words, &quot;ran horribly on Linux&quot;. He moved to Zed, using sidebar chat with auto-edit, and says it &quot;honestly felt magical&quot; at that time. By mid-2026 he could connect Linear to Claude Code and have it build a non-trivial project start to finish without editing a line of code. The work got done faster than he could have done alone, and he &quot;barely had to think&quot;.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;where-the-trust-actually-broke&quot;&gt;Where the trust actually broke&lt;&#x2F;h2&gt;
+&lt;p&gt;The moment that broke it for him had nothing to do with code. He got sick one night and described his symptoms to the chat. I will let him tell it.&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;I&#x27;m embarrassed to admit this, but one night when I was sick, I described all my symptoms and it told me to go to the Emergency Department at the hospital.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;The chat told him to go to the Emergency Department. He drove at midnight with the flu, waited two hours in the waiting room while his ibuprofen kicked in, and was told to go home and rest; he did not need to be there. It cost him hundreds of dollars.&lt;&#x2F;p&gt;
+&lt;p&gt;This was not a coding failure at all. It was a confident answer in a place where confidence is not the same as knowing. It landed because he had been treating the chat like a friend for months: book recommendations, career advice, business ideas, always supportive. Of course he trusted it; I probably would have too.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;from-building-to-reviewing&quot;&gt;From building to reviewing&lt;&#x2F;h2&gt;
+&lt;p&gt;His role at work had quietly changed. He describes becoming &quot;just a code reviewer and a quality assurance tester&quot; for what the harness produced, &quot;basically just a hamster on a wheel, checking boxes, getting tickets done with no real purpose&quot;. On review he is blunt: &quot;it&#x27;s impossible to review the quantity of code the AI writes, and we&#x27;ve got a different AI to review it anyway!&quot;&lt;&#x2F;p&gt;
+&lt;p&gt;He sums up where that left him like this.&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;So what did this do? Well, it made me lazy. It made me stop caring. It made me a worse programmer. It made me depressed. Because I stopped doing the hard work, I stopped learning, I stopped growing, I stopped being the one making the software.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;He felt distant from the software. He could not explain precisely how something worked without asking the AI first. Underneath sits the question the post is really about: if the job is feeding Linear tickets into a CLI, why is he needed at all? He wondered about becoming an electrician.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;what-the-one-good-study-says&quot;&gt;What the one good study says&lt;&#x2F;h2&gt;
+&lt;p&gt;The best evidence I know of here is METR&#x27;s &lt;a href=&quot;https:&#x2F;&#x2F;metr.org&#x2F;blog&#x2F;2025-07-10-early-2025-ai-experienced-os-dev-study&#x2F;&quot;&gt;randomized controlled trial&lt;&#x2F;a&gt;, published 10 July 2025. The setup: 16 experienced open-source developers, 246 real tasks in mature repositories they already knew well, run between February and June 2025, using primarily Cursor Pro with Claude 3.5 or 3.7 Sonnet. The finding: developers took 19% longer to complete issues when allowed to use AI tools. Afterwards, those same developers estimated AI had made them 20% faster. They were wrong in the opposite direction.&lt;&#x2F;p&gt;
+&lt;p&gt;The gap between what they felt and what was measured is the part I cannot leave alone. The tools feel fast. I have never once timed myself.&lt;&#x2F;p&gt;
+&lt;p&gt;Now the other side, because this cuts both ways. METR&#x27;s own caveats: these developers and repositories do not represent most software development work, AI may speed up other groups, and the result may not hold for later models. In a &lt;a href=&quot;https:&#x2F;&#x2F;metr.org&#x2F;blog&#x2F;2026-02-24-uplift-update&#x2F;&quot;&gt;follow-up posted on 24 February 2026&lt;&#x2F;a&gt;, they say they now believe developers are likely more sped up by AI in early 2026 than in early 2025, though they call the new data &quot;very weak evidence&quot;. They are redesigning the experiment because selection bias got severe: developers now decline to participate rather than work without AI, and 30% to 50% told them they were not submitting tasks they did not want to do without AI.&lt;&#x2F;p&gt;
+&lt;p&gt;I will not use it as a hammer. 16 developers on projects they knew deeply is a real limitation, not a footnote.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;my-two-cents-features-are-not-quality&quot;&gt;My two cents: features are not quality&lt;&#x2F;h2&gt;
+&lt;p&gt;The sentence that started all this for me is his line about cared-for software.&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Upon reflection, I&#x27;ve come to believe that quality software is not about how many features something has or how quickly it is built but rather how cared for it is by the designers, developers, and product people who work on it.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;Quitting AI did not push him out of software. He went back to game programming. He finished his book on coding games for the Playdate, made some small games, and built Usagi, a 2D Lua game engine written in Rust. When he tried cutting AI back to trivial tasks only, it never held; he slid back into using it for everything, and he calls it an all or nothing decision. He is plain about the risk: &quot;It is possible I will be terminated.&quot; His closing line is &quot;Here&#x27;s to writing code by hand.&quot;&lt;&#x2F;p&gt;
+&lt;p&gt;His line says something I had felt without saying out loud: a feature list is not a product. The software I actually like does a small number of things and gets out of the way. My editor, my terminal and the generator behind this blog have barely changed shape in years, and I am grateful for it. This is an observation from using software, not a measured result. When a tool I rely on ships another panel or assistant I did not ask for, I do not feel served; I feel managed.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;we-build-for-ourselves-and-call-it-a-product&quot;&gt;We build for ourselves and call it a product&lt;&#x2F;h2&gt;
+&lt;p&gt;My suspicion, after years of using and building software: a lot of features get shipped to satisfy the people building them, not the people using them. It feels like progress. The roadmap looks full, the changelog looks healthy, everyone feels productive. Then the thing that arrives at the user is heavier, slower and harder to understand than what it replaced.&lt;&#x2F;p&gt;
+&lt;p&gt;Complexity gets added by people who will never have to live inside it. The person who built the new panel knows exactly where everything is; the user opens the app one morning and their tool has moved. None of this is malicious. Adding is easier than subtracting, and adding is what gets rewarded. I have shipped my share of it. This is not a law, but the pattern keeps showing up in my own work, and I do not love what that says about me.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;simple-keeps-winning&quot;&gt;Simple keeps winning&lt;&#x2F;h2&gt;
+&lt;p&gt;Given a real choice, people reach for the simpler thing. Not always, but often enough that I trust the pattern.&lt;&#x2F;p&gt;
+&lt;p&gt;The honest other half: the long, patient engagement software used to earn seems mostly gone. The main thing that still holds attention for hours is the stuff engineered for scrolling, and that is not a model anyone building a tool should want to copy. I wrote about my own version of this in &lt;a href=&quot;https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;losing-interest-in-everything&#x2F;&quot;&gt;when nothing feels fun any more&lt;&#x2F;a&gt;, after noticing I was bouncing off things that used to absorb me for days.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;where-i-land&quot;&gt;Where I land&lt;&#x2F;h2&gt;
+&lt;p&gt;I am not quitting. I use these tools most days and I plan to keep using them; they earn their place for boilerplate and getting unstuck. What is hyped and not yet proven, at least for work like mine, is the ten-times-faster story. I have not tried quitting the way Brett did, so I do not know what that would do to my work.&lt;&#x2F;p&gt;
+&lt;p&gt;His question is the right one to sit with: what is the cost, and who pays it. He cites Cal Newport&#x27;s Slow Productivity and its encouragement to work at a natural pace; he says he does not see the need to work faster. He also writes about the true cost of AI, &quot;from the data centers to the water usage and beyond&quot;, and says it is &quot;largely hidden&quot;. I have not verified any of those figures myself, so I will not quote numbers. It deserves more attention than it gets, though. I will keep using the tools, and keep asking what they cost. Let&#x27;s see how it goes.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h3 id=&quot;references&quot;&gt;References&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;brettcodes.com&#x2F;im-done-using-ai&#x2F;&quot;&gt;I&#x27;m done using AI&lt;&#x2F;a&gt;: Brett Chalupa&#x27;s post, published 10 August 2026&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;metr.org&#x2F;blog&#x2F;2025-07-10-early-2025-ai-experienced-os-dev-study&#x2F;&quot;&gt;Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity&lt;&#x2F;a&gt;: METR&#x27;s write-up of the randomized controlled trial&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;arxiv.org&#x2F;abs&#x2F;2507.09089&quot;&gt;The same study on arXiv&lt;&#x2F;a&gt;: full paper, arXiv:2507.09089&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;metr.org&#x2F;blog&#x2F;2026-02-24-uplift-update&#x2F;&quot;&gt;We are Changing our Developer Productivity Experiment Design&lt;&#x2F;a&gt;: METR&#x27;s follow-up on selection bias, 24 February 2026&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;calnewport.com&#x2F;my-new-book-slow-productivity&#x2F;&quot;&gt;Slow Productivity&lt;&#x2F;a&gt;: Cal Newport on the book Brett cites&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;pdbook.net&quot;&gt;Make Games for Playdate with Lua&lt;&#x2F;a&gt;: the book he finished&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;usagiengine.com&#x2F;&quot;&gt;Usagi&lt;&#x2F;a&gt;: his 2D Lua game engine, with the &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;brettchalupa&#x2F;usagi&quot;&gt;source on GitHub&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</content>
+        
+    </entry>
+</feed>

@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Noos - Where Thought, Code, and Craft Converge - code-review</title>
+    <subtitle>Personal blog about programming, technology, and engineering insights. Topics include Rust, DevOps, Linux, and software craftsmanship.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://noos.blog/tags/code-review/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://noos.blog"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2026-06-05T00:00:00+00:00</updated>
+    <id>https://noos.blog/tags/code-review/atom.xml</id>
+    <entry xml:lang="en">
+        <title>When two solutions are the same, which one do you pick?</title>
+        <published>2026-06-05T00:00:00+00:00</published>
+        <updated>2026-06-05T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/when-two-solutions-are-the-same/"/>
+        <id>https://noos.blog/posts/when-two-solutions-are-the-same/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/when-two-solutions-are-the-same/">&lt;p&gt;Here is a small thing that has been bugging me lately. Two model outputs solve the same problem, in the same way, with the same result. One of them does a little extra: it pulls some repeated validation out into a small private helper method. When I have to pick one, I almost always reach for the tidier one. The question I keep coming back to is whether that reach is backed by anything real, or whether it is just my taste talking.&lt;&#x2F;p&gt;
+&lt;p&gt;So I wrote the two versions out and ran them, because it is easier to think about something concrete than something abstract.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-two-versions&quot;&gt;The two versions&lt;&#x2F;h2&gt;
+&lt;p&gt;Same tiny problem: create a user and update a user, both guarded by the same name and email checks. The first version repeats the checks in both methods.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;java&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-java &quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Inline &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public static &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;createUser&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;email&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(name &lt;&#x2F;span&gt;&lt;span&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null &lt;&#x2F;span&gt;&lt;span&gt;||&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; name.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;isBlank&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;()) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;rejected: name is required&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(email &lt;&#x2F;span&gt;&lt;span&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null &lt;&#x2F;span&gt;&lt;span&gt;|| !&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;email.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;contains&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;@&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;)) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;rejected: email looks invalid&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;created user &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; +&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; name;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public static &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;updateUser&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;email&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(name &lt;&#x2F;span&gt;&lt;span&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null &lt;&#x2F;span&gt;&lt;span&gt;||&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; name.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;isBlank&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;()) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;rejected: name is required&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(email &lt;&#x2F;span&gt;&lt;span&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null &lt;&#x2F;span&gt;&lt;span&gt;|| !&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;email.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;contains&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;@&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;)) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;rejected: email looks invalid&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;updated user &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; +&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; name;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The second version is the one most of us would call &quot;nicer&quot;. It moves the checks into a private &lt;code&gt;validate&lt;&#x2F;code&gt; method and calls it from both places.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;java&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-java &quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Helper &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;private static &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;validate&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;email&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(name &lt;&#x2F;span&gt;&lt;span&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null &lt;&#x2F;span&gt;&lt;span&gt;||&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; name.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;isBlank&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;()) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;name is required&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(email &lt;&#x2F;span&gt;&lt;span&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null &lt;&#x2F;span&gt;&lt;span&gt;|| !&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;email.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;contains&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;@&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;)) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;email looks invalid&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public static &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;createUser&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;email&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; error &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;validate&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(name, email);
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(error &lt;&#x2F;span&gt;&lt;span&gt;!= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;rejected: &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; +&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; error;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;created user &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; +&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; name;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public static &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;updateUser&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;email&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; error &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;validate&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(name, email);
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(error &lt;&#x2F;span&gt;&lt;span&gt;!= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;rejected: &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; +&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; error;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;updated user &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; +&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; name;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;    }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;I gave both the same &lt;code&gt;main&lt;&#x2F;code&gt;, compiled them with &lt;code&gt;javac 21.0.2&lt;&#x2F;code&gt;, and ran them side by side:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;javac&lt;&#x2F;span&gt;&lt;span&gt; Inline.java Helper.java
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;java&lt;&#x2F;span&gt;&lt;span&gt; Inline &amp;gt; inline.out
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;java&lt;&#x2F;span&gt;&lt;span&gt; Helper &amp;gt; helper.out
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;diff&lt;&#x2F;span&gt;&lt;span&gt; inline.out helper.out
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Both print exactly this:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;created user Ada
+&lt;&#x2F;span&gt;&lt;span&gt;rejected: name is required
+&lt;&#x2F;span&gt;&lt;span&gt;rejected: email looks invalid
+&lt;&#x2F;span&gt;&lt;span&gt;updated user Grace
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The &lt;code&gt;diff&lt;&#x2F;code&gt; came back empty. From the caller&#x27;s point of view, these two programs are the same program. Nothing observable changes. The only difference is that one has a &lt;code&gt;validate&lt;&#x2F;code&gt; method and the other does not.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;so-why-do-i-lean-toward-the-helper&quot;&gt;So why do I lean toward the helper?&lt;&#x2F;h2&gt;
+&lt;p&gt;If the behaviour is identical, my preference is about the shape of the code, not what it does. And the shape does carry some real value, at least in the cases I have actually run into:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;If a third caller shows up later, it reuses &lt;code&gt;validate&lt;&#x2F;code&gt; instead of copying the checks a third time.&lt;&#x2F;li&gt;
+&lt;li&gt;If the email rule changes (and &quot;contains an @&quot; is obviously not a real email rule), I edit one method instead of hunting for every copy.&lt;&#x2F;li&gt;
+&lt;li&gt;The two copies in the inline version can drift apart. One day someone fixes a check in &lt;code&gt;createUser&lt;&#x2F;code&gt; and forgets &lt;code&gt;updateUser&lt;&#x2F;code&gt;. Now they disagree, and nobody notices until something breaks.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;That last one is the part I actually trust. Duplicated logic that is supposed to stay in sync, but has no mechanism forcing it to, is a slow leak. The helper closes that gap.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;but-i-want-to-be-honest-about-the-other-side&quot;&gt;But I want to be honest about the other side&lt;&#x2F;h2&gt;
+&lt;p&gt;For this exact example, the checks are four lines and used in two places. Pulling them out is close to the line where &quot;good practice&quot; turns into &quot;abstraction I did not need yet&quot;. There is a real argument for leaving it inline:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Two copies of four lines is not a crisis. You can see both at a glance.&lt;&#x2F;li&gt;
+&lt;li&gt;The helper returns &lt;code&gt;null&lt;&#x2F;code&gt; to mean &quot;all good&quot;, which is its own small smell. Now the caller has to remember to null-check.&lt;&#x2F;li&gt;
+&lt;li&gt;If the two call sites later need slightly different rules, the shared helper becomes the thing you have to fight, and you end up adding flags to it.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;So the tidy version is not free, and it is not obviously correct. Whether extraction is the right call depends on where the code is going, and at the moment I pick, I usually do not know where it is going. I am guessing. The guess happens to match what has worked for me before, but it is still a guess.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;where-the-bias-question-actually-lives&quot;&gt;Where the bias question actually lives&lt;&#x2F;h2&gt;
+&lt;p&gt;This is the part the whole thing is really about. When I pick the helper version, am I rewarding better engineering, or am I rewarding code that looks like code I would have written?&lt;&#x2F;p&gt;
+&lt;p&gt;Those two can point the same direction often enough that it is hard to tell them apart. The danger is when they come apart and I do not notice. A few cases I can think of:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;The inline version is genuinely clearer for a throwaway script, but I mark it down because it &quot;repeats itself&quot;.&lt;&#x2F;li&gt;
+&lt;li&gt;A model writes the helper but names it badly or puts the null-return smell in, and I still prefer it because the silhouette looks senior.&lt;&#x2F;li&gt;
+&lt;li&gt;I prefer whichever style matches the language I am most comfortable in, and quietly penalise idioms I just have not seen much.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;None of those are about value. They are about familiarity wearing value&#x27;s clothes. And when these preferences get collected up, for example when someone ranks two model outputs and that ranking becomes training signal, my taste stops being a private quirk and starts shaping what the next model thinks &quot;good&quot; looks like. That is the point where I would like to know whether I am measuring something or just voting for myself.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;is-it-a-problem-or-is-it-judgment&quot;&gt;Is it a problem, or is it judgment?&lt;&#x2F;h2&gt;
+&lt;p&gt;Here is the honest tension, and I do not have a clean answer. If my bias toward the extracted helper consistently lands on code that is easier to change later, then calling it &quot;bias&quot; feels unfair. That is just experience doing its job. Pattern recognition built from getting burned by drifting copies is exactly the thing you want a reviewer to have.&lt;&#x2F;p&gt;
+&lt;p&gt;The catch is the word &quot;consistently&quot;. I cannot actually prove my preferences are consistent without checking them against something outside my own taste: did the codebase get easier or harder to change, did the duplicated checks actually drift, did the abstraction get in the way later. When I have that kind of feedback, the preference earns the name &quot;judgment&quot;. When I do not, I am just trusting that taste and value line up, and writing the result down as if it were measured.&lt;&#x2F;p&gt;
+&lt;p&gt;So the rule I am trying to hold myself to, for now, is small: when two outputs do the same thing and I find myself preferring one, say out loud what the preference is buying. If I can name the value (one place to change the rule, no chance of drift), keep it. If the best I can do is &quot;it feels more polished&quot;, treat that as a flag, not a verdict. I have not used this on anything large enough to call it a method. Let&#x27;s see how it holds up.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Stacked PRs go native in GitHub, and what that means for AI-assisted work</title>
+        <published>2026-04-19T00:00:00+00:00</published>
+        <updated>2026-04-19T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/stacked-prs-go-native-and-the-ai-angle/"/>
+        <id>https://noos.blog/posts/stacked-prs-go-native-and-the-ai-angle/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/stacked-prs-go-native-and-the-ai-angle/">&lt;p&gt;GitHub announced &lt;a href=&quot;https:&#x2F;&#x2F;github.github.com&#x2F;gh-stack&quot;&gt;native Stacked PRs&lt;&#x2F;a&gt;, still in private preview. I wanted to write about it for two reasons. First, it bakes in a workflow some of us have been doing for a while, either manually or via third-party tools, mostly to keep PRs small enough that reviewers actually read them. Second, it lands at a moment when AI agents are producing more of the diffs, and the gap between &quot;diff size&quot; and &quot;what a human can review well&quot; is getting wider every month.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;what-a-stack-is-quickly&quot;&gt;What a stack is, quickly&lt;&#x2F;h2&gt;
+&lt;p&gt;A stack is a chain of pull requests in the same repo where each PR targets the branch of the PR below it. Instead of one giant PR that touches the database layer, the API, and the UI, you get three smaller ones that build on each other:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;main
+&lt;&#x2F;span&gt;&lt;span&gt; ↑
+&lt;&#x2F;span&gt;&lt;span&gt; PR #1: auth-layer
+&lt;&#x2F;span&gt;&lt;span&gt; ↑
+&lt;&#x2F;span&gt;&lt;span&gt; PR #2: api-endpoints
+&lt;&#x2F;span&gt;&lt;span&gt; ↑
+&lt;&#x2F;span&gt;&lt;span&gt; PR #3: frontend
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Each layer is reviewed on its own. When the bottom is ready you can merge the bottom couple, or all of them at once, and the rest auto-rebase onto the new base. That auto-rebase is one of the things that makes a stack worth the trouble; doing it by hand across five branches is the part that always made me give up before.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;what-is-actually-new&quot;&gt;What is actually new&lt;&#x2F;h2&gt;
+&lt;p&gt;Stacking as a workflow is not new. &lt;a href=&quot;https:&#x2F;&#x2F;graphite.dev&#x2F;stacking&quot;&gt;Graphite&lt;&#x2F;a&gt; has built a polished CLI (&lt;code&gt;gt&lt;&#x2F;code&gt;), a VS Code extension, a PR inbox, and an AI review product around it. Meta&#x27;s &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;ezyang&#x2F;ghstack&quot;&gt;&lt;code&gt;ghstack&lt;&#x2F;code&gt;&lt;&#x2F;a&gt; by Edward Yang has been around for years and powers a lot of the PyTorch workflow. There is also &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;ejoffe&#x2F;spr&quot;&gt;&lt;code&gt;spr&lt;&#x2F;code&gt;&lt;&#x2F;a&gt;, and historically Phabricator did this before Meta sunset it.&lt;&#x2F;p&gt;
+&lt;p&gt;What GitHub adds, going by the &lt;a href=&quot;https:&#x2F;&#x2F;github.github.com&#x2F;gh-stack&#x2F;?ref=console.dev&quot;&gt;overview docs&lt;&#x2F;a&gt;, is the bits that previous tools could only approximate from the outside:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;A stack map in the PR header so reviewers can navigate between layers.&lt;&#x2F;li&gt;
+&lt;li&gt;Branch protection rules enforced against the &lt;strong&gt;final target branch&lt;&#x2F;strong&gt; (usually &lt;code&gt;main&lt;&#x2F;code&gt;), not just the immediate parent branch of each PR.&lt;&#x2F;li&gt;
+&lt;li&gt;CI runs each PR as if it were targeting the final branch, so green checks actually mean something.&lt;&#x2F;li&gt;
+&lt;li&gt;One-click merge of multiple layers, with automatic rebase of the rest of the stack afterwards.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;The &quot;branch protection against the final target&quot; point is the one that quietly matters. With third-party tools, your PR #3 in a stack technically targets PR #2&#x27;s branch, which often does not have the same protection rules as &lt;code&gt;main&lt;&#x2F;code&gt;. Teams used to work around this with naming conventions, bots, or just hoping reviewers paid attention. Native handling closes that gap.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;trying-the-cli-right-now&quot;&gt;Trying the CLI right now&lt;&#x2F;h2&gt;
+&lt;p&gt;The feature is in private preview as of April 2026, and you need to be allowlisted on a repo for the server-side bits (&lt;code&gt;submit&lt;&#x2F;code&gt;, &lt;code&gt;merge&lt;&#x2F;code&gt;, the stack map UI) to work. But the CLI itself is publicly installable. I poked at it a bit:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; gh extension install github&#x2F;gh-stack
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; gh stack&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --help
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Create,&lt;&#x2F;span&gt;&lt;span&gt; navigate, and manage stacks of branches and pull requests.
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Usage:
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;gh&lt;&#x2F;span&gt;&lt;span&gt; stack &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;[&lt;&#x2F;span&gt;&lt;span&gt;command&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;]
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Available&lt;&#x2F;span&gt;&lt;span&gt; Commands:
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;add&lt;&#x2F;span&gt;&lt;span&gt;         Add a new branch on top of the current stack
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;alias       &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;Create &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;a shell alias for gh stack
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;bottom&lt;&#x2F;span&gt;&lt;span&gt;      Check out the bottom branch of the stack
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;checkout&lt;&#x2F;span&gt;&lt;span&gt;    Checkout a stack from a PR number or branch name
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;down&lt;&#x2F;span&gt;&lt;span&gt;        Check out a branch further down in the stack
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;feedback&lt;&#x2F;span&gt;&lt;span&gt;    Submit feedback for gh-stack
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;init&lt;&#x2F;span&gt;&lt;span&gt;        Initialize a new stack
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;merge&lt;&#x2F;span&gt;&lt;span&gt;       Merge a stack of PRs
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;push&lt;&#x2F;span&gt;&lt;span&gt;        Push all branches in the current stack to the remote
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;rebase&lt;&#x2F;span&gt;&lt;span&gt;      Rebase a stack of branches
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;submit&lt;&#x2F;span&gt;&lt;span&gt;      Create a stack of PRs on GitHub
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sync&lt;&#x2F;span&gt;&lt;span&gt;        Sync the current stack with the remote
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;top&lt;&#x2F;span&gt;&lt;span&gt;         Check out the top branch of the stack
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;unstack&lt;&#x2F;span&gt;&lt;span&gt;     Delete a stack locally and on GitHub
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The local workflow works without any preview access. In a throwaway repo:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; git init&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -q &lt;&#x2F;span&gt;&lt;span&gt;&amp;amp;&amp;amp; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span&gt; commit&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --allow-empty -m &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;init&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -q
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; gh stack init test-stack-bottom
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;✓&lt;&#x2F;span&gt;&lt;span&gt; Creating stack with trunk main and branch test-stack-bottom
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Switched&lt;&#x2F;span&gt;&lt;span&gt; to branch test-stack-bottom
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;To&lt;&#x2F;span&gt;&lt;span&gt; add a new layer to your stack, run `&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;gh&lt;&#x2F;span&gt;&lt;span&gt; stack add`
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;When&lt;&#x2F;span&gt;&lt;span&gt; you&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;re ready to push to GitHub and open a stack of PRs, run `gh stack submit`
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;$ echo &amp;quot;auth&amp;quot; &amp;gt; auth.txt &amp;amp;&amp;amp; git add . &amp;amp;&amp;amp; git commit -m &amp;quot;auth layer&amp;quot; -q
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;$ gh stack add api-layer
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;✓ Created and checked out branch &amp;quot;api-layer&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;$ git log --oneline --all --decorate
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;463808f (HEAD -&amp;gt; api-layer, test-stack-bottom) auth layer
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;2b6a4ea (main) init
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;So you can install it, play with &lt;code&gt;init&lt;&#x2F;code&gt;, &lt;code&gt;add&lt;&#x2F;code&gt;, &lt;code&gt;bottom&lt;&#x2F;code&gt;, &lt;code&gt;top&lt;&#x2F;code&gt;, &lt;code&gt;down&lt;&#x2F;code&gt;, &lt;code&gt;up&lt;&#x2F;code&gt;, &lt;code&gt;rebase&lt;&#x2F;code&gt;, &lt;code&gt;unstack&lt;&#x2F;code&gt; locally today. The bits that need GitHub-side support are the actual &lt;code&gt;submit&lt;&#x2F;code&gt; and &lt;code&gt;merge&lt;&#x2F;code&gt;, and that part is gated by the &lt;a href=&quot;https:&#x2F;&#x2F;github.github.com&#x2F;gh-stack&#x2F;?ref=console.dev&quot;&gt;waitlist&lt;&#x2F;a&gt;. Prerequisites are &lt;code&gt;gh&lt;&#x2F;code&gt; v2.0+ and Git 2.20+ (&lt;a href=&quot;https:&#x2F;&#x2F;github.github.com&#x2F;gh-stack&#x2F;getting-started&#x2F;quick-start&#x2F;&quot;&gt;Quick Start&lt;&#x2F;a&gt;), both pretty undemanding.&lt;&#x2F;p&gt;
+&lt;p&gt;There is also a &lt;code&gt;gh stack alias&lt;&#x2F;code&gt; command that wires up &lt;code&gt;gs&lt;&#x2F;code&gt; as a shorter alias, which I will probably end up using because typing &lt;code&gt;gh stack add&lt;&#x2F;code&gt; thirty times a day gets old.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-ai-assisted-angle&quot;&gt;The AI-assisted angle&lt;&#x2F;h2&gt;
+&lt;p&gt;Here is the part I actually wanted to think out loud about.&lt;&#x2F;p&gt;
+&lt;p&gt;If you have reviewed a PR opened by an AI agent (Cursor, Codex, Claude Code, Copilot, or any of the cloud agents), you know the failure mode. The agent gets asked to &quot;add user profiles&quot;, and twenty minutes later there is a PR with a migration, a schema, a service layer, three endpoints, two React components, a settings page, and seventeen unit tests. All in one or two commits. Reviewing that with any rigour is an afternoon&#x27;s work, and the path of least resistance is to skim, push back on a couple of obvious things, and merge.&lt;&#x2F;p&gt;
+&lt;p&gt;Stacked PRs are a structural answer to that problem. If the agent (or the human supervising it) is encouraged to land the migration first, then the service, then the endpoints, then the UI, each layer is something a person can actually read in one sitting. Conflicts get smaller. Reverts get surgical. The cost of &quot;actually let&#x27;s redo the data model&quot; drops from &quot;throw away the whole PR&quot; to &quot;throw away the bottom layer and rebase&quot;.&lt;&#x2F;p&gt;
+&lt;p&gt;GitHub seems to know this is the angle. The docs include an AI agent integration step:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;npx&lt;&#x2F;span&gt;&lt;span&gt; skills add github&#x2F;gh-stack
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;That installs a skill telling the agent how to author and manage stacks. I have not tried it yet (no preview access), so I cannot tell you how good it is in practice. The bet is interesting though: instead of teaching humans to slice their AI-generated work after the fact, teach the agent to slice its own work and produce a stack from the start.&lt;&#x2F;p&gt;
+&lt;p&gt;A few honest reservations:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;AI agents can mechanically split a diff (one file per commit, one logical component per commit). They are still not great at deciding &lt;em&gt;where&lt;&#x2F;em&gt; the right review boundaries are. That is exactly the kind of architectural judgment they tend to miss. A stack of five PRs split in the wrong places is arguably worse than one large PR, because reviewers context-switch between layers without the layering actually helping them.&lt;&#x2F;li&gt;
+&lt;li&gt;A stack is only as solid as its bottom layer. If the data model in PR #1 is wrong, every later PR is built on sand. AI-authored stacks raise that risk because the agent often does not pause long enough to question the foundation.&lt;&#x2F;li&gt;
+&lt;li&gt;Merge queues, codeowners, and stacks together are still a frontier. I expect most of the next round of papercuts will be in that intersection.&lt;&#x2F;li&gt;
+&lt;li&gt;This is GitHub&#x27;s native version, but there are mature alternatives. If your team already pays for Graphite, the stack-management half of what they sell is now duplicated in GitHub itself, but the review queue, dashboards, and Diamond AI review are not. Whether you switch is more of a procurement question than a tooling question.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;what-i-am-going-to-actually-try&quot;&gt;What I am going to actually try&lt;&#x2F;h2&gt;
+&lt;p&gt;Some small experiments I have lined up once I get preview access:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Use &lt;code&gt;gh stack init&lt;&#x2F;code&gt; for any change that touches more than one logical layer (data, service, UI). One layer per PR.&lt;&#x2F;li&gt;
+&lt;li&gt;For AI-generated work, ask the agent to produce a plan first, treat each plan step as a layer, and only let it write code one layer at a time.&lt;&#x2F;li&gt;
+&lt;li&gt;Test the merge-multiple-layers-at-once flow on a low-stakes change before relying on it for anything serious.&lt;&#x2F;li&gt;
+&lt;li&gt;See whether the GitHub skill (&lt;code&gt;npx skills add github&#x2F;gh-stack&lt;&#x2F;code&gt;) actually gets the agent to author stacks unprompted, or whether it still needs hand-holding.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;If any of these turn out interesting, I will come back with an update.&lt;&#x2F;p&gt;
+&lt;p&gt;For now the &lt;a href=&quot;https:&#x2F;&#x2F;github.github.com&#x2F;gh-stack&quot;&gt;overview&lt;&#x2F;a&gt; and the &lt;a href=&quot;https:&#x2F;&#x2F;github.github.com&#x2F;gh-stack&#x2F;getting-started&#x2F;quick-start&#x2F;&quot;&gt;Quick Start&lt;&#x2F;a&gt; are the two pages worth reading. The waitlist is on the same page.&lt;&#x2F;p&gt;
+&lt;p&gt;Let&#x27;s see how it goes once it is open.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+</feed>

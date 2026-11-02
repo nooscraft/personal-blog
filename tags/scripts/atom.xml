@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Noos - Where Thought, Code, and Craft Converge - scripts</title>
+    <subtitle>Personal blog about programming, technology, and engineering insights. Topics include Rust, DevOps, Linux, and software craftsmanship.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://noos.blog/tags/scripts/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://noos.blog"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2015-08-25T00:00:00+00:00</updated>
+    <id>https://noos.blog/tags/scripts/atom.xml</id>
+    <entry xml:lang="en">
+        <title>A simple word definition script</title>
+        <published>2015-08-25T00:00:00+00:00</published>
+        <updated>2015-08-25T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/a-simple-word-definition-script/"/>
+        <id>https://noos.blog/posts/a-simple-word-definition-script/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/a-simple-word-definition-script/">&lt;p&gt;Have you ever come across a difficulty to find a definition of a word that you are looking for. Well I find it bit difficult for me.&lt;&#x2F;p&gt;
+&lt;p&gt;I normally use Google search to find definitions of words. For example to get the definition of the word &quot;replenish&quot; I use &lt;a href=&quot;https:&#x2F;&#x2F;www.google.lk&#x2F;webhp?sourceid=chrome-instant&amp;amp;ion=1&amp;amp;espv=2&amp;amp;ie=UTF-8#q=definition%20replenish&quot;&gt;&lt;em&gt;definition replenish&lt;&#x2F;em&gt;&lt;&#x2F;a&gt; on search bar&lt;&#x2F;p&gt;
+&lt;p&gt;But this approach is still bit clumsy though, since you need a browser and if you are already opened multiple tabs then it is sometimes get messy around to switch around tabs.&lt;&#x2F;p&gt;
+&lt;p&gt;So I found out this simple script from the book &lt;a href=&quot;https:&#x2F;&#x2F;www.packtpub.com&#x2F;application-development&#x2F;linux-shell-scripting-cookbook-second-edition&quot;&gt;&lt;em&gt;Linux Shell Scripting Cookbook, 2nd Edition&lt;&#x2F;em&gt;&lt;&#x2F;a&gt; that will query your word and get the definition of it.&lt;&#x2F;p&gt;
+&lt;p&gt;Let&#x27;s see how to get it to work (I have altered the original script from the book to make is more convenient)&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;First you need an account in &lt;em&gt;dictionaryapi.com&lt;&#x2F;em&gt; - &lt;a href=&quot;http:&#x2F;&#x2F;www.dictionaryapi.com&#x2F;register&#x2F;index.htm&quot;&gt;http:&#x2F;&#x2F;www.dictionaryapi.com&#x2F;register&#x2F;index.htm&lt;&#x2F;a&gt;
+&lt;ul&gt;
+&lt;li&gt;API key for the &lt;em&gt;learners&lt;&#x2F;em&gt; API would be enough for the time being&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;Get the script from &lt;a href=&quot;https:&#x2F;&#x2F;gist.github.com&#x2F;nooscraft&#x2F;1fe12ee85074e361836a&quot;&gt;here&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;Assign your API key to the variable &lt;strong&gt;apikey&lt;&#x2F;strong&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;Make it executable &lt;code&gt;chmod +x define&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;Optional: if you want to make it available system wide add the script to &lt;code&gt;&#x2F;usr&#x2F;local&#x2F;bin&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;Finally you can run it as &lt;code&gt;.&#x2F;define replenish&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;The outcome would be:-
+&lt;img src=&quot;&#x2F;public&#x2F;images&#x2F;define_script.png&quot; alt=&quot;img&quot; class=&quot;inline&quot;&#x2F;&gt;&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+</feed>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Noos - Where Thought, Code, and Craft Converge - functions</title>
+    <subtitle>Personal blog about programming, technology, and engineering insights. Topics include Rust, DevOps, Linux, and software craftsmanship.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://noos.blog/tags/functions/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://noos.blog"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2025-11-01T00:00:00+00:00</updated>
+    <id>https://noos.blog/tags/functions/atom.xml</id>
+    <entry xml:lang="en">
+        <title>Rust Macros vs Functions: What Java and Python Developers Should Know</title>
+        <published>2025-11-01T00:00:00+00:00</published>
+        <updated>2025-11-01T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/rust-macros-vs-functions/"/>
+        <id>https://noos.blog/posts/rust-macros-vs-functions/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/rust-macros-vs-functions/">&lt;h3 id=&quot;the-question&quot;&gt;The Question&lt;&#x2F;h3&gt;
+&lt;p&gt;When you first start with Rust, one thing that throws you off is the difference between macros and functions. Coming from Java or Python, this seems odd—why would you need both?&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;what-s-the-difference&quot;&gt;What&#x27;s the Difference?&lt;&#x2F;h3&gt;
+&lt;p&gt;Here&#x27;s the simplest explanation: &lt;strong&gt;functions work on data, macros work on code&lt;&#x2F;strong&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;In Python, you write:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;python&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-python &quot;&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;add&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;a&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span&gt;):
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;a + b
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;In Java, you write:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;java&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-java &quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public static int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;add&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; a, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; b) {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; a + b;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Both run at &lt;strong&gt;runtime&lt;&#x2F;strong&gt;—when your program executes.&lt;&#x2F;p&gt;
+&lt;p&gt;But in Rust, macros run at &lt;strong&gt;compile time&lt;&#x2F;strong&gt;—before your code is even compiled. They&#x27;re code that writes code.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;a-simple-example&quot;&gt;A Simple Example&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;strong&gt;Function in Rust:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;add&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;x&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;i32&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;y&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;i32&lt;&#x2F;span&gt;&lt;span&gt;) -&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;i32 &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    x + y
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;strong&gt;Macro in Rust:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;macro_rules! &lt;&#x2F;span&gt;&lt;span&gt;add {
+&lt;&#x2F;span&gt;&lt;span&gt;    (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$x&lt;&#x2F;span&gt;&lt;span&gt;:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;expr&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$y&lt;&#x2F;span&gt;&lt;span&gt;:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;expr&lt;&#x2F;span&gt;&lt;span&gt;) =&amp;gt; {
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$x &lt;&#x2F;span&gt;&lt;span&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$y
+&lt;&#x2F;span&gt;&lt;span&gt;    };
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;When you call the macro &lt;code&gt;add!(1, 2)&lt;&#x2F;code&gt;, the compiler literally rewrites your code to &lt;code&gt;1 + 2&lt;&#x2F;code&gt; before compiling. It&#x27;s like a smart find-and-replace.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;why-not-just-use-functions&quot;&gt;Why Not Just Use Functions?&lt;&#x2F;h3&gt;
+&lt;p&gt;Macros solve problems that functions can&#x27;t:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;1. Variable Arguments&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Ever wonder how &lt;code&gt;println!&lt;&#x2F;code&gt; can take any number of arguments?&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span&gt;println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Hello&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Hello &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, name);
+&lt;&#x2F;span&gt;&lt;span&gt;println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; and &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, a, b);
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;That&#x27;s because it&#x27;s a macro. Functions need fixed signatures; macros can accept variable patterns.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;2. Code Generation&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Python has decorators like &lt;code&gt;@dataclass&lt;&#x2F;code&gt; that generate code for you:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;python&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-python &quot;&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span&gt;@&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;dataclass
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Person&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;    name: str
+&lt;&#x2F;span&gt;&lt;span&gt;    age: int
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Java has annotations like &lt;code&gt;@Override&lt;&#x2F;code&gt; or Lombok&#x27;s &lt;code&gt;@Builder&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;In Rust, this is done with macros:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span&gt;#[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;derive&lt;&#x2F;span&gt;&lt;span&gt;(Debug, Clone)]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct &lt;&#x2F;span&gt;&lt;span&gt;Person {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;: String,
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;age&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;u32&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The &lt;code&gt;derive&lt;&#x2F;code&gt; macro generates &lt;code&gt;Debug&lt;&#x2F;code&gt; and &lt;code&gt;Clone&lt;&#x2F;code&gt; implementations automatically.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;3. Domain-Specific Languages (DSL)&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;A DSL is a miniature language tailored to a specific problem domain. Think of SQL—it&#x27;s not a general-purpose language, but a specialized one for databases.&lt;&#x2F;p&gt;
+&lt;p&gt;You can create custom syntax with macros:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span&gt;html! {
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;lt;div class=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;container&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &amp;lt;p&amp;gt;Hello world&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;background-color:#bf616a;color:#2b303b;&quot;&gt;&#x2F;&lt;&#x2F;span&gt;&lt;span&gt;p&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;lt;&#x2F;div&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;This isn&#x27;t valid Rust code—it&#x27;s an HTML-like DSL that the macro converts into valid Rust. It lets you write HTML templates directly in your Rust code, which the macro transforms into function calls and data structures at compile time.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;mental-model-for-java-python-developers&quot;&gt;Mental Model for Java&#x2F;Python Developers&lt;&#x2F;h3&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Concept&lt;&#x2F;th&gt;&lt;th&gt;Python&#x2F;Java&lt;&#x2F;th&gt;&lt;th&gt;Rust&lt;&#x2F;th&gt;&lt;&#x2F;tr&gt;&lt;&#x2F;thead&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;Function&lt;&#x2F;td&gt;&lt;td&gt;Normal code that runs&lt;&#x2F;td&gt;&lt;td&gt;Same—runs at runtime&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;Annotation&#x2F;Decorator&lt;&#x2F;td&gt;&lt;td&gt;&lt;code&gt;@Override&lt;&#x2F;code&gt;, &lt;code&gt;@dataclass&lt;&#x2F;code&gt;&lt;&#x2F;td&gt;&lt;td&gt;&lt;code&gt;#[derive(...)]&lt;&#x2F;code&gt; macro&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;Macro&lt;&#x2F;td&gt;&lt;td&gt;Doesn&#x27;t really exist&lt;&#x2F;td&gt;&lt;td&gt;Generates code at compile time&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;&#x2F;tbody&gt;&lt;&#x2F;table&gt;
+&lt;p&gt;Think of macros as &lt;strong&gt;super-powered annotations&lt;&#x2F;strong&gt;. In Java, annotations can generate some code (like Lombok does), but macros can generate &lt;em&gt;any&lt;&#x2F;em&gt; code.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;when-to-use-what&quot;&gt;When to Use What?&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Use functions&lt;&#x2F;strong&gt; for normal logic and calculations.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Use macros&lt;&#x2F;strong&gt; when you want to avoid boilerplate, create custom syntax, or generate code automatically.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;bottom-line&quot;&gt;Bottom Line&lt;&#x2F;h3&gt;
+&lt;p&gt;Macros are Rust&#x27;s way of reducing repetition and enabling metaprogramming. They run before compilation and rewrite your code. If you&#x27;re coming from Java or Python, think of them as annotations or decorators on steroids—but they can do much more.&lt;&#x2F;p&gt;
+&lt;p&gt;For most beginners, you don&#x27;t need to write macros. The standard library macros like &lt;code&gt;println!&lt;&#x2F;code&gt;, &lt;code&gt;vec!&lt;&#x2F;code&gt;, and &lt;code&gt;format!&lt;&#x2F;code&gt; will carry you far. But understanding &lt;em&gt;what&lt;&#x2F;em&gt; they are helps when you read Rust code and wonder why you see &lt;code&gt;!&lt;&#x2F;code&gt; everywhere.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h3 id=&quot;further-reading&quot;&gt;Further Reading&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;veykril.github.io&#x2F;tlborm&#x2F;&quot;&gt;The Little Book of Rust Macros&lt;&#x2F;a&gt; — A practical guide to writing macros in Rust.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;doc.rust-lang.org&#x2F;book&#x2F;ch19-06-macros.html&quot;&gt;The Rust Programming Language: Macros&lt;&#x2F;a&gt; — Official Rust book chapter on macros.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;doc.rust-lang.org&#x2F;rust-by-example&#x2F;macros.html&quot;&gt;Rust by Example: Macros&lt;&#x2F;a&gt; — Interactive examples to learn macros.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Domain-specific_language&quot;&gt;Domain-Specific Language (DSL)&lt;&#x2F;a&gt; — Wikipedia article explaining the concept.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</content>
+        
+    </entry>
+</feed>
