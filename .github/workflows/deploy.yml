@@ -75,7 +75,7 @@ jobs:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           ILLO_BACKEND: openrouter
           ILLO_CHARACTER: blip
-          ILLO_MODEL: x-ai/grok-imagine-image-quality
+          ILLO_MODEL: google/gemini-3.1-flash-image
           FORCE_REGENERATE_COVERS: ${{ inputs.force_regenerate }}
           MAX_ILLO_COVERS: ${{ vars.MAX_ILLO_COVERS }}
         run: |

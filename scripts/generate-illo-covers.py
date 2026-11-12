@@ -363,7 +363,7 @@ def generate_one(
 def main() -> int:
     character = os.environ.get("ILLO_CHARACTER", "blip").strip() or "blip"
     model = os.environ.get(
-        "ILLO_MODEL", "x-ai/grok-imagine-image-quality"
+        "ILLO_MODEL", "google/gemini-3.1-flash-image"
     ).strip()
     illo_py = Path(os.environ.get("ILLO_PY") or DEFAULT_ILLO)
     if not illo_py.is_file():

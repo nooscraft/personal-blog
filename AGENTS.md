@@ -73,7 +73,8 @@
 
 Overview
 - Covers are generated automatically for posts missing a PNG at `static/images/covers/{slug}.png`.
-- Provider: **[illo](https://www.illo-skill.com/)** via OpenRouter (Grok Imagine by default). Replicate/SDXL was removed.
+- Provider: **[illo](https://www.illo-skill.com/)** via OpenRouter (Nano Banana 2, `google/gemini-3.1-flash-image`, in CI). Replicate/SDXL was removed.
+- Grok Imagine (`x-ai/grok-imagine-image-quality`) made the older covers, but OpenRouter dropped it (404 "no provider serves this model anymore", seen 2026-11-12). To keep the Grok look, generate locally with a logged-in Grok CLI (`ILLO_BACKEND=grok`) and commit the PNGs; CI skips posts that already have a cover.
 - Character: **Blip** (screen-faced robot, risograph look) from the illo community packs.
 - Output: 1200×630 PNG (SEO/social-friendly aspect ratio).
 - Committed covers under `static/images/covers/` are preferred; CI only fills gaps.
@@ -91,7 +92,7 @@ Where
 
 Secrets / config
 - `OPENROUTER_API_KEY` – OpenRouter key (repo secret). Required in CI for generation.
-- Optional env: `ILLO_MODEL` (default `x-ai/grok-imagine-image-quality`), `ILLO_CHARACTER` (default `blip`), `ILLO_BACKEND`, `MAX_ILLO_COVERS`
+- Optional env: `ILLO_MODEL` (default `google/gemini-3.1-flash-image`), `ILLO_CHARACTER` (default `blip`), `ILLO_BACKEND`, `MAX_ILLO_COVERS`
 - Optional manual trigger: `force_regenerate` workflow input → `FORCE_REGENERATE_COVERS=1`
 
 Prompting
@@ -122,6 +123,8 @@ Troubleshooting
 - Character pack missing → re-run `bash scripts/illo-bootstrap.sh`
 - PNG exists but not embedded → slug mismatch (`{slug-from-permalink}.png`)
 - OpenRouter 402/429 → credits or rate limits; missing covers fill on a later run
+- OpenRouter 404 "no longer available" / "no endpoints found" → the model id is gone; pick a current image model (`curl -s https://openrouter.ai/api/v1/models` and look for `image` in `output_modalities`) and update `ILLO_MODEL` in `deploy.yml` plus the defaults in both scripts
+- The cover step exits 0 even when every generation fails, so a green deploy can still ship posts without covers; check the step log for `FAILED` lines
 
 Verification
 - CI lists `public/images/covers` and checks post HTML for `/images/covers/{slug}.png`.

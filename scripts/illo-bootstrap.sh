@@ -36,7 +36,7 @@ if [[ -n "${OPENROUTER_API_KEY:-}" ]]; then
   echo "Seeding OpenRouter config from OPENROUTER_API_KEY (key not printed)"
   CFG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/illo"
   mkdir -p "$CFG_DIR"
-  MODEL="${ILLO_MODEL:-x-ai/grok-imagine-image-quality}"
+  MODEL="${ILLO_MODEL:-google/gemini-3.1-flash-image}"
   cat > "$CFG_DIR/config.yaml" <<EOF
 configVersion: 2
 apiKey: ${OPENROUTER_API_KEY}
