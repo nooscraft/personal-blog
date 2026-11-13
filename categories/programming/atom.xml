@@ -1,0 +1,1154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Noos - Where Thought, Code, and Craft Converge - Programming</title>
+    <subtitle>Personal blog about programming, technology, and engineering insights. Topics include Rust, DevOps, Linux, and software craftsmanship.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://noos.blog/categories/programming/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://noos.blog"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2026-11-13T00:00:00+00:00</updated>
+    <id>https://noos.blog/categories/programming/atom.xml</id>
+    <entry xml:lang="en">
+        <title>Setting up a Rust crate for Google&#x27;s style guide</title>
+        <published>2026-11-13T00:00:00+00:00</published>
+        <updated>2026-11-13T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/google-rust-style-guide-in-a-crate/"/>
+        <id>https://noos.blog/posts/google-rust-style-guide-in-a-crate/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/google-rust-style-guide-in-a-crate/">&lt;blockquote&gt;
+&lt;p&gt;&lt;em&gt;Updated 2026-11-13: the example crates are now in a GitHub repo and the CI job has run there.&lt;&#x2F;em&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;With default Clippy on 1.100.0, my rule-breaking &lt;code&gt;gstyle&lt;&#x2F;code&gt; file got no warnings at all. Not one. In my &lt;a href=&quot;https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;google-rust-style-guide-vs-official&#x2F;&quot;&gt;earlier post&lt;&#x2F;a&gt; I read Google&#x27;s Rust style guide next to the official one, and this post is the practical side: I set up a small crate so that tools check as much of Google&#x27;s guide as they can. You get a &lt;code&gt;rustfmt.toml&lt;&#x2F;code&gt;, a &lt;code&gt;[lints]&lt;&#x2F;code&gt; table for &lt;code&gt;Cargo.toml&lt;&#x2F;code&gt;, a &lt;code&gt;clippy.toml&lt;&#x2F;code&gt;, a CI workflow, and the honest list of what is left for a human. The example repo &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;nooscraft&#x2F;rustgoogle&quot;&gt;nooscraft&#x2F;rustgoogle&lt;&#x2F;a&gt; holds the &lt;code&gt;gstyle&lt;&#x2F;code&gt; crate from this post at its root, plus the small experiment crates I mention along the way. Everything here was tested on 1.100.0, the current stable as of 2026-11-13, and on nightly-2026-11-12, on my Mac; the earlier post used 1.99.0.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;formatting-with-a-pinned-nightly&quot;&gt;Formatting with a pinned nightly&lt;&#x2F;h2&gt;
+&lt;p&gt;Google&#x27;s &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;google&#x2F;styleguide&#x2F;blob&#x2F;cceb297e93677c31053e5e75de6b701a9204fc03&#x2F;rustguide.md?plain=1#L450-L470&quot;&gt;formatting section&lt;&#x2F;a&gt; says &quot;Use the appropriate formatting tool&quot; and then lists rustfmt options; a codebase may skip one &quot;if they care about building on stable&quot; and the option is not available there. &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;google&#x2F;styleguide&#x2F;blob&#x2F;cceb297e93677c31053e5e75de6b701a9204fc03&#x2F;rustguide.md?plain=1#L325-L327&quot;&gt;The use rule&lt;&#x2F;a&gt;, the one that says a &lt;code&gt;use&lt;&#x2F;code&gt; statement should import items from one module, notes that it corresponds to &lt;code&gt;imports_granularity = Module&lt;&#x2F;code&gt;. So my &lt;code&gt;rustfmt.toml&lt;&#x2F;code&gt; has the three options from that list, plus &lt;code&gt;imports_granularity&lt;&#x2F;code&gt; for the &lt;code&gt;use&lt;&#x2F;code&gt; rule:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;toml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-toml &quot;&gt;&lt;code class=&quot;language-toml&quot; data-lang=&quot;toml&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;max_width &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;100
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;hex_literal_case &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Lower&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;format_macro_matchers &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;true
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;imports_granularity &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Module&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;code&gt;max_width = 100&lt;&#x2F;code&gt; is already rustfmt&#x27;s default; I keep it so the file mirrors the guide&#x27;s list. Stable 1.100.0 ships rustfmt 1.11.0, and &lt;code&gt;format_macro_matchers&lt;&#x2F;code&gt; and &lt;code&gt;imports_granularity&lt;&#x2F;code&gt; are still nightly-only there, same as on 1.99.0 in the earlier post. What I do instead: everything except formatting runs on stable, and one pinned nightly does only the formatting. Installing just rustfmt for that nightly is one command: &lt;code&gt;rustup toolchain install nightly-2026-11-12 --profile minimal --component rustfmt&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;Here is &lt;code&gt;cargo +nightly-2026-11-12 fmt --check&lt;&#x2F;code&gt; on a small sample file:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;text&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-text &quot;&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&lt;span&gt;$ cargo +nightly-2026-11-12 fmt --check
+&lt;&#x2F;span&gt;&lt;span&gt;Diff in src&#x2F;lib.rs:1:
+&lt;&#x2F;span&gt;&lt;span&gt; &#x2F;&#x2F;! Formatting check.
+&lt;&#x2F;span&gt;&lt;span&gt; 
+&lt;&#x2F;span&gt;&lt;span&gt;-use std::{collections::HashMap, fmt::Write};
+&lt;&#x2F;span&gt;&lt;span&gt;+use std::collections::HashMap;
+&lt;&#x2F;span&gt;&lt;span&gt;+use std::fmt::Write;
+&lt;&#x2F;span&gt;&lt;span&gt; 
+&lt;&#x2F;span&gt;&lt;span&gt; &#x2F;&#x2F;&#x2F; Mask for the low byte.
+&lt;&#x2F;span&gt;&lt;span&gt;-pub const MASK: u32 = 0xFF;
+&lt;&#x2F;span&gt;&lt;span&gt;+pub const MASK: u32 = 0xff;
+&lt;&#x2F;span&gt;&lt;span&gt; 
+&lt;&#x2F;span&gt;&lt;span&gt; &#x2F;&#x2F;&#x2F; Squares a number.
+&lt;&#x2F;span&gt;&lt;span&gt; #[macro_export]
+&lt;&#x2F;span&gt;&lt;span&gt;Diff in src&#x2F;lib.rs:10:
+&lt;&#x2F;span&gt;&lt;span&gt; macro_rules! square {
+&lt;&#x2F;span&gt;&lt;span&gt;-    ($x : expr) =&amp;gt; {
+&lt;&#x2F;span&gt;&lt;span&gt;+    ($x:expr) =&amp;gt; {
+&lt;&#x2F;span&gt;&lt;span&gt;         $x * $x
+&lt;&#x2F;span&gt;&lt;span&gt;     };
+&lt;&#x2F;span&gt;&lt;span&gt; }
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;It splits the merged &lt;code&gt;use&lt;&#x2F;code&gt; line into two lines, lowercases &lt;code&gt;0xFF&lt;&#x2F;code&gt; to &lt;code&gt;0xff&lt;&#x2F;code&gt;, and tidies the macro matcher &lt;code&gt;$x : expr&lt;&#x2F;code&gt; into &lt;code&gt;$x:expr&lt;&#x2F;code&gt;. On the same file, stable rustfmt only made the hex change. And here is stable&#x27;s &lt;code&gt;fmt --check&lt;&#x2F;code&gt; after the nightly formatting has been applied:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;text&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-text &quot;&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&lt;span&gt;$ cargo +nightly-2026-11-12 fmt
+&lt;&#x2F;span&gt;&lt;span&gt;$ cargo +1.100.0 fmt --check
+&lt;&#x2F;span&gt;&lt;span&gt;Warning: can&amp;#39;t set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+&lt;&#x2F;span&gt;&lt;span&gt;Warning: can&amp;#39;t set `imports_granularity = Module`, unstable features are only available in nightly channel.
+&lt;&#x2F;span&gt;&lt;span&gt;$ echo $?
+&lt;&#x2F;span&gt;&lt;span&gt;0
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;It prints its two warnings but exits with 0, so a contributor who only has stable installed does not fight the nightly formatting. The other direction is not safe: a merged &lt;code&gt;use&lt;&#x2F;code&gt; line passes the stable check and fails the nightly one, which is why the CI job runs the nightly check.&lt;&#x2F;p&gt;
+&lt;p&gt;The fourth item in Google&#x27;s formatting list, escapes for invisible characters in literals, has no rustfmt option. Clippy&#x27;s &lt;code&gt;invisible_characters&lt;&#x2F;code&gt; lint is on by default (deny), and it rejected a zero-width space (U+200B) in a string literal. It let a zero-width joiner (U+200D) through, and U+200D is the example in Google&#x27;s own guide, so that item stays with review.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;lints-in-cargo-toml&quot;&gt;Lints in Cargo.toml&lt;&#x2F;h2&gt;
+&lt;p&gt;As the opening said, default Clippy on 1.100.0 stayed quiet on this file. The guide links seven Clippy lints by name. In a separate test, five of them fired with no configuration: &lt;code&gt;borrowed_box&lt;&#x2F;code&gt;, &lt;code&gt;ptr_arg&lt;&#x2F;code&gt;, &lt;code&gt;new_without_default&lt;&#x2F;code&gt;, &lt;code&gt;len_without_is_empty&lt;&#x2F;code&gt; and &lt;code&gt;should_implement_trait&lt;&#x2F;code&gt;. &lt;code&gt;exhaustive_enums&lt;&#x2F;code&gt; is off by default. &lt;code&gt;wrong_self_convention&lt;&#x2F;code&gt; is on by default but stayed quiet on a public method &lt;code&gt;into_vec(&amp;amp;self)&lt;&#x2F;code&gt;; the next section fixes that.&lt;&#x2F;p&gt;
+&lt;p&gt;This is the &lt;code&gt;[lints]&lt;&#x2F;code&gt; table in my &lt;code&gt;Cargo.toml&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;toml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-toml &quot;&gt;&lt;code class=&quot;language-toml&quot; data-lang=&quot;toml&quot;&gt;&lt;span&gt;[lints.rust]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;missing_docs &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;warn&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;[lints.clippy]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;wildcard_imports &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;warn&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;exhaustive_enums &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;warn&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;unwrap_used &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;warn&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;missing_assert_message &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;warn&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;missing_panics_doc &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;warn&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;string_add &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;warn&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;undocumented_unsafe_blocks &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;warn&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Which guide rule each line stands for:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;missing_docs&lt;&#x2F;code&gt;: the guide says to document public APIs, &quot;potentially using the &lt;code&gt;missing_docs&lt;&#x2F;code&gt; lint&quot;.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;wildcard_imports&lt;&#x2F;code&gt;: &quot;Don&#x27;t use glob imports&quot;.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;exhaustive_enums&lt;&#x2F;code&gt;: mark public enums &lt;code&gt;#[non_exhaustive]&lt;&#x2F;code&gt;.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;unwrap_used&lt;&#x2F;code&gt;: prefer &lt;code&gt;expect&lt;&#x2F;code&gt; over &lt;code&gt;unwrap&lt;&#x2F;code&gt;.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;missing_assert_message&lt;&#x2F;code&gt;: use context strings in assertions.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;missing_panics_doc&lt;&#x2F;code&gt;: the guide says &quot;Always document panic cases&quot;.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;string_add&lt;&#x2F;code&gt;: prefer &lt;code&gt;format!&lt;&#x2F;code&gt; over &lt;code&gt;+&lt;&#x2F;code&gt;.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;undocumented_unsafe_blocks&lt;&#x2F;code&gt;: the guide wants a comment starting with &lt;code&gt;SAFETY:&lt;&#x2F;code&gt;.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;The lints and the guide do not always say the same thing. &lt;code&gt;string_add&lt;&#x2F;code&gt; suggests &lt;code&gt;String::push_str()&lt;&#x2F;code&gt; in its message, while Google suggests &lt;code&gt;format!&lt;&#x2F;code&gt;. It also fires for joining just two strings (&lt;code&gt;a.to_string() + b&lt;&#x2F;code&gt;), while the guide only asks for &lt;code&gt;format!&lt;&#x2F;code&gt; when there are more than two.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;wildcard_imports&lt;&#x2F;code&gt; allows prelude imports and &lt;code&gt;pub use&lt;&#x2F;code&gt; re-exports, and it allows &lt;code&gt;use super::*&lt;&#x2F;code&gt; only in test modules (&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;rust-lang&#x2F;rust&#x2F;blob&#x2F;1.100.0&#x2F;src&#x2F;tools&#x2F;clippy&#x2F;clippy_lints&#x2F;src&#x2F;wildcard_imports.rs#L66-L75&quot;&gt;wildcard_imports source&lt;&#x2F;a&gt;). Google allows &lt;code&gt;use super::*&lt;&#x2F;code&gt; for any inline module, so a &lt;code&gt;use super::*&lt;&#x2F;code&gt; inside a plain &lt;code&gt;mod helpers&lt;&#x2F;code&gt; got flagged.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;missing_assert_message&lt;&#x2F;code&gt; skips test code. Its docs say &quot;this lint ignores them as they would be too noisy&quot; (&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;rust-lang&#x2F;rust&#x2F;blob&#x2F;1.100.0&#x2F;src&#x2F;tools&#x2F;clippy&#x2F;clippy_lints&#x2F;src&#x2F;missing_assert_message.rs#L17-L19&quot;&gt;missing_assert_message source&lt;&#x2F;a&gt;), so the messages in test asserts are up to you.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;clippy-toml-for-the-rest&quot;&gt;clippy.toml for the rest&lt;&#x2F;h2&gt;
+&lt;p&gt;Three more settings live in &lt;code&gt;clippy.toml&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;toml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-toml &quot;&gt;&lt;code class=&quot;language-toml&quot; data-lang=&quot;toml&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Google: &amp;quot;Use of `panic::catch_unwind` is prohibited in first-party Rust code.&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;disallowed-methods &lt;&#x2F;span&gt;&lt;span&gt;= [
+&lt;&#x2F;span&gt;&lt;span&gt;    { &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;path &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;std::panic::catch_unwind&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;reason &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;prohibited in first-party code by the style guide&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; },
+&lt;&#x2F;span&gt;&lt;span&gt;]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Google prefers expect over unwrap, but unwrap in tests is fine.
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;allow-unwrap-in-tests &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;true
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# The default (true) keeps wrong_self_convention and 18 other lints quiet
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# when the fix would change a public API.
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;avoid-breaking-exported-api &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;false
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;code&gt;disallowed-methods&lt;&#x2F;code&gt; bans &lt;code&gt;std::panic::catch_unwind&lt;&#x2F;code&gt;; Google says its use &quot;is prohibited in first-party Rust code&quot; (&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;google&#x2F;styleguide&#x2F;blob&#x2F;cceb297e93677c31053e5e75de6b701a9204fc03&#x2F;rustguide.md?plain=1#L1748-L1769&quot;&gt;catch_unwind rule&lt;&#x2F;a&gt;). &lt;code&gt;allow-unwrap-in-tests = true&lt;&#x2F;code&gt; stops &lt;code&gt;unwrap_used&lt;&#x2F;code&gt; from flagging an &lt;code&gt;.unwrap()&lt;&#x2F;code&gt; inside the &lt;code&gt;#[cfg(test)]&lt;&#x2F;code&gt; module, which it did without the setting. And &lt;code&gt;avoid-breaking-exported-api = false&lt;&#x2F;code&gt; matters because the default is true, and the default keeps 19 lints quiet when the fix would change a public API, &lt;code&gt;wrong_self_convention&lt;&#x2F;code&gt; among them (&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;rust-lang&#x2F;rust&#x2F;blob&#x2F;1.100.0&#x2F;src&#x2F;tools&#x2F;clippy&#x2F;book&#x2F;src&#x2F;lint_configuration.md?plain=1#L407-L432&quot;&gt;Clippy&#x27;s config docs&lt;&#x2F;a&gt;). With it set to false, the public &lt;code&gt;into_vec(&amp;amp;self)&lt;&#x2F;code&gt; finally got &quot;methods called &lt;code&gt;into_*&lt;&#x2F;code&gt; usually take &lt;code&gt;self&lt;&#x2F;code&gt; by value&quot;.&lt;&#x2F;p&gt;
+&lt;p&gt;Here is Clippy on the rule-breaking file with both config files in place:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;text&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-text &quot;&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&lt;span&gt;$ cargo +1.100.0 clippy --all-targets --message-format=short
+&lt;&#x2F;span&gt;&lt;span&gt;src&#x2F;lib.rs:3:5: warning: usage of wildcard import: help: try: `std::collections::HashMap`
+&lt;&#x2F;span&gt;&lt;span&gt;src&#x2F;lib.rs:6:1: warning: exported enums should not be exhaustive
+&lt;&#x2F;span&gt;&lt;span&gt;src&#x2F;lib.rs:12:1: warning: docs for function which may panic missing `# Panics` section
+&lt;&#x2F;span&gt;&lt;span&gt;src&#x2F;lib.rs:13:5: warning: used `unwrap()` on a `Result` value
+&lt;&#x2F;span&gt;&lt;span&gt;src&#x2F;lib.rs:17:1: warning: docs for function which may panic missing `# Panics` section
+&lt;&#x2F;span&gt;&lt;span&gt;src&#x2F;lib.rs:18:5: warning: assert without any message
+&lt;&#x2F;span&gt;&lt;span&gt;src&#x2F;lib.rs:23:5: warning: you added something to a string. Consider using `String::push_str()` instead
+&lt;&#x2F;span&gt;&lt;span&gt;src&#x2F;lib.rs:27:1: warning: docs for function which may panic missing `# Panics` section
+&lt;&#x2F;span&gt;&lt;span&gt;src&#x2F;lib.rs:29:5: warning: unsafe block missing a safety comment
+&lt;&#x2F;span&gt;&lt;span&gt;src&#x2F;lib.rs:34:5: warning: use of a disallowed method `std::panic::catch_unwind`
+&lt;&#x2F;span&gt;&lt;span&gt;src&#x2F;lib.rs:7:5: warning: missing documentation for a variant
+&lt;&#x2F;span&gt;&lt;span&gt;src&#x2F;lib.rs:8:5: warning: missing documentation for a variant
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Every planted problem shows up, twelve warnings in total, including &lt;code&gt;missing_docs&lt;&#x2F;code&gt; for two undocumented enum variants. Adding &lt;code&gt;-D warnings&lt;&#x2F;code&gt; makes the same run exit with code 101.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;exceptions-with-expect&quot;&gt;Exceptions with &lt;code&gt;#[expect]&lt;&#x2F;code&gt;&lt;&#x2F;h2&gt;
+&lt;p&gt;Google&#x27;s rules have exceptions. Two-state enums may stay exhaustive; the guide lists &quot;Enums with two states that could be Booleans&quot; (&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;google&#x2F;styleguide&#x2F;blob&#x2F;cceb297e93677c31053e5e75de6b701a9204fc03&#x2F;rustguide.md?plain=1#L1352-L1368&quot;&gt;non_exhaustive rule&lt;&#x2F;a&gt;). And &lt;code&gt;catch_unwind&lt;&#x2F;code&gt; is acceptable &quot;as a defense in depth mechanism&quot;, as long as nothing relies on it.&lt;&#x2F;p&gt;
+&lt;p&gt;I write these exceptions as &lt;code&gt;#[expect(..., reason = &quot;...&quot;)]&lt;&#x2F;code&gt; instead of &lt;code&gt;#[allow]&lt;&#x2F;code&gt;. Here are the &lt;code&gt;Mode&lt;&#x2F;code&gt; enum and a &lt;code&gt;guarded&lt;&#x2F;code&gt; function, each with an expectation and a reason:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F;&#x2F; How a job runs.
+&lt;&#x2F;span&gt;&lt;span&gt;#[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;expect&lt;&#x2F;span&gt;&lt;span&gt;(
+&lt;&#x2F;span&gt;&lt;span&gt;    clippy::exhaustive_enums,
+&lt;&#x2F;span&gt;&lt;span&gt;    reason = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;two states that could be a bool; the guide allows these to stay exhaustive&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;)]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;pub enum &lt;&#x2F;span&gt;&lt;span&gt;Mode {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F;&#x2F; Skip the slow checks.
+&lt;&#x2F;span&gt;&lt;span&gt;    Fast,
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F;&#x2F; Run every check.
+&lt;&#x2F;span&gt;&lt;span&gt;    Slow,
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F;&#x2F; Last-resort guard around a plugin call.
+&lt;&#x2F;span&gt;&lt;span&gt;#[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;expect&lt;&#x2F;span&gt;&lt;span&gt;(
+&lt;&#x2F;span&gt;&lt;span&gt;    clippy::disallowed_methods,
+&lt;&#x2F;span&gt;&lt;span&gt;    reason = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;defense in depth only; the plugin API already returns errors instead of panicking&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;)]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;pub fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;guarded&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;: impl FnOnce() + std::panic::UnwindSafe) -&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;bool &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    std::panic::catch_unwind(f).&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;is_ok&lt;&#x2F;span&gt;&lt;span&gt;()
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The point of &lt;code&gt;#[expect]&lt;&#x2F;code&gt; over &lt;code&gt;#[allow]&lt;&#x2F;code&gt;: if the code changes and the lint no longer fires, the expectation itself fails. To see it happen, I added &lt;code&gt;#[non_exhaustive]&lt;&#x2F;code&gt; to &lt;code&gt;Mode&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;text&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-text &quot;&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&lt;span&gt;$ cargo +1.100.0 clippy --all-targets -- -D warnings
+&lt;&#x2F;span&gt;&lt;span&gt;error: this lint expectation is unfulfilled
+&lt;&#x2F;span&gt;&lt;span&gt; --&amp;gt; src&#x2F;lib.rs:7:5
+&lt;&#x2F;span&gt;&lt;span&gt;  |
+&lt;&#x2F;span&gt;&lt;span&gt;7 |     clippy::exhaustive_enums,
+&lt;&#x2F;span&gt;&lt;span&gt;  |     ^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;&#x2F;span&gt;&lt;span&gt;  |
+&lt;&#x2F;span&gt;&lt;span&gt;  = note: two states that could be a bool; the guide allows these to stay exhaustive
+&lt;&#x2F;span&gt;&lt;span&gt;  = note: `-D unfulfilled-lint-expectations` implied by `-D warnings`
+&lt;&#x2F;span&gt;&lt;span&gt;  = help: to override `-D warnings` add `#[allow(unfulfilled_lint_expectations)]`
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;error: could not compile `gstyle` (lib) due to 1 previous error
+&lt;&#x2F;span&gt;&lt;span&gt;error: could not compile `gstyle` (lib test) due to 1 previous error
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Clippy stopped with &quot;this lint expectation is unfulfilled&quot; and printed the reason as a note. An exception cannot go stale quietly, and the reason sits right next to it.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;a-ci-job&quot;&gt;A CI job&lt;&#x2F;h2&gt;
+&lt;p&gt;GitHub&#x27;s Ubuntu 24.04 runner image, version 20261111.370, lists Rustup 1.29.3 and Rust 1.99.1 with Rustfmt 1.10.0; Clippy is not in its list (&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;actions&#x2F;runner-images&#x2F;blob&#x2F;ubuntu24&#x2F;20261111.370&#x2F;images&#x2F;ubuntu&#x2F;Ubuntu2404-Readme.md?plain=1#L139-L146&quot;&gt;runner image readme&lt;&#x2F;a&gt;). So the workflow installs both toolchains itself, with &lt;code&gt;--profile minimal&lt;&#x2F;code&gt;. It has three checks: nightly rustfmt with &lt;code&gt;--check&lt;&#x2F;code&gt;, stable Clippy with &lt;code&gt;-D warnings&lt;&#x2F;code&gt;, and stable tests:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;yaml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-yaml &quot;&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;style
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;on&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;push&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;branches&lt;&#x2F;span&gt;&lt;span&gt;: [&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span&gt;]
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;pull_request&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;env&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;STABLE&lt;&#x2F;span&gt;&lt;span&gt;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;1.100.0&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;NIGHTLY&lt;&#x2F;span&gt;&lt;span&gt;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;nightly-2026-11-12&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;jobs&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;style&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;runs-on&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;ubuntu-24.04
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;steps&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;      - &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;uses&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;actions&#x2F;checkout@v7
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;      - &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Install toolchains
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;run&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;|
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;          rustup toolchain install &amp;quot;$STABLE&amp;quot; --profile minimal --component clippy
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;          rustup toolchain install &amp;quot;$NIGHTLY&amp;quot; --profile minimal --component rustfmt
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;      - &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Format (nightly rustfmt, for the unstable options)
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;run&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;cargo +&amp;quot;$NIGHTLY&amp;quot; fmt --check
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;      - &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Lint (stable clippy)
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;run&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;cargo +&amp;quot;$STABLE&amp;quot; clippy --all-targets -- -D warnings
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;      - &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Test (stable)
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;run&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;cargo +&amp;quot;$STABLE&amp;quot; test
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;It uses &lt;code&gt;ubuntu-24.04&lt;&#x2F;code&gt; instead of &lt;code&gt;ubuntu-latest&lt;&#x2F;code&gt;, because the runner-images repo announced that &lt;code&gt;ubuntu-latest&lt;&#x2F;code&gt; will use Ubuntu 26.04 in November 2026 (&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;actions&#x2F;runner-images&#x2F;issues&#x2F;14748&quot;&gt;announcement&lt;&#x2F;a&gt;).&lt;&#x2F;p&gt;
+&lt;p&gt;I first ran the same commands from the &lt;code&gt;run&lt;&#x2F;code&gt; steps locally with bash. On the fixed crate every step passed, and on the rule-breaking one the Clippy step failed with 101. Then I pushed the crate and this exact workflow to the example repo, and the &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;nooscraft&#x2F;rustgoogle&#x2F;actions&#x2F;runs&#x2F;43425503473&quot;&gt;first run on GitHub&lt;&#x2F;a&gt; passed every step: checkout, installing both toolchains, the nightly format check, Clippy and the tests. It ran on the same image version the readme above describes. Both pins, 1.100.0 and nightly-2026-11-12, have to be bumped by hand now and then.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;what-only-a-reviewer-can-check&quot;&gt;What only a reviewer can check&lt;&#x2F;h2&gt;
+&lt;p&gt;Lints check that something is there, not that it is any good. In a small test, Clippy accepted &lt;code&gt;.expect(&quot;failed&quot;)&lt;&#x2F;code&gt;, an assert whose message only repeats the condition (&quot;port &amp;gt; 1024&quot;), and &lt;code&gt;&#x2F;&#x2F; SAFETY: trust me&lt;&#x2F;code&gt;. Google&#x27;s unsafe rule wants a real technical justification, including the question &quot;If the reason is performance, are there benchmarks?&quot; (&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;google&#x2F;styleguide&#x2F;blob&#x2F;cceb297e93677c31053e5e75de6b701a9204fc03&#x2F;rustguide.md?plain=1#L1212-L1229&quot;&gt;unsafe rule&lt;&#x2F;a&gt;).&lt;&#x2F;p&gt;
+&lt;p&gt;Some rules have no Clippy lint at all, at least none I found after searching the lint list on 1.100.0:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;qualify calls to top-level functions with a module name&lt;&#x2F;li&gt;
+&lt;li&gt;&quot;Import traits within function bodies&quot;&lt;&#x2F;li&gt;
+&lt;li&gt;no combinator chains in the header of a &lt;code&gt;for&lt;&#x2F;code&gt; loop&lt;&#x2F;li&gt;
+&lt;li&gt;&quot;Avoid abbreviations&quot;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&quot;Prefer enum over bool&quot; comes close: &lt;code&gt;fn_params_excessive_bools&lt;&#x2F;code&gt; exists but is off by default, and in a test it only fired at four bool parameters (&quot;more than 3 bools&quot;). A single confusing bool is for the reviewer.&lt;&#x2F;p&gt;
+&lt;p&gt;For &quot;Don&#x27;t omit patterns on non_exhaustive enums when matching&quot;, rustc has a &lt;code&gt;non_exhaustive_omitted_patterns&lt;&#x2F;code&gt; lint, but on 1.100.0 it reports &quot;the &lt;code&gt;non_exhaustive_omitted_patterns&lt;&#x2F;code&gt; lint is unstable&quot; (&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;rust-lang&#x2F;rust&#x2F;issues&#x2F;89554&quot;&gt;tracking issue&lt;&#x2F;a&gt;). And the guide itself says &quot;Don&#x27;t use unstable features.&quot;&lt;&#x2F;p&gt;
+&lt;p&gt;What is left is the part about judgement. I have only tried all of this on the tiny &lt;code&gt;gstyle&lt;&#x2F;code&gt; crate, not on a real one, so let&#x27;s see how it holds up once the code fights back.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Google&#x27;s Rust style guide next to the official one</title>
+        <published>2026-11-12T00:00:00+00:00</published>
+        <updated>2026-11-12T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/google-rust-style-guide-vs-official/"/>
+        <id>https://noos.blog/posts/google-rust-style-guide-vs-official/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/google-rust-style-guide-vs-official/">&lt;p&gt;Google has a Rust style guide now: it appeared in the google&#x2F;styleguide repo on 2026-10-21 (&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;google&#x2F;styleguide&#x2F;commit&#x2F;3cf4f72013826804b7442896ce84d3777cf89ae0&quot;&gt;first export commit&lt;&#x2F;a&gt;, &lt;a href=&quot;https:&#x2F;&#x2F;google.github.io&#x2F;styleguide&#x2F;rustguide.html&quot;&gt;rendered guide&lt;&#x2F;a&gt;), meant for Rust at Google: google3, Android, ChromeOS, Fuchsia and Chrome. One of its first rules says to follow the official public Rust style rules &quot;to the extent they don&#x27;t conflict&quot; with it, which made me curious where the conflicts are. So I read the two guides side by side and tried a few of Google&#x27;s rules on Rust 1.99.0 on my Mac. As of 2026-11-12 there have been six exports to that file, each titled &quot;Automated export from internal guides&quot;, the latest on 2026-11-06.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;not-the-same-kind-of-document&quot;&gt;Not the same kind of document&lt;&#x2F;h2&gt;
+&lt;p&gt;The &lt;a href=&quot;https:&#x2F;&#x2F;doc.rust-lang.org&#x2F;style-guide&#x2F;&quot;&gt;official Rust Style Guide&lt;&#x2F;a&gt; is a formatting document. It defines the default formatting style; rustfmt uses it as reference. A typical rule reads: &quot;The maximum width for a line is 100 characters.&quot; (&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;rust-lang&#x2F;rust&#x2F;blob&#x2F;1.99.0&#x2F;src&#x2F;doc&#x2F;style-guide&#x2F;src&#x2F;README.md?plain=1#L50-L55&quot;&gt;that line, pinned to 1.99.0&lt;&#x2F;a&gt;) Its only non-formatting page, &quot;Other style advice&quot;, is 135 words by &lt;code&gt;wc -w&lt;&#x2F;code&gt; on the markdown: prefer expressions, naming cases, avoid &lt;code&gt;#[path]&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;Google&#x27;s guide goes the other way: style, it says, includes guidance on API and implementation design. Its formatting section is about 194 words by &lt;code&gt;wc -w&lt;&#x2F;code&gt;, and most of it says: use the formatting tool (&lt;code&gt;git cl format&lt;&#x2F;code&gt; in Chromium) plus a list of rustfmt options. The rest is ownership, function inputs and outputs, errors, traits, naming, documentation, unsafe, concurrency. Its closer partner is the &lt;a href=&quot;https:&#x2F;&#x2F;rust-lang.github.io&#x2F;api-guidelines&#x2F;&quot;&gt;Rust API Guidelines&lt;&#x2F;a&gt;, which Google also tells you to follow.&lt;&#x2F;p&gt;
+&lt;p&gt;Some rules carry a codebase tag: &lt;code&gt;[chrome]&lt;&#x2F;code&gt;, &lt;code&gt;[Fuchsia]&lt;&#x2F;code&gt;, &lt;code&gt;[Android]&lt;&#x2F;code&gt;. No async&#x2F;.await in Chromium, Fuchsia has its own mutex, Chrome tests use &lt;code&gt;rust_gtest_interop&lt;&#x2F;code&gt;. Not written for my side projects.&lt;&#x2F;p&gt;
+&lt;p&gt;Both guides care about reading code without tools: the official principles ask for readability &quot;without syntax highlighting or IDE assistance&quot;, and Google&#x27;s glob-import rationale wants you to know where a type comes from in &quot;contexts without xrefs&quot;. Same instinct, different vocabulary.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-extra-goal-large-scale-changes&quot;&gt;The extra goal: Large-Scale Changes&lt;&#x2F;h2&gt;
+&lt;p&gt;Google says the guide shares the usual goals (consistency, readability, good API design) and adds one it calls &quot;not seen as often&quot;: smoothing the way for Large-Scale Changes, or LSCs, codebase-wide refactorings done with tooling (&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;google&#x2F;styleguide&#x2F;blob&#x2F;cceb297e93677c31053e5e75de6b701a9204fc03&#x2F;rustguide.md?plain=1#L130-L141&quot;&gt;goals section&lt;&#x2F;a&gt;).&lt;&#x2F;p&gt;
+&lt;p&gt;That one goal explains many of the deviations. Why forbid glob imports? Because, quote, &quot;Glob imports increase toil for code janitors running LSCs&quot;. I like that &quot;code janitors&quot; made it into the guide. The &lt;code&gt;#[non_exhaustive]&lt;&#x2F;code&gt; rules get an exception if you are committed to fixing the resulting breakages &quot;via an LSC&quot;.&lt;&#x2F;p&gt;
+&lt;p&gt;Two rationales admit, plainly, &quot;This rule largely exists to avoid reviewer disagreements&quot;: one for qualifying top-level function calls with the module name, one for importing type names unqualified. Candour, not pretending a preference is science.&lt;&#x2F;p&gt;
+&lt;p&gt;This is a guide for a codebase so large that tools and reviewers rewrite your code; many rules make sense from there and less in my three-crate side project. Context, not criticism. I have not applied the guide to anything large, and I have not used Chromium&#x27;s tooling, no &lt;code&gt;git cl format&lt;&#x2F;code&gt;, no &lt;code&gt;chromium::import!()&lt;&#x2F;code&gt;, so all of this is reading plus small experiments.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;rules-i-d-happily-borrow&quot;&gt;Rules I&#x27;d happily borrow&lt;&#x2F;h2&gt;
+&lt;p&gt;Some rules need no Google-scale justification:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Prefer &lt;code&gt;expect&lt;&#x2F;code&gt; over &lt;code&gt;unwrap&lt;&#x2F;code&gt;: the message documents why the code thinks this cannot fail.&lt;&#x2F;li&gt;
+&lt;li&gt;Put real context in &lt;code&gt;assert!&lt;&#x2F;code&gt; messages: say why the assertion should hold or what went wrong. The guide&#x27;s bad example has a message that only repeats the condition.&lt;&#x2F;li&gt;
+&lt;li&gt;Match instead of check-then-unwrap: &lt;code&gt;if let Some(value)&lt;&#x2F;code&gt; rather than &lt;code&gt;is_some()&lt;&#x2F;code&gt; followed by &lt;code&gt;unwrap()&lt;&#x2F;code&gt;.&lt;&#x2F;li&gt;
+&lt;li&gt;Pass an enum instead of a bool when the meaning is not obvious.&lt;&#x2F;li&gt;
+&lt;li&gt;Do not build a long iterator chain in a for loop header; bind it to a named variable first. The guide&#x27;s example calls it &lt;code&gt;urgent_bugs&lt;&#x2F;code&gt;, and the name documents the chain.&lt;&#x2F;li&gt;
+&lt;li&gt;Unsafe code gets a comment starting with SAFETY: plus a technical justification, and the justification can cover a single block or a whole file or build target. The review question alone is worth stealing: &quot;If the reason is performance, are there benchmarks?&quot;&lt;&#x2F;li&gt;
+&lt;li&gt;API design rules are binding for library code and a strong recommendation for application code, which should &quot;Avoid premature generalization and abstraction&quot;.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;A good chunk of the guide is also &quot;listen to Clippy&quot; with more words. It links seven lints by name: &lt;code&gt;borrowed_box&lt;&#x2F;code&gt;, &lt;code&gt;ptr_arg&lt;&#x2F;code&gt;, &lt;code&gt;new_without_default&lt;&#x2F;code&gt;, &lt;code&gt;len_without_is_empty&lt;&#x2F;code&gt;, &lt;code&gt;should_implement_trait&lt;&#x2F;code&gt;, &lt;code&gt;wrong_self_convention&lt;&#x2F;code&gt; and &lt;code&gt;exhaustive_enums&lt;&#x2F;code&gt;. Much of it will look familiar if you already run Clippy.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-funny-bits&quot;&gt;The funny bits&lt;&#x2F;h2&gt;
+&lt;p&gt;The rule &quot;Qualify calls to top-level functions with a module name&quot; uses, as its good example, possibly the scariest function in std: &lt;code&gt;mem::transmute&lt;&#x2F;code&gt;. Here is the guide&#x27;s model snippet:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;use &lt;&#x2F;span&gt;&lt;span&gt;std::mem;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; x = mem::transmute(y);
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Yes, &lt;code&gt;mem::transmute&lt;&#x2F;code&gt;, which reinterprets the bits of one type as another, presented as the friendly face of import style. I pasted it into a real &lt;code&gt;main&lt;&#x2F;code&gt; on 1.99.0 and rustc stopped with E0133: the call needs an unsafe block. The same guide&#x27;s unsafe rule says &quot;Don&#x27;t write unsafe code unless there is no way to implement the same functionality with safe code.&quot; The model citizen of the import section is a function the guide&#x27;s own unsafe rule would make you justify in writing. (&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;google&#x2F;styleguide&#x2F;blob&#x2F;cceb297e93677c31053e5e75de6b701a9204fc03&#x2F;rustguide.md?plain=1#L373-L392&quot;&gt;rule&lt;&#x2F;a&gt;)&lt;&#x2F;p&gt;
+&lt;p&gt;Then &quot;Avoid abbreviations&quot;: &quot;Don&#x27;t abbreviate by deleting letters within a word.&quot; Exception: &quot;Common abbreviations found in Wikipedia.&quot; I did not know Wikipedia was the appeals court for naming. Meanwhile the standard library ships &lt;code&gt;std::fmt&lt;&#x2F;code&gt; and &lt;code&gt;std::ptr&lt;&#x2F;code&gt;. To be fair, the rule covers names you invent, and std is much older. (&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;google&#x2F;styleguide&#x2F;blob&#x2F;cceb297e93677c31053e5e75de6b701a9204fc03&#x2F;rustguide.md?plain=1#L1094-L1108&quot;&gt;rule&lt;&#x2F;a&gt;)&lt;&#x2F;p&gt;
+&lt;p&gt;The official guide has its own moment. On reserved words it says &quot;Don&#x27;t misspell the word&quot;, naming &lt;code&gt;krate&lt;&#x2F;code&gt; as the misspelling to avoid (&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;rust-lang&#x2F;rust&#x2F;blob&#x2F;1.99.0&#x2F;src&#x2F;doc&#x2F;style-guide&#x2F;src&#x2F;advice.md?plain=1#L28-L30&quot;&gt;advice, pinned&lt;&#x2F;a&gt;). Open the &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;rust-lang&#x2F;rust&#x2F;tree&#x2F;1.99.0&#x2F;compiler&quot;&gt;compiler source at tag 1.99.0&lt;&#x2F;a&gt; and the word &lt;code&gt;krate&lt;&#x2F;code&gt; appears 495 times in 93 files. I counted with &lt;code&gt;grep -w&lt;&#x2F;code&gt;. The compiler is older than the advice, to be fair. Still: 495.&lt;&#x2F;p&gt;
+&lt;p&gt;In the error section, defects must be fixed in code, not handled at runtime, &quot;although coarse-grained recovery might be possible with&quot; &lt;code&gt;catch_unwind&lt;&#x2F;code&gt; (&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;google&#x2F;styleguide&#x2F;blob&#x2F;cceb297e93677c31053e5e75de6b701a9204fc03&#x2F;rustguide.md?plain=1#L694-L698&quot;&gt;error rules&lt;&#x2F;a&gt;). A thousand lines later, use of &lt;code&gt;panic::catch_unwind&lt;&#x2F;code&gt; &quot;is prohibited in first-party Rust code.&quot; (&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;google&#x2F;styleguide&#x2F;blob&#x2F;cceb297e93677c31053e5e75de6b701a9204fc03&#x2F;rustguide.md?plain=1#L1748-L1769&quot;&gt;panic rules&lt;&#x2F;a&gt;) From &quot;might be possible&quot; to &quot;prohibited&quot; in one document. To be fair, there is an exception for using it as a last safety net, and Chrome, Android and Fuchsia require &lt;code&gt;panic=abort&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;Last one. &quot;Don&#x27;t omit patterns on non_exhaustive enums when matching&quot; shows a &lt;code&gt;#[non_exhaustive]&lt;&#x2F;code&gt; enum Shape (Circle, Square, Triangle) and a good match ending in &lt;code&gt;Shape::Triangle | _ =&amp;gt; {}&lt;&#x2F;code&gt; (&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;google&#x2F;styleguide&#x2F;blob&#x2F;cceb297e93677c31053e5e75de6b701a9204fc03&#x2F;rustguide.md?plain=1#L1506-L1557&quot;&gt;rule&lt;&#x2F;a&gt;). I tried it. With the enum in another crate, the case the rule is written for, rustc and Clippy on 1.99.0 stayed quiet. With both snippets in one crate, as they sit on the page, rustc warned. The warning came from the &lt;code&gt;unreachable_patterns&lt;&#x2F;code&gt; lint:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;text&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-text &quot;&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&lt;span&gt;warning: unreachable pattern
+&lt;&#x2F;span&gt;&lt;span&gt;  --&amp;gt; shapes&#x2F;src&#x2F;lib.rs:13:23
+&lt;&#x2F;span&gt;&lt;span&gt;   |
+&lt;&#x2F;span&gt;&lt;span&gt;13 |     Shape::Triangle | _ =&amp;gt; {}
+&lt;&#x2F;span&gt;&lt;span&gt;   |                       ^ no value can reach this
+&lt;&#x2F;span&gt;&lt;span&gt;   |
+&lt;&#x2F;span&gt;&lt;span&gt;   ...
+&lt;&#x2F;span&gt;&lt;span&gt;   = note: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;code&gt;unreachable_patterns&lt;&#x2F;code&gt; is on by default, and it fires on &lt;code&gt;Shape::Triangle | _&lt;&#x2F;code&gt; because, per the Rust Reference, &quot;Within the defining crate, &lt;code&gt;non_exhaustive&lt;&#x2F;code&gt; has no effect.&quot; (&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;rust-lang&#x2F;reference&#x2F;blob&#x2F;bcd62f35e8bf480ec5b0fa569b6d12ea5924030c&#x2F;src&#x2F;attributes&#x2F;type_system.md?plain=1#L22&quot;&gt;Reference&lt;&#x2F;a&gt;) Not a bug in the guide. Just a small surprise if you paste its examples into one file.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;pushes-i-d-leave-at-google&quot;&gt;Pushes I&#x27;d leave at Google&lt;&#x2F;h2&gt;
+&lt;p&gt;Glob imports. The guide says don&#x27;t, with few exceptions: &lt;code&gt;use super::*&lt;&#x2F;code&gt; in inline modules, third-party preludes at the reviewer&#x27;s discretion. Then: &quot;This also means that defining preludes should be avoided.&quot; (&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;google&#x2F;styleguide&#x2F;blob&#x2F;cceb297e93677c31053e5e75de6b701a9204fc03&#x2F;rustguide.md?plain=1#L286-L321&quot;&gt;rule&lt;&#x2F;a&gt;) The standard library ships &lt;code&gt;std::io::prelude&lt;&#x2F;code&gt;, and the official guide formats glob imports without forbidding them. If you want the rule anyway, Clippy has a &lt;code&gt;wildcard_imports&lt;&#x2F;code&gt; lint, off by default. I turned it on: it flagged &lt;code&gt;use std::collections::*&lt;&#x2F;code&gt; and left &lt;code&gt;use std::io::prelude::*&lt;&#x2F;code&gt; alone. I keep the official position and my test-module globs.&lt;&#x2F;p&gt;
+&lt;p&gt;Import granularity. Google&#x27;s rule is one module per &lt;code&gt;use&lt;&#x2F;code&gt; statement, which it says corresponds to the rustfmt setting &lt;code&gt;imports_granularity = Module&lt;&#x2F;code&gt;, with a list of rustfmt options codebases may adopt (&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;google&#x2F;styleguide&#x2F;blob&#x2F;cceb297e93677c31053e5e75de6b701a9204fc03&#x2F;rustguide.md?plain=1#L450-L470&quot;&gt;list&lt;&#x2F;a&gt;). I put the four options in a rustfmt.toml and ran &lt;code&gt;cargo +1.99.0 fmt&lt;&#x2F;code&gt;; here is the file and what it printed:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;text&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-text &quot;&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&lt;span&gt;$ cat rustfmt.toml
+&lt;&#x2F;span&gt;&lt;span&gt;max_width = 100
+&lt;&#x2F;span&gt;&lt;span&gt;hex_literal_case = &amp;quot;Lower&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;format_macro_matchers = true
+&lt;&#x2F;span&gt;&lt;span&gt;imports_granularity = &amp;quot;Module&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;$ cargo +1.99.0 fmt
+&lt;&#x2F;span&gt;&lt;span&gt;Warning: can&amp;#39;t set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+&lt;&#x2F;span&gt;&lt;span&gt;Warning: can&amp;#39;t set `imports_granularity = Module`, unstable features are only available in nightly channel.
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Two options are nightly-only: &lt;code&gt;format_macro_matchers&lt;&#x2F;code&gt; and &lt;code&gt;imports_granularity&lt;&#x2F;code&gt;; stable rustfmt warns and carries on. rustfmt 1.10.0, shipped with 1.99.0, did apply &lt;code&gt;hex_literal_case&lt;&#x2F;code&gt;: &lt;code&gt;0xAB&lt;&#x2F;code&gt; became &lt;code&gt;0xab&lt;&#x2F;code&gt;, no warning, so &lt;code&gt;hex_literal_case&lt;&#x2F;code&gt; works on stable. And &lt;code&gt;max_width = 100&lt;&#x2F;code&gt; is already the default, matching the official 100 characters, yet it sits in a list of options a codebase may skip. Small smile.&lt;&#x2F;p&gt;
+&lt;p&gt;Fairness: Google lets a codebase skip options its stable Rust does not have, so on stable the import rule becomes something reviewers check by hand. The guide also says &quot;Don&#x27;t use unstable features.&quot; That covers language features, not rustfmt options, so no contradiction. Still, enforcing &lt;code&gt;imports_granularity = Module&lt;&#x2F;code&gt; automatically needs nightly: on nightly-2026-02-24, rustfmt did split &lt;code&gt;use std::{collections::HashMap, fmt::Write};&lt;&#x2F;code&gt; into two &lt;code&gt;use&lt;&#x2F;code&gt; lines. The official position is &quot;Tools must not merge or un-merge imports by default.&quot; (&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;rust-lang&#x2F;rust&#x2F;blob&#x2F;1.99.0&#x2F;src&#x2F;doc&#x2F;style-guide&#x2F;src&#x2F;items.md?plain=1#L533-L547&quot;&gt;imports&lt;&#x2F;a&gt;) Closer to where I land.&lt;&#x2F;p&gt;
+&lt;p&gt;Trait imports. The guide says &quot;Import traits within function bodies&quot;, unless the trait&#x27;s methods are used throughout the file. I keep &lt;code&gt;use std::io::Write;&lt;&#x2F;code&gt; at the top of my files and have not felt pain from it. Personal preference.&lt;&#x2F;p&gt;
+&lt;p&gt;String joining. The guide prefers &lt;code&gt;format!&lt;&#x2F;code&gt; and &lt;code&gt;write!&lt;&#x2F;code&gt; over &lt;code&gt;+&lt;&#x2F;code&gt; for joining more than two strings, one reason being that they &quot;require fewer allocations than concatenating strings using +&quot; (&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;google&#x2F;styleguide&#x2F;blob&#x2F;cceb297e93677c31053e5e75de6b701a9204fc03&#x2F;rustguide.md?plain=1#L1773-L1787&quot;&gt;rule&lt;&#x2F;a&gt;). I got curious and wrote a tiny global allocator that counts calls to alloc and realloc, release build, two sets of inputs. Four ways to join three strings; here is the output:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;text&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-text &quot;&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&lt;span&gt;$ cargo +1.99.0 run -q --release
+&lt;&#x2F;span&gt;&lt;span&gt;a=&amp;quot;hello&amp;quot; b=&amp;quot;, &amp;quot; c=&amp;quot;world&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;a.to_string() + b + c              allocs=1 reallocs=2 len=12
+&lt;&#x2F;span&gt;&lt;span&gt;owned + b + c (owned: String)      allocs=0 reallocs=2 len=12
+&lt;&#x2F;span&gt;&lt;span&gt;format!(&amp;quot;{a}{b}{c}&amp;quot;)               allocs=1 reallocs=1 len=12
+&lt;&#x2F;span&gt;&lt;span&gt;[a, b, c].concat()                 allocs=1 reallocs=0 len=12
+&lt;&#x2F;span&gt;&lt;span&gt;a=&amp;quot;&#x2F;usr&#x2F;local&amp;quot; b=&amp;quot;&#x2F;share&#x2F;&amp;quot; c=&amp;quot;doc&#x2F;rust&#x2F;html&#x2F;index.html&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;a.to_string() + b + c              allocs=1 reallocs=2 len=41
+&lt;&#x2F;span&gt;&lt;span&gt;owned + b + c (owned: String)      allocs=0 reallocs=2 len=41
+&lt;&#x2F;span&gt;&lt;span&gt;format!(&amp;quot;{a}{b}{c}&amp;quot;)               allocs=1 reallocs=2 len=41
+&lt;&#x2F;span&gt;&lt;span&gt;[a, b, c].concat()                 allocs=1 reallocs=0 len=41
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;With short strings, &lt;code&gt;format!&lt;&#x2F;code&gt; did 1 alloc and 1 realloc, while &lt;code&gt;a.to_string() + b + c&lt;&#x2F;code&gt; did 1 alloc and 2 reallocs: &lt;code&gt;format!&lt;&#x2F;code&gt; wins. With longer, path-like strings, both did 1 alloc and 2 reallocs, a tie. When the first value is already an owned String, &lt;code&gt;+&lt;&#x2F;code&gt; reuses it: 0 allocs, 2 reallocs. And &lt;code&gt;concat()&lt;&#x2F;code&gt; did exactly 1 alloc and 0 reallocs in both cases, fewer calls than every other way. Honest limits: a realloc can grow in place, and I counted calls, not time. I did not benchmark speed. The guide&#x27;s other reason, standard format strings instead of a home-made templating syntax, is about readability, and that one I agree with.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;for-my-own-crates&quot;&gt;For my own crates&lt;&#x2F;h2&gt;
+&lt;p&gt;In my own crates, not much changes. I keep rustfmt defaults, which is the official guide in practice, and I keep Clippy. From Google I borrow &lt;code&gt;expect&lt;&#x2F;code&gt; over &lt;code&gt;unwrap&lt;&#x2F;code&gt;, honest assert messages and named iterator chains. I also keep &lt;code&gt;use super::*&lt;&#x2F;code&gt; in my test modules, which Google allows too. As of 2026-11-12, the Scope section says Android, Chromium and the other codebases &quot;intend to start applying it&quot;, and to &quot;Expect more information here as these codebases adopt this guide.&quot; Let&#x27;s see how it reads in a year, once Chromium has started living by it.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Java vs Rust: A ROUGE-L Performance Comparison</title>
+        <published>2025-11-02T00:00:00+00:00</published>
+        <updated>2025-11-02T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/java-vs-rust-rouge-l-performance/"/>
+        <id>https://noos.blog/posts/java-vs-rust-rouge-l-performance/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/java-vs-rust-rouge-l-performance/">&lt;h3 id=&quot;the-experiment&quot;&gt;The Experiment&lt;&#x2F;h3&gt;
+&lt;p&gt;I was curious about the performance differences between Java and Rust for a specific workload. So I built identical ROUGE-L implementations in both languages and ran some benchmarks. The code was AI-generated, the algorithm was the same, and the results were mathematically equivalent. But the performance? That&#x27;s where it gets interesting.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;what-is-rouge-l&quot;&gt;What is ROUGE-L?&lt;&#x2F;h3&gt;
+&lt;p&gt;ROUGE-L (Recall-Oriented Understudy for Gisting Evaluation - Longest Common Subsequence) is a metric used to evaluate text summarization quality. It&#x27;s part of the &lt;a href=&quot;https:&#x2F;&#x2F;aclanthology.org&#x2F;W04-1013&#x2F;&quot;&gt;ROUGE evaluation suite&lt;&#x2F;a&gt; developed by Chin-Yew Lin in 2004, which has become a standard in natural language processing for assessing how well generated summaries match reference summaries.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;How it works:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;ROUGE-L measures similarity based on the Longest Common Subsequence (LCS) between sequences of words. It calculates three metrics:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Precision&lt;&#x2F;strong&gt;: LCS &#x2F; (number of words in candidate summary)&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Recall&lt;&#x2F;strong&gt;: LCS &#x2F; (number of words in reference summary)&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;F-Measure&lt;&#x2F;strong&gt;: 2 × (Precision × Recall) &#x2F; (Precision + Recall)&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;The algorithm uses dynamic programming with O(m × n) time complexity, where m and n are the lengths of the two sequences. It&#x27;s a straightforward implementation, which makes it a good candidate for comparing language performance.&lt;&#x2F;p&gt;
+&lt;p&gt;ROUGE-L is particularly useful because it doesn&#x27;t require exact word matches—it finds the longest sequence of words that appear in the same order in both texts, making it more flexible than n-gram overlap methods like ROUGE-1 or ROUGE-2.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;the-setup&quot;&gt;The Setup&lt;&#x2F;h3&gt;
+&lt;p&gt;Both implementations:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Use the same dynamic programming algorithm for LCS calculation&lt;&#x2F;li&gt;
+&lt;li&gt;Tokenize text the same way (lowercase, whitespace-based splitting)&lt;&#x2F;li&gt;
+&lt;li&gt;Handle the same 16 test examples across 6 complexity levels&lt;&#x2F;li&gt;
+&lt;li&gt;Produce identical mathematical results&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;The only difference is the language they&#x27;re written in.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;Test scenarios include:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Basic text comparisons&lt;&#x2F;li&gt;
+&lt;li&gt;Structured data (JSON, HTML)&lt;&#x2F;li&gt;
+&lt;li&gt;Mixed content with embedded structures&lt;&#x2F;li&gt;
+&lt;li&gt;Real-world technical documentation&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;You can find the full comparison project on &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;nooscraft&#x2F;rouge-l-comparison&quot;&gt;GitHub&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;the-results&quot;&gt;The Results&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;strong&gt;Accuracy:&lt;&#x2F;strong&gt; Both implementations produced &lt;strong&gt;100% identical results&lt;&#x2F;strong&gt; across all 16 test cases. Every F-Measure, Precision, and Recall value matched perfectly. This confirms the algorithms are mathematically equivalent.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;Performance:&lt;&#x2F;strong&gt; That&#x27;s where things get interesting.&lt;&#x2F;p&gt;
+&lt;p&gt;After multiple benchmark runs with 10 iterations each:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;Java:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Average: 52-62ms per run&lt;&#x2F;li&gt;
+&lt;li&gt;Median: 51-61ms&lt;&#x2F;li&gt;
+&lt;li&gt;Standard deviation: 1.5-13ms (relatively consistent)&lt;&#x2F;li&gt;
+&lt;li&gt;Includes JVM startup time in every run&lt;&#x2F;li&gt;
+&lt;li&gt;Performance stabilizes quickly after first iteration&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;strong&gt;Rust:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Average: 21-40ms (heavily skewed by first cold start)&lt;&#x2F;li&gt;
+&lt;li&gt;Median: 2.5-4ms (after warmup)&lt;&#x2F;li&gt;
+&lt;li&gt;First iteration: 190-360ms (cold start overhead including compilation)&lt;&#x2F;li&gt;
+&lt;li&gt;Warm average: 2.4-4.4ms (excluding first run)&lt;&#x2F;li&gt;
+&lt;li&gt;Standard deviation: 60-115ms (largely due to cold start variability)&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;strong&gt;The speedup:&lt;&#x2F;strong&gt; After warmup, Rust was consistently &lt;strong&gt;12-25x faster&lt;&#x2F;strong&gt; than Java for this workload. For example, in one run: Java median 56.66ms vs Rust warm average 2.50ms = &lt;strong&gt;24.76x speedup&lt;&#x2F;strong&gt;. The median Rust time (2.5-3ms) versus Java&#x27;s median (52-56ms) tells the story.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;what-this-means&quot;&gt;What This Means&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;strong&gt;For Java:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;JVM startup adds significant overhead (~50-60ms)&lt;&#x2F;li&gt;
+&lt;li&gt;Once running, performance is consistent&lt;&#x2F;li&gt;
+&lt;li&gt;The runtime environment is predictable but has a fixed cost&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;strong&gt;For Rust:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Cold start includes compilation&#x2F;optimization overhead (~200-350ms)&lt;&#x2F;li&gt;
+&lt;li&gt;Once warmed up, execution is extremely fast (~2.5-3ms)&lt;&#x2F;li&gt;
+&lt;li&gt;Compiled binary runs without runtime interpretation overhead&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;strong&gt;The reality:&lt;&#x2F;strong&gt; In production, both would run with warmup periods. Java would maintain its ~55ms average. Rust would settle into its ~2.5-3ms sweet spot. The performance difference would still be substantial.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;observations&quot;&gt;Observations&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;strong&gt;Tradeoffs:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Startup time:&lt;&#x2F;strong&gt; Java has consistent startup overhead. Rust has a larger initial cold start but negligible warm overhead.&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Consistency:&lt;&#x2F;strong&gt; Java&#x27;s performance is more predictable from run to run. Rust&#x27;s cold start variability makes early measurements misleading.&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Warm performance:&lt;&#x2F;strong&gt; Once both are warmed up, Rust&#x27;s compiled nature provides significant advantages for CPU-bound work.&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Ecosystem:&lt;&#x2F;strong&gt; Java has mature NLP libraries. Rust has growing ecosystem support. For this isolated algorithm, both worked well.&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;&lt;strong&gt;The &quot;just for fun&quot; part:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;This was an experiment. I wanted to see what would happen if you took the same algorithm, implemented it identically in two languages, and compared performance. The answer: same results, dramatically different performance characteristics.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;why-this-matters&quot;&gt;Why This Matters&lt;&#x2F;h3&gt;
+&lt;p&gt;For production systems evaluating summarization quality:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Throughput matters:&lt;&#x2F;strong&gt; Processing thousands of summaries per second benefits from Rust&#x27;s speed&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Latency matters:&lt;&#x2F;strong&gt; If this runs in a request path, 2.5ms vs 55ms is significant&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Infrastructure matters:&lt;&#x2F;strong&gt; Java&#x27;s JVM ecosystem vs Rust&#x27;s compiled binary have different deployment considerations&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Neither is &quot;better&quot; in absolute terms. They have different tradeoffs. Understanding those tradeoffs is what matters.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;references&quot;&gt;References&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;aclanthology.org&#x2F;W04-1013&#x2F;&quot;&gt;Lin, C.-Y. (2004). ROUGE: A Package for Automatic Evaluation of Summaries&lt;&#x2F;a&gt; - The original paper introducing ROUGE metrics&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;ROUGE_(metric)&quot;&gt;ROUGE Metrics Documentation&lt;&#x2F;a&gt; - Wikipedia overview of ROUGE evaluation metrics&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;nooscraft&#x2F;rouge-l-comparison&quot;&gt;Comparison Project on GitHub&lt;&#x2F;a&gt; - Full source code and benchmarks&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;The code is &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;nooscraft&#x2F;rouge-l-comparison&quot;&gt;available on GitHub&lt;&#x2F;a&gt; if you want to run your own benchmarks. Same algorithm, same results, different performance characteristics. Sometimes the fun experiments teach you the most.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Rust Macros vs Functions: What Java and Python Developers Should Know</title>
+        <published>2025-11-01T00:00:00+00:00</published>
+        <updated>2025-11-01T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/rust-macros-vs-functions/"/>
+        <id>https://noos.blog/posts/rust-macros-vs-functions/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/rust-macros-vs-functions/">&lt;h3 id=&quot;the-question&quot;&gt;The Question&lt;&#x2F;h3&gt;
+&lt;p&gt;When you first start with Rust, one thing that throws you off is the difference between macros and functions. Coming from Java or Python, this seems odd—why would you need both?&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;what-s-the-difference&quot;&gt;What&#x27;s the Difference?&lt;&#x2F;h3&gt;
+&lt;p&gt;Here&#x27;s the simplest explanation: &lt;strong&gt;functions work on data, macros work on code&lt;&#x2F;strong&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;In Python, you write:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;python&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-python &quot;&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;add&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;a&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span&gt;):
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;a + b
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;In Java, you write:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;java&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-java &quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public static int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;add&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; a, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; b) {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; a + b;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Both run at &lt;strong&gt;runtime&lt;&#x2F;strong&gt;—when your program executes.&lt;&#x2F;p&gt;
+&lt;p&gt;But in Rust, macros run at &lt;strong&gt;compile time&lt;&#x2F;strong&gt;—before your code is even compiled. They&#x27;re code that writes code.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;a-simple-example&quot;&gt;A Simple Example&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;strong&gt;Function in Rust:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;add&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;x&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;i32&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;y&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;i32&lt;&#x2F;span&gt;&lt;span&gt;) -&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;i32 &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    x + y
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;strong&gt;Macro in Rust:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;macro_rules! &lt;&#x2F;span&gt;&lt;span&gt;add {
+&lt;&#x2F;span&gt;&lt;span&gt;    (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$x&lt;&#x2F;span&gt;&lt;span&gt;:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;expr&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$y&lt;&#x2F;span&gt;&lt;span&gt;:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;expr&lt;&#x2F;span&gt;&lt;span&gt;) =&amp;gt; {
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$x &lt;&#x2F;span&gt;&lt;span&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$y
+&lt;&#x2F;span&gt;&lt;span&gt;    };
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;When you call the macro &lt;code&gt;add!(1, 2)&lt;&#x2F;code&gt;, the compiler literally rewrites your code to &lt;code&gt;1 + 2&lt;&#x2F;code&gt; before compiling. It&#x27;s like a smart find-and-replace.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;why-not-just-use-functions&quot;&gt;Why Not Just Use Functions?&lt;&#x2F;h3&gt;
+&lt;p&gt;Macros solve problems that functions can&#x27;t:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;1. Variable Arguments&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Ever wonder how &lt;code&gt;println!&lt;&#x2F;code&gt; can take any number of arguments?&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span&gt;println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Hello&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Hello &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, name);
+&lt;&#x2F;span&gt;&lt;span&gt;println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; and &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, a, b);
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;That&#x27;s because it&#x27;s a macro. Functions need fixed signatures; macros can accept variable patterns.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;2. Code Generation&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Python has decorators like &lt;code&gt;@dataclass&lt;&#x2F;code&gt; that generate code for you:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;python&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-python &quot;&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span&gt;@&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;dataclass
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Person&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;    name: str
+&lt;&#x2F;span&gt;&lt;span&gt;    age: int
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Java has annotations like &lt;code&gt;@Override&lt;&#x2F;code&gt; or Lombok&#x27;s &lt;code&gt;@Builder&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;In Rust, this is done with macros:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span&gt;#[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;derive&lt;&#x2F;span&gt;&lt;span&gt;(Debug, Clone)]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct &lt;&#x2F;span&gt;&lt;span&gt;Person {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;: String,
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;age&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;u32&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The &lt;code&gt;derive&lt;&#x2F;code&gt; macro generates &lt;code&gt;Debug&lt;&#x2F;code&gt; and &lt;code&gt;Clone&lt;&#x2F;code&gt; implementations automatically.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;3. Domain-Specific Languages (DSL)&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;A DSL is a miniature language tailored to a specific problem domain. Think of SQL—it&#x27;s not a general-purpose language, but a specialized one for databases.&lt;&#x2F;p&gt;
+&lt;p&gt;You can create custom syntax with macros:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span&gt;html! {
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;lt;div class=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;container&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &amp;lt;p&amp;gt;Hello world&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;background-color:#bf616a;color:#2b303b;&quot;&gt;&#x2F;&lt;&#x2F;span&gt;&lt;span&gt;p&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;lt;&#x2F;div&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;This isn&#x27;t valid Rust code—it&#x27;s an HTML-like DSL that the macro converts into valid Rust. It lets you write HTML templates directly in your Rust code, which the macro transforms into function calls and data structures at compile time.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;mental-model-for-java-python-developers&quot;&gt;Mental Model for Java&#x2F;Python Developers&lt;&#x2F;h3&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Concept&lt;&#x2F;th&gt;&lt;th&gt;Python&#x2F;Java&lt;&#x2F;th&gt;&lt;th&gt;Rust&lt;&#x2F;th&gt;&lt;&#x2F;tr&gt;&lt;&#x2F;thead&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;Function&lt;&#x2F;td&gt;&lt;td&gt;Normal code that runs&lt;&#x2F;td&gt;&lt;td&gt;Same—runs at runtime&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;Annotation&#x2F;Decorator&lt;&#x2F;td&gt;&lt;td&gt;&lt;code&gt;@Override&lt;&#x2F;code&gt;, &lt;code&gt;@dataclass&lt;&#x2F;code&gt;&lt;&#x2F;td&gt;&lt;td&gt;&lt;code&gt;#[derive(...)]&lt;&#x2F;code&gt; macro&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;Macro&lt;&#x2F;td&gt;&lt;td&gt;Doesn&#x27;t really exist&lt;&#x2F;td&gt;&lt;td&gt;Generates code at compile time&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;&#x2F;tbody&gt;&lt;&#x2F;table&gt;
+&lt;p&gt;Think of macros as &lt;strong&gt;super-powered annotations&lt;&#x2F;strong&gt;. In Java, annotations can generate some code (like Lombok does), but macros can generate &lt;em&gt;any&lt;&#x2F;em&gt; code.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;when-to-use-what&quot;&gt;When to Use What?&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Use functions&lt;&#x2F;strong&gt; for normal logic and calculations.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Use macros&lt;&#x2F;strong&gt; when you want to avoid boilerplate, create custom syntax, or generate code automatically.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;bottom-line&quot;&gt;Bottom Line&lt;&#x2F;h3&gt;
+&lt;p&gt;Macros are Rust&#x27;s way of reducing repetition and enabling metaprogramming. They run before compilation and rewrite your code. If you&#x27;re coming from Java or Python, think of them as annotations or decorators on steroids—but they can do much more.&lt;&#x2F;p&gt;
+&lt;p&gt;For most beginners, you don&#x27;t need to write macros. The standard library macros like &lt;code&gt;println!&lt;&#x2F;code&gt;, &lt;code&gt;vec!&lt;&#x2F;code&gt;, and &lt;code&gt;format!&lt;&#x2F;code&gt; will carry you far. But understanding &lt;em&gt;what&lt;&#x2F;em&gt; they are helps when you read Rust code and wonder why you see &lt;code&gt;!&lt;&#x2F;code&gt; everywhere.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h3 id=&quot;further-reading&quot;&gt;Further Reading&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;veykril.github.io&#x2F;tlborm&#x2F;&quot;&gt;The Little Book of Rust Macros&lt;&#x2F;a&gt; — A practical guide to writing macros in Rust.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;doc.rust-lang.org&#x2F;book&#x2F;ch19-06-macros.html&quot;&gt;The Rust Programming Language: Macros&lt;&#x2F;a&gt; — Official Rust book chapter on macros.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;doc.rust-lang.org&#x2F;rust-by-example&#x2F;macros.html&quot;&gt;Rust by Example: Macros&lt;&#x2F;a&gt; — Interactive examples to learn macros.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Domain-specific_language&quot;&gt;Domain-Specific Language (DSL)&lt;&#x2F;a&gt; — Wikipedia article explaining the concept.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Redis, TLS, and Deadpool: When Dependency Versions Collide</title>
+        <published>2025-10-30T00:00:00+00:00</published>
+        <updated>2025-10-30T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/redis-tls-deadpool-compatibility/"/>
+        <id>https://noos.blog/posts/redis-tls-deadpool-compatibility/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/redis-tls-deadpool-compatibility/">&lt;h3 id=&quot;the-problem&quot;&gt;The Problem&lt;&#x2F;h3&gt;
+&lt;p&gt;I was working on a Rust project that uses Redis with TLS connections and a connection pool via &lt;code&gt;deadpool-redis&lt;&#x2F;code&gt;. Everything was working fine until I ran &lt;code&gt;cargo check&lt;&#x2F;code&gt; and saw this warning:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;warning: the following packages contain code that will be rejected by a future version of Rust: redis v0.25.4
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;That&#x27;s not something you want to see. It suggests your code will break in future Rust versions. So naturally, I tried to upgrade the &lt;code&gt;redis&lt;&#x2F;code&gt; crate to a newer version.&lt;&#x2F;p&gt;
+&lt;p&gt;But here&#x27;s where things got interesting—every single attempt to upgrade past &lt;code&gt;v0.25.4&lt;&#x2F;code&gt; broke the build. Not just small errors, but fundamental incompatibilities between the &lt;code&gt;redis&lt;&#x2F;code&gt; crate and &lt;code&gt;deadpool-redis&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;what-i-tried&quot;&gt;What I Tried&lt;&#x2F;h3&gt;
+&lt;p&gt;I went through the versions systematically, testing each major release:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;v0.26.x&lt;&#x2F;strong&gt;: Broke immediately. Missing &lt;code&gt;TcpTls&lt;&#x2F;code&gt; variant in the &lt;code&gt;Tokio&lt;&#x2F;code&gt; enum, internal TLS types incomplete.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;v0.27.x&lt;&#x2F;strong&gt;: Same issues as v0.26.x. TLS support partially broken.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;v0.28.x&lt;&#x2F;strong&gt;: TLS types like &lt;code&gt;TlsConnParams&lt;&#x2F;code&gt; and &lt;code&gt;TcpTls&lt;&#x2F;code&gt; were still broken internally.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;v0.29.x&lt;&#x2F;strong&gt;: Now it requires a &lt;code&gt;connect_tcp_tls&lt;&#x2F;code&gt; trait that &lt;code&gt;deadpool-redis&lt;&#x2F;code&gt; doesn&#x27;t implement.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;v0.30.x, v0.31.x, v0.32.x&lt;&#x2F;strong&gt;: All require the same &lt;code&gt;connect_tcp_tls&lt;&#x2F;code&gt; trait.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;The pattern became clear: somewhere between v0.25.4 and v0.29.0, the &lt;code&gt;redis&lt;&#x2F;code&gt; crate changed how it handles TLS connections, and &lt;code&gt;deadpool-redis&lt;&#x2F;code&gt; hasn&#x27;t caught up yet.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;the-root-cause&quot;&gt;The Root Cause&lt;&#x2F;h3&gt;
+&lt;p&gt;The issue is that &lt;code&gt;redis&lt;&#x2F;code&gt; v0.25.4 is the last version before &lt;code&gt;connect_tcp_tls&lt;&#x2F;code&gt; was introduced. This new trait-based approach is cleaner architecturally, but it requires connection pool libraries to implement this trait. &lt;code&gt;deadpool-redis&lt;&#x2F;code&gt; v0.14.0 was built against the older API and doesn&#x27;t have this implementation.&lt;&#x2F;p&gt;
+&lt;p&gt;Versions between v0.25.4 and v0.29.0 are in a transitional state—they have some TLS support but it&#x27;s incomplete or broken.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;current-status&quot;&gt;Current Status&lt;&#x2F;h3&gt;
+&lt;p&gt;After testing all these versions, I ended up staying with &lt;code&gt;redis v0.25.4&lt;&#x2F;code&gt;. Here&#x27;s the working configuration:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;Cargo.toml:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;toml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-toml &quot;&gt;&lt;code class=&quot;language-toml&quot; data-lang=&quot;toml&quot;&gt;&lt;span&gt;[dependencies]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;redis &lt;&#x2F;span&gt;&lt;span&gt;= { &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;version &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;=0.25.4&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;features &lt;&#x2F;span&gt;&lt;span&gt;= [&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;tokio-comp&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;tls-rustls&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;connection-manager&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;] }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;deadpool-redis &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;0.14.0&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;tokio &lt;&#x2F;span&gt;&lt;span&gt;= { &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;version &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;features &lt;&#x2F;span&gt;&lt;span&gt;= [&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;full&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;] }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;tokio-rustls &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;0.23.4&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;rustls &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;0.20.8&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;strong&gt;rust-toolchain.toml:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;toml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-toml &quot;&gt;&lt;code class=&quot;language-toml&quot; data-lang=&quot;toml&quot;&gt;&lt;span&gt;[toolchain]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;channel &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;1.74.1&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The &lt;code&gt;=&lt;&#x2F;code&gt; prefix on the redis version pins it exactly to v0.25.4, preventing accidental upgrades. And pinning Rust to &lt;code&gt;1.74.1&lt;&#x2F;code&gt; helps avoid future compatibility warnings.&lt;&#x2F;p&gt;
+&lt;p&gt;This setup works reliably:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;TLS over &lt;code&gt;rediss:&#x2F;&#x2F;&lt;&#x2F;code&gt; connections work with &lt;code&gt;tokio-rustls&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;Connection pooling via &lt;code&gt;deadpool-redis&lt;&#x2F;code&gt; functions correctly&lt;&#x2F;li&gt;
+&lt;li&gt;No compilation warnings or errors&lt;&#x2F;li&gt;
+&lt;li&gt;Stable and predictable behavior&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;what-to-avoid&quot;&gt;What to Avoid&lt;&#x2F;h3&gt;
+&lt;p&gt;If you&#x27;re in a similar situation, avoid these version combinations:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;redis v0.26.x–v0.28.x&lt;&#x2F;strong&gt;: TLS support is broken or incomplete. You&#x27;ll get compilation errors related to missing enum variants or broken TLS types.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;redis &amp;gt;= v0.29.0 with deadpool-redis&lt;&#x2F;strong&gt;: Won&#x27;t compile because &lt;code&gt;deadpool-redis&lt;&#x2F;code&gt; doesn&#x27;t implement the required &lt;code&gt;connect_tcp_tls&lt;&#x2F;code&gt; trait.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;deadpool-redis v0.15+&lt;&#x2F;strong&gt;: Currently not compatible with stable &lt;code&gt;redis&lt;&#x2F;code&gt; versions due to the same trait mismatch.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;alternative-approach&quot;&gt;Alternative Approach&lt;&#x2F;h3&gt;
+&lt;p&gt;If you really need a newer &lt;code&gt;redis&lt;&#x2F;code&gt; version, you have one option: drop &lt;code&gt;deadpool-redis&lt;&#x2F;code&gt; and use &lt;code&gt;redis&lt;&#x2F;code&gt;&#x27;s built-in &lt;code&gt;ConnectionManager&lt;&#x2F;code&gt; or switch to a different pooling library like &lt;code&gt;bb8&lt;&#x2F;code&gt;. But this means rewriting your connection pool code, which might not be worth it for most projects.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;the-future&quot;&gt;The Future&lt;&#x2F;h3&gt;
+&lt;p&gt;The situation is temporary, but it&#x27;s unclear when it will be resolved. The &lt;code&gt;deadpool-redis&lt;&#x2F;code&gt; maintainers need to either:&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;Implement the &lt;code&gt;connect_tcp_tls&lt;&#x2F;code&gt; trait for newer &lt;code&gt;redis&lt;&#x2F;code&gt; versions, or&lt;&#x2F;li&gt;
+&lt;li&gt;Update their API to work with the new connection model&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;Until then, staying with &lt;code&gt;redis v0.25.4&lt;&#x2F;code&gt; and &lt;code&gt;deadpool-redis v0.14.0&lt;&#x2F;code&gt; is the most stable path forward. Yes, you&#x27;ll see that deprecation warning, but it&#x27;s better than having broken code.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;bottom-line&quot;&gt;Bottom Line&lt;&#x2F;h3&gt;
+&lt;p&gt;Sometimes upgrading dependencies isn&#x27;t the right move. In this case, the ecosystem has a compatibility gap between &lt;code&gt;redis&lt;&#x2F;code&gt; and &lt;code&gt;deadpool-redis&lt;&#x2F;code&gt;, and staying on the older version is the pragmatic choice. The warning is annoying, but it&#x27;s not breaking anything right now—and when the ecosystem catches up, you can upgrade then.&lt;&#x2F;p&gt;
+&lt;p&gt;If you&#x27;re building a new project and need Redis with TLS and pooling, consider whether you can use &lt;code&gt;redis&lt;&#x2F;code&gt;&#x27;s built-in &lt;code&gt;ConnectionManager&lt;&#x2F;code&gt; instead of &lt;code&gt;deadpool-redis&lt;&#x2F;code&gt;. If you&#x27;re maintaining an existing project, stick with what works: &lt;code&gt;redis v0.25.4&lt;&#x2F;code&gt; and &lt;code&gt;deadpool-redis v0.14.0&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>When Rust Expects a String But Gets a Map</title>
+        <published>2025-10-29T00:00:00+00:00</published>
+        <updated>2025-10-29T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/rust-serde-datetime-deserialization-error/"/>
+        <id>https://noos.blog/posts/rust-serde-datetime-deserialization-error/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/rust-serde-datetime-deserialization-error/">&lt;p&gt;I recently hit this error while working with a Rust application that reads from a database:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;Database(&amp;quot;Kind: invalid type: map, expected an RFC 3339 formatted date and time string, labels: {}&amp;quot;)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;At first glance, it&#x27;s a bit cryptic. But the error message actually tells you exactly what&#x27;s wrong.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-problem&quot;&gt;The Problem&lt;&#x2F;h2&gt;
+&lt;p&gt;When you have a Rust struct with a &lt;code&gt;DateTime&amp;lt;Utc&amp;gt;&lt;&#x2F;code&gt; field, Serde expects the JSON to contain an RFC 3339 formatted string like:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;json&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-json &quot;&gt;&lt;code class=&quot;language-json&quot; data-lang=&quot;json&quot;&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;2025-09-15T01:36:19Z&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;But instead, your database (or JSON source) is storing it as a map&#x2F;object:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;json&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-json &quot;&gt;&lt;code class=&quot;language-json&quot; data-lang=&quot;json&quot;&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;  &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;sec&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1694733379&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;  &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;nsec&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;199610000
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Serde can&#x27;t automatically convert a map into a &lt;code&gt;DateTime&lt;&#x2F;code&gt;—it needs a string it can parse.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;why-this-happens&quot;&gt;Why This Happens&lt;&#x2F;h2&gt;
+&lt;p&gt;Different systems store timestamps differently:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Some databases store timestamps as Unix time objects with separate seconds and nanoseconds&lt;&#x2F;li&gt;
+&lt;li&gt;Some JSON APIs return timestamps as nested objects&lt;&#x2F;li&gt;
+&lt;li&gt;Other sources might use different date formats&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;But Rust&#x27;s &lt;code&gt;DateTime&amp;lt;Utc&amp;gt;&lt;&#x2F;code&gt; with Serde defaults expects the standard RFC 3339 string format.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-fix&quot;&gt;The Fix&lt;&#x2F;h2&gt;
+&lt;p&gt;You have two options:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;Option 1: Fix the data source&lt;&#x2F;strong&gt; (if you control it)
+Make sure your database or JSON source stores timestamps as RFC 3339 strings:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;json&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-json &quot;&gt;&lt;code class=&quot;language-json&quot; data-lang=&quot;json&quot;&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;created_at&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;2025-09-15T01:36:19Z&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;strong&gt;Option 2: Use a custom deserializer&lt;&#x2F;strong&gt; (if you can&#x27;t change the source)
+Write a custom Serde deserializer to handle the map format:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;use &lt;&#x2F;span&gt;&lt;span&gt;chrono::{DateTime, Utc};
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;use &lt;&#x2F;span&gt;&lt;span&gt;serde::{Deserialize, Deserializer};
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;from_timestamp_map&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;&amp;#39;de&lt;&#x2F;span&gt;&lt;span&gt;, D&amp;gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;deserializer&lt;&#x2F;span&gt;&lt;span&gt;: D) -&amp;gt; Result&amp;lt;DateTime&amp;lt;Utc&amp;gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;D::&lt;&#x2F;span&gt;&lt;span&gt;Error&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;where
+&lt;&#x2F;span&gt;&lt;span&gt;    D: Deserializer&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;&amp;#39;de&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    #[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;derive&lt;&#x2F;span&gt;&lt;span&gt;(Deserialize)]
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct &lt;&#x2F;span&gt;&lt;span&gt;Timestamp {
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sec&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;i64&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;nsec&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;u32&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;    
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; ts = Timestamp::deserialize(deserializer)?;
+&lt;&#x2F;span&gt;&lt;span&gt;    DateTime::from_timestamp(ts.sec, ts.nsec)
+&lt;&#x2F;span&gt;&lt;span&gt;        .&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;ok_or_else&lt;&#x2F;span&gt;&lt;span&gt;(|| serde::de::Error::custom(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Invalid timestamp&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;))
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;#[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;derive&lt;&#x2F;span&gt;&lt;span&gt;(Deserialize)]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct &lt;&#x2F;span&gt;&lt;span&gt;ModelSelection {
+&lt;&#x2F;span&gt;&lt;span&gt;    #[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;serde&lt;&#x2F;span&gt;&lt;span&gt;(deserialize_with = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;from_timestamp_map&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)]
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;created_at&lt;&#x2F;span&gt;&lt;span&gt;: DateTime&amp;lt;Utc&amp;gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The custom deserializer reads the &lt;code&gt;sec&lt;&#x2F;code&gt; and &lt;code&gt;nsec&lt;&#x2F;code&gt; fields from the map and constructs a &lt;code&gt;DateTime&amp;lt;Utc&amp;gt;&lt;&#x2F;code&gt; from them.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;bottom-line&quot;&gt;Bottom Line&lt;&#x2F;h2&gt;
+&lt;p&gt;When Serde complains about expecting a string but getting a map for a &lt;code&gt;DateTime&lt;&#x2F;code&gt; field, your data source is storing timestamps in a format Serde doesn&#x27;t recognize. Either standardize on RFC 3339 strings, or write a deserializer to handle your specific format.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>How Embracing Rust Sharpens the Mind — and Elevates Teams</title>
+        <published>2025-10-22T00:00:00+00:00</published>
+        <updated>2025-10-22T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/how-embracing-rust-sharpens-the-mind/"/>
+        <id>https://noos.blog/posts/how-embracing-rust-sharpens-the-mind/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/how-embracing-rust-sharpens-the-mind/">&lt;p&gt;When you decide to work in Rust, something subtle begins to shift. It’s not just about learning a new syntax or mastering memory safety. It’s about engaging a mode of thinking that demands attention, clarity, and responsibility. In doing so, you develop stronger focus, sharpened critical thinking, and what might best be called responsible individualism. And when one person grows in that way, the ripple effects can touch an entire team or organization.&lt;&#x2F;p&gt;
+&lt;p&gt;In this post, I’ll explore three interlocking themes:&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Focus&lt;&#x2F;strong&gt; — how Rust trains sustained, precise attention&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Critical Thinking&lt;&#x2F;strong&gt; — how Rust forces richer reasoning and choice&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Individualism &amp;amp; Contribution&lt;&#x2F;strong&gt; — how mastering Rust empowers an individual who then strengthens the whole&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;1-focus-cultivating-attention-in-the-code&quot;&gt;1. Focus: Cultivating Attention in the Code&lt;&#x2F;h2&gt;
+&lt;p&gt;In many languages, you type, you compile, you run. Mistakes show up in logs or in production. With Rust, the compiler intervenes early and often. You’ll catch ownership issues, borrowing conflicts, lifetime mismatches—not after deployment, but at compile time.&lt;&#x2F;p&gt;
+&lt;p&gt;Consider these moments:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;You borrow a value; you pause and ask: Who currently has access?&lt;&#x2F;li&gt;
+&lt;li&gt;You annotate a function; you reflect: What lifetimes are involved, and why must this reference stay valid here?&lt;&#x2F;li&gt;
+&lt;li&gt;You handle a &lt;code&gt;Result&amp;lt;T, E&amp;gt;&lt;&#x2F;code&gt;; you evaluate: What happens when this fails?&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;These are micro‑acts of attention. Over time, they build a habit of precision and presence. Rust trains you not to write just-sufficient code—but code you understand and own.&lt;&#x2F;p&gt;
+&lt;p&gt;When a developer learns this mode of working, the whole team benefits. Code reviews become richer. Discussions shift from “does it compile?” to “why did this compile, and is this the best way?” The developer’s focus becomes a team asset.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;2-critical-thinking-building-sound-reasoning&quot;&gt;2. Critical Thinking: Building Sound Reasoning&lt;&#x2F;h2&gt;
+&lt;p&gt;Beyond focus, Rust forces you into deeper reasoning. Ownership, borrowing, lifetimes, concurrency—they’re not mere mechanics, they’re invitations to think about how your code works, why it is safe, and what assumptions you’re making.&lt;&#x2F;p&gt;
+&lt;p&gt;In philosophical terms, this resembles the concept of technē—the idea of craft or making, where knowing how to do something is inseparable from knowing why you do it. In programming, Rust becomes a modern technē: you not only write code, you reason about resources, validity, and correctness.&lt;&#x2F;p&gt;
+&lt;p&gt;For example:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;You ask: “If I pass this borrow here, could someone else modify the data concurrently?”&lt;&#x2F;li&gt;
+&lt;li&gt;You reason: “If this value moves and the original is used afterward, I invite a compile error. Why does Rust forbid this? What risk is it preventing?”&lt;&#x2F;li&gt;
+&lt;li&gt;You model: “When threads share &lt;code&gt;Arc&amp;lt;Mutex&amp;lt;T&amp;gt;&amp;gt;&lt;&#x2F;code&gt;, what invariants do I preserve? What could go wrong if I slip up?”&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;These questions steer you away from simple feature‑delivery and toward thoughtful system design. And when more developers engage in this kind of thinking, the codebase becomes more robust, maintainable, and predictable.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;3-individualism-contribution-mastery-that-scales&quot;&gt;3. Individualism &amp;amp; Contribution: Mastery That Scales&lt;&#x2F;h2&gt;
+&lt;p&gt;“Individualism” often carries negative connotations—but here I mean a positive kind: an individual taking responsibility for their craft, developing depth of understanding, and then choosing to bring that to the group. Rust supports exactly that.&lt;&#x2F;p&gt;
+&lt;p&gt;The philosophy of software craftsmanship frames development as more than meeting a deadline—it’s about mastery, continuous improvement, and professional pride. When someone invests the time to master Rust’s rule set, they gain both confidence and clarity. They can mentor others, raise standards, and uplift the team.&lt;&#x2F;p&gt;
+&lt;p&gt;In turn, the team and organization benefit:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Decreased bugs and runtime surprises&lt;&#x2F;li&gt;
+&lt;li&gt;Clearer design boundaries and documentation&lt;&#x2F;li&gt;
+&lt;li&gt;A culture where thinking matters and craftsmanship is respected&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;In this way, the individual’s growth becomes a catalyst for collective growth. One Rust‑savvy engineer can shift a team’s mindset from “just ship” to “ship well.”&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;philosophical-reflection-craft-virtue-and-the-common-good&quot;&gt;Philosophical Reflection: Craft, Virtue, and the Common Good&lt;&#x2F;h2&gt;
+&lt;p&gt;Let’s step into the philosophical background. In the virtue‑ethics tradition, the focus isn’t only on what you do, but who you become by doing it. When you practise a craft with discipline, you internalize values: care, integrity, attention to detail.&lt;&#x2F;p&gt;
+&lt;p&gt;Rust—as a programming language—is more than a tool; it’s a training ground. The rules around ownership and safety aren’t arbitrary; they coax you into a mindset of accountability. That mindset echoes technē: making with purpose, not just automatism.&lt;&#x2F;p&gt;
+&lt;p&gt;At the same time, contributing to a team, a codebase, or an open ecosystem aligns with the idea of the common good. Technology can be shaped for more than profit—it can serve that which is good, beautiful, and durable.&lt;&#x2F;p&gt;
+&lt;p&gt;Putting those threads together: writing Rust becomes a practice in character as much as a skill in code. You become someone who thinks deeply about structure, consequences, and shared responsibility. And that transformation benefits every person you code with.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;&#x2F;h2&gt;
+&lt;p&gt;Working with Rust gives you more than faster performance or fewer runtime bugs. It gives you a path to sharpen your focus, refine your thinking, and develop a personal mastery that contributes to something larger than yourself.&lt;br &#x2F;&gt;
+If you’re a developer seeking to grow not just your output but your way of working, Rust offers a compelling challenge.&lt;br &#x2F;&gt;
+If you’re a leader or a team building culture, supporting your engineers in learning Rust can become a signal of valuing craft, clarity, and long‑term thinking.&lt;&#x2F;p&gt;
+&lt;p&gt;In the end, the code we build reflects the minds we train. With Rust, the training is real—and the benefits run deep.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h3 id=&quot;further-reading&quot;&gt;Further Reading&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Software_craftsmanship&quot;&gt;Software Craftsmanship&lt;&#x2F;a&gt; – the movement emphasizing craftsmanship in programming.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Techne&quot;&gt;Techne&lt;&#x2F;a&gt; – the Greek philosophical concept of craft and skill.&lt;&#x2F;li&gt;
+&lt;li&gt;Jonsson, M.; Tholander, C. &lt;a href=&quot;https:&#x2F;&#x2F;www.diva-portal.org&#x2F;smash&#x2F;get&#x2F;diva2%3A1902016&#x2F;FULLTEXT02.pdf&quot;&gt;&lt;em&gt;Aiming for Virtue in Programming with Generative AI&lt;&#x2F;em&gt;&lt;&#x2F;a&gt; (2023) – On craft, judgement and programming.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Why Rust Makes You a Better Engineer</title>
+        <published>2025-10-16T00:00:00+00:00</published>
+        <updated>2025-10-16T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/why-rust-makes-you-better-engineer/"/>
+        <id>https://noos.blog/posts/why-rust-makes-you-better-engineer/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/why-rust-makes-you-better-engineer/">&lt;p&gt;If you&#x27;ve ever tried learning Rust, chances are the compiler pushed back at you—hard. It may feel relentless at times, especially compared to more permissive languages like Python, JavaScript, or even Java. But here&#x27;s the key: that friction is the point. Rust doesn&#x27;t just run your code safely—it teaches you to &lt;strong&gt;think differently&lt;&#x2F;strong&gt; about correctness, safety, and performance.&lt;&#x2F;p&gt;
+&lt;p&gt;In this post, we&#x27;ll break down the key concepts that make Rust unique and walk through what the compiler enforces—and why that&#x27;s a good thing in the long run.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;1-strict-type-system&quot;&gt;1. Strict Type System&lt;&#x2F;h2&gt;
+&lt;p&gt;Rust&#x27;s type system is precise, and it expects you to be explicit about what types you&#x27;re working with. There&#x27;s no silent coercion between mismatched types. This can feel rigid at first, but it eliminates entire classes of bugs you&#x27;d otherwise only see at runtime.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;example-type-mismatch&quot;&gt;Example: Type mismatch&lt;&#x2F;h3&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;add&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;a&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;i32&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;i32&lt;&#x2F;span&gt;&lt;span&gt;) -&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;i32 &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    a + b
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; x: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;i32 &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;5&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; y: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;u32 &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;10&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; sum = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;add&lt;&#x2F;span&gt;&lt;span&gt;(x, y); &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; error: mismatched types
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Rust won&#x27;t implicitly convert between &lt;code&gt;u32&lt;&#x2F;code&gt; and &lt;code&gt;i32&lt;&#x2F;code&gt;. You&#x27;ll need to cast it explicitly:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; sum = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;add&lt;&#x2F;span&gt;&lt;span&gt;(x, y as &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;i32&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;This forces you to make conversion decisions intentionally and not by accident.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;2-error-handling-no-exceptions&quot;&gt;2. Error Handling: No Exceptions&lt;&#x2F;h2&gt;
+&lt;p&gt;Rust does not have exceptions. Instead, it uses the &lt;code&gt;Result&amp;lt;T, E&amp;gt;&lt;&#x2F;code&gt; and &lt;code&gt;Option&amp;lt;T&amp;gt;&lt;&#x2F;code&gt; types for fallible operations. You must explicitly handle errors or propagate them. Ignoring them is not allowed.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;example-required-handling-of-result&quot;&gt;Example: Required handling of &lt;code&gt;Result&lt;&#x2F;code&gt;&lt;&#x2F;h3&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;use &lt;&#x2F;span&gt;&lt;span&gt;std::fs::File;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; file = File::open(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;config.txt&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;); &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; warning&#x2F;error: unused `Result`
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;To resolve this, you can either handle the error:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;match &lt;&#x2F;span&gt;&lt;span&gt;File::open(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;config.txt&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;) {
+&lt;&#x2F;span&gt;&lt;span&gt;    Ok(f) =&amp;gt; println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;File opened: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{:?}&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, f),
+&lt;&#x2F;span&gt;&lt;span&gt;    Err(e) =&amp;gt; eprintln!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Failed to open file: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, e),
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Or propagate it using the &lt;code&gt;?&lt;&#x2F;code&gt; operator in a function that returns a &lt;code&gt;Result&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;open_file&lt;&#x2F;span&gt;&lt;span&gt;() -&amp;gt; std::io::Result&amp;lt;()&amp;gt; {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; _file = File::open(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;config.txt&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)?;
+&lt;&#x2F;span&gt;&lt;span&gt;    Ok(())
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;This enforces a programming style where failure is expected and dealt with.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;3-immutability-by-default&quot;&gt;3. Immutability by Default&lt;&#x2F;h2&gt;
+&lt;p&gt;Variables are immutable unless explicitly marked otherwise. This encourages predictability and thread-safety, even in single-threaded contexts.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;example-immutable-variable&quot;&gt;Example: Immutable variable&lt;&#x2F;h3&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; name = String::from(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Alice&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;    name.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;push_str&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; Smith&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;); &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; error: cannot borrow as mutable
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The correct way:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let mut&lt;&#x2F;span&gt;&lt;span&gt; name = String::from(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Alice&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;name.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;push_str&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; Smith&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;This simple rule helps reduce bugs from unintended mutation, especially in shared state.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;4-ownership-and-move-semantics&quot;&gt;4. Ownership and Move Semantics&lt;&#x2F;h2&gt;
+&lt;p&gt;Rust enforces a unique ownership model. Every value in Rust has a single owner, and when that owner goes out of scope, the value is dropped. You can move ownership, borrow it temporarily, or clone the data.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;example-moved-value-error&quot;&gt;Example: Moved value error&lt;&#x2F;h3&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;takes_ownership&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;s&lt;&#x2F;span&gt;&lt;span&gt;: String) {
+&lt;&#x2F;span&gt;&lt;span&gt;    println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, s);
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; s1 = String::from(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;hello&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;takes_ownership&lt;&#x2F;span&gt;&lt;span&gt;(s1);
+&lt;&#x2F;span&gt;&lt;span&gt;    println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, s1); &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; error: value was moved
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Once ownership is transferred, you can no longer use the original. This prevents bugs like double-free or use-after-free that are common in C&#x2F;C++.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;5-borrowing-rules&quot;&gt;5. Borrowing Rules&lt;&#x2F;h2&gt;
+&lt;p&gt;Instead of transferring ownership, you can borrow references. Borrowing can be either immutable (&lt;code&gt;&amp;amp;T&lt;&#x2F;code&gt;) or mutable (&lt;code&gt;&amp;amp;mut T&lt;&#x2F;code&gt;), but Rust enforces strict rules:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;You can have &lt;strong&gt;multiple immutable borrows&lt;&#x2F;strong&gt; at the same time.&lt;&#x2F;li&gt;
+&lt;li&gt;Or &lt;strong&gt;one mutable borrow&lt;&#x2F;strong&gt;.&lt;&#x2F;li&gt;
+&lt;li&gt;But not both.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;This is enforced at compile time.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;invalid-example-two-mutable-borrows&quot;&gt;Invalid example: Two mutable borrows&lt;&#x2F;h3&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let mut&lt;&#x2F;span&gt;&lt;span&gt; s = String::from(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;hello&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; r1 = &amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;mut&lt;&#x2F;span&gt;&lt;span&gt; s;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; r2 = &amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;mut&lt;&#x2F;span&gt;&lt;span&gt; s; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; error: cannot borrow `s` twice mutably
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The compiler ensures that you never access memory from multiple places in ways that could cause race conditions or undefined behavior.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;6-lifetimes&quot;&gt;6. Lifetimes&lt;&#x2F;h2&gt;
+&lt;p&gt;Lifetimes are Rust&#x27;s way of tracking how long references are valid. The compiler uses lifetimes to prevent dangling references.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;example-dangling-reference-compile-error&quot;&gt;Example: Dangling reference (compile error)&lt;&#x2F;h3&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; result;
+&lt;&#x2F;span&gt;&lt;span&gt;    {
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; s = String::from(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;temporary&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;        result = &amp;amp;s; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; s does not live long enough
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;    println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, result); &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; would be a dangling reference
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Rust will reject this code, saving you from accessing freed memory. Often, you&#x27;ll write explicit lifetime annotations in function signatures when dealing with multiple references.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;7-concurrency-without-data-races&quot;&gt;7. Concurrency Without Data Races&lt;&#x2F;h2&gt;
+&lt;p&gt;Rust prevents data races at compile time using its ownership and borrowing rules. When you need to share mutable state between threads, you must use thread-safe abstractions like &lt;code&gt;Arc&amp;lt;Mutex&amp;lt;T&amp;gt;&amp;gt;&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;example-thread-safe-counter&quot;&gt;Example: Thread-safe counter&lt;&#x2F;h3&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;use &lt;&#x2F;span&gt;&lt;span&gt;std::sync::{Arc, Mutex};
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;use &lt;&#x2F;span&gt;&lt;span&gt;std::thread;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; counter = Arc::new(Mutex::new(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;));
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let mut&lt;&#x2F;span&gt;&lt;span&gt; handles = vec![];
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;_ in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;..&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;10 &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; counter = Arc::clone(&amp;amp;counter);
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; handle = thread::spawn(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;move &lt;&#x2F;span&gt;&lt;span&gt;|| {
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let mut&lt;&#x2F;span&gt;&lt;span&gt; num = counter.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;lock&lt;&#x2F;span&gt;&lt;span&gt;().&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;unwrap&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;            *num += &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;        });
+&lt;&#x2F;span&gt;&lt;span&gt;        handles.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;push&lt;&#x2F;span&gt;&lt;span&gt;(handle);
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for&lt;&#x2F;span&gt;&lt;span&gt; handle in handles {
+&lt;&#x2F;span&gt;&lt;span&gt;        handle.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;join&lt;&#x2F;span&gt;&lt;span&gt;().&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;unwrap&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Result: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, *counter.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;lock&lt;&#x2F;span&gt;&lt;span&gt;().&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;unwrap&lt;&#x2F;span&gt;&lt;span&gt;());
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;In many other languages, this would compile fine but possibly fail at runtime. In Rust, the compiler ensures that shared state is accessed safely.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;final-thoughts&quot;&gt;Final Thoughts&lt;&#x2F;h2&gt;
+&lt;p&gt;Rust asks a lot from the developer upfront. You&#x27;ll be forced to think about ownership, lifetimes, mutability, and error paths very early in the process. But once your code compiles, it&#x27;s often rock-solid. You&#x27;ll find fewer runtime crashes, undefined behaviors, or memory leaks.&lt;&#x2F;p&gt;
+&lt;p&gt;More importantly, Rust helps you develop habits that transfer to any language: understanding lifecycles, reducing shared mutable state, and always considering failure cases.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;additional-resources&quot;&gt;Additional Resources&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;doc.rust-lang.org&#x2F;book&#x2F;&quot;&gt;The Rust Book&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;doc.rust-lang.org&#x2F;rust-by-example&#x2F;&quot;&gt;Rust by Example&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;rust-lang&#x2F;rustlings&quot;&gt;Rustlings: Interactive CLI Exercises&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;cheats.rs&#x2F;&quot;&gt;cheats.rs: Rust best practices&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>A simple word definition script</title>
+        <published>2015-08-25T00:00:00+00:00</published>
+        <updated>2015-08-25T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/a-simple-word-definition-script/"/>
+        <id>https://noos.blog/posts/a-simple-word-definition-script/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/a-simple-word-definition-script/">&lt;p&gt;Have you ever come across a difficulty to find a definition of a word that you are looking for. Well I find it bit difficult for me.&lt;&#x2F;p&gt;
+&lt;p&gt;I normally use Google search to find definitions of words. For example to get the definition of the word &quot;replenish&quot; I use &lt;a href=&quot;https:&#x2F;&#x2F;www.google.lk&#x2F;webhp?sourceid=chrome-instant&amp;amp;ion=1&amp;amp;espv=2&amp;amp;ie=UTF-8#q=definition%20replenish&quot;&gt;&lt;em&gt;definition replenish&lt;&#x2F;em&gt;&lt;&#x2F;a&gt; on search bar&lt;&#x2F;p&gt;
+&lt;p&gt;But this approach is still bit clumsy though, since you need a browser and if you are already opened multiple tabs then it is sometimes get messy around to switch around tabs.&lt;&#x2F;p&gt;
+&lt;p&gt;So I found out this simple script from the book &lt;a href=&quot;https:&#x2F;&#x2F;www.packtpub.com&#x2F;application-development&#x2F;linux-shell-scripting-cookbook-second-edition&quot;&gt;&lt;em&gt;Linux Shell Scripting Cookbook, 2nd Edition&lt;&#x2F;em&gt;&lt;&#x2F;a&gt; that will query your word and get the definition of it.&lt;&#x2F;p&gt;
+&lt;p&gt;Let&#x27;s see how to get it to work (I have altered the original script from the book to make is more convenient)&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;First you need an account in &lt;em&gt;dictionaryapi.com&lt;&#x2F;em&gt; - &lt;a href=&quot;http:&#x2F;&#x2F;www.dictionaryapi.com&#x2F;register&#x2F;index.htm&quot;&gt;http:&#x2F;&#x2F;www.dictionaryapi.com&#x2F;register&#x2F;index.htm&lt;&#x2F;a&gt;
+&lt;ul&gt;
+&lt;li&gt;API key for the &lt;em&gt;learners&lt;&#x2F;em&gt; API would be enough for the time being&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;Get the script from &lt;a href=&quot;https:&#x2F;&#x2F;gist.github.com&#x2F;nooscraft&#x2F;1fe12ee85074e361836a&quot;&gt;here&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;Assign your API key to the variable &lt;strong&gt;apikey&lt;&#x2F;strong&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;Make it executable &lt;code&gt;chmod +x define&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;Optional: if you want to make it available system wide add the script to &lt;code&gt;&#x2F;usr&#x2F;local&#x2F;bin&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;Finally you can run it as &lt;code&gt;.&#x2F;define replenish&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;The outcome would be:-
+&lt;img src=&quot;&#x2F;public&#x2F;images&#x2F;define_script.png&quot; alt=&quot;img&quot; class=&quot;inline&quot;&#x2F;&gt;&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>JDK 9 and JShell</title>
+        <published>2015-06-12T00:00:00+00:00</published>
+        <updated>2015-06-12T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/jdk-9-and-jshell/"/>
+        <id>https://noos.blog/posts/jdk-9-and-jshell/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/jdk-9-and-jshell/">&lt;h3 id=&quot;intro&quot;&gt;Intro&lt;&#x2F;h3&gt;
+&lt;p&gt;I recently got to know about this official Java REPL (Read-Eval-Print-Loop) or JShell project. It is named as Kulla and you can visit &lt;a href=&quot;http:&#x2F;&#x2F;openjdk.java.net&#x2F;projects&#x2F;kulla&#x2F;&quot;&gt;here&lt;&#x2F;a&gt; to see the project&#x27;s home. This is pretty much same like the Python&#x27;s IDLE (If you have used it before) and a great way to exercise your code in real time. Also the good thing is that this project will be available as a part of JDK9 among with some other cool features.&lt;&#x2F;p&gt;
+&lt;p&gt;Anyhow I managed to get it run on own and have tried few exercises too. Here, take a look&lt;&#x2F;p&gt;
+&lt;script type=&quot;text&#x2F;javascript&quot; src=&quot;https:&#x2F;&#x2F;asciinema.org&#x2F;a&#x2F;eddp51uxxwidh8vlpy91ufyj2.js&quot; id=&quot;asciicast-eddp51uxxwidh8vlpy91ufyj2&quot; async&gt;&lt;&#x2F;script&gt;
+&lt;h3 id=&quot;how-do-i-get-it-to-run&quot;&gt;How do I get it to run&lt;&#x2F;h3&gt;
+&lt;p&gt;I haven&#x27;t tried this on Windows, &lt;strong&gt;only on POSIX based systems (Linux)&lt;&#x2F;strong&gt;.  But I believe the precompiled jar will work on Windows. You can give it a go and see.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;easy-way&quot;&gt;Easy way&lt;&#x2F;h3&gt;
+&lt;p&gt;If you want to try out REPL right away there&#x27;s this precompiled Jar that you can use . What you&#x27;ll need is&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Link for the Jar:Kulla.jar&lt;&#x2F;li&gt;
+&lt;li&gt;Java 9 early access JDK&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Once these are in place you just need to set the JAVA_HOME to your &#x2F; path &#x2F; to &#x2F; JDK 9. Then execute the following -jar command:-&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;$ java -jar kulla.jar&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;You will be entered in to the JShell.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;hard-way&quot;&gt;Hard way&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;strong&gt;NOTE: The whole build process can take up to 20-30 minutes or more, so brace yourself.&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Make sure you have set the JAVA_HOME&lt;&#x2F;li&gt;
+&lt;li&gt;You also need Mercurial. If you are on Ubuntu just give &lt;code&gt;sudo apt-get install mercurial&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;Then the follow these commands to get kulla-dev branch built
+&lt;ul&gt;
+&lt;li&gt;hg clone http:&#x2F;&#x2F;hg.openjdk.java.net&#x2F;kulla&#x2F;dev kulla-dev&lt;&#x2F;li&gt;
+&lt;li&gt;cd kulla-dev&lt;&#x2F;li&gt;
+&lt;li&gt;sh get_sources.sh&lt;&#x2F;li&gt;
+&lt;li&gt;bash configure –with-boot-jdk=&#x2F;path&#x2F;to&#x2F;jdk1.9&lt;&#x2F;li&gt;
+&lt;li&gt;make clean images&lt;&#x2F;li&gt;
+&lt;li&gt;make install  (optional)&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;OK, kulla-dev branch is now built, hopefully without any errors. Now lets see how we can build and run the REPL. I&#x27;m extracting these information from official README under Kulla dev branch.&lt;&#x2F;p&gt;
+&lt;p&gt;Download JLINE2 from Maven, and set the environment variable JLINE2LIB to point to the downloaded jar file.&lt;&#x2F;p&gt;
+&lt;p&gt;Building REPL:-&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;cd langtools&#x2F;repl &lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;bash .&#x2F;scripts&#x2F;compile.sh&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Running:-&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;bash .&#x2F;scripts&#x2F;run.sh&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;If everything goes fine you&#x27;ll be entered to the JShell without any issues.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;features&quot;&gt;Features&lt;&#x2F;h3&gt;
+&lt;p&gt;I will add a summary of features that you&#x27;ll find useful when using the REPL.&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;REPL has networking support. Yes you can work with java.net&lt;&#x2F;li&gt;
+&lt;li&gt;Semicolone is optional giving you a flexibility like most of REPL&#x27;s out there&lt;&#x2F;li&gt;
+&lt;li&gt;It has some useful help commands that you can use to improve your productivity. &#x2F;help list those commands&lt;&#x2F;li&gt;
+&lt;li&gt;Checked exceptions are not valid here. Like in normal Java environment you will not be forced to handle the checked exceptions. REPL will be handling it in the background&lt;&#x2F;li&gt;
+&lt;li&gt;Expressions will also work out of the box here. Arithmetic, String manipulations, method calls .etc&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;java.net&#x2F;downloads&#x2F;adoptopenjdk&#x2F;REPL_Tutorial.pdf&quot;&gt;Here&lt;&#x2F;a&gt; I found a good tutorial that might be useful. It has some basic to intermediate exercises that you can follow go get familiar with the JShell&#x2F;REPL&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>JAXB + Maven – Xml to Java</title>
+        <published>2013-09-02T00:00:00+00:00</published>
+        <updated>2013-09-02T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/jaxb-maven-xml-to-java/"/>
+        <id>https://noos.blog/posts/jaxb-maven-xml-to-java/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/jaxb-maven-xml-to-java/">&lt;h3 id=&quot;situation&quot;&gt;Situation&lt;&#x2F;h3&gt;
+&lt;p&gt;Assume there&#x27;s a situation where you want to generate Java sources from a xml schema definition (xsd).  And generate it constantly whenever you want it if the xsd&#x27;s got updated.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;solution&quot;&gt;Solution&lt;&#x2F;h3&gt;
+&lt;p&gt;There are quiet a few out tools&#x2F;libs out there but I found this particulate set (Maven and JAXB2) works well for me, just because it&#x27;s pretty straight forward. But you may prefer a different approach.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;in-to-the-action&quot;&gt;In to the action&lt;&#x2F;h3&gt;
+&lt;p&gt;Let&#x27;s create a very basic maven project (assume you have already set up Maven and Java)&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;mvn archetype:generate -DgroupId={com.jaxb.hello} -DartifactId={HelloJAXB2}
+&lt;&#x2F;span&gt;&lt;span&gt; -DarchetypeArtifactId=maven-archetype-quickstart  -DinteractiveMode=false
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Once the project is created open the pom.xml file in edit mode and add following two plugins&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http:&#x2F;&#x2F;mojo.codehaus.org&#x2F;jaxb2-maven-plugin&#x2F;&quot;&gt;JAXB-2 Maven Plugin&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;http:&#x2F;&#x2F;maven.apache.org&#x2F;plugins&#x2F;maven-source-plugin&#x2F;&quot;&gt;Maven Source Plugin&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;[Since this is a sample project you may have to define the maven &lt;code&gt;&amp;lt;plugins &#x2F;&amp;gt;&lt;&#x2F;code&gt; sections]&lt;&#x2F;p&gt;
+&lt;img src=&quot;&#x2F;public&#x2F;images&#x2F;plugins-section.png&quot; alt=&quot;img&quot; class=&quot;inline&quot;&#x2F;&gt;
+&lt;p&gt;Carefully notice the sections&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;&amp;lt;generatePackage&amp;gt;&lt;&#x2F;code&gt; defines the place where you want to put the generated sources for the xsd&#x27;s&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;&amp;lt;schemaIncludes&amp;gt;&lt;&#x2F;code&gt; defines the place where you place your .xsd files.&lt;&#x2F;p&gt;
+&lt;p&gt;Now keep all that in mine lets see the project structure&lt;&#x2F;p&gt;
+&lt;img src=&quot;&#x2F;public&#x2F;images&#x2F;project-structure.png&quot; alt=&quot;img&quot; class=&quot;inline&quot;&#x2F;&gt;
+&lt;p&gt;As you can see I just added a single .xsd to the location helloschema&#x2F;&lt;&#x2F;p&gt;
+&lt;p&gt;Once all these are in place you just have run the Maven target.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;mvn package&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;img src=&quot;&#x2F;public&#x2F;images&#x2F;final-build.png&quot; alt=&quot;img&quot; class=&quot;inline&quot;&#x2F;&gt;
+&lt;p&gt;[Here I have skipped the tests for the convenience]&lt;&#x2F;p&gt;
+&lt;p&gt;If everything goes smoothly you&#x27;ll see two .jar files in the target folder&lt;&#x2F;p&gt;
+&lt;img src=&quot;&#x2F;public&#x2F;images&#x2F;maven-build.png&quot; alt=&quot;img&quot; class=&quot;inline&quot;&#x2F;&gt;
+&lt;p&gt;Sources are bundled in the &lt;code&gt;HelloJAXB2-1.1-SNAPSHOT-sources.jar&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;and you can find it also in &lt;code&gt;generated-sources&lt;&#x2F;code&gt; folder as well&lt;&#x2F;p&gt;
+&lt;img src=&quot;&#x2F;public&#x2F;images&#x2F;generated-sources.png&quot; alt=&quot;img&quot; class=&quot;inline&quot;&#x2F;&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Google Go on OpenSUSE 12.1</title>
+        <published>2012-01-29T00:00:00+00:00</published>
+        <updated>2012-01-29T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/google-go-on-opensuse-12-1/"/>
+        <id>https://noos.blog/posts/google-go-on-opensuse-12-1/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/google-go-on-opensuse-12-1/">&lt;h3 id=&quot;intro&quot;&gt;Intro&lt;&#x2F;h3&gt;
+&lt;p&gt;As you may have already know the latest distribution release of &lt;a href=&quot;http:&#x2F;&#x2F;en.opensuse.org&#x2F;Portal:12.1&quot;&gt;OpenSUSE 12.1&lt;&#x2F;a&gt; ships with Google Go language. &lt;a href=&quot;http:&#x2F;&#x2F;golang.org&#x2F;&quot;&gt;Go language&lt;&#x2F;a&gt; was founded by Google as their very own programming language. It works like an interpreter language yet it has to be compiled in order to execute. This small introduction will show you how to set up the environment and run your first Go language program.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;installing-go&quot;&gt;Installing Go&lt;&#x2F;h3&gt;
+&lt;p&gt;Actually Go language is a part of the SUSE 12.1 distribution so you will not get it out of the box that is you have to install it first in order to use it. So lets begin installing Go&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;sudo zypper install go&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Here I have issued the zypper command to install the Go (usual SUSE way of installing packages from repos). It will probably install two packages. Ok after the successful installation lets check if it&#x27;s available&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;whereis go&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;outputs&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;go: &#x2F;usr&#x2F;lib&#x2F;go &#x2F;usr&#x2F;share&#x2F;go&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Voila.! so we got installed Go&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;setting-up-the-environment&quot;&gt;Setting up the environment&lt;&#x2F;h3&gt;
+&lt;p&gt;As in the Go guided &lt;a href=&quot;http:&#x2F;&#x2F;golang.org&#x2F;doc&#x2F;install.html#introduction&quot;&gt;tutorial&lt;&#x2F;a&gt; mentioned we need to set up three environment variables in order to successfully compile and execute a Go program. So lets open up the &lt;code&gt;&#x2F;.bashrc&lt;&#x2F;code&gt; file where you usually place your environment variables (because &lt;code&gt;&#x2F;.bashrc&lt;&#x2F;code&gt; file executes with every new session)&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;sudo nano ~&#x2F;.bashrc&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;place three environment variables on the bottom of the file:-&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;export GOROOT=&#x2F;usr&#x2F;lib&#x2F;go
+&lt;&#x2F;span&gt;&lt;span&gt;export GOOS=linux
+&lt;&#x2F;span&gt;&lt;span&gt;export GOARCH=386
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;[ctrl + x to save the file]&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;export GOROOT&lt;&#x2F;code&gt; – location of your Go source installation (&#x2F;usr&#x2F;lib&#x2F;go) use whereis command to see that as used before.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;export GOOS&lt;&#x2F;code&gt; – Your OS type which is Linux&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;export GOARCH&lt;&#x2F;code&gt; – Your OS architecture, in my case x86-32 (32-bit) so it goes as 386 [see here for more details]. Issue lscpu to check your sys-architecture.&lt;&#x2F;p&gt;
+&lt;p&gt;Ok now everything is setup up. All you have to do now is open a new session, simply logout and re-login. or simply do a &lt;code&gt;source ~&#x2F;.bashrc&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;first-program&quot;&gt;First program&lt;&#x2F;h3&gt;
+&lt;p&gt;As this is an introduction I will grab the same &quot;Hello&quot; program listed on &lt;a href=&quot;http:&#x2F;&#x2F;golang.org&#x2F;doc&#x2F;install.html#writing&quot;&gt;http:&#x2F;&#x2F;golang.org&#x2F;doc&#x2F;install.html#writing&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;nano hello.go&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;go&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-go &quot;&gt;&lt;code class=&quot;language-go&quot; data-lang=&quot;go&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;package &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;main
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;fmt&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;func &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span&gt;() {
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;fmt&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Printf&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;hello, world&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;[ctrl + x to save the file]&lt;&#x2F;p&gt;
+&lt;p&gt;As I did mentioned earlier Go is a compile and run language like C or C++. So you&#x27;ll have to to take the necessary steps before you make your Go code to be executed.&lt;&#x2F;p&gt;
+&lt;p&gt;Compiling, linking and executing&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;8g hello.go
+&lt;&#x2F;span&gt;&lt;span&gt;8l hello.8
+&lt;&#x2F;span&gt;&lt;span&gt;.&#x2F;8.out
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Will gives you&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;hello, world&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Note: here I have used 8g, 8l because my arc-type is 32-bit (386).
+You will notice a different formation on the guide.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;Now you have successfully completed your first Google Go language program. Pretty straight forward hah? To me it seems like that it follows a familiar executing process as in assembly language. So this is just a little heads up you can find more tutorials and code sample on &lt;a href=&quot;http:&#x2F;&#x2F;golang.org&#x2F;doc&#x2F;&quot;&gt;http:&#x2F;&#x2F;golang.org&#x2F;doc&#x2F;&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+</feed>

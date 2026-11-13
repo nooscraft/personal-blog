@@ -1,0 +1,663 @@
+<!doctype html>
+<html lang="en" data-theme="toggle">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <!-- Enable responsiveness on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;answering-the-last-question-first&#x2F;" />
+    
+    <!-- Robots meta -->
+    
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    
+
+    
+      
+        <meta name="description" content="Ask someone three questions at once and they often answer the third one first. What the research says about that habit, and what language models do with questions in a row." />
+        <meta property="og:description" content="Ask someone three questions at once and they often answer the third one first. What the research says about that habit, and what language models do with questions in a row." />
+        <meta property="twitter:description" content="Ask someone three questions at once and they often answer the third one first. What the research says about that habit, and what language models do with questions in a row." />
+      
+    
+
+    <!-- Title -->
+    
+      
+    
+    <title>
+    
+    Answering the last question first | Noos - Where Thought, Code, and Craft Converge
+    
+</title>
+    
+    <!-- Author -->
+    
+    <meta name="author" content="Oshadha G" />
+    
+    
+    <!-- Article specific meta tags -->
+    
+    
+    <meta property="article:published_time" content="2026-10-02T00:00:00+00:00" />
+    
+    
+    
+    
+    <meta property="article:tag" content="llm" />
+    
+    <meta property="article:tag" content="psychology" />
+    
+    <meta property="article:tag" content="memory" />
+    
+    <meta property="article:tag" content="conversation" />
+    
+    <meta property="article:tag" content="position-bias" />
+    
+    <meta property="article:tag" content="reflection" />
+    
+    
+    
+    
+    <meta property="article:section" content="Engineering" />
+    
+    
+    
+
+    <!-- Additional Facebook Meta Tags -->
+    <meta property="og:site_name" content="Noos - Where Thought, Code, and Craft Converge" />
+    <meta
+      property="og:url"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;answering-the-last-question-first&#x2F;"
+    />
+    <meta
+      property="og:type"
+      content="article"
+    />
+    <meta property="og:title" content="Answering the last question first | Noos - Where Thought, Code, and Craft Converge" />
+
+    <!-- Additional Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      property="twitter:url"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;answering-the-last-question-first&#x2F;"
+    />
+    <meta name="twitter:title" content="Answering the last question first | Noos - Where Thought, Code, and Craft Converge" />
+
+    <!-- Cover images -->
+           
+           
+           
+           
+      
+      
+      
+      
+      
+    
+
+    <meta
+      property="og:image"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;answering-the-last-question-first.png"
+    />
+
+    <meta
+      name="twitter:image"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;answering-the-last-question-first.png"
+    />
+
+
+
+    <!-- Favicons -->
+           
+           <!-- PNG + ICO (some clients ignore SVG favicons) -->
+           <link
+             rel="icon"
+             type="image/png"
+             sizes="96x96"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/favicon-96x96.png?v=3"
+           />
+           <link
+             rel="apple-touch-icon"
+             sizes="180x180"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/apple-touch-icon.png?v=3"
+           />
+           <link
+             rel="shortcut icon"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/favicon.ico?v=3"
+           />
+           
+
+    <!-- RSS Feed -->
+    
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      title="RSS"
+      href="https://noos.blog/atom.xml"
+    />
+    
+
+    <!-- Load Styles -->
+    
+      <link
+        rel="stylesheet"
+        href="https://noos.blog/site.css"
+      />
+    
+
+    <!-- Load Fonts -->
+    
+
+  
+
+
+
+
+
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+  
+
+
+
+<!-- Forcing Font -->
+<style>
+body {
+  font-family:
+    "JetBrains Mono", Menlo, Monaco, Lucida Console, Liberation Mono,
+    DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New,
+    monospace, serif !important;
+}
+</style>
+
+
+    <!-- Pass Theme Preference as Data Attribute -->
+    <script src="https://noos.blog/js/init-theme.js"></script>
+
+    <!-- Reference return to click position script -->
+    <script defer src="https://noos.blog/js/reference-return.js"></script>
+
+    <!-- Additional scripts -->
+    
+      
+        <script defer src="https://noos.blog/js/codeblock.js"></script>
+      
+            
+              <script defer src="https://noos.blog/js/toggle-theme.js"></script>
+            
+      
+<!-- MathJax script for rendering LaTeX math equations -->
+<script src="https://noos.blog/js/mathjax-config.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+  async
+></script>
+
+
+      
+<script type="text/javascript" src="https://noos.blog/elasticlunr.min.js"></script>
+<script type="text/javascript" src="https://noos.blog/js/search.js"></script>
+
+    
+    
+    <!-- Structured Data (JSON-LD) -->
+    
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Answering the last question first",
+  
+  "description": "Ask someone three questions at once and they often answer the third one first. What the research says about that habit, and what language models do with questions in a row.",
+  
+  
+  "datePublished": "2026-10-02T00:00:00+00:00",
+  
+  
+  "author": {
+    "@type": "Person",
+    "name": "Oshadha G"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Noos - Where Thought, Code, and Craft Converge",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https:&#x2F;&#x2F;noos.blog/icons/favicon/web-app-manifest-512x512.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;answering-the-last-question-first&#x2F;"
+  },
+  "url": "https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;answering-the-last-question-first&#x2F;",
+  
+  "keywords": "llm, psychology, memory, conversation, position-bias, reflection",
+  
+  "inLanguage": "en"
+}
+</script>
+
+
+    
+    <!-- Google Analytics (GA4) -->
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-54YK7R04LX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-54YK7R04LX', {
+        'anonymize_ip': true,
+        'respect_dnt': true
+      });
+    </script>
+    
+  </head>
+
+  <!-- Body element (contents of the page) -->
+  <body class="hack main container">
+    
+  
+    
+    
+      
+  
+  <section class="nav-header">
+    <nav
+      itemscope
+      itemtype="http://schema.org/SiteNavigationElement"
+      class="navbar"
+    >
+      <section class="nav-links">
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/"
+        >
+          <span itemprop="name">Home</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/about"
+        >
+          <span itemprop="name">About</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/categories"
+        >
+          <span itemprop="name">Categories</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/tags"
+        >
+          <span itemprop="name">Tags</span>
+        </a>
+        
+      </section>
+    </nav>
+    <aside class="user-actions-container">
+      
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        class="search-icon"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+        />
+      </svg>
+      <input type="text" id="search" placeholder="Search..." />
+      <section class="search-results" aria-live="polite">
+        <article class="search-results__items" role="list"></article>
+      </section>
+       
+      <a id="dark-mode-toggle" href="#">
+        <img
+          src="https://noos.blog/icons/sun.svg"
+          id="sun-icon"
+          style="filter: invert(1)"
+          alt="Light mode"
+        />
+        <img
+          src="https://noos.blog/icons/moon.svg"
+          id="moon-icon"
+          alt="Dark mode"
+        />
+      </a>
+       
+      <a
+        href="https://noos.blog/atom.xml"
+        class="feed-icon"
+        rel="noopener noreferrer"
+      >
+        <img
+          src="https://noos.blog/icons/rss.svg"
+          id="rss-icon"
+          alt="RSS feed"
+          class="social-icon"
+        />
+      </a>
+       
+    </aside>
+  </section>
+  
+
+    
+
+
+    <main>
+      
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">Answering the last question first</h1>
+        
+        <data class="muted">
+    <svg class="icon i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <data>12 minute read</data>
+    
+    
+    <svg class="icon i-calendar" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <!-- Calendar outline -->
+        <rect x="3" y="6" width="26" height="23" rx="2" ry="2"/>
+        <!-- Binding rings -->
+        <line x1="10" y1="3" x2="10" y2="9"/>
+        <line x1="22" y1="3" x2="22" y2="9"/>
+        <!-- Top separator -->
+        <line x1="3" y1="12" x2="29" y2="12"/>
+    </svg>
+
+    Published: 2026-10-02
+    
+</data>
+        
+        
+        
+        
+        
+        
+          
+          
+          
+          
+          
+        
+        
+        <figure class="post-cover" style="margin: 1.25rem 0;">
+          <img src="&#x2F;images&#x2F;covers&#x2F;answering-the-last-question-first.png" alt="Answering the last question first cover" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--color-border-default, #e5e7eb);" onerror="this.parentNode.style.display='none'" />
+        </figure>
+        
+    </header>
+
+    <article itemprop="articleBody">
+        
+            <!-- If no summary separate from content, just render content -->
+            <p>A while ago I was following an interview and noticed something in the way the person answered. They were asked three questions in one go, and they started with the last one. The most recent question got answered first.</p>
+<p>It got me wondering why. A mental shortcut? Natural behaviour that everyone shares? Some primal instinct? Or just a personal quirk? And because I spend a lot of time around language models, a second question followed: do they do something similar?</p>
+<p>Both sides turn out to be studied, and I ran a small test of my own on top. Here is what the research says, and what I saw.</p>
+<h2 id="the-habit-has-a-name">The habit has a name</h2>
+<p>Conversation analysts noticed this decades ago. Harvey Sacks wrote about it in a 1987 chapter on preferences for agreement and contiguity. Contiguity is the idea that an answer sits right next to the question it answers, with nothing in between.</p>
+<p>The Encyclopedia of Terminology for Conversation Analysis (entry by Katariina Harjunpää, 2023) gives exactly this case as a well-known example: when a turn contains two questions, "the latter question tends to be responded first". The reason is neat. If you answer the last question first, that question and its answer stay next to each other. If you answer in the order asked, every question gets separated from its answer by the talk in between.</p>
+<p>The same entry mentions that most confirming answers to questions arrive within 0 to 200 milliseconds of the question ending, based on a study of ten languages by Stivers and colleagues (2009). Conversation moves fast, and adjacency matters.</p>
+<p>One honest note: I could not read Sacks's chapter itself (it sits behind a publisher paywall), so I am going by the encyclopedia's summary. Also note the wording, "tends to". A tendency, not a rule.</p>
+<p>Skovholt and colleagues (2021, Journal of Pragmatics) studied video-recorded oral exams in Norwegian secondary schools. When examiners asked several questions in one turn, the questions scaffolded the students' answers. But when the questions were separated by more talk across turns, "candidates typically addressed only the final question". The high-performing candidates overruled this and gave fuller answers.</p>
+<h2 id="memory-has-a-hand-in-it-too">Memory has a hand in it too</h2>
+<p>Memory is the other part of the story, and it is older still.</p>
+<p>In 1962, Murdock gave people lists of words and asked them to recall the words in any order they liked. The pattern is known as the serial position effect: people remembered the first items (primacy) and the last items (recency) better than the middle.</p>
+<p>Glanzer and Cunitz took this further in 1966. They inserted a delay filled with counting before recall. After 30 seconds of counting, the recency effect was gone, while the beginning of the list was mostly unaffected. Their reading: the last items sit in a short-term store that fades fast; the early ones had already made it into longer-term memory.</p>
+<p>How much fits in that short-term store? Cowan (2001) put the capacity at about four chunks.</p>
+<p>Here is my own connection, my reading rather than a finding from any paper. Three questions fit comfortably under four chunks, so just holding them is not the problem. But while someone thinks through the answer to the first question, the other two have to wait somewhere. The third one is the freshest. Answering it first is cheap; it is right there at the top.</p>
+<h2 id="shortcut-instinct-or-just-a-quirk">Shortcut, instinct, or just a quirk?</h2>
+<p>So which of the four options holds up?</p>
+<p>Shortcut: partly, maybe. Answering the freshest question first does cost less memory. But conversation analysis frames the same behaviour as social: keeping question and answer together so the exchange stays coherent. It is not only laziness.</p>
+<p>Natural behaviour: there is a good argument here. Anderson and Schooler (1991) looked at environmental sources, the New York Times, parental speech and electronic mail, and found that the chance a piece of information is needed again follows recency, frequency and the pattern of past exposure, much the way human memory does. Their argument: memory has the form it does because it is adapted to the environment. If recent things are more likely to matter again soon, favouring the recent is a sensible design, not a bug.</p>
+<p>Primal instinct: I did not find evidence for an instinct specific to answering order. The Anderson and Schooler result is about memory in general, not about this habit. Connecting the two is my own leap.</p>
+<p>Personal bias: here I have to say I do not know. I did not find a study that measures how often people answer the last question first, or how much it varies from person to person. The oral exam study at least shows some people override the tendency.</p>
+<p>My bet: a mix of the first two, a social convention that also happens to be cheap for memory. But that is a guess.</p>
+<h2 id="language-models-have-the-same-curve">Language models have the same curve</h2>
+<p>Now the machine side. The best-known paper is "Lost in the Middle" by Liu and colleagues (TACL, 2024). They took multi-document question answering and moved the relevant document around inside a long prompt. Performance was highest when the answer sat at the very beginning (primacy) or very end (recency), and dropped when it sat in the middle. A U-shaped curve.</p>
+<p>One number stuck with me. With the relevant information placed in the middle, GPT-3.5-Turbo did worse than when it was given no documents at all; the closed-book setting scored 56.1%. Handing the model the answer made things worse, as long as it sat in the wrong place.</p>
+<p>The authors connect this to the serial position effect and cite Murdock. They say observing it in language models is "perhaps surprising", because self-attention is technically equally capable of retrieving any token. Technically capable, yes; in practice, not evenly.</p>
+<p>In their tests, the smallest Llama-2 models (7B) were only recency-biased, while the 13B and 70B versions showed the full U-shape. And extended-context versions of models often performed the same as their shorter-context counterparts. That second point is the hyped but not proven part: a long context window is not the same thing as using it well.</p>
+<p>Recency shows up in simpler settings too. Zhao and colleagues (2021) found that GPT-3 tends to repeat answers that appear towards the end of a few-shot prompt. With the training examples ordered "P P P N" (three positive, one negative last), nearly 90% of predictions were Negative, even though three quarters of the examples were Positive.</p>
+<p>And some of this is built in on purpose. ALiBi (Press, Smith and Lewis, 2022) is a position method whose authors say it has an "inductive bias towards recency": attention between tokens is penalized the further apart they are. Not every model uses ALiBi, and I have not checked which of the models I tested do.</p>
+<h2 id="several-questions-in-one-prompt">Several questions in one prompt</h2>
+<p>The papers above are about documents and examples; closer to my question are studies with several items in one prompt.</p>
+<p>Compound-QA (Hou and colleagues, accepted to ICASSP 2026) is a benchmark of compound questions: several sub-questions packed into a single turn. They rotated three-part questions so every sub-question got a turn in each position, and tested LLaMA and InternLM models. Sub-questions did best in the first and last positions, usually best first, and declined in the middle. The authors link this to the lost in the middle finding.</p>
+<p>BatchPrompt (Lin and colleagues, ICLR 2024) took a different angle. They batched many data points into one prompt to save tokens, and found the same data point can get a different answer depending on where it sits. Their fix is practical: run several permutations and take a majority vote.</p>
+<p>Across turns, Laban and colleagues (2025) simulated over 200,000 conversations and found an average 39% drop in performance when a task is spread over multiple turns instead of given all at once. They also found that models lose track of the middle turns of a conversation: by the eighth turn of a summary task, 20% of citations pointed to documents from turn 8 and only 8% to documents from turns 2 and 3. More capable models showed a milder effect.</p>
+<p>Notice the difference, though. All of this research asks which question gets answered well, depending on where it sits. The habit from the interview is about which question gets answered first. Accuracy by position is not the same thing as answering order, and I did not find an LLM study that measures the order directly.</p>
+<h2 id="what-i-saw-when-i-tried-it">What I saw when I tried it</h2>
+<p>Reading papers is one thing; I wanted to see the order question directly. So I wrote a small Python script, run.py, that posts one prompt to the local Ollama API at temperature 0.8 and prints the response:</p>
+<pre data-lang="python" style="background-color:#2b303b;color:#c0c5ce;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">import </span><span>json, sys, urllib.request, time
+</span><span>prompt = </span><span style="color:#96b5b4;">open</span><span>(sys.argv[</span><span style="color:#d08770;">1</span><span>]).</span><span style="color:#bf616a;">read</span><span>().</span><span style="color:#bf616a;">strip</span><span>()
+</span><span>model = sys.argv[</span><span style="color:#d08770;">2</span><span>]
+</span><span>req = urllib.request.</span><span style="color:#bf616a;">Request</span><span>(&quot;</span><span style="color:#a3be8c;">http://localhost:11434/api/generate</span><span>&quot;,
+</span><span>    </span><span style="color:#bf616a;">data</span><span>=json.</span><span style="color:#bf616a;">dumps</span><span>({&quot;</span><span style="color:#a3be8c;">model</span><span>&quot;: model, &quot;</span><span style="color:#a3be8c;">prompt</span><span>&quot;: prompt, &quot;</span><span style="color:#a3be8c;">stream</span><span>&quot;: </span><span style="color:#d08770;">False</span><span>,
+</span><span>                     &quot;</span><span style="color:#a3be8c;">options</span><span>&quot;: {&quot;</span><span style="color:#a3be8c;">temperature</span><span>&quot;: </span><span style="color:#d08770;">0.8</span><span>}}).</span><span style="color:#bf616a;">encode</span><span>(),
+</span><span>    </span><span style="color:#bf616a;">headers</span><span>={&quot;</span><span style="color:#a3be8c;">Content-Type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">application/json</span><span>&quot;})
+</span><span>d = json.</span><span style="color:#bf616a;">load</span><span>(urllib.request.</span><span style="color:#bf616a;">urlopen</span><span>(req, </span><span style="color:#bf616a;">timeout</span><span>=</span><span style="color:#d08770;">300</span><span>))
+</span><span style="color:#96b5b4;">print</span><span>(d.</span><span style="color:#bf616a;">get</span><span>(&quot;</span><span style="color:#a3be8c;">response</span><span>&quot;, &quot;&quot;).</span><span style="color:#bf616a;">strip</span><span>() or &quot;</span><span style="color:#a3be8c;">ERROR </span><span>&quot; + </span><span style="color:#bf616a;">str</span><span>(d.</span><span style="color:#bf616a;">get</span><span>(&quot;</span><span style="color:#a3be8c;">error</span><span>&quot;)))
+</span></code></pre>
+<p>The first test: one plain line with three easy questions (capital of Australia, bits in a byte, year of the first Moon landing). I ran it three times on each of the four models my Ollama setup can reach: Kimi K3, GLM 5.2, MiniMax M2.7 and Gemma 4 31B. These are cloud models; my local Ollama is just how I reach them. Here is the prompt and one Kimi K3 answer (Canberra, 8 bits, 1969, in that order):</p>
+<pre data-lang="text" style="background-color:#2b303b;color:#c0c5ce;" class="language-text "><code class="language-text" data-lang="text"><span>$ cat q3.txt
+</span><span>Quick ones: what&#39;s the capital of Australia, how many bits are in a byte, and what year did humans first land on the Moon?
+</span><span>
+</span><span>$ python3 run.py q3.txt kimi-k3:cloud
+</span><span>1. **Canberra** (not Sydney, as many assume!)
+</span><span>2. **8 bits** in a byte
+</span><span>3. **1969** — Apollo 11, with Neil Armstrong and Buzz Aldrin landing on July 20
+</span></code></pre>
+<p>The second test was closer to how people actually write. I wrote a rambling morning message with the first question at the very start (the PostgreSQL default port), the second buried in the middle of a long sentence (which git command shows who last changed each line), and the third at the end, explicitly flagged as "the one that's actually blocking me right now" (what is holding port 8080 on macOS). If any model was going to jump to the blocker, the way a person might, it would be here. The full message:</p>
+<pre data-lang="text" style="background-color:#2b303b;color:#c0c5ce;" class="language-text "><code class="language-text" data-lang="text"><span>$ cat buried.txt
+</span><span>Morning! First thing, what&#39;s the default port PostgreSQL listens on? I am setting up a small side project this weekend and the plan is to keep it boring: one Postgres database, a tiny API, nothing fancy. I spent most of last night reading old commits in the repo I forked, trying to figure out why someone had hard-coded a timeout of 37 seconds in the connection pool, and by the way which git command shows who last changed each line of a file, because I want to find out who did that and ask them. Anyway the commit messages were not very helpful, most of them just say &quot;fix&quot; or &quot;wip&quot;, which I have also been guilty of more times than I want to admit. The coffee machine at home broke too so it has been a slow start. Last one, and this is the one that&#39;s actually blocking me right now: how do I see which process is holding port 8080 on macOS? Something is already sitting on it and my API won&#39;t start.
+</span></code></pre>
+<p>Then a tiny script checked where in each response the answer to each question first appears:</p>
+<pre data-lang="text" style="background-color:#2b303b;color:#c0c5ce;" class="language-text "><code class="language-text" data-lang="text"><span>$ python3 tally.py
+</span><span>q3_gemma4_1.txt          answered in order: 1 -&gt; 2 -&gt; 3
+</span><span>q3_gemma4_2.txt          answered in order: 1 -&gt; 2 -&gt; 3
+</span><span>q3_gemma4_3.txt          answered in order: 1 -&gt; 2 -&gt; 3
+</span><span>q3_glm-5.2_1.txt         answered in order: 1 -&gt; 2 -&gt; 3
+</span><span>q3_glm-5.2_2.txt         answered in order: 1 -&gt; 2 -&gt; 3
+</span><span>q3_glm-5.2_3.txt         answered in order: 1 -&gt; 2 -&gt; 3
+</span><span>q3_kimi-k3_1.txt         answered in order: 1 -&gt; 2 -&gt; 3
+</span><span>q3_kimi-k3_2.txt         answered in order: 1 -&gt; 2 -&gt; 3
+</span><span>q3_kimi-k3_3.txt         answered in order: 1 -&gt; 2 -&gt; 3
+</span><span>q3_minimax-m2.7_1.txt    answered in order: 1 -&gt; 2 -&gt; 3
+</span><span>q3_minimax-m2.7_2.txt    answered in order: 1 -&gt; 2 -&gt; 3
+</span><span>q3_minimax-m2.7_3.txt    answered in order: 1 -&gt; 2 -&gt; 3
+</span><span>b_gemma4_1.txt           answered in order: 1 -&gt; 2 -&gt; 3
+</span><span>b_gemma4_2.txt           answered in order: 1 -&gt; 2 -&gt; 3
+</span><span>b_gemma4_3.txt           answered in order: 1 -&gt; 2 -&gt; 3
+</span><span>b_glm-5.2_1.txt          answered in order: 1 -&gt; 2 -&gt; 3
+</span><span>b_glm-5.2_2.txt          answered in order: 1 -&gt; 2 -&gt; 3
+</span><span>b_glm-5.2_3.txt          answered in order: 1 -&gt; 2 -&gt; 3
+</span><span>b_kimi-k3_1.txt          answered in order: 1 -&gt; 2 -&gt; 3
+</span><span>b_kimi-k3_2.txt          answered in order: 1 -&gt; 2 -&gt; 3
+</span><span>b_kimi-k3_3.txt          answered in order: 1 -&gt; 2 -&gt; 3
+</span><span>b_minimax-m2.7_1.txt     answered in order: 1 -&gt; 2 -&gt; 3
+</span><span>b_minimax-m2.7_2.txt     answered in order: 1 -&gt; 2 -&gt; 3
+</span><span>b_minimax-m2.7_3.txt     answered in order: 1 -&gt; 2 -&gt; 3
+</span></code></pre>
+<p>The result, in words: 24 out of 24 responses answered in the written order, first question, then second, then third. Not one skipped the buried middle question. And even with the third question flagged as the blocker, every model answered it last. One Kimi K3 reply said good morning and sympathised about the coffee machine; then, before getting to the answers, it said "Three answers, in order". That made me laugh.</p>
+<p>Caveats, because they matter. This is a tiny test: two prompts, three runs per model, four models, short prompts nowhere near the long contexts in the papers. It says nothing about accuracy at long context, and nothing about Claude, GPT or Gemini, which I have not tested here; only the four models on my Ollama setup.</p>
+<p>Why the difference? My guess, not checked: assistant models are trained on lots of tidy, numbered answers, so following the written order is the polite default. A person in a chat optimises for the conversation; the model optimises for a complete, structured answer.</p>
+<h2 id="where-i-land">Where I land</h2>
+<p>For people, answering the last question first looks like part social habit (contiguity keeps a question glued to its answer) and part memory (the last one is the freshest). Not a flaw, as far as I can tell. How much of it is personal, I cannot say.</p>
+<p>For models, the picture is almost the reverse. In my little test they kept the written order perfectly, all 24 times. But the research says the middle of a long prompt gets less attention, so the thing to watch is not the order but the middle.</p>
+<p>What I plan to try (not tested yet): put the question that matters first or last, number the questions, or send them separately when they really matter. One caution from Lost in the Middle: they tried placing the query both before and after the documents, and while it helped a lot on a synthetic key-value task, it barely changed the multi-document results. So even that is not a cure.</p>
+<p>Anyhow. Next time someone answers three questions in one go, or the next time someone asks me three, I will pay attention to which one comes first. Let's see how it goes.</p>
+<hr />
+<h3 id="references">References</h3>
+<ul>
+<li>Harvey Sacks, <a href="https://doi.org/10.21832/9781800418226-004">On the Preferences for Agreement and Contiguity in Sequences in Conversation</a>, in G. Button and J. R. E. Lee (eds.), <em>Talk and Social Organisation</em>, Multilingual Matters, 1987, pp. 54-69</li>
+<li>Katariina Harjunpää, <a href="https://emcawiki.net/Contiguity">Contiguity</a>, Encyclopedia of Terminology for Conversation Analysis and Interactional Linguistics, ISCA, 2023</li>
+<li>Karianne Skovholt, Marit Skarbø Solem, Maria Njølstad Vonen, Rein Ove Sikveland and Elizabeth Stokoe, <a href="https://doi.org/10.1016/j.pragma.2021.05.020">Asking more than one question in one turn in oral examinations and its impact on examination quality</a>, <em>Journal of Pragmatics</em> 181, 2021, pp. 100-119</li>
+<li>Bennet B. Murdock Jr., <a href="https://doi.org/10.1037/h0045106">The serial position effect of free recall</a>, <em>Journal of Experimental Psychology</em> 64(5), 1962, pp. 482-488</li>
+<li>Murray Glanzer and Anita R. Cunitz, <a href="https://doi.org/10.1016/S0022-5371(66)80044-0">Two storage mechanisms in free recall</a>, <em>Journal of Verbal Learning and Verbal Behavior</em> 5(4), 1966, pp. 351-360</li>
+<li>Nelson Cowan, <a href="https://pubmed.ncbi.nlm.nih.gov/11515286/">The magical number 4 in short-term memory</a>, <em>Behavioral and Brain Sciences</em> 24(1), 2001, pp. 87-114</li>
+<li>John R. Anderson and Lael J. Schooler, <a href="https://doi.org/10.1111/j.1467-9280.1991.tb00174.x">Reflections of the Environment in Memory</a>, <em>Psychological Science</em> 2(6), 1991, pp. 396-408</li>
+<li>Nelson F. Liu et al., <a href="https://aclanthology.org/2024.tacl-1.9/">Lost in the Middle: How Language Models Use Long Contexts</a>, <em>TACL</em> 12, 2024, pp. 157-173</li>
+<li>Tony Z. Zhao et al., <a href="https://proceedings.mlr.press/v139/zhao21c.html">Calibrate Before Use: Improving Few-Shot Performance of Language Models</a>, ICML 2021</li>
+<li>Ofir Press, Noah A. Smith and Mike Lewis, <a href="https://arxiv.org/abs/2108.12409">Train Short, Test Long: Attention with Linear Biases Enables Input Length Extrapolation</a>, ICLR 2022</li>
+<li>Yutao Hou et al., <a href="https://arxiv.org/abs/2411.10163">Compound-QA: A Benchmark for Evaluating LLMs on Compound Questions</a>, accepted to ICASSP 2026</li>
+<li>Jianzhe Lin et al., <a href="https://arxiv.org/abs/2309.00384">BatchPrompt: Accomplish more with less</a>, ICLR 2024</li>
+<li>Philippe Laban, Hiroaki Hayashi, Yingbo Zhou and Jennifer Neville, <a href="https://arxiv.org/abs/2505.06120">LLMs Get Lost In Multi-Turn Conversation</a>, 2025</li>
+</ul>
+
+        
+    </article>
+
+    <!-- Comment section -->
+    
+      
+        
+          <script
+  src="https://giscus.app/client.js"
+  data-repo="nooscraft&#x2F;personal-blog"
+  data-repo-id="R_kgDOQJ_XNg"
+  data-category="General"
+  data-category-id="DIC_kwDOQJ_XNs4CxOmG"
+  data-mapping="pathname"
+  data-strict="0"
+  data-reactions-enabled="1"
+  data-emit-metadata="0"
+  data-input-position="bottom"
+
+  
+  data-theme="https:&#x2F;&#x2F;noos.blog&#x2F;css&#x2F;giscus-theme.css"
+  
+
+  data-lang="en"
+  data-loading="lazy"
+  crossorigin="anonymous"
+  async
+></script>
+
+        
+      
+    
+
+
+    <!-- Page footer -->
+    
+    <footer>
+        <hr>
+        <p>
+            
+            
+                
+                in <a href="https://noos.blog/categories/engineering/">Engineering</a>
+            
+            
+                and
+                tagged
+                
+                    <a href="https://noos.blog/tags/llm/">llm</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/psychology/">psychology</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/memory/">memory</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/conversation/">conversation</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/position-bias/">position-bias</a>
+                    
+                        
+                            
+                                and
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/reflection/">reflection</a>
+                    
+                        
+                    
+                
+            
+        </p>
+
+        <!-- Revision history (optional) -->
+        
+          
+            
+              
+            
+          
+        
+
+        
+        
+    </footer>
+
+
+</article>
+
+
+    </main>
+    
+
+  </body>
+</html>

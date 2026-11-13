@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Noos - Where Thought, Code, and Craft Converge - attention</title>
+    <subtitle>Personal blog about programming, technology, and engineering insights. Topics include Rust, DevOps, Linux, and software craftsmanship.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://noos.blog/tags/attention/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://noos.blog"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2026-04-26T00:00:00+00:00</updated>
+    <id>https://noos.blog/tags/attention/atom.xml</id>
+    <entry xml:lang="en">
+        <title>When nothing feels fun any more</title>
+        <published>2026-04-26T00:00:00+00:00</published>
+        <updated>2026-04-26T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/losing-interest-in-everything/"/>
+        <id>https://noos.blog/posts/losing-interest-in-everything/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/losing-interest-in-everything/">&lt;p&gt;I watched a video recently where a former tech engineer talks about something I have been feeling in myself and seeing in people around me. It is this growing emptiness, where things that used to bring joy now feel flat. Gaming, traveling, hobbies, even just relaxing; everything feels like it has lost its color.&lt;&#x2F;p&gt;
+&lt;p&gt;The video calls it a clinical name, but I do not know if that is what I have or if it is just a phase. What I do know is the feeling is real, and I am not sure if it is going to stay or pass.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;the-pressure-to-keep-building&quot;&gt;The pressure to keep building&lt;&#x2F;h3&gt;
+&lt;p&gt;This hits harder when you work in tech. There is this constant push to keep building, keep shipping, keep getting better. A former Google engineer in that video said even after leaving the job, the habit of always producing followed him. I get that. Even when I am supposed to rest, some part of my brain is thinking about the next thing to build or learn.&lt;&#x2F;p&gt;
+&lt;p&gt;Big win or small win, the joy fades fast. You finish something, feel good for a few hours, then start worrying about the next thing. It is like the moment you stop, you start falling behind.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;time-feels-strange&quot;&gt;Time feels strange&lt;&#x2F;h3&gt;
+&lt;p&gt;Time has felt strange for a while now. I think this has been building for years, but we are moving so fast that it creates this quiet gap. Days blur together. You look back and wonder where the month went. It is not just being busy; it is something deeper. A kind of worry that creeps in when you realize you are pushing yourself hard without knowing what happens after.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;why-this-might-be-happening&quot;&gt;Why this might be happening&lt;&#x2F;h3&gt;
+&lt;p&gt;The video pointed to a few things that clicked with me. First is how everything is about money now. Every hobby has someone trying to sell you a course or a side hustle plan. You cannot just enjoy photography; you have to think about building a brand. You cannot just play a game; you have to consider streaming it. The natural fun gets drained because everything becomes a way to make money.&lt;&#x2F;p&gt;
+&lt;p&gt;Then there is the social media trap. Doom-scrolling eats up whatever free time you have left, and the constant comparison makes hobbies feel like a race. When everything becomes about status and attention, the fun goes away.&lt;&#x2F;p&gt;
+&lt;p&gt;And there is the noise online. We get hit with biased content and ads all day. The mind builds a wall to protect itself. It is a defense, but it also makes you stop caring about good things.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;what-i-am-trying&quot;&gt;What I am trying&lt;&#x2F;h3&gt;
+&lt;p&gt;I do not have answers, but I have been trying a few things that help a little.&lt;&#x2F;p&gt;
+&lt;p&gt;I cut social media down a lot. Not just time limits, but choosing which sites I even open. I stick to places that give me something real, where I learn, not just scroll through fake updates.&lt;&#x2F;p&gt;
+&lt;p&gt;I read more about things outside tech. Fiction, history, random essays about stuff I know nothing about. It reminds me the world is bigger than my work bubble.&lt;&#x2F;p&gt;
+&lt;p&gt;Sleep is the obvious one everyone skips. I am trying to sleep more so my body actually rests. Still working on this, but the nights where I get enough sleep, the next day feels different.&lt;&#x2F;p&gt;
+&lt;p&gt;And family time. Just being around people who knew me before I was a programmer. Talks that have nothing to do with work or getting better at things. That helps more than I expected.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;not-sure-where-this-goes&quot;&gt;Not sure where this goes&lt;&#x2F;h3&gt;
+&lt;p&gt;I do not know if this emptiness is a short reaction to our world now or something that stays. Maybe it is a shared thing that will shift as things change. Maybe it is personal and everyone has to find their own way.&lt;&#x2F;p&gt;
+&lt;p&gt;What I do know is noticing it is the first step. Taking back your attention feels like pushing back against a world that wants to make money from every second of it. I am still figuring out what that looks like day to day.&lt;&#x2F;p&gt;
+&lt;p&gt;The video that got me thinking is &lt;a href=&quot;https:&#x2F;&#x2F;youtu.be&#x2F;mlukRm6ywnA&quot;&gt;here&lt;&#x2F;a&gt;. Worth a watch if this sounds familiar.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;&lt;em&gt;Let us see how it goes.&lt;&#x2F;em&gt;&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+</feed>

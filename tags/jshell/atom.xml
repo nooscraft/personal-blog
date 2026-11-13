@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Noos - Where Thought, Code, and Craft Converge - jshell</title>
+    <subtitle>Personal blog about programming, technology, and engineering insights. Topics include Rust, DevOps, Linux, and software craftsmanship.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://noos.blog/tags/jshell/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://noos.blog"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2015-06-12T00:00:00+00:00</updated>
+    <id>https://noos.blog/tags/jshell/atom.xml</id>
+    <entry xml:lang="en">
+        <title>JDK 9 and JShell</title>
+        <published>2015-06-12T00:00:00+00:00</published>
+        <updated>2015-06-12T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/jdk-9-and-jshell/"/>
+        <id>https://noos.blog/posts/jdk-9-and-jshell/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/jdk-9-and-jshell/">&lt;h3 id=&quot;intro&quot;&gt;Intro&lt;&#x2F;h3&gt;
+&lt;p&gt;I recently got to know about this official Java REPL (Read-Eval-Print-Loop) or JShell project. It is named as Kulla and you can visit &lt;a href=&quot;http:&#x2F;&#x2F;openjdk.java.net&#x2F;projects&#x2F;kulla&#x2F;&quot;&gt;here&lt;&#x2F;a&gt; to see the project&#x27;s home. This is pretty much same like the Python&#x27;s IDLE (If you have used it before) and a great way to exercise your code in real time. Also the good thing is that this project will be available as a part of JDK9 among with some other cool features.&lt;&#x2F;p&gt;
+&lt;p&gt;Anyhow I managed to get it run on own and have tried few exercises too. Here, take a look&lt;&#x2F;p&gt;
+&lt;script type=&quot;text&#x2F;javascript&quot; src=&quot;https:&#x2F;&#x2F;asciinema.org&#x2F;a&#x2F;eddp51uxxwidh8vlpy91ufyj2.js&quot; id=&quot;asciicast-eddp51uxxwidh8vlpy91ufyj2&quot; async&gt;&lt;&#x2F;script&gt;
+&lt;h3 id=&quot;how-do-i-get-it-to-run&quot;&gt;How do I get it to run&lt;&#x2F;h3&gt;
+&lt;p&gt;I haven&#x27;t tried this on Windows, &lt;strong&gt;only on POSIX based systems (Linux)&lt;&#x2F;strong&gt;.  But I believe the precompiled jar will work on Windows. You can give it a go and see.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;easy-way&quot;&gt;Easy way&lt;&#x2F;h3&gt;
+&lt;p&gt;If you want to try out REPL right away there&#x27;s this precompiled Jar that you can use . What you&#x27;ll need is&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Link for the Jar:Kulla.jar&lt;&#x2F;li&gt;
+&lt;li&gt;Java 9 early access JDK&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Once these are in place you just need to set the JAVA_HOME to your &#x2F; path &#x2F; to &#x2F; JDK 9. Then execute the following -jar command:-&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;$ java -jar kulla.jar&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;You will be entered in to the JShell.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;hard-way&quot;&gt;Hard way&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;strong&gt;NOTE: The whole build process can take up to 20-30 minutes or more, so brace yourself.&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Make sure you have set the JAVA_HOME&lt;&#x2F;li&gt;
+&lt;li&gt;You also need Mercurial. If you are on Ubuntu just give &lt;code&gt;sudo apt-get install mercurial&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;Then the follow these commands to get kulla-dev branch built
+&lt;ul&gt;
+&lt;li&gt;hg clone http:&#x2F;&#x2F;hg.openjdk.java.net&#x2F;kulla&#x2F;dev kulla-dev&lt;&#x2F;li&gt;
+&lt;li&gt;cd kulla-dev&lt;&#x2F;li&gt;
+&lt;li&gt;sh get_sources.sh&lt;&#x2F;li&gt;
+&lt;li&gt;bash configure –with-boot-jdk=&#x2F;path&#x2F;to&#x2F;jdk1.9&lt;&#x2F;li&gt;
+&lt;li&gt;make clean images&lt;&#x2F;li&gt;
+&lt;li&gt;make install  (optional)&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;OK, kulla-dev branch is now built, hopefully without any errors. Now lets see how we can build and run the REPL. I&#x27;m extracting these information from official README under Kulla dev branch.&lt;&#x2F;p&gt;
+&lt;p&gt;Download JLINE2 from Maven, and set the environment variable JLINE2LIB to point to the downloaded jar file.&lt;&#x2F;p&gt;
+&lt;p&gt;Building REPL:-&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;cd langtools&#x2F;repl &lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;bash .&#x2F;scripts&#x2F;compile.sh&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Running:-&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;bash .&#x2F;scripts&#x2F;run.sh&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;If everything goes fine you&#x27;ll be entered to the JShell without any issues.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;features&quot;&gt;Features&lt;&#x2F;h3&gt;
+&lt;p&gt;I will add a summary of features that you&#x27;ll find useful when using the REPL.&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;REPL has networking support. Yes you can work with java.net&lt;&#x2F;li&gt;
+&lt;li&gt;Semicolone is optional giving you a flexibility like most of REPL&#x27;s out there&lt;&#x2F;li&gt;
+&lt;li&gt;It has some useful help commands that you can use to improve your productivity. &#x2F;help list those commands&lt;&#x2F;li&gt;
+&lt;li&gt;Checked exceptions are not valid here. Like in normal Java environment you will not be forced to handle the checked exceptions. REPL will be handling it in the background&lt;&#x2F;li&gt;
+&lt;li&gt;Expressions will also work out of the box here. Arithmetic, String manipulations, method calls .etc&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;java.net&#x2F;downloads&#x2F;adoptopenjdk&#x2F;REPL_Tutorial.pdf&quot;&gt;Here&lt;&#x2F;a&gt; I found a good tutorial that might be useful. It has some basic to intermediate exercises that you can follow go get familiar with the JShell&#x2F;REPL&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+</feed>

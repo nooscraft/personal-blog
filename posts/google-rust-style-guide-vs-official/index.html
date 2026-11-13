@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="en" data-theme="toggle">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <!-- Enable responsiveness on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;google-rust-style-guide-vs-official&#x2F;" />
+    
+    <!-- Robots meta -->
+    
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    
+
+    
+      
+        <meta name="description" content="I read Google&#x27;s new Rust style guide next to the official Rust Style Guide and tested a few of its rules on Rust 1.99.0: the rules I&#x27;d borrow, the funny bits, and the pushes I&#x27;d skip." />
+        <meta property="og:description" content="I read Google&#x27;s new Rust style guide next to the official Rust Style Guide and tested a few of its rules on Rust 1.99.0: the rules I&#x27;d borrow, the funny bits, and the pushes I&#x27;d skip." />
+        <meta property="twitter:description" content="I read Google&#x27;s new Rust style guide next to the official Rust Style Guide and tested a few of its rules on Rust 1.99.0: the rules I&#x27;d borrow, the funny bits, and the pushes I&#x27;d skip." />
+      
+    
+
+    <!-- Title -->
+    
+      
+    
+    <title>
+    
+    Google&#x27;s Rust style guide next to the official one | Noos - Where Thought, Code, and Craft Converge
+    
+</title>
+    
+    <!-- Author -->
+    
+    <meta name="author" content="Oshadha G" />
+    
+    
+    <!-- Article specific meta tags -->
+    
+    
+    <meta property="article:published_time" content="2026-11-12T00:00:00+00:00" />
+    
+    
+    
+    
+    <meta property="article:tag" content="rust" />
+    
+    <meta property="article:tag" content="style-guide" />
+    
+    <meta property="article:tag" content="rustfmt" />
+    
+    <meta property="article:tag" content="clippy" />
+    
+    <meta property="article:tag" content="code-review" />
+    
+    
+    
+    
+    <meta property="article:section" content="Programming" />
+    
+    
+    
+
+    <!-- Additional Facebook Meta Tags -->
+    <meta property="og:site_name" content="Noos - Where Thought, Code, and Craft Converge" />
+    <meta
+      property="og:url"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;google-rust-style-guide-vs-official&#x2F;"
+    />
+    <meta
+      property="og:type"
+      content="article"
+    />
+    <meta property="og:title" content="Google&#x27;s Rust style guide next to the official one | Noos - Where Thought, Code, and Craft Converge" />
+
+    <!-- Additional Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      property="twitter:url"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;google-rust-style-guide-vs-official&#x2F;"
+    />
+    <meta name="twitter:title" content="Google&#x27;s Rust style guide next to the official one | Noos - Where Thought, Code, and Craft Converge" />
+
+    <!-- Cover images -->
+           
+           
+           
+           
+      
+      
+      
+      
+      
+    
+
+    <meta
+      property="og:image"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;google-rust-style-guide-vs-official.png"
+    />
+
+    <meta
+      name="twitter:image"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;google-rust-style-guide-vs-official.png"
+    />
+
+
+
+    <!-- Favicons -->
+           
+           <!-- PNG + ICO (some clients ignore SVG favicons) -->
+           <link
+             rel="icon"
+             type="image/png"
+             sizes="96x96"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/favicon-96x96.png?v=3"
+           />
+           <link
+             rel="apple-touch-icon"
+             sizes="180x180"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/apple-touch-icon.png?v=3"
+           />
+           <link
+             rel="shortcut icon"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/favicon.ico?v=3"
+           />
+           
+
+    <!-- RSS Feed -->
+    
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      title="RSS"
+      href="https://noos.blog/atom.xml"
+    />
+    
+
+    <!-- Load Styles -->
+    
+      <link
+        rel="stylesheet"
+        href="https://noos.blog/site.css"
+      />
+    
+
+    <!-- Load Fonts -->
+    
+
+  
+
+
+
+
+
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+  
+
+
+
+<!-- Forcing Font -->
+<style>
+body {
+  font-family:
+    "JetBrains Mono", Menlo, Monaco, Lucida Console, Liberation Mono,
+    DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New,
+    monospace, serif !important;
+}
+</style>
+
+
+    <!-- Pass Theme Preference as Data Attribute -->
+    <script src="https://noos.blog/js/init-theme.js"></script>
+
+    <!-- Reference return to click position script -->
+    <script defer src="https://noos.blog/js/reference-return.js"></script>
+
+    <!-- Additional scripts -->
+    
+      
+        <script defer src="https://noos.blog/js/codeblock.js"></script>
+      
+            
+              <script defer src="https://noos.blog/js/toggle-theme.js"></script>
+            
+      
+<!-- MathJax script for rendering LaTeX math equations -->
+<script src="https://noos.blog/js/mathjax-config.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+  async
+></script>
+
+
+      
+<script type="text/javascript" src="https://noos.blog/elasticlunr.min.js"></script>
+<script type="text/javascript" src="https://noos.blog/js/search.js"></script>
+
+    
+    
+    <!-- Structured Data (JSON-LD) -->
+    
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Google&#x27;s Rust style guide next to the official one",
+  
+  "description": "I read Google&#x27;s new Rust style guide next to the official Rust Style Guide and tested a few of its rules on Rust 1.99.0: the rules I&#x27;d borrow, the funny bits, and the pushes I&#x27;d skip.",
+  
+  
+  "datePublished": "2026-11-12T00:00:00+00:00",
+  
+  
+  "author": {
+    "@type": "Person",
+    "name": "Oshadha G"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Noos - Where Thought, Code, and Craft Converge",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https:&#x2F;&#x2F;noos.blog/icons/favicon/web-app-manifest-512x512.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;google-rust-style-guide-vs-official&#x2F;"
+  },
+  "url": "https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;google-rust-style-guide-vs-official&#x2F;",
+  
+  "keywords": "rust, style-guide, rustfmt, clippy, code-review",
+  
+  "inLanguage": "en"
+}
+</script>
+
+
+    
+    <!-- Google Analytics (GA4) -->
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-54YK7R04LX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-54YK7R04LX', {
+        'anonymize_ip': true,
+        'respect_dnt': true
+      });
+    </script>
+    
+  </head>
+
+  <!-- Body element (contents of the page) -->
+  <body class="hack main container">
+    
+  
+    
+    
+      
+  
+  <section class="nav-header">
+    <nav
+      itemscope
+      itemtype="http://schema.org/SiteNavigationElement"
+      class="navbar"
+    >
+      <section class="nav-links">
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/"
+        >
+          <span itemprop="name">Home</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/about"
+        >
+          <span itemprop="name">About</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/categories"
+        >
+          <span itemprop="name">Categories</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/tags"
+        >
+          <span itemprop="name">Tags</span>
+        </a>
+        
+      </section>
+    </nav>
+    <aside class="user-actions-container">
+      
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        class="search-icon"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+        />
+      </svg>
+      <input type="text" id="search" placeholder="Search..." />
+      <section class="search-results" aria-live="polite">
+        <article class="search-results__items" role="list"></article>
+      </section>
+       
+      <a id="dark-mode-toggle" href="#">
+        <img
+          src="https://noos.blog/icons/sun.svg"
+          id="sun-icon"
+          style="filter: invert(1)"
+          alt="Light mode"
+        />
+        <img
+          src="https://noos.blog/icons/moon.svg"
+          id="moon-icon"
+          alt="Dark mode"
+        />
+      </a>
+       
+      <a
+        href="https://noos.blog/atom.xml"
+        class="feed-icon"
+        rel="noopener noreferrer"
+      >
+        <img
+          src="https://noos.blog/icons/rss.svg"
+          id="rss-icon"
+          alt="RSS feed"
+          class="social-icon"
+        />
+      </a>
+       
+    </aside>
+  </section>
+  
+
+    
+
+
+    <main>
+      
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">Google&#x27;s Rust style guide next to the official one</h1>
+        
+        <data class="muted">
+    <svg class="icon i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <data>10 minute read</data>
+    
+    
+    <svg class="icon i-calendar" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <!-- Calendar outline -->
+        <rect x="3" y="6" width="26" height="23" rx="2" ry="2"/>
+        <!-- Binding rings -->
+        <line x1="10" y1="3" x2="10" y2="9"/>
+        <line x1="22" y1="3" x2="22" y2="9"/>
+        <!-- Top separator -->
+        <line x1="3" y1="12" x2="29" y2="12"/>
+    </svg>
+
+    Published: 2026-11-12
+    
+</data>
+        
+        
+        
+        
+        
+        
+          
+          
+          
+          
+          
+        
+        
+        <figure class="post-cover" style="margin: 1.25rem 0;">
+          <img src="&#x2F;images&#x2F;covers&#x2F;google-rust-style-guide-vs-official.png" alt="Google&#x27;s Rust style guide next to the official one cover" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--color-border-default, #e5e7eb);" onerror="this.parentNode.style.display='none'" />
+        </figure>
+        
+    </header>
+
+    <article itemprop="articleBody">
+        
+            <!-- If no summary separate from content, just render content -->
+            <p>Google has a Rust style guide now: it appeared in the google/styleguide repo on 2026-10-21 (<a href="https://github.com/google/styleguide/commit/3cf4f72013826804b7442896ce84d3777cf89ae0">first export commit</a>, <a href="https://google.github.io/styleguide/rustguide.html">rendered guide</a>), meant for Rust at Google: google3, Android, ChromeOS, Fuchsia and Chrome. One of its first rules says to follow the official public Rust style rules "to the extent they don't conflict" with it, which made me curious where the conflicts are. So I read the two guides side by side and tried a few of Google's rules on Rust 1.99.0 on my Mac. As of 2026-11-12 there have been six exports to that file, each titled "Automated export from internal guides", the latest on 2026-11-06.</p>
+<h2 id="not-the-same-kind-of-document">Not the same kind of document</h2>
+<p>The <a href="https://doc.rust-lang.org/style-guide/">official Rust Style Guide</a> is a formatting document. It defines the default formatting style; rustfmt uses it as reference. A typical rule reads: "The maximum width for a line is 100 characters." (<a href="https://github.com/rust-lang/rust/blob/1.99.0/src/doc/style-guide/src/README.md?plain=1#L50-L55">that line, pinned to 1.99.0</a>) Its only non-formatting page, "Other style advice", is 135 words by <code>wc -w</code> on the markdown: prefer expressions, naming cases, avoid <code>#[path]</code>.</p>
+<p>Google's guide goes the other way: style, it says, includes guidance on API and implementation design. Its formatting section is about 194 words by <code>wc -w</code>, and most of it says: use the formatting tool (<code>git cl format</code> in Chromium) plus a list of rustfmt options. The rest is ownership, function inputs and outputs, errors, traits, naming, documentation, unsafe, concurrency. Its closer partner is the <a href="https://rust-lang.github.io/api-guidelines/">Rust API Guidelines</a>, which Google also tells you to follow.</p>
+<p>Some rules carry a codebase tag: <code>[chrome]</code>, <code>[Fuchsia]</code>, <code>[Android]</code>. No async/.await in Chromium, Fuchsia has its own mutex, Chrome tests use <code>rust_gtest_interop</code>. Not written for my side projects.</p>
+<p>Both guides care about reading code without tools: the official principles ask for readability "without syntax highlighting or IDE assistance", and Google's glob-import rationale wants you to know where a type comes from in "contexts without xrefs". Same instinct, different vocabulary.</p>
+<h2 id="the-extra-goal-large-scale-changes">The extra goal: Large-Scale Changes</h2>
+<p>Google says the guide shares the usual goals (consistency, readability, good API design) and adds one it calls "not seen as often": smoothing the way for Large-Scale Changes, or LSCs, codebase-wide refactorings done with tooling (<a href="https://github.com/google/styleguide/blob/cceb297e93677c31053e5e75de6b701a9204fc03/rustguide.md?plain=1#L130-L141">goals section</a>).</p>
+<p>That one goal explains many of the deviations. Why forbid glob imports? Because, quote, "Glob imports increase toil for code janitors running LSCs". I like that "code janitors" made it into the guide. The <code>#[non_exhaustive]</code> rules get an exception if you are committed to fixing the resulting breakages "via an LSC".</p>
+<p>Two rationales admit, plainly, "This rule largely exists to avoid reviewer disagreements": one for qualifying top-level function calls with the module name, one for importing type names unqualified. Candour, not pretending a preference is science.</p>
+<p>This is a guide for a codebase so large that tools and reviewers rewrite your code; many rules make sense from there and less in my three-crate side project. Context, not criticism. I have not applied the guide to anything large, and I have not used Chromium's tooling, no <code>git cl format</code>, no <code>chromium::import!()</code>, so all of this is reading plus small experiments.</p>
+<h2 id="rules-i-d-happily-borrow">Rules I'd happily borrow</h2>
+<p>Some rules need no Google-scale justification:</p>
+<ul>
+<li>Prefer <code>expect</code> over <code>unwrap</code>: the message documents why the code thinks this cannot fail.</li>
+<li>Put real context in <code>assert!</code> messages: say why the assertion should hold or what went wrong. The guide's bad example has a message that only repeats the condition.</li>
+<li>Match instead of check-then-unwrap: <code>if let Some(value)</code> rather than <code>is_some()</code> followed by <code>unwrap()</code>.</li>
+<li>Pass an enum instead of a bool when the meaning is not obvious.</li>
+<li>Do not build a long iterator chain in a for loop header; bind it to a named variable first. The guide's example calls it <code>urgent_bugs</code>, and the name documents the chain.</li>
+<li>Unsafe code gets a comment starting with SAFETY: plus a technical justification, and the justification can cover a single block or a whole file or build target. The review question alone is worth stealing: "If the reason is performance, are there benchmarks?"</li>
+<li>API design rules are binding for library code and a strong recommendation for application code, which should "Avoid premature generalization and abstraction".</li>
+</ul>
+<p>A good chunk of the guide is also "listen to Clippy" with more words. It links seven lints by name: <code>borrowed_box</code>, <code>ptr_arg</code>, <code>new_without_default</code>, <code>len_without_is_empty</code>, <code>should_implement_trait</code>, <code>wrong_self_convention</code> and <code>exhaustive_enums</code>. Much of it will look familiar if you already run Clippy.</p>
+<h2 id="the-funny-bits">The funny bits</h2>
+<p>The rule "Qualify calls to top-level functions with a module name" uses, as its good example, possibly the scariest function in std: <code>mem::transmute</code>. Here is the guide's model snippet:</p>
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">use </span><span>std::mem;
+</span><span>
+</span><span style="color:#b48ead;">let</span><span> x = mem::transmute(y);
+</span></code></pre>
+<p>Yes, <code>mem::transmute</code>, which reinterprets the bits of one type as another, presented as the friendly face of import style. I pasted it into a real <code>main</code> on 1.99.0 and rustc stopped with E0133: the call needs an unsafe block. The same guide's unsafe rule says "Don't write unsafe code unless there is no way to implement the same functionality with safe code." The model citizen of the import section is a function the guide's own unsafe rule would make you justify in writing. (<a href="https://github.com/google/styleguide/blob/cceb297e93677c31053e5e75de6b701a9204fc03/rustguide.md?plain=1#L373-L392">rule</a>)</p>
+<p>Then "Avoid abbreviations": "Don't abbreviate by deleting letters within a word." Exception: "Common abbreviations found in Wikipedia." I did not know Wikipedia was the appeals court for naming. Meanwhile the standard library ships <code>std::fmt</code> and <code>std::ptr</code>. To be fair, the rule covers names you invent, and std is much older. (<a href="https://github.com/google/styleguide/blob/cceb297e93677c31053e5e75de6b701a9204fc03/rustguide.md?plain=1#L1094-L1108">rule</a>)</p>
+<p>The official guide has its own moment. On reserved words it says "Don't misspell the word", naming <code>krate</code> as the misspelling to avoid (<a href="https://github.com/rust-lang/rust/blob/1.99.0/src/doc/style-guide/src/advice.md?plain=1#L28-L30">advice, pinned</a>). Open the <a href="https://github.com/rust-lang/rust/tree/1.99.0/compiler">compiler source at tag 1.99.0</a> and the word <code>krate</code> appears 495 times in 93 files. I counted with <code>grep -w</code>. The compiler is older than the advice, to be fair. Still: 495.</p>
+<p>In the error section, defects must be fixed in code, not handled at runtime, "although coarse-grained recovery might be possible with" <code>catch_unwind</code> (<a href="https://github.com/google/styleguide/blob/cceb297e93677c31053e5e75de6b701a9204fc03/rustguide.md?plain=1#L694-L698">error rules</a>). A thousand lines later, use of <code>panic::catch_unwind</code> "is prohibited in first-party Rust code." (<a href="https://github.com/google/styleguide/blob/cceb297e93677c31053e5e75de6b701a9204fc03/rustguide.md?plain=1#L1748-L1769">panic rules</a>) From "might be possible" to "prohibited" in one document. To be fair, there is an exception for using it as a last safety net, and Chrome, Android and Fuchsia require <code>panic=abort</code>.</p>
+<p>Last one. "Don't omit patterns on non_exhaustive enums when matching" shows a <code>#[non_exhaustive]</code> enum Shape (Circle, Square, Triangle) and a good match ending in <code>Shape::Triangle | _ =&gt; {}</code> (<a href="https://github.com/google/styleguide/blob/cceb297e93677c31053e5e75de6b701a9204fc03/rustguide.md?plain=1#L1506-L1557">rule</a>). I tried it. With the enum in another crate, the case the rule is written for, rustc and Clippy on 1.99.0 stayed quiet. With both snippets in one crate, as they sit on the page, rustc warned. The warning came from the <code>unreachable_patterns</code> lint:</p>
+<pre data-lang="text" style="background-color:#2b303b;color:#c0c5ce;" class="language-text "><code class="language-text" data-lang="text"><span>warning: unreachable pattern
+</span><span>  --&gt; shapes/src/lib.rs:13:23
+</span><span>   |
+</span><span>13 |     Shape::Triangle | _ =&gt; {}
+</span><span>   |                       ^ no value can reach this
+</span><span>   |
+</span><span>   ...
+</span><span>   = note: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default
+</span></code></pre>
+<p><code>unreachable_patterns</code> is on by default, and it fires on <code>Shape::Triangle | _</code> because, per the Rust Reference, "Within the defining crate, <code>non_exhaustive</code> has no effect." (<a href="https://github.com/rust-lang/reference/blob/bcd62f35e8bf480ec5b0fa569b6d12ea5924030c/src/attributes/type_system.md?plain=1#L22">Reference</a>) Not a bug in the guide. Just a small surprise if you paste its examples into one file.</p>
+<h2 id="pushes-i-d-leave-at-google">Pushes I'd leave at Google</h2>
+<p>Glob imports. The guide says don't, with few exceptions: <code>use super::*</code> in inline modules, third-party preludes at the reviewer's discretion. Then: "This also means that defining preludes should be avoided." (<a href="https://github.com/google/styleguide/blob/cceb297e93677c31053e5e75de6b701a9204fc03/rustguide.md?plain=1#L286-L321">rule</a>) The standard library ships <code>std::io::prelude</code>, and the official guide formats glob imports without forbidding them. If you want the rule anyway, Clippy has a <code>wildcard_imports</code> lint, off by default. I turned it on: it flagged <code>use std::collections::*</code> and left <code>use std::io::prelude::*</code> alone. I keep the official position and my test-module globs.</p>
+<p>Import granularity. Google's rule is one module per <code>use</code> statement, which it says corresponds to the rustfmt setting <code>imports_granularity = Module</code>, with a list of rustfmt options codebases may adopt (<a href="https://github.com/google/styleguide/blob/cceb297e93677c31053e5e75de6b701a9204fc03/rustguide.md?plain=1#L450-L470">list</a>). I put the four options in a rustfmt.toml and ran <code>cargo +1.99.0 fmt</code>; here is the file and what it printed:</p>
+<pre data-lang="text" style="background-color:#2b303b;color:#c0c5ce;" class="language-text "><code class="language-text" data-lang="text"><span>$ cat rustfmt.toml
+</span><span>max_width = 100
+</span><span>hex_literal_case = &quot;Lower&quot;
+</span><span>format_macro_matchers = true
+</span><span>imports_granularity = &quot;Module&quot;
+</span><span>
+</span><span>$ cargo +1.99.0 fmt
+</span><span>Warning: can&#39;t set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+</span><span>Warning: can&#39;t set `imports_granularity = Module`, unstable features are only available in nightly channel.
+</span></code></pre>
+<p>Two options are nightly-only: <code>format_macro_matchers</code> and <code>imports_granularity</code>; stable rustfmt warns and carries on. rustfmt 1.10.0, shipped with 1.99.0, did apply <code>hex_literal_case</code>: <code>0xAB</code> became <code>0xab</code>, no warning, so <code>hex_literal_case</code> works on stable. And <code>max_width = 100</code> is already the default, matching the official 100 characters, yet it sits in a list of options a codebase may skip. Small smile.</p>
+<p>Fairness: Google lets a codebase skip options its stable Rust does not have, so on stable the import rule becomes something reviewers check by hand. The guide also says "Don't use unstable features." That covers language features, not rustfmt options, so no contradiction. Still, enforcing <code>imports_granularity = Module</code> automatically needs nightly: on nightly-2026-02-24, rustfmt did split <code>use std::{collections::HashMap, fmt::Write};</code> into two <code>use</code> lines. The official position is "Tools must not merge or un-merge imports by default." (<a href="https://github.com/rust-lang/rust/blob/1.99.0/src/doc/style-guide/src/items.md?plain=1#L533-L547">imports</a>) Closer to where I land.</p>
+<p>Trait imports. The guide says "Import traits within function bodies", unless the trait's methods are used throughout the file. I keep <code>use std::io::Write;</code> at the top of my files and have not felt pain from it. Personal preference.</p>
+<p>String joining. The guide prefers <code>format!</code> and <code>write!</code> over <code>+</code> for joining more than two strings, one reason being that they "require fewer allocations than concatenating strings using +" (<a href="https://github.com/google/styleguide/blob/cceb297e93677c31053e5e75de6b701a9204fc03/rustguide.md?plain=1#L1773-L1787">rule</a>). I got curious and wrote a tiny global allocator that counts calls to alloc and realloc, release build, two sets of inputs. Four ways to join three strings; here is the output:</p>
+<pre data-lang="text" style="background-color:#2b303b;color:#c0c5ce;" class="language-text "><code class="language-text" data-lang="text"><span>$ cargo +1.99.0 run -q --release
+</span><span>a=&quot;hello&quot; b=&quot;, &quot; c=&quot;world&quot;
+</span><span>a.to_string() + b + c              allocs=1 reallocs=2 len=12
+</span><span>owned + b + c (owned: String)      allocs=0 reallocs=2 len=12
+</span><span>format!(&quot;{a}{b}{c}&quot;)               allocs=1 reallocs=1 len=12
+</span><span>[a, b, c].concat()                 allocs=1 reallocs=0 len=12
+</span><span>a=&quot;/usr/local&quot; b=&quot;/share/&quot; c=&quot;doc/rust/html/index.html&quot;
+</span><span>a.to_string() + b + c              allocs=1 reallocs=2 len=41
+</span><span>owned + b + c (owned: String)      allocs=0 reallocs=2 len=41
+</span><span>format!(&quot;{a}{b}{c}&quot;)               allocs=1 reallocs=2 len=41
+</span><span>[a, b, c].concat()                 allocs=1 reallocs=0 len=41
+</span></code></pre>
+<p>With short strings, <code>format!</code> did 1 alloc and 1 realloc, while <code>a.to_string() + b + c</code> did 1 alloc and 2 reallocs: <code>format!</code> wins. With longer, path-like strings, both did 1 alloc and 2 reallocs, a tie. When the first value is already an owned String, <code>+</code> reuses it: 0 allocs, 2 reallocs. And <code>concat()</code> did exactly 1 alloc and 0 reallocs in both cases, fewer calls than every other way. Honest limits: a realloc can grow in place, and I counted calls, not time. I did not benchmark speed. The guide's other reason, standard format strings instead of a home-made templating syntax, is about readability, and that one I agree with.</p>
+<h2 id="for-my-own-crates">For my own crates</h2>
+<p>In my own crates, not much changes. I keep rustfmt defaults, which is the official guide in practice, and I keep Clippy. From Google I borrow <code>expect</code> over <code>unwrap</code>, honest assert messages and named iterator chains. I also keep <code>use super::*</code> in my test modules, which Google allows too. As of 2026-11-12, the Scope section says Android, Chromium and the other codebases "intend to start applying it", and to "Expect more information here as these codebases adopt this guide." Let's see how it reads in a year, once Chromium has started living by it.</p>
+
+        
+    </article>
+
+    <!-- Comment section -->
+    
+      
+        
+          <script
+  src="https://giscus.app/client.js"
+  data-repo="nooscraft&#x2F;personal-blog"
+  data-repo-id="R_kgDOQJ_XNg"
+  data-category="General"
+  data-category-id="DIC_kwDOQJ_XNs4CxOmG"
+  data-mapping="pathname"
+  data-strict="0"
+  data-reactions-enabled="1"
+  data-emit-metadata="0"
+  data-input-position="bottom"
+
+  
+  data-theme="https:&#x2F;&#x2F;noos.blog&#x2F;css&#x2F;giscus-theme.css"
+  
+
+  data-lang="en"
+  data-loading="lazy"
+  crossorigin="anonymous"
+  async
+></script>
+
+        
+      
+    
+
+
+    <!-- Page footer -->
+    
+    <footer>
+        <hr>
+        <p>
+            
+            
+                
+                in <a href="https://noos.blog/categories/programming/">Programming</a>
+            
+            
+                and
+                tagged
+                
+                    <a href="https://noos.blog/tags/rust/">rust</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/style-guide/">style-guide</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/rustfmt/">rustfmt</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/clippy/">clippy</a>
+                    
+                        
+                            
+                                and
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/code-review/">code-review</a>
+                    
+                        
+                    
+                
+            
+        </p>
+
+        <!-- Revision history (optional) -->
+        
+          
+            
+              
+            
+          
+        
+
+        
+        
+    </footer>
+
+
+</article>
+
+
+    </main>
+    
+
+  </body>
+</html>

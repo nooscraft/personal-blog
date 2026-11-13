@@ -1,0 +1,1141 @@
+<!doctype html>
+<html lang="en" data-theme="toggle">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <!-- Enable responsiveness on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;uv-how-it-works-under-the-hood&#x2F;" />
+    
+    <!-- Robots meta -->
+    
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    
+
+    
+      
+        <meta name="description" content="A walkthrough of uv&#x27;s internals: the crate layout, what uv init and uv add do on disk, the two-thread resolver, PubGrub, batch prefetching, the forking resolver, and the cache." />
+        <meta property="og:description" content="A walkthrough of uv&#x27;s internals: the crate layout, what uv init and uv add do on disk, the two-thread resolver, PubGrub, batch prefetching, the forking resolver, and the cache." />
+        <meta property="twitter:description" content="A walkthrough of uv&#x27;s internals: the crate layout, what uv init and uv add do on disk, the two-thread resolver, PubGrub, batch prefetching, the forking resolver, and the cache." />
+      
+    
+
+    <!-- Title -->
+    
+      
+    
+    <title>
+    
+    How uv Works Under the Hood | Noos - Where Thought, Code, and Craft Converge
+    
+</title>
+    
+    <!-- Author -->
+    
+    <meta name="author" content="Oshadha G" />
+    
+    
+    <!-- Article specific meta tags -->
+    
+    
+    <meta property="article:published_time" content="2026-04-08T00:00:00+00:00" />
+    
+    
+    <meta property="article:modified_time" content="2026-11-02T00:00:00+00:00" />
+    
+    
+    
+    <meta property="article:tag" content="python" />
+    
+    <meta property="article:tag" content="rust" />
+    
+    <meta property="article:tag" content="uv" />
+    
+    <meta property="article:tag" content="package-manager" />
+    
+    <meta property="article:tag" content="pubgrub" />
+    
+    <meta property="article:tag" content="dependency-resolution" />
+    
+    <meta property="article:tag" content="open-source" />
+    
+    <meta property="article:tag" content="tokio" />
+    
+    
+    
+    
+    <meta property="article:section" content="Engineering" />
+    
+    
+    
+
+    <!-- Additional Facebook Meta Tags -->
+    <meta property="og:site_name" content="Noos - Where Thought, Code, and Craft Converge" />
+    <meta
+      property="og:url"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;uv-how-it-works-under-the-hood&#x2F;"
+    />
+    <meta
+      property="og:type"
+      content="article"
+    />
+    <meta property="og:title" content="How uv Works Under the Hood | Noos - Where Thought, Code, and Craft Converge" />
+
+    <!-- Additional Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      property="twitter:url"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;uv-how-it-works-under-the-hood&#x2F;"
+    />
+    <meta name="twitter:title" content="How uv Works Under the Hood | Noos - Where Thought, Code, and Craft Converge" />
+
+    <!-- Cover images -->
+           
+           
+           
+           
+      
+      
+      
+      
+      
+    
+
+    <meta
+      property="og:image"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;uv-how-it-works-under-the-hood.png"
+    />
+
+    <meta
+      name="twitter:image"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;uv-how-it-works-under-the-hood.png"
+    />
+
+
+
+    <!-- Favicons -->
+           
+           <!-- PNG + ICO (some clients ignore SVG favicons) -->
+           <link
+             rel="icon"
+             type="image/png"
+             sizes="96x96"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/favicon-96x96.png?v=3"
+           />
+           <link
+             rel="apple-touch-icon"
+             sizes="180x180"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/apple-touch-icon.png?v=3"
+           />
+           <link
+             rel="shortcut icon"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/favicon.ico?v=3"
+           />
+           
+
+    <!-- RSS Feed -->
+    
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      title="RSS"
+      href="https://noos.blog/atom.xml"
+    />
+    
+
+    <!-- Load Styles -->
+    
+      <link
+        rel="stylesheet"
+        href="https://noos.blog/site.css"
+      />
+    
+
+    <!-- Load Fonts -->
+    
+
+  
+
+
+
+
+
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+  
+
+
+
+<!-- Forcing Font -->
+<style>
+body {
+  font-family:
+    "JetBrains Mono", Menlo, Monaco, Lucida Console, Liberation Mono,
+    DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New,
+    monospace, serif !important;
+}
+</style>
+
+
+    <!-- Pass Theme Preference as Data Attribute -->
+    <script src="https://noos.blog/js/init-theme.js"></script>
+
+    <!-- Reference return to click position script -->
+    <script defer src="https://noos.blog/js/reference-return.js"></script>
+
+    <!-- Additional scripts -->
+    
+      
+        <script defer src="https://noos.blog/js/codeblock.js"></script>
+      
+            
+              <script defer src="https://noos.blog/js/toggle-theme.js"></script>
+            
+      
+<!-- MathJax script for rendering LaTeX math equations -->
+<script src="https://noos.blog/js/mathjax-config.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+  async
+></script>
+
+
+      
+<script type="text/javascript" src="https://noos.blog/elasticlunr.min.js"></script>
+<script type="text/javascript" src="https://noos.blog/js/search.js"></script>
+
+    
+    
+    <!-- Structured Data (JSON-LD) -->
+    
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "How uv Works Under the Hood",
+  
+  "description": "A walkthrough of uv&#x27;s internals: the crate layout, what uv init and uv add do on disk, the two-thread resolver, PubGrub, batch prefetching, the forking resolver, and the cache.",
+  
+  
+  "datePublished": "2026-04-08T00:00:00+00:00",
+  
+  
+  "dateModified": "2026-11-02T00:00:00+00:00",
+  
+  "author": {
+    "@type": "Person",
+    "name": "Oshadha G"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Noos - Where Thought, Code, and Craft Converge",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https:&#x2F;&#x2F;noos.blog/icons/favicon/web-app-manifest-512x512.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;uv-how-it-works-under-the-hood&#x2F;"
+  },
+  "url": "https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;uv-how-it-works-under-the-hood&#x2F;",
+  
+  "keywords": "python, rust, uv, package-manager, pubgrub, dependency-resolution, open-source, tokio",
+  
+  "inLanguage": "en"
+}
+</script>
+
+
+    
+    <!-- Google Analytics (GA4) -->
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-54YK7R04LX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-54YK7R04LX', {
+        'anonymize_ip': true,
+        'respect_dnt': true
+      });
+    </script>
+    
+  </head>
+
+  <!-- Body element (contents of the page) -->
+  <body class="hack main container">
+    
+  
+    
+    
+      
+  
+  <section class="nav-header">
+    <nav
+      itemscope
+      itemtype="http://schema.org/SiteNavigationElement"
+      class="navbar"
+    >
+      <section class="nav-links">
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/"
+        >
+          <span itemprop="name">Home</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/about"
+        >
+          <span itemprop="name">About</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/categories"
+        >
+          <span itemprop="name">Categories</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/tags"
+        >
+          <span itemprop="name">Tags</span>
+        </a>
+        
+      </section>
+    </nav>
+    <aside class="user-actions-container">
+      
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        class="search-icon"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+        />
+      </svg>
+      <input type="text" id="search" placeholder="Search..." />
+      <section class="search-results" aria-live="polite">
+        <article class="search-results__items" role="list"></article>
+      </section>
+       
+      <a id="dark-mode-toggle" href="#">
+        <img
+          src="https://noos.blog/icons/sun.svg"
+          id="sun-icon"
+          style="filter: invert(1)"
+          alt="Light mode"
+        />
+        <img
+          src="https://noos.blog/icons/moon.svg"
+          id="moon-icon"
+          alt="Dark mode"
+        />
+      </a>
+       
+      <a
+        href="https://noos.blog/atom.xml"
+        class="feed-icon"
+        rel="noopener noreferrer"
+      >
+        <img
+          src="https://noos.blog/icons/rss.svg"
+          id="rss-icon"
+          alt="RSS feed"
+          class="social-icon"
+        />
+      </a>
+       
+    </aside>
+  </section>
+  
+
+    
+
+
+    <main>
+      
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">How uv Works Under the Hood</h1>
+        
+        <data class="muted">
+    <svg class="icon i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <data>35 minute read</data>
+    
+    
+    <svg class="icon i-calendar" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <!-- Calendar outline -->
+        <rect x="3" y="6" width="26" height="23" rx="2" ry="2"/>
+        <!-- Binding rings -->
+        <line x1="10" y1="3" x2="10" y2="9"/>
+        <line x1="22" y1="3" x2="22" y2="9"/>
+        <!-- Top separator -->
+        <line x1="3" y1="12" x2="29" y2="12"/>
+    </svg>
+
+    Published: 2026-04-08
+    
+</data>
+        
+        
+        
+        
+        
+        
+          
+          
+          
+          
+          
+        
+        
+        <figure class="post-cover" style="margin: 1.25rem 0;">
+          <img src="&#x2F;images&#x2F;covers&#x2F;uv-how-it-works-under-the-hood.png" alt="How uv Works Under the Hood cover" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--color-border-default, #e5e7eb);" onerror="this.parentNode.style.display='none'" />
+        </figure>
+        
+    </header>
+
+    <article itemprop="articleBody">
+        
+            <!-- If no summary separate from content, just render content -->
+            <blockquote>
+<p><em>Updated 2026-11-02: re-verified against uv v0.13.6; uv 0.13 was another breaking release, so I re-captured the outputs for <code>uv init</code>, <code>uv add</code>, the lockfile, the fork example and the cache layout. The earlier version also had a few things wrong, most notably the DashMap claim and the cache being content-addressed, plus a couple of smaller ones; those are fixed below.</em></p>
+<p><em>Updated 2026-08-04: re-verified against uv v0.12.1. The uv 0.12 release changed the <code>uv init</code> default — new projects are now packaged, with a <code>src/</code> layout and a build system — so Section 3 and parts of Section 4 have been rewritten. I also refreshed the source links, crate counts, and the PyPI numbers in Section 8. The resolver internals (Sections 5-7) survived the 0.12 breaking release untouched, which says something about how stable that architecture is.</em></p>
+<p><em>Updated 2026-05-05: re-verified against uv v0.11.8. I refreshed the release references, fixed inconsistent package versions in the lockfile excerpt, updated build backend examples, and cleaned up punctuation/style issues.</em></p>
+</blockquote>
+<p>I started using <a href="https://github.com/astral-sh/uv">uv</a> because the benchmarks seemed too good to be true: 10-100x faster than <code>pip</code>, resolves and installs in milliseconds. So I spent a weekend reading the source. This post is what I wish I'd had on day one.</p>
+<p>It traces every layer: the repository structure, what actually happens when you type <code>uv init</code> or <code>uv add requests</code>, and the Rust concurrency patterns the resolver uses. No prior Rust experience needed, but if you've seen Rust before I'll point to the specific patterns in the source.</p>
+<p>Everything below was verified against uv <a href="https://github.com/astral-sh/uv/releases/tag/0.13.6">v0.13.6</a> (October 2026). Specific numbers and code excerpts come from that tag; if you're reading this much later, the line numbers in linked source files may have drifted, but the high-level architecture has been stable for many releases. The outputs were captured on an Apple Silicon Mac, starting from an empty cache. uv was told to use only its own managed Pythons, none of which were installed yet (the Mac itself has a Python; uv ignored it). That made it look like a fresh machine. Timings are from one run on my machine and my network; I would not read much into them.</p>
+<p>Quick release notes. <a href="https://github.com/astral-sh/uv/releases/tag/0.12.0">uv 0.12</a> (late July 2026) was a breaking release whose headline change was <code>uv init</code> creating packaged projects by default, which Section 3 covers. <a href="https://github.com/astral-sh/uv/releases/tag/0.13.0">uv 0.13.0</a> (2026-10-09) is another one. Its breaking changes:</p>
+<ul>
+<li>The default stable Python is now 3.15 (was 3.14). This affects which Python gets downloaded when no version is requested or pinned; uv still uses compatible Pythons that are already installed.</li>
+<li><code>--require-hashes</code> inside an included constraints file is now honored. Editable (<code>-e</code>) requirements in included constraints files are now rejected, matching pip.</li>
+<li>A stricter tar backend, <code>tar-codec</code>, is the default for reading tar archives. Opt out with <code>UV_LEGACY_TAR_BACKEND=1</code> (more in Section 10).</li>
+<li>New virtual environments on Python 3.10 and later no longer get the <code>_virtualenv.pth</code> distutils patch, which reduces Python startup overhead.</li>
+<li>On Windows ARM64, uv now prefers native ARM64 Python over emulated x86_64.</li>
+<li>The cache entry format changed, so uv may download or rebuild dependencies once after upgrading (Section 9).</li>
+</ul>
+<p>The 0.13.0 notes say "We expect most users to be able to upgrade without making changes." On the security side, <a href="https://github.com/astral-sh/uv/releases/tag/0.13.4">0.13.4</a> addresses <a href="https://github.com/astral-sh/uv/security/advisories/GHSA-hq85-5cpj-mr62">GHSA-hq85-5cpj-mr62</a> (severity high): intermediate certificates issued by the <code>emSign ECC Root CA - G3</code> root are considered compromised, and 0.13.4 removes that root from uv's bundled CA certificates. If you use uv's bundled certificates (the default), upgrade to 0.13.4 or later. The advisory also says this is ecosystem-wide: anything that vendors a CA bundle, like <code>certifi</code>, needs updating too. Earlier, <a href="https://github.com/astral-sh/uv/releases/tag/0.12.18">0.12.18</a> fixed <a href="https://github.com/astral-sh/uv/security/advisories/GHSA-2cv4-cqwr-gwf7">GHSA-2cv4-cqwr-gwf7</a>, a path traversal through wheel extraction that only affects Windows (severity medium). And since <a href="https://github.com/astral-sh/uv/releases/tag/0.12.12">0.12.12</a>, the release executables are code-signed: macOS binaries signed and notarized by Apple, Windows binaries with Authenticode signatures.</p>
+<p>None of this changes the resolver design described here. What did change is internal: the crates were reorganised (Section 2), and the solver now talks to the fetcher through a new handle type (Section 5).</p>
+<hr />
+<h2 id="1-what-uv-is">1. What uv is</h2>
+<p>uv is an <strong>extremely fast Python package and project manager</strong>, written in Rust and built by <a href="https://astral.sh">Astral</a>, the team behind <a href="https://github.com/astral-sh/ruff">Ruff</a>. It replaces most of your Python toolchain in one binary:</p>
+<table><thead><tr><th>Old tool</th><th>uv equivalent</th></tr></thead><tbody>
+<tr><td><code>pip install</code></td><td><code>uv pip install</code></td></tr>
+<tr><td><code>pip-compile</code></td><td><code>uv pip compile</code></td></tr>
+<tr><td><code>virtualenv</code> / <code>venv</code></td><td><code>uv venv</code></td></tr>
+<tr><td><code>pyenv</code></td><td><code>uv python install</code></td></tr>
+<tr><td><code>pipx run</code></td><td><code>uvx</code> / <code>uv tool run</code></td></tr>
+<tr><td><code>poetry</code> / <code>rye</code></td><td><code>uv init</code> + <code>uv add</code></td></tr>
+</tbody></table>
+<p>It has 91k+ stars (91,454 on 2026-11-02, from the GitHub API) and is used in production at scale. The underlying <a href="https://github.com/pubgrub-rs/pubgrub"><code>pubgrub-rs</code></a> crate it depends on is the <a href="https://rust-lang.github.io/rust-project-goals/2025h1/pubgrub-in-cargo.html">designated basis for Cargo's next dependency solver</a>. The same algorithm and largely the same Rust crate will eventually power both <code>uv</code> and <code>cargo</code> resolutions.</p>
+<hr />
+<h2 id="2-the-repository-layout">2. The repository layout</h2>
+<p>Clone the repo and you'll see:</p>
+<pre data-lang="txt" style="background-color:#2b303b;color:#c0c5ce;" class="language-txt "><code class="language-txt" data-lang="txt"><span>uv/
+</span><span>├── crates/          # All Rust source code
+</span><span>├── docs/            # MkDocs documentation
+</span><span>├── python/          # Small Python shim package (the uv PyPI wheel)
+</span><span>├── scripts/         # Benchmarking, release tooling
+</span><span>├── test/            # Test fixtures, requirement files for benchmarks
+</span><span>├── Cargo.toml       # Rust workspace root
+</span><span>└── pyproject.toml   # uv manages itself with uv
+</span></code></pre>
+<p>The real action is in <code>crates/</code>. There are 91 crate directories in v0.13.6, up from 71 in v0.12.1. Most of the growth is a split. The CLI commands moved out of the <code>uv</code> binary crate into crates like <code>uv-project-commands</code> and <code>uv-pip-commands</code>. <code>uv-python</code> was split into <code>uv-python-discovery</code>, <code>uv-python-interpreter</code>, <code>uv-python-managed</code> and <code>uv-python-types</code>. The lockfile code got its own <code>uv-lock</code>, and the TOML editing moved into <code>uv-project-edit</code>. I have not looked into why they split it up, so I will not guess. Rust does not allow circular dependencies between crates, so the uv team structured the code as a directed acyclic graph of focused crates. Each does one thing:</p>
+<pre data-lang="txt" style="background-color:#2b303b;color:#c0c5ce;" class="language-txt "><code class="language-txt" data-lang="txt"><span>crates/
+</span><span>├── uv/                    # CLI binary: the entry point
+</span><span>├── uv-cli/                # Command-line argument definitions (clap)
+</span><span>├── uv-project-commands/   # uv init, add, lock, sync, run, tree, ...
+</span><span>├── uv-pip-commands/       # Commands for inspecting and modifying Python environments
+</span><span>├── uv-project-edit/       # Edits pyproject.toml while preserving TOML formatting
+</span><span>├── uv-lock/               # Parsing, validation, traversal, and export of lockfiles
+</span><span>├── uv-resolver/           # Dependency resolution engine (PubGrub)
+</span><span>├── uv-installer/          # Installing packages into environments
+</span><span>├── uv-client/             # Async HTTP client for PyPI and registries
+</span><span>├── uv-workspace/          # pyproject.toml parsing and workspace discovery
+</span><span>├── uv-python-discovery/   # Finding and selecting a Python installation
+</span><span>├── uv-python-managed/     # Downloading and maintaining uv-managed Pythons
+</span><span>├── uv-cache/              # The global cache
+</span><span>├── uv-distribution/       # Wheel and sdist handling, metadata fetching
+</span><span>├── uv-build/              # uv&#39;s own build backend (replaces setuptools/hatchling)
+</span><span>├── uv-git/                # Git dependency support (based on Cargo&#39;s implementation)
+</span><span>├── uv-platform-tags/      # Wheel compatibility tag matching
+</span><span>├── uv-pep440/             # Python version specifier parsing (PEP 440)
+</span><span>├── uv-pep508/             # Dependency specifier parsing (PEP 508)
+</span><span>├── uv-types/              # Shared type definitions used across crates
+</span><span>└── ... (many more)
+</span></code></pre>
+<p>You can generate a visual dependency graph between crates:</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">cargo</span><span> depgraph</span><span style="color:#bf616a;"> --dedup-transitive-deps --workspace-only </span><span>| </span><span style="color:#bf616a;">dot -Tpng </span><span>&gt; graph.png
+</span></code></pre>
+<p>The shape of the graph is roughly: <code>uv</code> (the binary) sits at the top and depends on everything. <code>uv-types</code> sits near the bottom and depends on almost nothing. Code only flows downward; cycles are a hard compile error.</p>
+<hr />
+<h2 id="3-what-happens-when-you-run-uv-init">3. What happens when you run <code>uv init</code></h2>
+<p>Let's trace <code>uv init my-project</code> step by step through the codebase.</p>
+<h3 id="step-1-argument-parsing-uv-crate">Step 1: Argument parsing (<code>uv</code> crate)</h3>
+<p>The <code>uv</code> crate is the binary entry point. It uses <a href="https://github.com/clap-rs/clap">clap</a> for argument parsing. When you run <code>uv init my-project</code>, clap matches the <code>init</code> subcommand and extracts the project name and any flags (<code>--lib</code>, <code>--app</code>, <code>--package</code>, <code>--bare</code>, <code>--build-backend</code>, etc.).</p>
+<h3 id="step-2-workspace-discovery-uv-workspace">Step 2: Workspace discovery (<code>uv-workspace</code>)</h3>
+<p>Before creating anything, uv checks whether you're already inside an existing workspace. It walks <strong>up</strong> the directory tree looking for a <code>pyproject.toml</code> with a <code>[tool.uv.workspace]</code> section. If you're inside one, the new project is registered as a workspace member automatically. If not, it creates a standalone project.</p>
+<h3 id="step-3-scaffold-project-files">Step 3: Scaffold project files</h3>
+<p>This is still the step uv 0.12 changed most. uv had no managed Python installed yet, and it was told to ignore the system one. So <code>uv init my-project</code> started by downloading CPython 3.15.2, since 0.13 made 3.15 the default stable Python:</p>
+<pre data-lang="txt" style="background-color:#2b303b;color:#c0c5ce;" class="language-txt "><code class="language-txt" data-lang="txt"><span>$ uv init my-project
+</span><span>Downloading cpython-3.15.2-macos-aarch64-none (download) (26.5MiB)
+</span><span> Downloaded cpython-3.15.2-macos-aarch64-none (download)
+</span><span>Initialized project `my-project` at `/private/tmp/my-project`
+</span></code></pre>
+<p>With the interpreter in place, uv wrote these files to disk:</p>
+<pre data-lang="txt" style="background-color:#2b303b;color:#c0c5ce;" class="language-txt "><code class="language-txt" data-lang="txt"><span>my-project/
+</span><span>├── .gitignore
+</span><span>├── .python-version    # &quot;3.15&quot; on this machine
+</span><span>├── README.md
+</span><span>├── pyproject.toml
+</span><span>└── src/
+</span><span>    └── my_project/
+</span><span>        └── __init__.py    # main() prints &quot;Hello from my-project!&quot;
+</span></code></pre>
+<p>The generated <code>pyproject.toml</code>:</p>
+<pre data-lang="toml" style="background-color:#2b303b;color:#c0c5ce;" class="language-toml "><code class="language-toml" data-lang="toml"><span>[project]
+</span><span style="color:#bf616a;">name </span><span>= &quot;</span><span style="color:#a3be8c;">my-project</span><span>&quot;
+</span><span style="color:#bf616a;">version </span><span>= &quot;</span><span style="color:#a3be8c;">0.1.0</span><span>&quot;
+</span><span style="color:#bf616a;">description </span><span>= &quot;</span><span style="color:#a3be8c;">Add your description here</span><span>&quot;
+</span><span style="color:#bf616a;">readme </span><span>= &quot;</span><span style="color:#a3be8c;">README.md</span><span>&quot;
+</span><span style="color:#bf616a;">requires-python </span><span>= &quot;</span><span style="color:#a3be8c;">&gt;=3.15</span><span>&quot;
+</span><span style="color:#bf616a;">dependencies </span><span>= []
+</span><span>
+</span><span>[project.scripts]
+</span><span style="color:#bf616a;">my-project </span><span>= &quot;</span><span style="color:#a3be8c;">my_project:main</span><span>&quot;
+</span><span>
+</span><span>[build-system]
+</span><span style="color:#bf616a;">requires </span><span>= [&quot;</span><span style="color:#a3be8c;">uv_build&gt;=0.13.6,&lt;0.14.0</span><span>&quot;]
+</span><span style="color:#bf616a;">build-backend </span><span>= &quot;</span><span style="color:#a3be8c;">uv_build</span><span>&quot;
+</span></code></pre>
+<p>A few things to notice. The layout is <code>src/</code>-based, and the project is a real installable package from day one. With the <code>[project.scripts]</code> entry point, <code>uv run my-project</code> works out of the box. And the <code>[build-system]</code> points to <code>uv_build</code>, uv's own Rust-native build backend.</p>
+<p>The <code>requires-python = "&gt;=3.15"</code> and the <code>.python-version</code> of <code>3.15</code> come from the interpreter uv just downloaded. On a machine that already has, say, Python 3.12, uv uses that one instead; per the 0.13.0 notes, uv keeps using compatible installed Pythons. The build backend pin is <code>uv_build&gt;=0.13.6,&lt;0.14.0</code>. The upper bound follows uv's minor version, so a new minor release of uv means bumping that bound in existing projects; the 0.13.0 release notes ask for exactly that.</p>
+<p>If you learned uv before 0.12 (or read an earlier version of this post), this is backwards from what you remember. The old default was a flat, <em>unpackaged</em> app: a <code>main.py</code> in the root and no <code>[build-system]</code> at all, meaning the project itself was never installed into the virtual environment. That default had a fair argument: applications don't need to be importable, and it avoided forcing a build-backend choice upfront. The new one has a fair argument too: unpackaged projects can't be depended on by anything else, and their entry-point ergonomics are worse. And now that Astral ships its own build backend, the "choosing a backend" friction is gone. In the source (<a href="https://github.com/astral-sh/uv/blob/0.13.6/crates/uv-project-commands/src/init.rs"><code>init.rs</code></a>, now in the <code>uv-project-commands</code> crate) the default variant is still called <code>ApplicationWithLibrary</code>: an application <em>with</em> an importable package underneath.</p>
+<p>The old behavior is still there: <code>uv init --no-package</code> gives you the flat <code>main.py</code> layout with no build system, and <code>--bare</code> gives you just a <code>pyproject.toml</code> and nothing else.</p>
+<h3 id="step-4-git-initialization">Step 4: Git initialization</h3>
+<p>uv runs <code>git init</code> and writes a <code>.gitignore</code> that excludes <code>.venv/</code> and <code>__pycache__/</code>. Skip this with <code>--no-vcs</code>.</p>
+<p><strong>No virtual environment is created yet.</strong> uv is lazy: it creates <code>.venv</code> only when you first run something or add a package. This avoids disk writes for projects you might never use.</p>
+<hr />
+<h2 id="4-what-happens-when-you-run-uv-add-requests">4. What happens when you run <code>uv add requests</code></h2>
+<p>This is the core operation. <code>uv add</code> installs a package and records it in <code>pyproject.toml</code> and <code>uv.lock</code>. Here is the full pipeline:</p>
+<pre data-lang="txt" style="background-color:#2b303b;color:#c0c5ce;" class="language-txt "><code class="language-txt" data-lang="txt"><span>$ uv add requests
+</span><span>Using CPython 3.15.2
+</span><span>Creating virtual environment at: .venv
+</span><span>Resolved 6 packages in 1.48s
+</span><span>   Building my-project @ file:///private/tmp/my-project
+</span><span>      Built my-project @ file:///private/tmp/my-project
+</span><span>Prepared 6 packages in 293ms
+</span><span>Installed 6 packages in 7ms
+</span><span> + certifi==2026.10.23
+</span><span> + charset-normalizer==3.5.2
+</span><span> + idna==3.20
+</span><span> + my-project==0.1.0 (from file:///private/tmp/my-project)
+</span><span> + requests==2.34.2
+</span><span> + urllib3==2.8.0
+</span></code></pre>
+<p>"Resolved 6 packages" is the project itself plus 5 dependencies. This time all 6 get installed, because the default project is now packaged: uv builds <code>my-project</code> with <code>uv_build</code> (the "Building" and "Built" lines) and installs it in editable mode. I checked: the package's <code>direct_url.json</code> says <code>"editable":true</code>, and there is a <code>my_project.pth</code> file in site-packages. Editable means changes under <code>src/</code> are picked up without reinstalling. The earlier version of this post showed a trace from a <code>--no-package</code> project, where only 5 packages got installed. And "Prepared" is uv's word for downloaded and unpacked into the cache, ready to be linked into the venv; the actual install step is only creating links, which is why it took 7ms.</p>
+<h3 id="stage-1-read-the-project-state-uv-workspace">Stage 1: Read the project state (<code>uv-workspace</code>)</h3>
+<p><code>uv-workspace</code> reads <code>pyproject.toml</code> and constructs an in-memory <code>Manifest</code>: the project name, existing dependencies, Python version constraint, workspace members, and overrides.</p>
+<h3 id="stage-2-update-pyproject-toml-uv-project-edit">Stage 2: Update <code>pyproject.toml</code> (<code>uv-project-edit</code>)</h3>
+<p>uv adds <code>requests</code> to the <code>dependencies</code> list in <code>pyproject.toml</code>. At this point it doesn't know the version yet, so it records it as a bare requirement. After resolution (Stage 3), it rewrites the specifier with the resolved version. The exact form depends on the <code>--bounds</code> flag; the default, <code>AddBoundsKind::Lower</code>, now lives in <a href="https://github.com/astral-sh/uv/blob/0.13.6/crates/uv-configuration/src/add_bounds.rs#L16-L19"><code>add_bounds.rs</code></a> in the <code>uv-configuration</code> crate, and it gives you a single lower bound:</p>
+<pre data-lang="toml" style="background-color:#2b303b;color:#c0c5ce;" class="language-toml "><code class="language-toml" data-lang="toml"><span style="color:#bf616a;">dependencies </span><span>= [
+</span><span>    &quot;</span><span style="color:#a3be8c;">requests&gt;=2.34.2</span><span>&quot;,
+</span><span>]
+</span></code></pre>
+<p>This edit goes through the <code>uv-project-edit</code> crate (<a href="https://github.com/astral-sh/uv/blob/0.13.6/crates/uv-project-edit/src/lib.rs"><code>lib.rs</code></a>), whose own description is "Edit project and script metadata while preserving TOML formatting." Up to 0.12.1 this code lived in <code>uv-workspace</code> as <code>pyproject_mut.rs</code>. It does surgical TOML editing: it patches exactly the field it needs to change without reformatting anything else in the file. That matters because <code>pyproject.toml</code> often contains hand-written comments and deliberate ordering that a naive serialize and reserialize pass would wipe out.</p>
+<h3 id="stage-3-resolution-uv-resolver-pubgrub">Stage 3: Resolution (<code>uv-resolver</code> + PubGrub)</h3>
+<p>The resolver answers: <em>"Which exact version of every package satisfies all constraints?"</em></p>
+<p>This is the most complex stage. We'll cover it in depth in sections 5 and 6. The output is a complete <code>(package, version)</code> assignment for every package in the dependency tree.</p>
+<h3 id="stage-4-write-uv-lock">Stage 4: Write <code>uv.lock</code></h3>
+<p>The resolved set is serialized to <code>uv.lock</code>. This is a TOML file that records every package: its exact version, source URL, content hash, and its own dependencies. A real excerpt:</p>
+<pre data-lang="toml" style="background-color:#2b303b;color:#c0c5ce;" class="language-toml "><code class="language-toml" data-lang="toml"><span style="color:#bf616a;">version </span><span>= </span><span style="color:#d08770;">1
+</span><span style="color:#bf616a;">revision </span><span>= </span><span style="color:#d08770;">5
+</span><span style="color:#bf616a;">requires-python </span><span>= &quot;</span><span style="color:#a3be8c;">&gt;=3.15</span><span>&quot;
+</span><span>
+</span><span>[[package]]
+</span><span style="color:#bf616a;">name </span><span>= &quot;</span><span style="color:#a3be8c;">requests</span><span>&quot;
+</span><span style="color:#bf616a;">version </span><span>= &quot;</span><span style="color:#a3be8c;">2.34.2</span><span>&quot;
+</span><span style="color:#bf616a;">source </span><span>= { </span><span style="color:#bf616a;">registry </span><span>= &quot;</span><span style="color:#a3be8c;">https://pypi.org/simple</span><span>&quot; }
+</span><span style="color:#bf616a;">dependencies </span><span>= [
+</span><span>    { </span><span style="color:#bf616a;">name </span><span>= &quot;</span><span style="color:#a3be8c;">certifi</span><span>&quot; },
+</span><span>    { </span><span style="color:#bf616a;">name </span><span>= &quot;</span><span style="color:#a3be8c;">charset-normalizer</span><span>&quot; },
+</span><span>    { </span><span style="color:#bf616a;">name </span><span>= &quot;</span><span style="color:#a3be8c;">idna</span><span>&quot; },
+</span><span>    { </span><span style="color:#bf616a;">name </span><span>= &quot;</span><span style="color:#a3be8c;">urllib3</span><span>&quot; },
+</span><span>]
+</span><span style="color:#bf616a;">sdist </span><span>= { </span><span style="color:#bf616a;">url </span><span>= &quot;</span><span style="color:#a3be8c;">https://files.pythonhosted.org/packages/ac/c3/e2a2b89f2d3e2179abd6d00ebd70bff6273f37fb3e0cc209f48b39d00cbf/requests-2.34.2.tar.gz</span><span>&quot;, </span><span style="color:#bf616a;">hash </span><span>= &quot;</span><span style="color:#a3be8c;">sha256:f288924cae4e29463698d6d60bc6a4da69c89185ad1e0bcc4104f584e960b9ed</span><span>&quot;, </span><span style="color:#bf616a;">size </span><span>= </span><span style="color:#d08770;">142856</span><span>, </span><span style="color:#bf616a;">upload-time </span><span>= &quot;</span><span style="color:#a3be8c;">2026-05-14T19:25:27.735Z</span><span>&quot; }
+</span><span style="color:#bf616a;">wheels </span><span>= [
+</span><span>    { </span><span style="color:#bf616a;">url </span><span>= &quot;</span><span style="color:#a3be8c;">https://files.pythonhosted.org/packages/a0/f4/c67b0b3f1b9245e8d266f0f112c500d50e5b4e83cb6f3b71b6528104182a/requests-2.34.2-py3-none-any.whl</span><span>&quot;, </span><span style="color:#bf616a;">hash </span><span>= &quot;</span><span style="color:#a3be8c;">sha256:2a0d60c172f83ac6ab31e4554906c0f3b3588d37b5cb939b1c061f4907e278e0</span><span>&quot;, </span><span style="color:#bf616a;">size </span><span>= </span><span style="color:#d08770;">73075</span><span>, </span><span style="color:#bf616a;">upload-time </span><span>= &quot;</span><span style="color:#a3be8c;">2026-05-14T19:25:26.443Z</span><span>&quot; },
+</span><span>]
+</span><span>
+</span><span>[[package]]
+</span><span style="color:#bf616a;">name </span><span>= &quot;</span><span style="color:#a3be8c;">urllib3</span><span>&quot;
+</span><span style="color:#bf616a;">version </span><span>= &quot;</span><span style="color:#a3be8c;">2.8.0</span><span>&quot;
+</span><span style="color:#bf616a;">source </span><span>= { </span><span style="color:#bf616a;">registry </span><span>= &quot;</span><span style="color:#a3be8c;">https://pypi.org/simple</span><span>&quot; }
+</span><span style="color:#bf616a;">sdist </span><span>= { </span><span style="color:#bf616a;">url </span><span>= &quot;</span><span style="color:#a3be8c;">https://files.pythonhosted.org/packages/e3/05/b17359e1cefb4f909b5e40b1b90a496d987258916dbbf88e842c729f510e/urllib3-2.8.0.tar.gz</span><span>&quot;, </span><span style="color:#bf616a;">hash </span><span>= &quot;</span><span style="color:#a3be8c;">sha256:63bf2ead4c879426ebf22ef2a781eeb4aa3b4ae798a0435506f8687fd5bb9b63</span><span>&quot;, </span><span style="color:#bf616a;">size </span><span>= </span><span style="color:#d08770;">458972</span><span>, </span><span style="color:#bf616a;">upload-time </span><span>= &quot;</span><span style="color:#a3be8c;">2026-09-15T19:29:36.253Z</span><span>&quot; }
+</span><span style="color:#bf616a;">wheels </span><span>= [
+</span><span>    { </span><span style="color:#bf616a;">url </span><span>= &quot;</span><span style="color:#a3be8c;">https://files.pythonhosted.org/packages/92/9d/c4e665119135114480843e7ab388fa94d8480650450e6f8e26b70d323a4c/urllib3-2.8.0-py3-none-any.whl</span><span>&quot;, </span><span style="color:#bf616a;">hash </span><span>= &quot;</span><span style="color:#a3be8c;">sha256:0cf3cae568d36aa9576b28dfb35f11328f1cb974ca7647d9475ebb86c75ac6e3</span><span>&quot;, </span><span style="color:#bf616a;">size </span><span>= </span><span style="color:#d08770;">135717</span><span>, </span><span style="color:#bf616a;">upload-time </span><span>= &quot;</span><span style="color:#a3be8c;">2026-09-15T19:29:34.577Z</span><span>&quot; },
+</span><span>]
+</span></code></pre>
+<p>The lockfile is <strong>universal</strong>: one <code>uv.lock</code> works on macOS, Linux, and Windows. It records all possible packages for all platforms using environment markers. When you install from the lockfile on a real machine, uv selects only the packages appropriate for that platform. This is a real improvement over <code>pip freeze</code> or <code>requirements.txt</code>, which are inherently platform-specific snapshots.</p>
+<p>The hashes are for integrity verification when downloading. Each file entry also records its <code>size</code> and <code>upload-time</code>. (The earlier version of this post also claimed the hashes key the cache; that was not right for the default cache, see Section 9.)</p>
+<blockquote>
+<p><strong>Note:</strong> <code>uv.lock</code> is an internal format that may change between versions. If you need to read it programmatically, the experimental <code>uv workspace metadata --preview-features workspace-metadata</code> command outputs a JSON view of the same dependency graph. It is still preview as of v0.13.6, and its output changed in 0.13.2 and again in 0.13.6, so don't rely on the schema being final.</p>
+</blockquote>
+<h3 id="stage-5-download-packages-uv-client-tokio">Stage 5: Download packages (<code>uv-client</code> + Tokio)</h3>
+<p><code>uv-client</code> is uv's async HTTP client, built on <a href="https://github.com/seanmonstar/reqwest">reqwest</a> and <a href="https://tokio.rs/">Tokio</a>. For every package not already in the global cache, uv fires off <strong>concurrent downloads</strong>:</p>
+<pre data-lang="txt" style="background-color:#2b303b;color:#c0c5ce;" class="language-txt "><code class="language-txt" data-lang="txt"><span># pip: sequential
+</span><span>fetch requests → wait → fetch urllib3 → wait → fetch certifi → wait → ...
+</span><span>total ≈ N × round_trip_time
+</span><span>
+</span><span># uv: concurrent
+</span><span>fetch requests ─┐
+</span><span>fetch urllib3   ├── all in parallel
+</span><span>fetch certifi   ─┘
+</span><span>total ≈ 1 × round_trip_time (roughly)
+</span></code></pre>
+<p>This is the largest contributor to uv's cold-cache speed. Network I/O latency is the bottleneck, and parallelism makes it roughly constant regardless of the number of packages.</p>
+<p>Packages land in a global cache managed by <code>uv-cache</code>. It is shared across all your projects, and shared by <code>uv pip install</code> and <code>uv add</code> as well as by <code>uvx</code> tool installs.</p>
+<p>One correction: the earlier version of this post said the cache key is the SHA-256 hash of the package content. By default that is not how it works. Unzipped wheels are stored in an <code>archive-v0</code> bucket under random IDs, and the wheel entries point at them. Content addressing exists, but only as a preview feature (Section 9). I also claimed the cache was verified by hash on every use; I had not checked that, so I removed the claim.</p>
+<h3 id="stage-6-install-packages-uv-installer">Stage 6: Install packages (<code>uv-installer</code>)</h3>
+<p>"Install" normally implies copying files. uv mostly doesn't copy anything.</p>
+<p>At 0.13.6 the default link mode is <code>clone</code> (copy-on-write) on macOS and Linux, and <code>hardlink</code> on other platforms such as Windows; that is spelled out in <a href="https://github.com/astral-sh/uv/blob/0.13.6/crates/uv-fs/src/link.rs#L39-L51"><code>link.rs</code></a>. A clone shares the same data blocks as the cached file until one side is modified, so creating one is a filesystem metadata operation, not a byte copy.</p>
+<p>If a clone fails, uv falls back to a hard link, and if that fails, to a plain copy: clone, then hardlink, then copy, spelled out in the <a href="https://github.com/astral-sh/uv/blob/0.13.6/crates/uv-fs/src/link.rs#L266-L281">fallback code</a>. You can pick the mode yourself with <code>--link-mode</code> or the <code>UV_LINK_MODE</code> environment variable; the values are <code>clone</code>, <code>copy</code>, <code>hardlink</code> and <code>symlink</code>.</p>
+<p>Correction: the earlier version said uv uses hard links on most Linux and macOS filesystems. That was wrong; <code>clone</code> was already the default there in 0.11.8.</p>
+<p>For a sense of the cost, look at the <code>uv add requests</code> trace above: the whole install step was <code>Installed 6 packages in 7ms</code>. That 7ms is the overhead of creating directory entries, not copying megabytes.</p>
+<hr />
+<h2 id="5-inside-the-resolver-the-two-thread-architecture">5. Inside the resolver: the two-thread architecture</h2>
+<p>The resolver is the most architecturally interesting part of uv, and the source code reveals a specific design decision that's worth understanding.</p>
+<h3 id="the-concurrency-problem">The concurrency problem</h3>
+<p>The PubGrub algorithm is inherently <strong>sequential and synchronous</strong>: it makes one decision at a time, and each decision depends on all previous decisions. You cannot trivially parallelize it.</p>
+<p>But metadata fetching (querying PyPI for "which versions of <code>flask</code> exist?" or "what does <code>flask==3.1.0</code> depend on?") is highly parallelizable I/O.</p>
+<p>The naive approach is to serialize everything: decide package, fetch metadata, decide next package, fetch metadata. This is what pip does. uv does something cleverer.</p>
+<h3 id="two-threads-communicating-via-channels">Two threads communicating via channels</h3>
+<p>The <code>resolve()</code> function in <a href="https://github.com/astral-sh/uv/blob/0.13.6/crates/uv-resolver/src/resolver/mod.rs#L310-L344"><code>crates/uv-resolver/src/resolver/mod.rs</code></a> is still short enough to quote verbatim. One difference from the 0.12.1 version: the solver no longer gets the raw channel sender; it gets a <code>MetadataRequests</code> handle that wraps it (more on that below):</p>
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">pub</span><span> async </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">resolve</span><span>(</span><span style="color:#bf616a;">self</span><span>) -&gt; Result&lt;ResolverOutput, ResolveError&gt; {
+</span><span>    </span><span style="color:#b48ead;">let</span><span> state = Arc::new(</span><span style="color:#bf616a;">self</span><span>.state);
+</span><span>    </span><span style="color:#b48ead;">let</span><span> provider = Arc::new(</span><span style="color:#bf616a;">self</span><span>.provider);
+</span><span>
+</span><span>    </span><span style="color:#65737e;">// A channel to fetch package metadata (e.g., given `flask`, fetch all versions) and version
+</span><span>    </span><span style="color:#65737e;">// metadata (e.g., given `flask==1.0.0`, fetch the metadata for that version).
+</span><span>    </span><span style="color:#65737e;">// Channel size is set large to accommodate batch prefetching.
+</span><span>    </span><span style="color:#b48ead;">let </span><span>(request_sink, request_stream) = mpsc::channel(</span><span style="color:#d08770;">300</span><span>);
+</span><span>    </span><span style="color:#b48ead;">let</span><span> requests =
+</span><span>        MetadataRequests::new(state.index.</span><span style="color:#96b5b4;">clone</span><span>(), request_sink, state.recorder.</span><span style="color:#96b5b4;">clone</span><span>());
+</span><span>
+</span><span>    </span><span style="color:#65737e;">// Run the fetcher.
+</span><span>    </span><span style="color:#b48ead;">let</span><span> requests_fut = state.</span><span style="color:#96b5b4;">clone</span><span>().</span><span style="color:#96b5b4;">fetch</span><span>(provider.</span><span style="color:#96b5b4;">clone</span><span>(), request_stream).</span><span style="color:#96b5b4;">fuse</span><span>();
+</span><span>
+</span><span>    </span><span style="color:#65737e;">// Spawn the PubGrub solver on a dedicated thread.
+</span><span>    </span><span style="color:#b48ead;">let</span><span> solver = state.</span><span style="color:#96b5b4;">clone</span><span>();
+</span><span>    </span><span style="color:#b48ead;">let </span><span>(tx, rx) = oneshot::channel();
+</span><span>    thread::Builder::new()
+</span><span>        .</span><span style="color:#96b5b4;">name</span><span>(&quot;</span><span style="color:#a3be8c;">uv-resolver</span><span>&quot;.</span><span style="color:#96b5b4;">into</span><span>())
+</span><span>        .</span><span style="color:#96b5b4;">spawn</span><span>(</span><span style="color:#b48ead;">move </span><span>|| {
+</span><span>            </span><span style="color:#b48ead;">let</span><span> result = solver.</span><span style="color:#96b5b4;">solve</span><span>(&amp;requests);
+</span><span>
+</span><span>            </span><span style="color:#65737e;">// This may fail if the main thread returned early due to an error.
+</span><span>            </span><span style="color:#b48ead;">let </span><span>_ = tx.</span><span style="color:#96b5b4;">send</span><span>(result);
+</span><span>        })
+</span><span>        .</span><span style="color:#96b5b4;">unwrap</span><span>();
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">let</span><span> resolve_fut = async </span><span style="color:#b48ead;">move </span><span>{ rx.await.</span><span style="color:#96b5b4;">map_err</span><span>(|_| ResolveError::ChannelClosed) };
+</span><span>
+</span><span>    </span><span style="color:#65737e;">// Wait for both to complete.
+</span><span>    </span><span style="color:#b48ead;">let </span><span>((), resolution) = tokio::try_join!(requests_fut, resolve_fut)?;
+</span><span>
+</span><span>    state.</span><span style="color:#96b5b4;">on_complete</span><span>();
+</span><span>    resolution
+</span><span>}
+</span></code></pre>
+<p>The architecture is:</p>
+<pre data-lang="txt" style="background-color:#2b303b;color:#c0c5ce;" class="language-txt "><code class="language-txt" data-lang="txt"><span>┌─────────────────────────────────────────────┐
+</span><span>│  Dedicated sync thread: &quot;uv-resolver&quot;       │
+</span><span>│  Runs PubGrub solver (solve())              │
+</span><span>│  → Requests metadata via MetadataRequests   │
+</span><span>│  → Waits on registered InMemoryIndex entry  │
+</span><span>└──────────────────┬──────────────────────────┘
+</span><span>                   │ mpsc channel (capacity 300)
+</span><span>                   ▼
+</span><span>┌─────────────────────────────────────────────┐
+</span><span>│  Tokio async runtime                        │
+</span><span>│  Runs fetch() - handles request_stream      │
+</span><span>│  Fires concurrent HTTP requests             │
+</span><span>│  Writes results into InMemoryIndex          │
+</span><span>└─────────────────────────────────────────────┘
+</span></code></pre>
+<p>The solver thread is <strong>synchronous</strong>. PubGrub's algorithm doesn't fit naturally into async/await because it's a tight loop with complex mutable state. Running it on its own OS thread sidesteps the question entirely.</p>
+<p>The fetcher runs on Tokio's async runtime. When the solver needs metadata for a package, it goes through <a href="https://github.com/astral-sh/uv/blob/0.13.6/crates/uv-resolver/src/resolver/requests.rs#L19-L25"><code>MetadataRequests</code></a>, which the source describes as "A blocking solver-side handle for requesting metadata from the asynchronous fetcher." It holds the <code>InMemoryIndex</code> and the channel sender, plus an optional recorder.</p>
+<p>Making a request registers the key in the index and sends a <code>Request</code> down the <code>mpsc</code> channel; what comes back is a handle. The solver then waits on that handle. The wait ends in <a href="https://github.com/astral-sh/uv/blob/0.13.6/crates/uv-once-map/src/registered.rs#L150-L153"><code>wait_blocking()</code></a>, which is <code>futures::executor::block_on</code> over the per-key notifier. That blocks only the solver thread, not Tokio's runtime, which keeps happily making more network requests.</p>
+<p>This handle is new since the last update; it arrived in two PRs in September 2026: <a href="https://github.com/astral-sh/uv/pull/21735">#21735</a> "Encapsulate resolver metadata requests" and <a href="https://github.com/astral-sh/uv/pull/21798">#21798</a> "Bind resolver metadata waits to registered request handles". Before #21798, a caller could register a request for one package and then wait on a different key by mistake; now the handle carries the package it was registered for. #21735's description notes that "The asynchronous provider and prefetch selection policies are unchanged."</p>
+<p>This design separates concerns:</p>
+<ul>
+<li>PubGrub stays synchronous and simple.</li>
+<li>Network I/O stays async and concurrent.</li>
+<li><code>Arc&lt;ResolverState&gt;</code> is shared safely between the two sides.</li>
+<li>The 300-deep <code>mpsc</code> channel provides backpressure: if the solver burns through requests faster than the fetcher can keep up, it eventually blocks on <code>send</code>.</li>
+</ul>
+<h3 id="the-inmemoryindex">The <code>InMemoryIndex</code></h3>
+<p>The <code>InMemoryIndex</code> is a shared cache of already-fetched metadata, built on uv's own <code>OnceMap</code> from the <code>uv-once-map</code> crate. The solver reads from it; the fetcher writes to it. When a key is missing, the solver thread parks on that key's notifier until the fetcher writes the value in. The Tokio runtime is never blocked, so other in-flight downloads keep making progress.</p>
+<p>I had this wrong before: the earlier version said the index is backed by <code>DashMap</code>. That was true until 0.11.21. <a href="https://github.com/astral-sh/uv/pull/19532">PR #19532</a>, merged 2026-06-18 and first released in 0.11.22, replaced DashMap with <a href="https://github.com/ibraheemdev/papaya"><code>papaya</code></a>, and my 2026-08-04 update missed it. At 0.13.6 the map inside <code>OnceMap</code> is a <code>papaya::HashMap</code> (<a href="https://github.com/astral-sh/uv/blob/0.13.6/crates/uv-once-map/src/lib.rs#L10"><code>lib.rs</code></a>). papaya describes itself as "A fast and ergonomic concurrent hash-table for read-heavy workloads."</p>
+<p>The reason for the swap, quoted from the PR: "<code>DashMap</code> has a lot of deadlock conditions. Our cases aren't about performance, but about concurrent access, and deadlocks are a bad experience for users (aka CI getting stuck for 6h until the hard job limit kills it)."</p>
+<hr />
+<h2 id="6-pubgrub-the-dependency-resolution-algorithm">6. PubGrub: the dependency resolution algorithm</h2>
+<h3 id="why-this-is-hard">Why this is hard</h3>
+<p>The resolver must answer: given a set of requirements (with version ranges), find one exact version for every package such that every package's requirements are also satisfied, recursively, for all transitive dependencies.</p>
+<p>In the general case, this is equivalent to the <a href="https://en.wikipedia.org/wiki/Boolean_satisfiability_problem">Boolean Satisfiability Problem</a> (SAT), which is NP-complete. Package ecosystems have thousands of packages and hundreds of versions each. Naive backtracking (try a version; if it conflicts, undo and try another) can be exponential.</p>
+<h3 id="pubgrub-s-approach-conflict-driven-clause-learning">PubGrub's approach: conflict-driven clause learning</h3>
+<p>uv uses <a href="https://github.com/pubgrub-rs/pubgrub">pubgrub-rs</a>, the Rust implementation of <a href="https://nex3.medium.com/pubgrub-2fb6470504f">PubGrub</a>. PubGrub was <a href="https://nex3.medium.com/pubgrub-2fb6470504f">introduced in April 2018</a> by Natalie Weizenbaum for Dart's <code>pub</code> package manager and has since been adopted by Bundler, Poetry, and now uv. It is a <strong>conflict-driven clause learning (CDCL)</strong> solver.</p>
+<p>The old approach is: pick a version, try it, on conflict undo and try another. Worst case is exponential.</p>
+<p>PubGrub's approach: when a conflict is found, <em>learn from it</em> by recording an <strong>incompatibility clause</strong>. The clause encodes which combination of package versions caused the conflict. Any future partial assignment that would trigger that same conflict is pruned immediately, without re-exploring.</p>
+<p>Concrete example: the resolver discovers that <code>a==2.0</code> and <code>b==3.0</code> can't coexist (because they require conflicting versions of <code>c</code>). PubGrub records the incompatibility <code>{a==2.0, b==3.0}</code>. Any future partial solution containing both is ruled out by unit propagation, instantly. This turns exponential worst cases into manageable ones for realistic package graphs.</p>
+<h3 id="the-resolver-loop">The resolver loop</h3>
+<p>Here is how PubGrub runs in uv, from the <a href="https://docs.astral.sh/uv/reference/internals/resolver/">official internals documentation</a>:</p>
+<p><strong>1. Initialize.</strong> Create a virtual root package representing your project. It is the only "decided" package; everything else is undecided.</p>
+<p><strong>2. Pick the highest-priority undecided package.</strong> uv's priority order is roughly:</p>
+<ul>
+<li>URL dependencies (git, path, file): pinned, no version negotiation needed.</li>
+<li>Packages with <code>==</code> constraints: version is already determined.</li>
+<li>Packages flagged as "highly conflicting" (see below).</li>
+<li>Everything else, ordered by when first encountered (breadth-first traversal).</li>
+</ul>
+<p>This ensures direct dependencies are decided before transitive ones.</p>
+<p><strong>3. Pick a version.</strong> uv tries versions newest-to-oldest by default (or oldest-to-newest with <code>resolution = "lowest"</code>). It prefers versions already in <code>uv.lock</code> (making re-resolves stable) and versions already installed in the current environment (avoiding unnecessary upgrades). As of 0.12, pre-releases are handled "if necessary": stable candidates are tried first, and pre-releases are considered only when no stable version satisfies the active constraints — the same behavior as pip, and it means a transitive dependency that only ships pre-releases now resolves without any configuration. (0.12.1 added <code>--prerelease-package</code> if you want a different policy for one specific package.)</p>
+<p><strong>4. Add requirements.</strong> All requirements of the chosen version are added to the undecided set. uv sends prefetch requests for their metadata in the background (see BatchPrefetcher below).</p>
+<p><strong>5. Detect conflicts.</strong> If PubGrub detects that the chosen version creates a conflict, it identifies the incompatible pair, records the incompatibility clause, backtracks to before one of them was decided, and retries with the new constraint.</p>
+<p><strong>6. Repeat or terminate.</strong> If all packages have decided versions: success. If an incompatibility propagates back to the root: failure with an explanation.</p>
+<h3 id="the-conflict-priority-heuristic">The conflict-priority heuristic</h3>
+<p>The <code>CONFLICT_THRESHOLD</code> constant in <a href="https://github.com/astral-sh/uv/blob/0.13.6/crates/uv-resolver/src/resolver/mod.rs#L117-L118"><code>resolver/mod.rs</code></a> is still set to <code>5</code>; since 0.12.1 it moved from line 98 to line 118, and nothing else changed:</p>
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#65737e;">/// The number of conflicts a package may accumulate before we re-prioritize and backtrack.
+</span><span style="color:#b48ead;">const </span><span style="color:#d08770;">CONFLICT_THRESHOLD</span><span>: </span><span style="color:#b48ead;">usize </span><span>= </span><span style="color:#d08770;">5</span><span>;
+</span></code></pre>
+<p>The scenario it solves: package <code>A</code> has high priority and is decided first. Every version of <code>B</code> the resolver tries is immediately rejected due to a conflict with <code>A</code>. The resolver could exhaust all of <code>B</code>'s versions before realising the root cause is <code>A</code>'s chosen version, which is slow.</p>
+<p>After 5 conflicts involving <code>A</code> and <code>B</code>, uv marks them as "highly conflicting" and promotes <code>B</code>'s priority above <code>A</code>'s. It then backtracks to before <code>A</code> was decided and tries <code>B</code> first. Deciding the constrained package first finds the correct solution much faster.</p>
+<h3 id="error-messages">Error messages</h3>
+<p>When resolution fails, PubGrub can reconstruct exactly <em>why</em> by walking the derivation tree of incompatibilities backwards from the root. Instead of <code>"conflicting requirements detected"</code>, you get something like:</p>
+<pre data-lang="txt" style="background-color:#2b303b;color:#c0c5ce;" class="language-txt "><code class="language-txt" data-lang="txt"><span>× No solution found when resolving dependencies:
+</span><span>╰─▶ Because my-project depends on flask&gt;=3.0 and flask&gt;=3.0 requires
+</span><span>    werkzeug&gt;=3.0, my-project requires werkzeug&gt;=3.0.
+</span><span>    And because legacy-lib==1.0 requires werkzeug&lt;2.0, and my-project
+</span><span>    depends on legacy-lib==1.0, my-project&#39;s requirements are
+</span><span>    unsatisfiable.
+</span></code></pre>
+<p>This is the single feature most likely to make you fall in love with PubGrub. Modern pip has improved here too, but uv's errors come from the same derivation tree the solver actually used, so they're always faithful to what the algorithm did.</p>
+<hr />
+<h2 id="7-batch-prefetching-the-boto3-optimization">7. Batch prefetching: the boto3 optimization</h2>
+<p>The <code>BatchPrefetcher</code> in <a href="https://github.com/astral-sh/uv/blob/0.13.6/crates/uv-resolver/src/resolver/batch_prefetch.rs"><code>crates/uv-resolver/src/resolver/batch_prefetch.rs</code></a> is a targeted optimization for packages with many versions that cause a lot of backtracking. The canonical example is <code>boto3</code>/<code>botocore</code>/<code>urllib3</code>.</p>
+<p>The problem: the resolver tries a version, fetches its metadata, discovers a conflict, then moves to the next version and repeats. For botocore, which has hundreds of releases, this can mean hundreds of sequential metadata round trips on a cold cache.</p>
+<p>The fix: after the resolver has tried a few versions of a package, the <code>BatchPrefetcher</code> speculatively sends fetch requests for several upcoming versions ahead of time. The schedule lives in the <a href="https://github.com/astral-sh/uv/blob/0.13.6/crates/uv-resolver/src/resolver/batch_prefetch.rs#L145-L165"><code>should_prefetch</code></a> function. That function already existed at 0.12.1; it only moved within the file. The earlier version of this post quoted just its doc comment and the condition. What did change since 0.12.1: the prefetcher now sends its requests through the same <code>MetadataRequests</code> handle as the solver. The condition itself did not change:</p>
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#65737e;">/// After 5, 10, 20, 40 tried versions, prefetch that many versions to start early but not
+</span><span style="color:#65737e;">/// too aggressive. Later we schedule the prefetch of 50 versions every 20 versions, this gives
+</span><span style="color:#65737e;">/// us a good buffer until we see prefetch again and is high enough to saturate the task pool.
+</span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">should_prefetch</span><span>(&amp;</span><span style="color:#bf616a;">self</span><span>, </span><span style="color:#bf616a;">next</span><span>: &amp;PubGrubPackage) -&gt; (</span><span style="color:#b48ead;">usize</span><span>, </span><span style="color:#b48ead;">bool</span><span>) {
+</span><span>    </span><span style="color:#b48ead;">let </span><span>PubGrubPackageInner::Package {
+</span><span>        name,
+</span><span>        kind: PackageNodeKind::Base,
+</span><span>        marker: MarkerTree::</span><span style="color:#d08770;">TRUE</span><span>,
+</span><span>    } = &amp;**next
+</span><span>    </span><span style="color:#b48ead;">else </span><span>{
+</span><span>        </span><span style="color:#b48ead;">return </span><span>(</span><span style="color:#d08770;">0</span><span>, </span><span style="color:#d08770;">false</span><span>);
+</span><span>    };
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">let</span><span> num_tried = </span><span style="color:#bf616a;">self</span><span>.tried_versions.</span><span style="color:#96b5b4;">get</span><span>(name).</span><span style="color:#96b5b4;">map_or</span><span>(</span><span style="color:#d08770;">0</span><span>, FxHashSet::len);
+</span><span>    </span><span style="color:#b48ead;">let</span><span> previous_prefetch = </span><span style="color:#bf616a;">self</span><span>.last_prefetch.</span><span style="color:#96b5b4;">get</span><span>(name).</span><span style="color:#96b5b4;">copied</span><span>().</span><span style="color:#96b5b4;">unwrap_or_default</span><span>();
+</span><span>    </span><span style="color:#b48ead;">let</span><span> do_prefetch = (num_tried &gt;= </span><span style="color:#d08770;">5 </span><span>&amp;&amp; previous_prefetch &lt; </span><span style="color:#d08770;">5</span><span>)
+</span><span>        || (num_tried &gt;= </span><span style="color:#d08770;">10 </span><span>&amp;&amp; previous_prefetch &lt; </span><span style="color:#d08770;">10</span><span>)
+</span><span>        || (num_tried &gt;= </span><span style="color:#d08770;">20 </span><span>&amp;&amp; previous_prefetch &lt; </span><span style="color:#d08770;">20</span><span>)
+</span><span>        || (num_tried &gt;= </span><span style="color:#d08770;">20 </span><span>&amp;&amp; num_tried - previous_prefetch &gt;= </span><span style="color:#d08770;">20</span><span>);
+</span><span>    (num_tried, do_prefetch)
+</span><span>}
+</span></code></pre>
+<p>(The doc comment promises "5, 10, 20, 40" but the code only checks 5, 10, 20 explicitly; the 40-and-beyond case is handled by the rolling <code>num_tried - previous_prefetch &gt;= 20</code> clause. Same end result, but if you're reading the source it's worth noting the comment doesn't quite match the conditions.)</p>
+<p>The prefetcher uses two strategies:</p>
+<ul>
+<li><strong>Compatible strategy</strong>: prefetch versions within the current constraint range, from newest downward.</li>
+<li><strong>In-order strategy</strong>: when the compatible range is exhausted, prefetch the next versions by release order, ignoring compatibility.</li>
+</ul>
+<p>It avoids prefetching source distributions (which are expensive to build). These are heuristics, and they might prefetch versions that turn out to be irrelevant, but in the cold-cache botocore case they can turn hundreds of serial round trips into a handful of batched ones.</p>
+<hr />
+<h2 id="8-the-forking-resolver-one-lockfile-for-all-platforms">8. The forking resolver: one lockfile for all platforms</h2>
+<p>Most Python resolvers produce a platform-specific result. uv produces a <strong>universal lockfile</strong> using a forking resolver.</p>
+<p>Consider:</p>
+<pre data-lang="txt" style="background-color:#2b303b;color:#c0c5ce;" class="language-txt "><code class="language-txt" data-lang="txt"><span>numpy&gt;=2,&lt;3 ; python_version &gt;= &quot;3.11&quot;
+</span><span>numpy&gt;=1.16,&lt;2 ; python_version &lt; &quot;3.11&quot;
+</span></code></pre>
+<p>A naive resolver fails here, since Python only allows one installed version of any package. uv's resolver sees two <code>numpy</code> requirements with different environment markers and splits (forks) the resolution into independent sub-resolutions. I ran it for real with uv 0.13.6. I made a tiny project named <code>fork-demo</code> with <code>requires-python = "&gt;=3.9"</code> and those two requirements, and ran <code>uv lock</code>. The verbose log said "Splitting resolution on fork-demo==0.1.0 over numpy into 2 resolutions with separate markers". Then the <code>&gt;= 3.11</code> fork split again, because the newest numpy 2.x, <code>2.5.4</code>, requires Python <code>&gt;=3.12</code>. uv solved four splits in total: <code>&gt;= 3.11</code>, <code>&gt;= 3.12</code>, <code>== 3.11.*</code> and <code>&lt; 3.11</code>.</p>
+<p>The result is three numpy versions in one lockfile: <code>1.26.4</code> for Python below 3.11; <code>2.4.6</code> for 3.11; <code>2.5.4</code> for 3.12 and later. Here is the top of the generated <code>uv.lock</code>:</p>
+<pre data-lang="toml" style="background-color:#2b303b;color:#c0c5ce;" class="language-toml "><code class="language-toml" data-lang="toml"><span style="color:#bf616a;">version </span><span>= </span><span style="color:#d08770;">1
+</span><span style="color:#bf616a;">revision </span><span>= </span><span style="color:#d08770;">5
+</span><span style="color:#bf616a;">requires-python </span><span>= &quot;</span><span style="color:#a3be8c;">&gt;=3.9</span><span>&quot;
+</span><span style="color:#bf616a;">resolution-markers </span><span>= [
+</span><span>    &quot;</span><span style="color:#a3be8c;">python_full_version &gt;= &#39;3.12&#39;</span><span>&quot;,
+</span><span>    &quot;</span><span style="color:#a3be8c;">python_full_version == &#39;3.11.*&#39;</span><span>&quot;,
+</span><span>    &quot;</span><span style="color:#a3be8c;">python_full_version &lt; &#39;3.11&#39;</span><span>&quot;,
+</span><span>]
+</span><span>
+</span><span>[[package]]
+</span><span style="color:#bf616a;">name </span><span>= &quot;</span><span style="color:#a3be8c;">fork-demo</span><span>&quot;
+</span><span style="color:#bf616a;">version </span><span>= &quot;</span><span style="color:#a3be8c;">0.1.0</span><span>&quot;
+</span><span style="color:#bf616a;">source </span><span>= { </span><span style="color:#bf616a;">virtual </span><span>= &quot;</span><span style="color:#a3be8c;">.</span><span>&quot; }
+</span><span style="color:#bf616a;">dependencies </span><span>= [
+</span><span>    { </span><span style="color:#bf616a;">name </span><span>= &quot;</span><span style="color:#a3be8c;">numpy</span><span>&quot;, </span><span style="color:#bf616a;">version </span><span>= &quot;</span><span style="color:#a3be8c;">1.26.4</span><span>&quot;, </span><span style="color:#bf616a;">source </span><span>= { </span><span style="color:#bf616a;">registry </span><span>= &quot;</span><span style="color:#a3be8c;">https://pypi.org/simple</span><span>&quot; }, </span><span style="color:#bf616a;">marker </span><span>= &quot;</span><span style="color:#a3be8c;">python_full_version &lt; &#39;3.11&#39;</span><span>&quot; },
+</span><span>    { </span><span style="color:#bf616a;">name </span><span>= &quot;</span><span style="color:#a3be8c;">numpy</span><span>&quot;, </span><span style="color:#bf616a;">version </span><span>= &quot;</span><span style="color:#a3be8c;">2.4.6</span><span>&quot;, </span><span style="color:#bf616a;">source </span><span>= { </span><span style="color:#bf616a;">registry </span><span>= &quot;</span><span style="color:#a3be8c;">https://pypi.org/simple</span><span>&quot; }, </span><span style="color:#bf616a;">marker </span><span>= &quot;</span><span style="color:#a3be8c;">python_full_version == &#39;3.11.*&#39;</span><span>&quot; },
+</span><span>    { </span><span style="color:#bf616a;">name </span><span>= &quot;</span><span style="color:#a3be8c;">numpy</span><span>&quot;, </span><span style="color:#bf616a;">version </span><span>= &quot;</span><span style="color:#a3be8c;">2.5.4</span><span>&quot;, </span><span style="color:#bf616a;">source </span><span>= { </span><span style="color:#bf616a;">registry </span><span>= &quot;</span><span style="color:#a3be8c;">https://pypi.org/simple</span><span>&quot; }, </span><span style="color:#bf616a;">marker </span><span>= &quot;</span><span style="color:#a3be8c;">python_full_version &gt;= &#39;3.12&#39;</span><span>&quot; },
+</span><span>]
+</span></code></pre>
+<p>All three land in <code>uv.lock</code> tagged with their markers. When you install from the lockfile on a real machine, uv evaluates the markers against the actual Python version and installs only the matching package. The earlier version of this post showed two forks for the same input (numpy <code>2.5.1</code> and <code>1.26.4</code>); today the same input gives three, which I find a nice live example of the nested case.</p>
+<p>Forks can be <strong>nested</strong>: a fork can itself be split on another marker, resulting in a tree of resolutions. Forks with identical packages are merged to keep the lockfile manageable. The fork points are recorded in <code>uv.lock</code> so that re-resolving produces stable, identical forks rather than recalculating them from scratch.</p>
+<p>You can observe forking live:</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">uv</span><span> lock</span><span style="color:#bf616a;"> -v </span><span style="color:#d08770;">2</span><span>&gt;&amp;</span><span style="color:#d08770;">1 </span><span>| </span><span style="color:#bf616a;">grep -E </span><span>&quot;</span><span style="color:#a3be8c;">(Splitting|Solving split|Split.*took)</span><span>&quot;
+</span></code></pre>
+<p>The 0.13 patch releases did a lot of performance work right around forks and markers. <a href="https://github.com/astral-sh/uv/releases/tag/0.13.2">0.13.2</a> removed exponential work in how uv handles complex dependency markers, and cut resolver memory use for large dependency graphs and forks. 0.13.5 reduced peak memory when resolving across multiple environments, and 0.13.6 reduced peak memory when resolving large workspaces. I have not measured any of it; the fork-demo example above is far too small to notice a difference.</p>
+<h3 id="the-metadata-consistency-assumption">The metadata consistency assumption</h3>
+<p>uv makes one important assumption that enables a significant performance optimization: <strong>all wheels of a single version of a package have identical <code>METADATA</code> files</strong>.</p>
+<p>Why this matters: as of 2026-11-02, numpy 2.5.4 on PyPI has exactly 65 wheels plus one source distribution. (2.5.1, the version the earlier text used, has 43.) Without the metadata consistency assumption, uv would need to fetch the metadata from each wheel separately. That is 65 network requests to understand one version of one package. With the assumption, uv fetches metadata from <em>any one</em> wheel and uses it for all platforms. uv prefers a wheel that exposes <code>.metadata</code> via <a href="https://peps.python.org/pep-0658/">PEP 658</a>. Otherwise, if the server supports HTTP range requests, uv downloads only the metadata at the end of the wheel. That turns 65 requests into 1.</p>
+<p>One thing to watch: uv 0.13 has preview support for wheel variants, <a href="https://peps.python.org/pep-0825/">PEP 825</a> "Wheel Variants: Package Format" (status: Provisional), behind the <code>wheel-variants</code> preview feature. 0.13.1 started parsing variant labels in wheel filenames; 0.13.5 added selecting and ranking variants; 0.13.6 added NVIDIA GPU detection. I have not tried it, and I do not know how variants interact with the assumption that all wheels of one version share the same METADATA.</p>
+<p>The assumption holds for all major packages in practice. PEP 658 doesn't strictly require it, and there's been discussion about whether to mandate it, but uv's bet has paid off so far.</p>
+<hr />
+<h2 id="9-the-global-cache">9. The global cache</h2>
+<p>The cache lives at (the <a href="https://github.com/astral-sh/uv/blob/0.13.6/docs/concepts/cache.md#L197-L198">uv docs</a> list it, and <code>uv cache dir</code> prints it):</p>
+<ul>
+<li><code>$XDG_CACHE_HOME/uv</code> or <code>$HOME/.cache/uv</code> on Unix, and that includes macOS</li>
+<li><code>%LOCALAPPDATA%\uv\cache</code> on Windows</li>
+</ul>
+<p>The earlier version of this post said <code>~/Library/Caches/uv</code> on macOS; that was wrong. On my Mac, <code>uv cache dir</code> printed a path under <code>~/.cache/uv</code>.</p>
+<p>Here is the cache after the <code>uv add requests</code> run from Section 4, starting from an empty cache:</p>
+<pre data-lang="txt" style="background-color:#2b303b;color:#c0c5ce;" class="language-txt "><code class="language-txt" data-lang="txt"><span>$ ls &quot;$(uv cache dir)&quot;
+</span><span>archive-v0
+</span><span>builds-v0
+</span><span>CACHEDIR.TAG
+</span><span>interpreter-v4
+</span><span>sdists-v10
+</span><span>simple-v27
+</span><span>wheels-v7
+</span></code></pre>
+<p>Each bucket name has a version suffix. The <a href="https://github.com/astral-sh/uv/blob/0.13.6/docs/concepts/cache.md#L212-L217">cache docs</a> explain that each bucket is versioned, so if a release changes a bucket's format, uv will not read from or write to the incompatible old bucket. uv 0.13.0 bumped several of them (comparing <code>uv-cache</code> at 0.12.1 and 0.13.6): <code>wheels-v6</code> became <code>wheels-v7</code>; <code>sdists-v9</code> became <code>sdists-v10</code>; <code>simple-v24</code> became <code>simple-v27</code>. That is why 0.13 re-downloads things once after upgrading, and why the 0.13.0 notes can say several uv versions can still share one cache directory.</p>
+<p>Here is what each bucket holds, from the doc comments in <a href="https://github.com/astral-sh/uv/blob/0.13.6/crates/uv-cache/src/lib.rs#L1273-L1282"><code>uv-cache</code></a>:</p>
+<ul>
+<li><code>wheels-v7</code>: wheels (excluding built wheels), with their metadata and cache policy</li>
+<li><code>sdists-v10</code>: source distributions and the wheels built from them, plus their extracted metadata</li>
+<li><code>archive-v0</code>: unzipped wheels, stored as directories; this is what gets linked into a <code>.venv</code></li>
+<li><code>builds-v0</code>: "Ephemeral virtual environments used to execute PEP 517 builds and other operations."</li>
+<li><code>interpreter-v4</code>: cached information about Python interpreters</li>
+<li><code>simple-v27</code>: index responses from PyPI's simple API</li>
+</ul>
+<p>Correction: the earlier version called this cache content-addressed, with packages stored and retrieved by their SHA-256 hash. By default they are not. In my run the <code>archive-v0</code> entries had random names like <code>2vT9h-pR--9ClBnY</code>. Two projects that use <code>requests==2.34.2</code> from the same index still share one cache entry, because the wheel entry points at the same archive.</p>
+<p>Content addressing does exist, as the <code>content-addressed-cache</code> preview feature. <a href="https://github.com/astral-sh/uv/pull/19693">PR #19693</a> (merged 2026-08-25) makes the archive ID a deterministic hash of the unpacked directory, a 24-character lowercase base-36 string. <a href="https://github.com/astral-sh/uv/pull/21327">PR #21327</a> (merged 2026-08-31) goes further: every file is stored under its BLAKE3 hash in a new <code>files-v0</code> bucket. The files are hard linked into <code>archive-v0</code>, so identical files across different wheels are stored once. Trying it on a fresh cache:</p>
+<pre data-lang="txt" style="background-color:#2b303b;color:#c0c5ce;" class="language-txt "><code class="language-txt" data-lang="txt"><span>$ uv pip install --preview-features content-addressed-cache requests
+</span><span>Resolved 5 packages in 2.59s
+</span><span>Prepared 5 packages in 260ms
+</span><span>Installed 5 packages in 4ms
+</span><span> + certifi==2026.10.23
+</span><span> + charset-normalizer==3.5.2
+</span><span> + idna==3.20
+</span><span> + requests==2.34.2
+</span><span> + urllib3==2.8.0
+</span><span>$ ls &quot;$(uv cache dir)&quot;
+</span><span>archive-v0
+</span><span>CACHEDIR.TAG
+</span><span>files-v0
+</span><span>interpreter-v4
+</span><span>sdists-v10
+</span><span>simple-v27
+</span><span>wheels-v7
+</span><span>$ ls &quot;$(uv cache dir)&quot;/archive-v0
+</span><span>g6f815e8ktasd7j6bhh3yqum
+</span><span>kt84mjmxy2eeed77x5mca3jn
+</span><span>wcp4hzrsbqnq8el3rmhyvmsb
+</span><span>yw16sxfi8megxmilg3e8ht0i
+</span><span>zkg1i85w7bgj43at5a1zzl6a
+</span></code></pre>
+<p>That fresh cache had 107 file objects in <code>files-v0</code> for these five packages. I have not used the preview long enough to say whether it is worth turning on.</p>
+<p>About the <code>simple-v27</code> bucket: it caches index responses, and uv revalidates them rather than refetching blindly. 0.13.0 made that revalidation faster by not rewriting unchanged payloads. Running <code>uv lock</code> a second time in the <code>my-project</code> example printed <code>Resolved 6 packages in 2ms</code>, which is too fast to have touched the network.</p>
+<p>Manage the cache:</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">uv</span><span> cache dir          </span><span style="color:#65737e;"># print the cache location
+</span><span style="color:#bf616a;">uv</span><span> cache prune        </span><span style="color:#65737e;"># remove entries not referenced by any environment
+</span><span style="color:#bf616a;">uv</span><span> cache clean        </span><span style="color:#65737e;"># remove all entries
+</span></code></pre>
+<hr />
+<h2 id="10-source-distributions-and-the-build-sandbox">10. Source distributions and the build sandbox</h2>
+<p>When a package only provides an sdist (no binary wheel for your platform), uv must build the wheel. This is handled by <code>uv-distribution</code>'s <code>DistributionDatabase</code>.</p>
+<p>Building an sdist means running the package's build backend (e.g., setuptools, flit, hatchling) inside an isolated build environment. This is necessary because build scripts can run arbitrary Python code, and that code might read files, make network requests, or modify the filesystem.</p>
+<p>uv caches successfully built wheels in <code>sdists-v10</code>, next to the source distribution they came from. If you install the same source package again, even across projects, the build only runs once. Correction: the earlier version said they are cached in <code>~/.cache/uv/builds/</code>; that was wrong, and <code>builds-v0</code> only holds the throwaway build environments.</p>
+<p>On a related note, 0.13.0 made <code>tar-codec</code> the default backend for reading tar archives (<a href="https://github.com/astral-sh/uv/pull/22094">PR #22094</a>), with stricter validation. It may reject sdists containing hard links or unsupported tar extensions that older versions accepted, and sdists built by <code>uv_build</code> can have different bytes and hashes. You can opt out with <code>UV_LEGACY_TAR_BACKEND=1</code>; <a href="https://github.com/astral-sh/uv/releases/tag/0.13.1">0.13.1</a> already restored support for sdists containing hard links or full-length tar user or group names. There is also a preview flag, <code>--require-build-hashes</code>, that requires hashes for build dependencies, including transitive ones. I have not hit any of the tar strictness myself.</p>
+<p>The contributing guide recommends building inside Docker if you're working with untrusted packages:</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">docker</span><span> build</span><span style="color:#bf616a;"> -t</span><span> uv-builder</span><span style="color:#bf616a;"> -f</span><span> crates/uv-dev/builder.dockerfile</span><span style="color:#bf616a;"> --load</span><span> .
+</span><span style="color:#bf616a;">docker</span><span> run</span><span style="color:#bf616a;"> --rm -it -v </span><span>$(</span><span style="color:#bf616a;">pwd</span><span>):/app uv-builder \
+</span><span>  /app/target/x86_64-unknown-linux-musl/profiling/uv-dev \
+</span><span>  resolve-many /app/scripts/popular_packages/pypi_10k_most_dependents.txt
+</span></code></pre>
+<p>This matters for uv's own development: if you're benchmarking the resolver against the 10k most popular PyPI packages, some of those sdists run code that could affect your system.</p>
+<hr />
+<h2 id="11-why-rust-specifically">11. Why Rust, specifically</h2>
+<p>The choice of Rust isn't aesthetic. Reading the resolver, two specific properties stand out as load-bearing for the design:</p>
+<p><strong>Sync and async coexist in the same process.</strong> The resolver wants a synchronous PubGrub loop and a concurrent async fetcher in the same binary, sharing state through an <code>Arc</code> around the papaya-backed index. Rust gives you <code>std::thread::spawn</code> and <code>tokio::spawn</code> side by side, with <code>Arc</code> for what they share; you can pick the right execution model per subsystem, and the type checker keeps you honest about what crosses the boundary. In Python this hybrid is famously awkward (the GIL plus <code>asyncio</code> make it hard to mix the two cleanly), and in Go everything wants to be a goroutine.</p>
+<p><strong>Concurrent shared state without runtime data races.</strong> The <code>InMemoryIndex</code> is read from the solver thread and written from the Tokio runtime simultaneously. papaya is the data structure that makes this safe, but Rust's type system is what makes the safety <em>enforced</em>: you can't accidentally hand out a <code>&amp;mut</code> reference across threads. A new example from 0.13: the handles from Section 5 borrow the <code>RegisteredOnceMap</code>, and removing an entry needs exclusive access, so code that removes an entry while a handle is still alive does not compile. The crate ships this as a doc test marked <code>compile_fail,E0502</code>:</p>
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">use </span><span>uv_once_map::RegisteredOnceMap;
+</span><span>
+</span><span style="color:#b48ead;">let mut</span><span> map = RegisteredOnceMap::&lt;_, _&gt;::default();
+</span><span>map.</span><span style="color:#96b5b4;">done</span><span>(&quot;</span><span style="color:#a3be8c;">package</span><span>&quot;, </span><span style="color:#d08770;">42</span><span>);
+</span><span style="color:#b48ead;">let</span><span> entry = map.</span><span style="color:#96b5b4;">get_registered</span><span>(&quot;</span><span style="color:#a3be8c;">package</span><span>&quot;).</span><span style="color:#96b5b4;">expect</span><span>(&quot;</span><span style="color:#a3be8c;">completed entry</span><span>&quot;);
+</span><span>map.</span><span style="color:#96b5b4;">remove</span><span>(&amp;&quot;</span><span style="color:#a3be8c;">package</span><span>&quot;); </span><span style="color:#65737e;">// Cannot remove entries while a handle borrows the map.
+</span><span>assert_eq!(entry.</span><span style="color:#96b5b4;">wait_blocking</span><span>(), </span><span style="color:#d08770;">42</span><span>);
+</span></code></pre>
+<p>You can still write deadlocks or logic bugs, of course. The DashMap swap in Section 5 was about deadlocks, which the type system does not catch. But the class of two threads stomping on each other's memory doesn't compile.</p>
+<p>The other usual Rust talking points (no GC pauses, zero-cost <code>async</code>, native <code>linkat()</code>) all apply too, but they're not specific to uv. The two above are the ones I'd point to as actually shaping the architecture.</p>
+<hr />
+<h2 id="12-building-from-source-and-contributing">12. Building from source and contributing</h2>
+<p>If you want to poke around or contribute:</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># Install Rust
+</span><span style="color:#bf616a;">curl --proto </span><span>&#39;</span><span style="color:#a3be8c;">=https</span><span>&#39;</span><span style="color:#bf616a;"> --tlsv1</span><span>.2</span><span style="color:#bf616a;"> -sSf</span><span> https://sh.rustup.rs | </span><span style="color:#bf616a;">sh
+</span><span>
+</span><span style="color:#65737e;"># Clone
+</span><span style="color:#bf616a;">git</span><span> clone https://github.com/astral-sh/uv.git &amp;&amp; </span><span style="color:#96b5b4;">cd</span><span> uv
+</span><span>
+</span><span style="color:#65737e;"># Build and run your local version
+</span><span style="color:#bf616a;">cargo</span><span> run -- --version
+</span><span style="color:#bf616a;">cargo</span><span> run -- pip install requests
+</span><span style="color:#bf616a;">cargo</span><span> run -- venv
+</span><span>
+</span><span style="color:#65737e;"># Install the recommended test runner
+</span><span style="color:#bf616a;">cargo</span><span> install cargo-nextest
+</span><span>
+</span><span style="color:#65737e;"># Run the full test suite
+</span><span style="color:#bf616a;">cargo</span><span> nextest run
+</span><span>
+</span><span style="color:#65737e;"># Run a specific test
+</span><span style="color:#bf616a;">cargo</span><span> nextest run</span><span style="color:#bf616a;"> -E </span><span>&#39;</span><span style="color:#a3be8c;">test(test_add_requirement)</span><span>&#39;
+</span><span>
+</span><span style="color:#65737e;"># Update and review snapshot changes (uv uses insta for snapshot testing)
+</span><span style="color:#bf616a;">cargo</span><span> install cargo-insta
+</span><span style="color:#bf616a;">cargo</span><span> insta test</span><span style="color:#bf616a;"> --accept --test-runner</span><span> nextest
+</span></code></pre>
+<h3 id="snapshot-testing-with-insta">Snapshot testing with <code>insta</code></h3>
+<p>uv's test suite makes heavy use of <a href="https://insta.rs/">insta</a> for snapshot testing. A typical test looks like:</p>
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span>#[</span><span style="color:#bf616a;">test</span><span>]
+</span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">test_add</span><span>() {
+</span><span>    </span><span style="color:#b48ead;">let</span><span> context = TestContext::new(&quot;</span><span style="color:#a3be8c;">3.12</span><span>&quot;);
+</span><span>    uv_snapshot!(context.</span><span style="color:#96b5b4;">filters</span><span>(), context.</span><span style="color:#96b5b4;">add</span><span>().</span><span style="color:#96b5b4;">arg</span><span>(&quot;</span><span style="color:#a3be8c;">requests</span><span>&quot;), @&quot;&quot;);
+</span><span>}
+</span></code></pre>
+<p>The <code>@""</code> at the end is a snapshot placeholder. The first time you run the test, insta captures the output. Subsequent runs compare against the snapshot. When behavior changes intentionally, you run <code>cargo insta review</code> to approve the updated snapshots. This makes it easy to catch unintended regressions in CLI output.</p>
+<h3 id="enabling-logs">Enabling logs</h3>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># High-level resolver decisions
+</span><span style="color:#bf616a;">RUST_LOG</span><span>=</span><span style="color:#a3be8c;">uv=info </span><span style="color:#bf616a;">cargo</span><span> run -- pip compile requirements.in
+</span><span>
+</span><span style="color:#65737e;"># Resolver fork events specifically
+</span><span style="color:#bf616a;">RUST_LOG</span><span>=</span><span style="color:#a3be8c;">uv_resolver=debug </span><span style="color:#bf616a;">cargo</span><span> run -- lock -v
+</span><span>
+</span><span style="color:#65737e;"># Everything (very verbose)
+</span><span style="color:#bf616a;">RUST_LOG</span><span>=</span><span style="color:#a3be8c;">trace </span><span style="color:#bf616a;">cargo</span><span> run -- pip install requests
+</span></code></pre>
+<p>The <code>RUST_LOG</code> env var follows the <code>tracing</code> crate's directive syntax: you can scope it to specific crates (<code>uv_resolver=debug</code>), specific targets, or specific log levels.</p>
+<h3 id="finding-a-first-contribution">Finding a first contribution</h3>
+<p>The team labels beginner-friendly issues as <a href="https://github.com/astral-sh/uv/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22"><code>good first issue</code></a>. These typically don't require deep resolver knowledge: improving error messages, handling edge cases in TOML parsing, adding missing CLI flags. The <code>bug</code> label is also a good source of contributions.</p>
+<p>Before starting on anything not labeled <code>good first issue</code> or <code>bug</code>, comment on the issue first. The team has strong opinions on what uv should and shouldn't do, and they prefer to align on approach before implementation.</p>
+<hr />
+<h2 id="what-surprised-me">What surprised me</h2>
+<p>A few things I didn't expect going in, in case they're useful as anchors when you read the source yourself:</p>
+<ul>
+<li>The solver is a <em>plain <code>std::thread::spawn</code></em>, not a <code>tokio::task::spawn_blocking</code>. The hybrid isn't subtle; it really is "spawn an OS thread and hand it the channel sender."</li>
+<li>The <code>InMemoryIndex</code> blocking primitive (the per-key notifier the solver waits on) is what makes the "sync solver, async fetcher" split actually work. Without it the solver would either busy-wait or block the Tokio runtime, and you'd lose all the parallelism.</li>
+<li>The surgical TOML editing code is much bigger than I expected: 2,564 lines in <code>pyproject_mut.rs</code> at 0.12.1 (the earlier "~1800 lines" was wrong), and 2,309 lines in <code>uv-project-edit</code>'s <code>lib.rs</code> at 0.13.6. Preserving user formatting turns out to be most of the work in any tool that round-trips human-edited config.</li>
+<li>The <code>BatchPrefetcher</code> doc comment doesn't quite match its code. Small thing, but it's the kind of detail that convinces you the rest is hand-written by people, not regenerated.</li>
+<li>The "metadata consistency" assumption (Section 8) feels load-bearing but is technically not guaranteed by any PEP. uv is essentially betting on a behaviour packaging tooling has converged on without ever standardising.</li>
+</ul>
+<p>If you want to poke at any of this, start with <a href="https://github.com/astral-sh/uv/blob/0.13.6/crates/uv-resolver/src/resolver/mod.rs"><code>crates/uv-resolver/src/resolver/mod.rs</code></a> (the <code>resolve()</code> and <code>solve()</code> functions) and <a href="https://github.com/astral-sh/uv/blob/0.13.6/crates/uv-resolver/src/resolver/requests.rs"><code>requests.rs</code></a> (the <code>MetadataRequests</code> handle), then <a href="https://github.com/astral-sh/uv/blob/0.13.6/crates/uv-resolver/src/resolver/batch_prefetch.rs"><code>batch_prefetch.rs</code></a>. After that, the rest of the codebase mostly explains itself.</p>
+<hr />
+<h2 id="further-reading">Further reading</h2>
+<ul>
+<li><a href="https://docs.astral.sh/uv/reference/internals/resolver/">uv resolver internals</a>: the official deep dive, written by the uv team; primary source for Section 6</li>
+<li><a href="https://nex3.medium.com/pubgrub-2fb6470504f">PubGrub blog post by Natalie Weizenbaum</a>: the original algorithm explanation; very approachable</li>
+<li><a href="https://pubgrub-rs-guide.pages.dev/internals/intro">pubgrub-rs internals guide</a>: the Rust implementation's own documentation</li>
+<li><a href="https://github.com/astral-sh/uv/releases/tag/0.13.0">uv 0.13.0 release notes</a>: the full list of breaking changes, from the Python 3.15 default to the cache format change and <code>tar-codec</code></li>
+<li><a href="https://github.com/astral-sh/uv/releases/tag/0.12.0">uv 0.12.0 release notes</a>: the new <code>uv init</code> defaults</li>
+<li><a href="https://github.com/astral-sh/uv/security/advisories/GHSA-hq85-5cpj-mr62">GHSA-hq85-5cpj-mr62</a>: the compromised root CA advisory; upgrade to 0.13.4 or later</li>
+<li><a href="https://github.com/astral-sh/uv/blob/0.13.6/crates/uv-resolver/src/resolver/mod.rs">uv resolver source: <code>resolver/mod.rs</code></a>: start here if you want to read the resolver code; <code>resolve()</code> is the entry point</li>
+<li><a href="https://github.com/astral-sh/uv/blob/0.13.6/crates/uv-resolver/src/resolver/requests.rs">uv resolver source: <code>resolver/requests.rs</code></a>: the <code>MetadataRequests</code> handle</li>
+<li><a href="https://github.com/astral-sh/uv/blob/0.13.6/crates/uv-resolver/src/resolver/batch_prefetch.rs">uv resolver source: <code>batch_prefetch.rs</code></a>: the <code>BatchPrefetcher</code> implementation</li>
+<li><a href="https://github.com/astral-sh/uv/blob/0.13.6/docs/concepts/cache.md">uv cache docs</a>: cache location and bucket versioning</li>
+<li><a href="https://github.com/astral-sh/uv/blob/0.13.6/CONTRIBUTING.md">uv CONTRIBUTING.md</a>: setup, testing, profiling, snapshot testing</li>
+<li><a href="https://tokio.rs/">Tokio async runtime</a>: the async runtime underlying uv's concurrent I/O</li>
+<li><a href="https://github.com/ibraheemdev/papaya">papaya</a>: the concurrent hash map behind <code>OnceMap</code> and the <code>InMemoryIndex</code>, replacing DashMap since PR #19532</li>
+<li><a href="https://insta.rs/">insta snapshot testing</a>: the testing library used throughout uv's test suite</li>
+</ul>
+
+        
+    </article>
+
+    <!-- Comment section -->
+    
+      
+        
+          <script
+  src="https://giscus.app/client.js"
+  data-repo="nooscraft&#x2F;personal-blog"
+  data-repo-id="R_kgDOQJ_XNg"
+  data-category="General"
+  data-category-id="DIC_kwDOQJ_XNs4CxOmG"
+  data-mapping="pathname"
+  data-strict="0"
+  data-reactions-enabled="1"
+  data-emit-metadata="0"
+  data-input-position="bottom"
+
+  
+  data-theme="https:&#x2F;&#x2F;noos.blog&#x2F;css&#x2F;giscus-theme.css"
+  
+
+  data-lang="en"
+  data-loading="lazy"
+  crossorigin="anonymous"
+  async
+></script>
+
+        
+      
+    
+
+
+    <!-- Page footer -->
+    
+    <footer>
+        <hr>
+        <p>
+            
+            
+                
+                in <a href="https://noos.blog/categories/engineering/">Engineering</a>
+            
+            
+                and
+                tagged
+                
+                    <a href="https://noos.blog/tags/python/">python</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/rust/">rust</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/uv/">uv</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/package-manager/">package-manager</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/pubgrub/">pubgrub</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/dependency-resolution/">dependency-resolution</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/open-source/">open-source</a>
+                    
+                        
+                            
+                                and
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/tokio/">tokio</a>
+                    
+                        
+                    
+                
+            
+        </p>
+
+        <!-- Revision history (optional) -->
+        
+          
+            
+              
+            
+          
+        
+
+        
+        
+    </footer>
+
+
+</article>
+
+
+    </main>
+    
+
+  </body>
+</html>

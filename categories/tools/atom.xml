@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Noos - Where Thought, Code, and Craft Converge - Tools</title>
+    <subtitle>Personal blog about programming, technology, and engineering insights. Topics include Rust, DevOps, Linux, and software craftsmanship.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://noos.blog/categories/tools/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://noos.blog"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2025-11-07T00:00:00+00:00</updated>
+    <id>https://noos.blog/categories/tools/atom.xml</id>
+    <entry xml:lang="en">
+        <title>Tokuin: Token Intelligence for LLM Developers</title>
+        <published>2025-11-07T00:00:00+00:00</published>
+        <updated>2025-11-07T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/tokuin-token-tooling-for-llm-builders/"/>
+        <id>https://noos.blog/posts/tokuin-token-tooling-for-llm-builders/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/tokuin-token-tooling-for-llm-builders/">&lt;p&gt;I built &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;nooscraft&#x2F;tokuin&quot;&gt;Tokuin&lt;&#x2F;a&gt; because the tooling around prompt design still feels like guesswork. We scribble system prompts in scratchpads, retry endpoints until rate limits scream, and only know what the bill looks like after the invoice arrives. Tokuin changes that. It gives you &lt;strong&gt;reliable token estimates, cost projections, and synthetic load tests&lt;&#x2F;strong&gt;—all packaged in a Rust CLI you can trust.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;why-another-cli&quot;&gt;Why Another CLI?&lt;&#x2F;h2&gt;
+&lt;p&gt;Prompts have become product surfaces. Teams iterate on them like code, but the support tooling still feels like duct tape. I wanted something that:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Reads prompts from files, stdin, or watch mode&lt;&#x2F;li&gt;
+&lt;li&gt;Targets multiple providers without juggling SDKs&lt;&#x2F;li&gt;
+&lt;li&gt;Surfaces pricing before you ever hit “Send”&lt;&#x2F;li&gt;
+&lt;li&gt;Scales up to load tests when you need to know how a model behaves across 1,000 requests&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Tokuin is the result: a &lt;strong&gt;ground-up build in Rust&lt;&#x2F;strong&gt; with a modular architecture for tokenizers, providers, and output formats. It’s fast, predictable, and stays out of your way while you experiment.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;feature-highlights&quot;&gt;Feature Highlights&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Token estimation that understands context&lt;&#x2F;strong&gt;: Supply raw text, chat transcripts, or JSON payloads and Tokuin breaks down system&#x2F;user&#x2F;assistant roles with optional markdown minification.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Multi-model comparisons&lt;&#x2F;strong&gt;: Pass &lt;code&gt;--compare&lt;&#x2F;code&gt; with OpenAI, Anthropic, or OpenRouter models to see how token counts and costs differ.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Pricing awareness&lt;&#x2F;strong&gt;: Add &lt;code&gt;--price&lt;&#x2F;code&gt; or &lt;code&gt;--estimate-cost&lt;&#x2F;code&gt; to forecast spend per prompt, per run, or across a load test.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Watch mode&lt;&#x2F;strong&gt;: Keep Tokuin running with &lt;code&gt;--watch&lt;&#x2F;code&gt; and it re-computes every time you save a file. Perfect for prompt gardening.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Load testing (feature flag)&lt;&#x2F;strong&gt;: Enable the &lt;code&gt;load-test&lt;&#x2F;code&gt; feature to hammer APIs with controlled concurrency, think times, retry logic, and automatic latency&#x2F;cost reports.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Format-flexible output&lt;&#x2F;strong&gt;: Emit human-friendly text, JSON for scripts, Markdown for docs, CSV for spreadsheets, or Prometheus metrics when you need dashboards.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Provider-ready&lt;&#x2F;strong&gt;: OpenAI and OpenRouter work out of the box, Gemini is one flag away, and new providers plug into the registry without rewriting the CLI surface.&lt;sup class=&quot;footnote-reference&quot;&gt;&lt;a href=&quot;#tokuin&quot;&gt;1&lt;&#x2F;a&gt;&lt;&#x2F;sup&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;div class=&quot;footnote-definition&quot; id=&quot;tokuin&quot;&gt;&lt;sup class=&quot;footnote-definition-label&quot;&gt;1&lt;&#x2F;sup&gt;
+&lt;p&gt;Feature set sourced from the project README.&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;nooscraft&#x2F;tokuin&quot;&gt;tokuin&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;div&gt;
+&lt;h2 id=&quot;advantages-for-developers&quot;&gt;Advantages for Developers&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Budget confidence&lt;&#x2F;strong&gt;: Know input&#x2F;output token counts and projected cost before you ship or run a batch job.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Faster iteration&lt;&#x2F;strong&gt;: Swap “test, wait, pray” with a tight loop; piping prompts through Tokuin becomes muscle memory.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;CI-friendly&lt;&#x2F;strong&gt;: Because it’s a single binary, you can run token checks in CI to guard against prompt bloat before merge.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Team alignment&lt;&#x2F;strong&gt;: Comparing multiple models is now a line of CLI flags, not a spreadsheet of stitched-together data.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Infra visibility&lt;&#x2F;strong&gt;: Load tests surface latency cliffs, provider throttling, and cost ceilings before your users do.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;built-for-growth&quot;&gt;Built for Growth&lt;&#x2F;h2&gt;
+&lt;p&gt;Tokuin ships with a modular core: &lt;code&gt;tokenizers&#x2F;&lt;&#x2F;code&gt;, &lt;code&gt;models&#x2F;&lt;&#x2F;code&gt;, &lt;code&gt;providers&#x2F;&lt;&#x2F;code&gt;, and &lt;code&gt;output&#x2F;&lt;&#x2F;code&gt; live in separate crates so we can grow the ecosystem without tangling the CLI.&lt;sup class=&quot;footnote-reference&quot;&gt;&lt;a href=&quot;#tokuin&quot;&gt;1&lt;&#x2F;a&gt;&lt;&#x2F;sup&gt; Near-term roadmap items include:&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Provider expansion&lt;&#x2F;strong&gt;: Native Anthropic, Mistral, and Cohere support (work already outlined in &lt;code&gt;PROVIDERS_PLAN.md&lt;&#x2F;code&gt;).&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Scenario scripts&lt;&#x2F;strong&gt;: Define multi-turn conversations and replay them in load tests.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Cost guardrails&lt;&#x2F;strong&gt;: Abort long runs automatically when reaching a user-defined budget ceiling.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Prompt linting&lt;&#x2F;strong&gt;: Surface style and structure issues before they hit production pipelines.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Plugin hooks&lt;&#x2F;strong&gt;: Let users contribute tokenizers or pricing sources without forking the repo.&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;h2 id=&quot;from-experiment-to-community-tooling&quot;&gt;From Experiment to Community Tooling&lt;&#x2F;h2&gt;
+&lt;p&gt;Tokuin grew out of practical late-night benchmarking, budget vetting, and the need for predictable tooling across teams. We still welcome that vibe-coding energy—if you sketch solutions with AI co-pilots or riff on ideas in flow, there’s room here to help shape how we build for LLMs.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;how-to-get-involved&quot;&gt;How to Get Involved&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Run it&lt;&#x2F;strong&gt;: &lt;code&gt;cargo install tokuin&lt;&#x2F;code&gt; or build from source and kick the tires.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Share prompts&lt;&#x2F;strong&gt;: If you discover funky edge cases in tokenization or pricing, capture them as regression fixtures.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Open a PR&lt;&#x2F;strong&gt;: Contributions are welcome whether you’re adding providers, tightening error messages, or documenting workflows. Mention any vibe-coding sessions in your PR so we can trace the creative path.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Join the roadmap&lt;&#x2F;strong&gt;: Drop ideas in issues, especially if you’re working on multi-provider tooling—the more weird setups we test, the better Tokuin gets.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Thanks for trying it out. Tokuin exists to remove guesswork, save budgets, and let prompt engineers stay in flow. If you ship something with it, I’d love to hear the story.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>mock: Build APIs with Shell Scripts, Not Frameworks</title>
+        <published>2025-11-05T00:00:00+00:00</published>
+        <updated>2025-11-05T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/mock-api-framework-shell-scripts/"/>
+        <id>https://noos.blog/posts/mock-api-framework-shell-scripts/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/mock-api-framework-shell-scripts/">&lt;p&gt;Sometimes you need an API endpoint fast. Not a full framework, not a production service, just something that responds to HTTP requests. &lt;a href=&quot;https:&#x2F;&#x2F;dhuan.github.io&#x2F;mock&#x2F;&quot;&gt;mock&lt;&#x2F;a&gt; is exactly that—a lightweight tool that turns shell scripts into HTTP endpoints.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-concept&quot;&gt;The Concept&lt;&#x2F;h2&gt;
+&lt;p&gt;Instead of spinning up Express, Flask, or any other framework, mock lets you define endpoints with simple shell scripts:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; mock serve \
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;  --route &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;users&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; \
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;  --method &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;GET&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; \
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;  --shell-script &lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;get_users.sh&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Your shell script becomes the response handler. Inside it, you use mock&#x27;s utilities to build HTTP responses: &lt;code&gt;mock write&lt;&#x2F;code&gt; to send data, &lt;code&gt;mock set-header&lt;&#x2F;code&gt; to add headers, and access to the full shell environment.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;why-this-matters&quot;&gt;Why This Matters&lt;&#x2F;h2&gt;
+&lt;p&gt;This approach shines for:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Prototyping&lt;&#x2F;strong&gt;: Mock external APIs you&#x27;re integrating with&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Testing&lt;&#x2F;strong&gt;: Create test fixtures without setting up databases&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Quick integrations&lt;&#x2F;strong&gt;: Bridge gaps between services using familiar shell tools&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;DevOps scripts&lt;&#x2F;strong&gt;: Expose your automation scripts as HTTP endpoints&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;You get all the power of shell (&lt;code&gt;grep&lt;&#x2F;code&gt;, &lt;code&gt;awk&lt;&#x2F;code&gt;, &lt;code&gt;curl&lt;&#x2F;code&gt;, databases, file systems) wrapped in HTTP. No dependencies beyond what&#x27;s already on your system.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-details&quot;&gt;The Details&lt;&#x2F;h2&gt;
+&lt;p&gt;Mock supports JSON config files or command-line parameters. You can set response headers, status codes, route parameters, conditional responses, and even serve static files. It&#x27;s comprehensive enough for complex scenarios while staying dead simple.&lt;&#x2F;p&gt;
+&lt;p&gt;If you&#x27;ve ever thought &quot;I wish I could just write a bash script and expose it as an API,&quot; mock is that tool.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;Documentation&lt;&#x2F;strong&gt;: &lt;a href=&quot;https:&#x2F;&#x2F;dhuan.github.io&#x2F;mock&#x2F;latest&#x2F;getting_started.html&quot;&gt;dhuan.github.io&#x2F;mock&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>The Confusing World of Cursor Payments</title>
+        <published>2025-10-25T00:00:00+00:00</published>
+        <updated>2025-10-25T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/cursor-payments-confusion/"/>
+        <id>https://noos.blog/posts/cursor-payments-confusion/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/cursor-payments-confusion/">&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;cursor.sh&#x2F;&quot;&gt;Cursor&lt;&#x2F;a&gt; is a powerful AI-powered code editor that many developers are excited about. However, one aspect that consistently causes confusion is its payment and pricing model. This post attempts to document some of these confusions based on recent experiences.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-confusion&quot;&gt;The Confusion&lt;&#x2F;h2&gt;
+&lt;p&gt;The payment structure for Cursor can be unclear in several ways:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Free tier limits&lt;&#x2F;strong&gt;: What exactly counts toward your monthly quota? Is it AI completions, chat requests, or something else?&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Billing cycles&lt;&#x2F;strong&gt;: When does your quota reset? Is it calendar month, or from when you first started using the service?&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Payment methods&lt;&#x2F;strong&gt;: What payment options are available, and how are they processed?&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Usage tracking&lt;&#x2F;strong&gt;: How can you monitor your usage to avoid unexpected charges or hitting limits?&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;These ambiguities can lead to surprises—either unexpected charges or finding yourself blocked when you thought you had quota remaining.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;why-this-matters&quot;&gt;Why This Matters&lt;&#x2F;h2&gt;
+&lt;p&gt;For developers evaluating whether to adopt Cursor, understanding the cost and payment structure is important. Unclear pricing creates friction and can be a barrier to adoption, especially for individual developers or small teams on tight budgets.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;what-to-do&quot;&gt;What to Do&lt;&#x2F;h2&gt;
+&lt;p&gt;If you&#x27;re considering Cursor:&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Check the official pricing page&lt;&#x2F;strong&gt; (&lt;a href=&quot;https:&#x2F;&#x2F;cursor.sh&#x2F;pricing&quot;&gt;cursor.sh&#x2F;pricing&lt;&#x2F;a&gt;) for current information&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Monitor your usage&lt;&#x2F;strong&gt; if there&#x27;s a dashboard or settings page that shows quota&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Reach out to support&lt;&#x2F;strong&gt; if you&#x27;re confused about billing or limits&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Document what you learn&lt;&#x2F;strong&gt; since this information may not be clearly documented&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;h2 id=&quot;important-disclaimer&quot;&gt;Important Disclaimer&lt;&#x2F;h2&gt;
+&lt;p&gt;⚠️ &lt;strong&gt;Please note&lt;&#x2F;strong&gt;: Pricing, payment structures, and feature availability for Cursor are subject to change. The information in this post reflects experiences at the time of writing and may be outdated by the time you read this. Always refer to Cursor&#x27;s official documentation and pricing pages for the most current information.&lt;&#x2F;p&gt;
+&lt;p&gt;The goal of this post is to highlight that these aspects can be confusing, not to provide definitive answers that may become incorrect over time.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;If you&#x27;ve experienced similar confusion with Cursor&#x27;s pricing or payment model, you&#x27;re not alone. Hopefully, this clarity improves as the platform matures.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>How my terminal looks</title>
+        <published>2025-10-13T00:00:00+00:00</published>
+        <updated>2025-10-13T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/how-my-terminal-looks/"/>
+        <id>https://noos.blog/posts/how-my-terminal-looks/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/how-my-terminal-looks/">&lt;h3 id=&quot;background&quot;&gt;Background&lt;&#x2F;h3&gt;
+&lt;p&gt;I think everyone of you geeks would like if your terminal looks cool and productive. And yes, I&#x27;m talking here about terminals in POSIX-compliant OS&#x27;s, more specifically terminal in a Linux environment.&lt;&#x2F;p&gt;
+&lt;p&gt;Anyhow I will share you the details of my customized terminal configurations so you could get an idea of what it is really capable of doing and perhaps you would start applying the changes to your own terminal.&lt;&#x2F;p&gt;
+&lt;p&gt;So to make it all happen I had to give up on &lt;code&gt;bash&lt;&#x2F;code&gt; and start using &lt;code&gt;zsh&lt;&#x2F;code&gt;. Because &lt;code&gt;zsh&lt;&#x2F;code&gt; provides some extensive support to terminal users and it is certainly feature rich, customizable  and cooler than &lt;code&gt;bash&lt;&#x2F;code&gt;. So all the customizations I made are based on &lt;code&gt;zsh&lt;&#x2F;code&gt; and &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;robbyrussell&#x2F;oh-my-zsh&quot;&gt;oh-my-zsh&lt;&#x2F;a&gt; (a really cool community driven project for managing &lt;code&gt;zsh&lt;&#x2F;code&gt; configurations)&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;looks&quot;&gt;Looks&lt;&#x2F;h3&gt;
+&lt;p&gt;If looking at theming &lt;code&gt;oh-my-zsh&lt;&#x2F;code&gt; provides some cool and nice looking themes out of the box. But the theme that I&#x27;m using is an external theme and needs little bit more configurations before using it.&lt;&#x2F;p&gt;
+&lt;p&gt;It&#x27;s call &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;caiogondim&#x2F;bullet-train-oh-my-zsh-theme&quot;&gt;bullet-train&lt;&#x2F;a&gt; and to make it look right I had to install some fonts from &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;powerline&#x2F;fonts&quot;&gt;Vim-Powerline&lt;&#x2F;a&gt;. I also had to change the color scheme of my terminal to use &lt;strong&gt;Solarized (dark)&lt;&#x2F;strong&gt;. Here I&#x27;m using xfce4-terminal that comes with Xubuntu, so I can easily change the color scheme from the preferences menu. I also make it a bit transparent to make it even more cooler.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;productivity&quot;&gt;Productivity&lt;&#x2F;h3&gt;
+&lt;p&gt;Enough of the looks. Lets see how is it when it comes the productivity. Here again &lt;code&gt;oh-my-zsh&lt;&#x2F;code&gt; provides some nice &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;robbyrussell&#x2F;oh-my-zsh&#x2F;tree&#x2F;master&#x2F;plugins&quot;&gt;plugins&lt;&#x2F;a&gt; that you can use to increase your productivity. I&#x27;ll list down the plugins that I&#x27;m using&lt;&#x2F;p&gt;
+&lt;h4 id=&quot;plugins&quot;&gt;Plugins&lt;&#x2F;h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;robbyrussell&#x2F;oh-my-zsh&#x2F;wiki&#x2F;Plugin:git&quot;&gt;git&lt;&#x2F;a&gt; - A very comprehensive plugin for &lt;code&gt;git&lt;&#x2F;code&gt; with lots of aliases for easy usage&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;robbyrussell&#x2F;oh-my-zsh&#x2F;tree&#x2F;master&#x2F;plugins&#x2F;history-substring-search&quot;&gt;history-substring-search&lt;&#x2F;a&gt; - Very useful plugin that will get you through your &lt;code&gt;zsh&lt;&#x2F;code&gt; history backwards-forwards via up and down arrow keys&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;zsh-users&#x2F;zsh-syntax-highlighting&quot;&gt;zsh-syntax-highlighting&lt;&#x2F;a&gt; - this will highlight the commands we use inside the terminal&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;robbyrussell&#x2F;oh-my-zsh&#x2F;tree&#x2F;master&#x2F;plugins&#x2F;command-not-found&quot;&gt;command-not-found&lt;&#x2F;a&gt; - will suggest alternative&#x2F;correct commands instead of just command not found error&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;robbyrussell&#x2F;oh-my-zsh&#x2F;tree&#x2F;master&#x2F;plugins&#x2F;colorize&quot;&gt;colorize&lt;&#x2F;a&gt; - this will colorize the syntaxes for almost every popular sciprting&#x2F;programing language&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;robbyrussell&#x2F;oh-my-zsh&#x2F;tree&#x2F;master&#x2F;plugins&#x2F;colored-man-pages&quot;&gt;colored-man-pages&lt;&#x2F;a&gt; - syntax highlight in man pages for easy reading&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;robbyrussell&#x2F;oh-my-zsh&#x2F;tree&#x2F;master&#x2F;plugins&#x2F;python&quot;&gt;python&lt;&#x2F;a&gt; - provides lots of useful aliases to Python&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;robbyrussell&#x2F;oh-my-zsh&#x2F;tree&#x2F;master&#x2F;plugins&#x2F;sudo&quot;&gt;sudo&lt;&#x2F;a&gt; - hit ESC twice and boom! &lt;code&gt;sudo&lt;&#x2F;code&gt; will added to your command&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;robbyrussell&#x2F;oh-my-zsh&#x2F;tree&#x2F;master&#x2F;plugins&#x2F;web-search&quot;&gt;web-search&lt;&#x2F;a&gt; - simply opens up your browser with the search query of yours in desired search engine i.e &lt;code&gt;google whats the weather like today&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;robbyrussell&#x2F;oh-my-zsh&#x2F;tree&#x2F;master&#x2F;plugins&#x2F;chucknorris&quot;&gt;chucknorris&lt;&#x2F;a&gt; - this plugin isn&#x27;t particularly meant for productivity but it can get really humorous.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;robbyrussell&#x2F;oh-my-zsh&#x2F;tree&#x2F;master&#x2F;plugins&#x2F;ubuntu&quot;&gt;ubuntu&lt;&#x2F;a&gt; - this particular plugin provides lot of Ubuntu specific aliases to ease up the day-to-day work&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Once put these all together this is how it looks&lt;&#x2F;p&gt;
+&lt;img src=&quot;&#x2F;public&#x2F;images&#x2F;how_my_t_looks_01.gif&quot; alt=&quot;img&quot; class=&quot;inline&quot;&#x2F;&gt;
+&lt;img src=&quot;&#x2F;public&#x2F;images&#x2F;how_my_t_looks_02.gif&quot; alt=&quot;img&quot; class=&quot;inline&quot;&#x2F;&gt;
+</content>
+        
+    </entry>
+</feed>

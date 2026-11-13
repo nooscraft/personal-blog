@@ -1,0 +1,626 @@
+<!doctype html>
+<html lang="en" data-theme="toggle">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <!-- Enable responsiveness on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;hieratic-prompt-compression-release&#x2F;" />
+    
+    <!-- Robots meta -->
+    
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    
+
+    
+      
+        <meta name="description" content="Tokuin v0.2.0 is here with the feature I promised: rule-based, structure-aware prompt compression. Here&#x27;s how it works and why you might actually use it." />
+        <meta property="og:description" content="Tokuin v0.2.0 is here with the feature I promised: rule-based, structure-aware prompt compression. Here&#x27;s how it works and why you might actually use it." />
+        <meta property="twitter:description" content="Tokuin v0.2.0 is here with the feature I promised: rule-based, structure-aware prompt compression. Here&#x27;s how it works and why you might actually use it." />
+      
+    
+
+    <!-- Title -->
+    
+      
+    
+    <title>
+    
+    Hieratic Prompt Compression: From Prototype to Production | Noos - Where Thought, Code, and Craft Converge
+    
+</title>
+    
+    <!-- Author -->
+    
+    <meta name="author" content="Oshadha G" />
+    
+    
+    <!-- Article specific meta tags -->
+    
+    
+    <meta property="article:published_time" content="2026-02-20T00:00:00+00:00" />
+    
+    
+    
+    
+    <meta property="article:tag" content="llm" />
+    
+    <meta property="article:tag" content="prompt-engineering" />
+    
+    <meta property="article:tag" content="compression" />
+    
+    <meta property="article:tag" content="tokuin" />
+    
+    <meta property="article:tag" content="rust" />
+    
+    
+    
+    
+    <meta property="article:section" content="Engineering" />
+    
+    
+    
+
+    <!-- Additional Facebook Meta Tags -->
+    <meta property="og:site_name" content="Noos - Where Thought, Code, and Craft Converge" />
+    <meta
+      property="og:url"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;hieratic-prompt-compression-release&#x2F;"
+    />
+    <meta
+      property="og:type"
+      content="article"
+    />
+    <meta property="og:title" content="Hieratic Prompt Compression: From Prototype to Production | Noos - Where Thought, Code, and Craft Converge" />
+
+    <!-- Additional Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      property="twitter:url"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;hieratic-prompt-compression-release&#x2F;"
+    />
+    <meta name="twitter:title" content="Hieratic Prompt Compression: From Prototype to Production | Noos - Where Thought, Code, and Craft Converge" />
+
+    <!-- Cover images -->
+           
+           
+           
+           
+      
+      
+      
+      
+      
+    
+
+    <meta
+      property="og:image"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;hieratic-prompt-compression-release.png"
+    />
+
+    <meta
+      name="twitter:image"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;hieratic-prompt-compression-release.png"
+    />
+
+
+
+    <!-- Favicons -->
+           
+           <!-- PNG + ICO (some clients ignore SVG favicons) -->
+           <link
+             rel="icon"
+             type="image/png"
+             sizes="96x96"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/favicon-96x96.png?v=3"
+           />
+           <link
+             rel="apple-touch-icon"
+             sizes="180x180"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/apple-touch-icon.png?v=3"
+           />
+           <link
+             rel="shortcut icon"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/favicon.ico?v=3"
+           />
+           
+
+    <!-- RSS Feed -->
+    
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      title="RSS"
+      href="https://noos.blog/atom.xml"
+    />
+    
+
+    <!-- Load Styles -->
+    
+      <link
+        rel="stylesheet"
+        href="https://noos.blog/site.css"
+      />
+    
+
+    <!-- Load Fonts -->
+    
+
+  
+
+
+
+
+
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+  
+
+
+
+<!-- Forcing Font -->
+<style>
+body {
+  font-family:
+    "JetBrains Mono", Menlo, Monaco, Lucida Console, Liberation Mono,
+    DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New,
+    monospace, serif !important;
+}
+</style>
+
+
+    <!-- Pass Theme Preference as Data Attribute -->
+    <script src="https://noos.blog/js/init-theme.js"></script>
+
+    <!-- Reference return to click position script -->
+    <script defer src="https://noos.blog/js/reference-return.js"></script>
+
+    <!-- Additional scripts -->
+    
+      
+        <script defer src="https://noos.blog/js/codeblock.js"></script>
+      
+            
+              <script defer src="https://noos.blog/js/toggle-theme.js"></script>
+            
+      
+<!-- MathJax script for rendering LaTeX math equations -->
+<script src="https://noos.blog/js/mathjax-config.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+  async
+></script>
+
+
+      
+<script type="text/javascript" src="https://noos.blog/elasticlunr.min.js"></script>
+<script type="text/javascript" src="https://noos.blog/js/search.js"></script>
+
+    
+    
+    <!-- Structured Data (JSON-LD) -->
+    
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Hieratic Prompt Compression: From Prototype to Production",
+  
+  "description": "Tokuin v0.2.0 is here with the feature I promised: rule-based, structure-aware prompt compression. Here&#x27;s how it works and why you might actually use it.",
+  
+  
+  "datePublished": "2026-02-20T00:00:00+00:00",
+  
+  
+  "author": {
+    "@type": "Person",
+    "name": "Oshadha G"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Noos - Where Thought, Code, and Craft Converge",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https:&#x2F;&#x2F;noos.blog/icons/favicon/web-app-manifest-512x512.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;hieratic-prompt-compression-release&#x2F;"
+  },
+  "url": "https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;hieratic-prompt-compression-release&#x2F;",
+  
+  "keywords": "llm, prompt-engineering, compression, tokuin, rust",
+  
+  "inLanguage": "en"
+}
+</script>
+
+
+    
+    <!-- Google Analytics (GA4) -->
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-54YK7R04LX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-54YK7R04LX', {
+        'anonymize_ip': true,
+        'respect_dnt': true
+      });
+    </script>
+    
+  </head>
+
+  <!-- Body element (contents of the page) -->
+  <body class="hack main container">
+    
+  
+    
+    
+      
+  
+  <section class="nav-header">
+    <nav
+      itemscope
+      itemtype="http://schema.org/SiteNavigationElement"
+      class="navbar"
+    >
+      <section class="nav-links">
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/"
+        >
+          <span itemprop="name">Home</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/about"
+        >
+          <span itemprop="name">About</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/categories"
+        >
+          <span itemprop="name">Categories</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/tags"
+        >
+          <span itemprop="name">Tags</span>
+        </a>
+        
+      </section>
+    </nav>
+    <aside class="user-actions-container">
+      
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        class="search-icon"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+        />
+      </svg>
+      <input type="text" id="search" placeholder="Search..." />
+      <section class="search-results" aria-live="polite">
+        <article class="search-results__items" role="list"></article>
+      </section>
+       
+      <a id="dark-mode-toggle" href="#">
+        <img
+          src="https://noos.blog/icons/sun.svg"
+          id="sun-icon"
+          style="filter: invert(1)"
+          alt="Light mode"
+        />
+        <img
+          src="https://noos.blog/icons/moon.svg"
+          id="moon-icon"
+          alt="Dark mode"
+        />
+      </a>
+       
+      <a
+        href="https://noos.blog/atom.xml"
+        class="feed-icon"
+        rel="noopener noreferrer"
+      >
+        <img
+          src="https://noos.blog/icons/rss.svg"
+          id="rss-icon"
+          alt="RSS feed"
+          class="social-icon"
+        />
+      </a>
+       
+    </aside>
+  </section>
+  
+
+    
+
+
+    <main>
+      
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">Hieratic Prompt Compression: From Prototype to Production</h1>
+        
+        <data class="muted">
+    <svg class="icon i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <data>3 minute read</data>
+    
+    
+    <svg class="icon i-calendar" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <!-- Calendar outline -->
+        <rect x="3" y="6" width="26" height="23" rx="2" ry="2"/>
+        <!-- Binding rings -->
+        <line x1="10" y1="3" x2="10" y2="9"/>
+        <line x1="22" y1="3" x2="22" y2="9"/>
+        <!-- Top separator -->
+        <line x1="3" y1="12" x2="29" y2="12"/>
+    </svg>
+
+    Published: 2026-02-20
+    
+</data>
+        
+        
+        
+        
+        
+        
+          
+          
+          
+          
+          
+        
+        
+        <figure class="post-cover" style="margin: 1.25rem 0;">
+          <img src="&#x2F;images&#x2F;covers&#x2F;hieratic-prompt-compression-release.png" alt="Hieratic Prompt Compression: From Prototype to Production cover" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--color-border-default, #e5e7eb);" onerror="this.parentNode.style.display='none'" />
+        </figure>
+        
+    </header>
+
+    <article itemprop="articleBody">
+        
+            <!-- If no summary separate from content, just render content -->
+            <p>Back in November, I wrote about <a href="https://noos.blog/posts/hieratic-prompt-compression-prototype/">an ambitious prototype</a>: a way to shrink LLM prompts by 50–80% without losing meaning, using a structured format I called "Hieratic".</p>
+<p>Today, that prototype is real. <strong>Tokuin v0.2.0</strong> is out, and it includes a full implementation of Hieratic prompt compression.</p>
+<p>You can grab it now:</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">curl -fsSL</span><span> https://raw.githubusercontent.com/nooscraft/tokuin/main/install.sh | </span><span style="color:#bf616a;">bash
+</span></code></pre>
+<p>Or check the <a href="https://github.com/nooscraft/tokuin/discussions/5">release notes</a>.</p>
+<hr />
+<h2 id="the-problem-recap">The Problem (Recap)</h2>
+<p>We all know the pain: context windows are finite, tokens cost money, and latency kills user experience. You stuff a prompt with examples, role definitions, and constraints, and suddenly you're paying for 2,000 tokens of boilerplate on every single request.</p>
+<p>The industry's answer has mostly been "use a bigger model" or "summarize with another LLM." But adding an LLM step to compress your prompt introduces latency, cost, and non-determinism.</p>
+<p>I wanted something different: <strong>deterministic, rule-based, structure-aware compression.</strong> A tool that acts like a scribe, rewriting your verbose prose into a compact shorthand that models can still read natively.</p>
+<hr />
+<h2 id="meet-hieratic">Meet Hieratic</h2>
+<p>The core idea is simple: LLMs don't need polite, grammatically correct English. They need semantic signals.</p>
+<p>Hieratic strips away the fluff and organizes the signal into a structured format.</p>
+<p><strong>Before (850 tokens):</strong></p>
+<blockquote>
+<p>You are an expert programmer with 10 years of experience in building distributed systems, microservices, and cloud-native applications... [200 more tokens of role context]
+Example 1: Authentication Bug Fix... [detailed narrative example]</p>
+</blockquote>
+<p><strong>After (285 tokens - 66% less):</strong></p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>@HIERATIC v1.0
+</span><span>@ROLE[inline] &quot;Expert engineer: 10y distributed systems, microservices, cloud-native&quot;
+</span><span>@EXAMPLES[inline]
+</span><span>1. Auth bug: session bypass → HMAC signing → 94% bot reduction
+</span><span>2. DB perf: 2.3s queries → pooling+cache → 0.1s, 10x capacity
+</span><span>@TASK Analyze code and provide recommendations
+</span><span>@FOCUS: performance, security, maintainability
+</span><span>@STYLE: concise, actionable
+</span></code></pre>
+<p>You pipe this compressed text directly to the LLM. No decoding step needed. The model just <em>gets it</em>.</p>
+<hr />
+<h2 id="what-s-in-v0-2-0">What's in v0.2.0?</h2>
+<p>This isn't just a regex script. The v0.2.0 release includes a complete compression engine built in Rust:</p>
+<h3 id="1-compression-levels">1. Compression Levels</h3>
+<ul>
+<li><strong>Light (30-50%)</strong>: Safe for almost anything. Removes obvious fluff.</li>
+<li><strong>Medium (50-70%)</strong>: The default. Rewrites verbose sections into Hieratic shorthand.</li>
+<li><strong>Aggressive (70-90%)</strong>: For when you really need space. Verify with quality metrics first.</li>
+</ul>
+<h3 id="2-quality-metrics">2. Quality Metrics</h3>
+<p>How do you know if the compression broke your prompt? Tokuin can score it:</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">tokuin</span><span> compress prompt.txt</span><span style="color:#bf616a;"> --quality
+</span></code></pre>
+<p>It checks:</p>
+<ul>
+<li><strong>Semantic Similarity</strong>: Do the embeddings match?</li>
+<li><strong>Critical Instructions</strong>: Are the key verbs and constraints still there?</li>
+<li><strong>Structural Integrity</strong>: Did we break your JSON schema?</li>
+</ul>
+<h3 id="3-llm-as-a-judge">3. LLM-as-a-Judge</h3>
+<p>For the ultimate test, you can run an automated evaluation where a judge model (like Claude 3 Opus) compares the outputs of your original vs. compressed prompt.</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">tokuin</span><span> compress prompt.txt</span><span style="color:#bf616a;"> --quality --llm-judge
+</span></code></pre>
+<h3 id="4-incremental-compression">4. Incremental Compression</h3>
+<p>For chat apps, you don't want to re-compress the whole history every turn. Tokuin supports incremental compression, processing only the new tokens and keeping a rolling state.</p>
+<hr />
+<h2 id="does-it-actually-work">Does it actually work?</h2>
+<p>Yes, but with caveats.</p>
+<p>It works <strong>exceptionally well</strong> for:</p>
+<ul>
+<li>Long system prompts with repetitive role definitions</li>
+<li>Prompts with many few-shot examples</li>
+<li>Technical specs with clear sections</li>
+</ul>
+<p>It <strong>doesn't help much</strong> for:</p>
+<ul>
+<li>Very short prompts (&lt; 50 tokens)</li>
+<li>Already dense text (code, mathematical formulas)</li>
+<li>Prompts where exact wording is legally critical</li>
+</ul>
+<p>In my testing, I'm seeing <strong>60-70% reduction</strong> on typical RAG prompts with minimal loss in output quality.</p>
+<hr />
+<h2 id="try-it-out">Try it out</h2>
+<p>The best way to see if it works for you is to try it on your own prompts.</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># Install
+</span><span style="color:#bf616a;">curl -fsSL</span><span> https://raw.githubusercontent.com/nooscraft/tokuin/main/install.sh | </span><span style="color:#bf616a;">bash
+</span><span>
+</span><span style="color:#65737e;"># Compress
+</span><span style="color:#bf616a;">tokuin</span><span> compress your-prompt.txt</span><span style="color:#bf616a;"> --quality
+</span><span>
+</span><span style="color:#65737e;"># See the result
+</span><span style="color:#bf616a;">cat</span><span> your-prompt.txt.hieratic
+</span></code></pre>
+<p>If you do try it, I'd love to hear your compression ratios. Drop a note in the <a href="https://github.com/nooscraft/tokuin/discussions/5">GitHub Discussion</a>.</p>
+<p>This started as a "what if" blog post. Now it's a tool you can run. That's the best kind of engineering.</p>
+
+        
+    </article>
+
+    <!-- Comment section -->
+    
+      
+        
+          <script
+  src="https://giscus.app/client.js"
+  data-repo="nooscraft&#x2F;personal-blog"
+  data-repo-id="R_kgDOQJ_XNg"
+  data-category="General"
+  data-category-id="DIC_kwDOQJ_XNs4CxOmG"
+  data-mapping="pathname"
+  data-strict="0"
+  data-reactions-enabled="1"
+  data-emit-metadata="0"
+  data-input-position="bottom"
+
+  
+  data-theme="https:&#x2F;&#x2F;noos.blog&#x2F;css&#x2F;giscus-theme.css"
+  
+
+  data-lang="en"
+  data-loading="lazy"
+  crossorigin="anonymous"
+  async
+></script>
+
+        
+      
+    
+
+
+    <!-- Page footer -->
+    
+    <footer>
+        <hr>
+        <p>
+            
+            
+                
+                in <a href="https://noos.blog/categories/engineering/">Engineering</a>
+            
+            
+                and
+                tagged
+                
+                    <a href="https://noos.blog/tags/llm/">llm</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/prompt-engineering/">prompt-engineering</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/compression/">compression</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/tokuin/">tokuin</a>
+                    
+                        
+                            
+                                and
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/rust/">rust</a>
+                    
+                        
+                    
+                
+            
+        </p>
+
+        <!-- Revision history (optional) -->
+        
+          
+            
+              
+            
+          
+        
+
+        
+        
+    </footer>
+
+
+</article>
+
+
+    </main>
+    
+
+  </body>
+</html>

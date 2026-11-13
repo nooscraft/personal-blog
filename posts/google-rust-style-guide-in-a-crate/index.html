@@ -1,0 +1,734 @@
+<!doctype html>
+<html lang="en" data-theme="toggle">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <!-- Enable responsiveness on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;google-rust-style-guide-in-a-crate&#x2F;" />
+    
+    <!-- Robots meta -->
+    
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    
+
+    
+      
+        <meta name="description" content="A tested setup for Google&#x27;s Rust style guide on Rust 1.100.0: nightly rustfmt, a Clippy lints table, clippy.toml, a CI job, and the rules only a reviewer can check." />
+        <meta property="og:description" content="A tested setup for Google&#x27;s Rust style guide on Rust 1.100.0: nightly rustfmt, a Clippy lints table, clippy.toml, a CI job, and the rules only a reviewer can check." />
+        <meta property="twitter:description" content="A tested setup for Google&#x27;s Rust style guide on Rust 1.100.0: nightly rustfmt, a Clippy lints table, clippy.toml, a CI job, and the rules only a reviewer can check." />
+      
+    
+
+    <!-- Title -->
+    
+      
+    
+    <title>
+    
+    Setting up a Rust crate for Google&#x27;s style guide | Noos - Where Thought, Code, and Craft Converge
+    
+</title>
+    
+    <!-- Author -->
+    
+    <meta name="author" content="Oshadha G" />
+    
+    
+    <!-- Article specific meta tags -->
+    
+    
+    <meta property="article:published_time" content="2026-11-13T00:00:00+00:00" />
+    
+    
+    <meta property="article:modified_time" content="2026-11-13T00:00:00+00:00" />
+    
+    
+    
+    <meta property="article:tag" content="rust" />
+    
+    <meta property="article:tag" content="style-guide" />
+    
+    <meta property="article:tag" content="rustfmt" />
+    
+    <meta property="article:tag" content="clippy" />
+    
+    <meta property="article:tag" content="github-actions" />
+    
+    
+    
+    
+    <meta property="article:section" content="Programming" />
+    
+    
+    
+
+    <!-- Additional Facebook Meta Tags -->
+    <meta property="og:site_name" content="Noos - Where Thought, Code, and Craft Converge" />
+    <meta
+      property="og:url"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;google-rust-style-guide-in-a-crate&#x2F;"
+    />
+    <meta
+      property="og:type"
+      content="article"
+    />
+    <meta property="og:title" content="Setting up a Rust crate for Google&#x27;s style guide | Noos - Where Thought, Code, and Craft Converge" />
+
+    <!-- Additional Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      property="twitter:url"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;google-rust-style-guide-in-a-crate&#x2F;"
+    />
+    <meta name="twitter:title" content="Setting up a Rust crate for Google&#x27;s style guide | Noos - Where Thought, Code, and Craft Converge" />
+
+    <!-- Cover images -->
+           
+           
+           
+           
+      
+      
+      
+      
+      
+    
+
+    <meta
+      property="og:image"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;google-rust-style-guide-in-a-crate.png"
+    />
+
+    <meta
+      name="twitter:image"
+      content="https:&#x2F;&#x2F;noos.blog&#x2F;images&#x2F;covers&#x2F;google-rust-style-guide-in-a-crate.png"
+    />
+
+
+
+    <!-- Favicons -->
+           
+           <!-- PNG + ICO (some clients ignore SVG favicons) -->
+           <link
+             rel="icon"
+             type="image/png"
+             sizes="96x96"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/favicon-96x96.png?v=3"
+           />
+           <link
+             rel="apple-touch-icon"
+             sizes="180x180"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/apple-touch-icon.png?v=3"
+           />
+           <link
+             rel="shortcut icon"
+             href="https:&#x2F;&#x2F;noos.blog/icons/favicon/favicon.ico?v=3"
+           />
+           
+
+    <!-- RSS Feed -->
+    
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      title="RSS"
+      href="https://noos.blog/atom.xml"
+    />
+    
+
+    <!-- Load Styles -->
+    
+      <link
+        rel="stylesheet"
+        href="https://noos.blog/site.css"
+      />
+    
+
+    <!-- Load Fonts -->
+    
+
+  
+
+
+
+
+
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+  
+
+
+
+<!-- Forcing Font -->
+<style>
+body {
+  font-family:
+    "JetBrains Mono", Menlo, Monaco, Lucida Console, Liberation Mono,
+    DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New,
+    monospace, serif !important;
+}
+</style>
+
+
+    <!-- Pass Theme Preference as Data Attribute -->
+    <script src="https://noos.blog/js/init-theme.js"></script>
+
+    <!-- Reference return to click position script -->
+    <script defer src="https://noos.blog/js/reference-return.js"></script>
+
+    <!-- Additional scripts -->
+    
+      
+        <script defer src="https://noos.blog/js/codeblock.js"></script>
+      
+            
+              <script defer src="https://noos.blog/js/toggle-theme.js"></script>
+            
+      
+<!-- MathJax script for rendering LaTeX math equations -->
+<script src="https://noos.blog/js/mathjax-config.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+  async
+></script>
+
+
+      
+<script type="text/javascript" src="https://noos.blog/elasticlunr.min.js"></script>
+<script type="text/javascript" src="https://noos.blog/js/search.js"></script>
+
+    
+    
+    <!-- Structured Data (JSON-LD) -->
+    
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Setting up a Rust crate for Google&#x27;s style guide",
+  
+  "description": "A tested setup for Google&#x27;s Rust style guide on Rust 1.100.0: nightly rustfmt, a Clippy lints table, clippy.toml, a CI job, and the rules only a reviewer can check.",
+  
+  
+  "datePublished": "2026-11-13T00:00:00+00:00",
+  
+  
+  "dateModified": "2026-11-13T00:00:00+00:00",
+  
+  "author": {
+    "@type": "Person",
+    "name": "Oshadha G"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Noos - Where Thought, Code, and Craft Converge",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https:&#x2F;&#x2F;noos.blog/icons/favicon/web-app-manifest-512x512.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;google-rust-style-guide-in-a-crate&#x2F;"
+  },
+  "url": "https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;google-rust-style-guide-in-a-crate&#x2F;",
+  
+  "keywords": "rust, style-guide, rustfmt, clippy, github-actions",
+  
+  "inLanguage": "en"
+}
+</script>
+
+
+    
+    <!-- Google Analytics (GA4) -->
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-54YK7R04LX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-54YK7R04LX', {
+        'anonymize_ip': true,
+        'respect_dnt': true
+      });
+    </script>
+    
+  </head>
+
+  <!-- Body element (contents of the page) -->
+  <body class="hack main container">
+    
+  
+    
+    
+      
+  
+  <section class="nav-header">
+    <nav
+      itemscope
+      itemtype="http://schema.org/SiteNavigationElement"
+      class="navbar"
+    >
+      <section class="nav-links">
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/"
+        >
+          <span itemprop="name">Home</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/about"
+        >
+          <span itemprop="name">About</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/categories"
+        >
+          <span itemprop="name">Categories</span>
+        </a>
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://noos.blog/tags"
+        >
+          <span itemprop="name">Tags</span>
+        </a>
+        
+      </section>
+    </nav>
+    <aside class="user-actions-container">
+      
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        class="search-icon"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+        />
+      </svg>
+      <input type="text" id="search" placeholder="Search..." />
+      <section class="search-results" aria-live="polite">
+        <article class="search-results__items" role="list"></article>
+      </section>
+       
+      <a id="dark-mode-toggle" href="#">
+        <img
+          src="https://noos.blog/icons/sun.svg"
+          id="sun-icon"
+          style="filter: invert(1)"
+          alt="Light mode"
+        />
+        <img
+          src="https://noos.blog/icons/moon.svg"
+          id="moon-icon"
+          alt="Dark mode"
+        />
+      </a>
+       
+      <a
+        href="https://noos.blog/atom.xml"
+        class="feed-icon"
+        rel="noopener noreferrer"
+      >
+        <img
+          src="https://noos.blog/icons/rss.svg"
+          id="rss-icon"
+          alt="RSS feed"
+          class="social-icon"
+        />
+      </a>
+       
+    </aside>
+  </section>
+  
+
+    
+
+
+    <main>
+      
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">Setting up a Rust crate for Google&#x27;s style guide</h1>
+        
+        <data class="muted">
+    <svg class="icon i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <data>8 minute read</data>
+    
+    
+    <svg class="icon i-calendar" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <!-- Calendar outline -->
+        <rect x="3" y="6" width="26" height="23" rx="2" ry="2"/>
+        <!-- Binding rings -->
+        <line x1="10" y1="3" x2="10" y2="9"/>
+        <line x1="22" y1="3" x2="22" y2="9"/>
+        <!-- Top separator -->
+        <line x1="3" y1="12" x2="29" y2="12"/>
+    </svg>
+
+    Published: 2026-11-13
+    
+</data>
+        
+        
+        
+        
+        
+        
+          
+          
+          
+          
+          
+        
+        
+        <figure class="post-cover" style="margin: 1.25rem 0;">
+          <img src="&#x2F;images&#x2F;covers&#x2F;google-rust-style-guide-in-a-crate.png" alt="Setting up a Rust crate for Google&#x27;s style guide cover" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--color-border-default, #e5e7eb);" onerror="this.parentNode.style.display='none'" />
+        </figure>
+        
+    </header>
+
+    <article itemprop="articleBody">
+        
+            <!-- If no summary separate from content, just render content -->
+            <blockquote>
+<p><em>Updated 2026-11-13: the example crates are now in a GitHub repo and the CI job has run there.</em></p>
+</blockquote>
+<p>With default Clippy on 1.100.0, my rule-breaking <code>gstyle</code> file got no warnings at all. Not one. In my <a href="https://noos.blog/posts/google-rust-style-guide-vs-official/">earlier post</a> I read Google's Rust style guide next to the official one, and this post is the practical side: I set up a small crate so that tools check as much of Google's guide as they can. You get a <code>rustfmt.toml</code>, a <code>[lints]</code> table for <code>Cargo.toml</code>, a <code>clippy.toml</code>, a CI workflow, and the honest list of what is left for a human. The example repo <a href="https://github.com/nooscraft/rustgoogle">nooscraft/rustgoogle</a> holds the <code>gstyle</code> crate from this post at its root, plus the small experiment crates I mention along the way. Everything here was tested on 1.100.0, the current stable as of 2026-11-13, and on nightly-2026-11-12, on my Mac; the earlier post used 1.99.0.</p>
+<h2 id="formatting-with-a-pinned-nightly">Formatting with a pinned nightly</h2>
+<p>Google's <a href="https://github.com/google/styleguide/blob/cceb297e93677c31053e5e75de6b701a9204fc03/rustguide.md?plain=1#L450-L470">formatting section</a> says "Use the appropriate formatting tool" and then lists rustfmt options; a codebase may skip one "if they care about building on stable" and the option is not available there. <a href="https://github.com/google/styleguide/blob/cceb297e93677c31053e5e75de6b701a9204fc03/rustguide.md?plain=1#L325-L327">The use rule</a>, the one that says a <code>use</code> statement should import items from one module, notes that it corresponds to <code>imports_granularity = Module</code>. So my <code>rustfmt.toml</code> has the three options from that list, plus <code>imports_granularity</code> for the <code>use</code> rule:</p>
+<pre data-lang="toml" style="background-color:#2b303b;color:#c0c5ce;" class="language-toml "><code class="language-toml" data-lang="toml"><span style="color:#bf616a;">max_width </span><span>= </span><span style="color:#d08770;">100
+</span><span style="color:#bf616a;">hex_literal_case </span><span>= &quot;</span><span style="color:#a3be8c;">Lower</span><span>&quot;
+</span><span style="color:#bf616a;">format_macro_matchers </span><span>= </span><span style="color:#d08770;">true
+</span><span style="color:#bf616a;">imports_granularity </span><span>= &quot;</span><span style="color:#a3be8c;">Module</span><span>&quot;
+</span></code></pre>
+<p><code>max_width = 100</code> is already rustfmt's default; I keep it so the file mirrors the guide's list. Stable 1.100.0 ships rustfmt 1.11.0, and <code>format_macro_matchers</code> and <code>imports_granularity</code> are still nightly-only there, same as on 1.99.0 in the earlier post. What I do instead: everything except formatting runs on stable, and one pinned nightly does only the formatting. Installing just rustfmt for that nightly is one command: <code>rustup toolchain install nightly-2026-11-12 --profile minimal --component rustfmt</code>.</p>
+<p>Here is <code>cargo +nightly-2026-11-12 fmt --check</code> on a small sample file:</p>
+<pre data-lang="text" style="background-color:#2b303b;color:#c0c5ce;" class="language-text "><code class="language-text" data-lang="text"><span>$ cargo +nightly-2026-11-12 fmt --check
+</span><span>Diff in src/lib.rs:1:
+</span><span> //! Formatting check.
+</span><span> 
+</span><span>-use std::{collections::HashMap, fmt::Write};
+</span><span>+use std::collections::HashMap;
+</span><span>+use std::fmt::Write;
+</span><span> 
+</span><span> /// Mask for the low byte.
+</span><span>-pub const MASK: u32 = 0xFF;
+</span><span>+pub const MASK: u32 = 0xff;
+</span><span> 
+</span><span> /// Squares a number.
+</span><span> #[macro_export]
+</span><span>Diff in src/lib.rs:10:
+</span><span> macro_rules! square {
+</span><span>-    ($x : expr) =&gt; {
+</span><span>+    ($x:expr) =&gt; {
+</span><span>         $x * $x
+</span><span>     };
+</span><span> }
+</span></code></pre>
+<p>It splits the merged <code>use</code> line into two lines, lowercases <code>0xFF</code> to <code>0xff</code>, and tidies the macro matcher <code>$x : expr</code> into <code>$x:expr</code>. On the same file, stable rustfmt only made the hex change. And here is stable's <code>fmt --check</code> after the nightly formatting has been applied:</p>
+<pre data-lang="text" style="background-color:#2b303b;color:#c0c5ce;" class="language-text "><code class="language-text" data-lang="text"><span>$ cargo +nightly-2026-11-12 fmt
+</span><span>$ cargo +1.100.0 fmt --check
+</span><span>Warning: can&#39;t set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+</span><span>Warning: can&#39;t set `imports_granularity = Module`, unstable features are only available in nightly channel.
+</span><span>$ echo $?
+</span><span>0
+</span></code></pre>
+<p>It prints its two warnings but exits with 0, so a contributor who only has stable installed does not fight the nightly formatting. The other direction is not safe: a merged <code>use</code> line passes the stable check and fails the nightly one, which is why the CI job runs the nightly check.</p>
+<p>The fourth item in Google's formatting list, escapes for invisible characters in literals, has no rustfmt option. Clippy's <code>invisible_characters</code> lint is on by default (deny), and it rejected a zero-width space (U+200B) in a string literal. It let a zero-width joiner (U+200D) through, and U+200D is the example in Google's own guide, so that item stays with review.</p>
+<h2 id="lints-in-cargo-toml">Lints in Cargo.toml</h2>
+<p>As the opening said, default Clippy on 1.100.0 stayed quiet on this file. The guide links seven Clippy lints by name. In a separate test, five of them fired with no configuration: <code>borrowed_box</code>, <code>ptr_arg</code>, <code>new_without_default</code>, <code>len_without_is_empty</code> and <code>should_implement_trait</code>. <code>exhaustive_enums</code> is off by default. <code>wrong_self_convention</code> is on by default but stayed quiet on a public method <code>into_vec(&amp;self)</code>; the next section fixes that.</p>
+<p>This is the <code>[lints]</code> table in my <code>Cargo.toml</code>:</p>
+<pre data-lang="toml" style="background-color:#2b303b;color:#c0c5ce;" class="language-toml "><code class="language-toml" data-lang="toml"><span>[lints.rust]
+</span><span style="color:#bf616a;">missing_docs </span><span>= &quot;</span><span style="color:#a3be8c;">warn</span><span>&quot;
+</span><span>
+</span><span>[lints.clippy]
+</span><span style="color:#bf616a;">wildcard_imports </span><span>= &quot;</span><span style="color:#a3be8c;">warn</span><span>&quot;
+</span><span style="color:#bf616a;">exhaustive_enums </span><span>= &quot;</span><span style="color:#a3be8c;">warn</span><span>&quot;
+</span><span style="color:#bf616a;">unwrap_used </span><span>= &quot;</span><span style="color:#a3be8c;">warn</span><span>&quot;
+</span><span style="color:#bf616a;">missing_assert_message </span><span>= &quot;</span><span style="color:#a3be8c;">warn</span><span>&quot;
+</span><span style="color:#bf616a;">missing_panics_doc </span><span>= &quot;</span><span style="color:#a3be8c;">warn</span><span>&quot;
+</span><span style="color:#bf616a;">string_add </span><span>= &quot;</span><span style="color:#a3be8c;">warn</span><span>&quot;
+</span><span style="color:#bf616a;">undocumented_unsafe_blocks </span><span>= &quot;</span><span style="color:#a3be8c;">warn</span><span>&quot;
+</span></code></pre>
+<p>Which guide rule each line stands for:</p>
+<ul>
+<li><code>missing_docs</code>: the guide says to document public APIs, "potentially using the <code>missing_docs</code> lint".</li>
+<li><code>wildcard_imports</code>: "Don't use glob imports".</li>
+<li><code>exhaustive_enums</code>: mark public enums <code>#[non_exhaustive]</code>.</li>
+<li><code>unwrap_used</code>: prefer <code>expect</code> over <code>unwrap</code>.</li>
+<li><code>missing_assert_message</code>: use context strings in assertions.</li>
+<li><code>missing_panics_doc</code>: the guide says "Always document panic cases".</li>
+<li><code>string_add</code>: prefer <code>format!</code> over <code>+</code>.</li>
+<li><code>undocumented_unsafe_blocks</code>: the guide wants a comment starting with <code>SAFETY:</code>.</li>
+</ul>
+<p>The lints and the guide do not always say the same thing. <code>string_add</code> suggests <code>String::push_str()</code> in its message, while Google suggests <code>format!</code>. It also fires for joining just two strings (<code>a.to_string() + b</code>), while the guide only asks for <code>format!</code> when there are more than two.</p>
+<p><code>wildcard_imports</code> allows prelude imports and <code>pub use</code> re-exports, and it allows <code>use super::*</code> only in test modules (<a href="https://github.com/rust-lang/rust/blob/1.100.0/src/tools/clippy/clippy_lints/src/wildcard_imports.rs#L66-L75">wildcard_imports source</a>). Google allows <code>use super::*</code> for any inline module, so a <code>use super::*</code> inside a plain <code>mod helpers</code> got flagged.</p>
+<p><code>missing_assert_message</code> skips test code. Its docs say "this lint ignores them as they would be too noisy" (<a href="https://github.com/rust-lang/rust/blob/1.100.0/src/tools/clippy/clippy_lints/src/missing_assert_message.rs#L17-L19">missing_assert_message source</a>), so the messages in test asserts are up to you.</p>
+<h2 id="clippy-toml-for-the-rest">clippy.toml for the rest</h2>
+<p>Three more settings live in <code>clippy.toml</code>:</p>
+<pre data-lang="toml" style="background-color:#2b303b;color:#c0c5ce;" class="language-toml "><code class="language-toml" data-lang="toml"><span style="color:#65737e;"># Google: &quot;Use of `panic::catch_unwind` is prohibited in first-party Rust code.&quot;
+</span><span style="color:#bf616a;">disallowed-methods </span><span>= [
+</span><span>    { </span><span style="color:#bf616a;">path </span><span>= &quot;</span><span style="color:#a3be8c;">std::panic::catch_unwind</span><span>&quot;, </span><span style="color:#bf616a;">reason </span><span>= &quot;</span><span style="color:#a3be8c;">prohibited in first-party code by the style guide</span><span>&quot; },
+</span><span>]
+</span><span style="color:#65737e;"># Google prefers expect over unwrap, but unwrap in tests is fine.
+</span><span style="color:#bf616a;">allow-unwrap-in-tests </span><span>= </span><span style="color:#d08770;">true
+</span><span style="color:#65737e;"># The default (true) keeps wrong_self_convention and 18 other lints quiet
+</span><span style="color:#65737e;"># when the fix would change a public API.
+</span><span style="color:#bf616a;">avoid-breaking-exported-api </span><span>= </span><span style="color:#d08770;">false
+</span></code></pre>
+<p><code>disallowed-methods</code> bans <code>std::panic::catch_unwind</code>; Google says its use "is prohibited in first-party Rust code" (<a href="https://github.com/google/styleguide/blob/cceb297e93677c31053e5e75de6b701a9204fc03/rustguide.md?plain=1#L1748-L1769">catch_unwind rule</a>). <code>allow-unwrap-in-tests = true</code> stops <code>unwrap_used</code> from flagging an <code>.unwrap()</code> inside the <code>#[cfg(test)]</code> module, which it did without the setting. And <code>avoid-breaking-exported-api = false</code> matters because the default is true, and the default keeps 19 lints quiet when the fix would change a public API, <code>wrong_self_convention</code> among them (<a href="https://github.com/rust-lang/rust/blob/1.100.0/src/tools/clippy/book/src/lint_configuration.md?plain=1#L407-L432">Clippy's config docs</a>). With it set to false, the public <code>into_vec(&amp;self)</code> finally got "methods called <code>into_*</code> usually take <code>self</code> by value".</p>
+<p>Here is Clippy on the rule-breaking file with both config files in place:</p>
+<pre data-lang="text" style="background-color:#2b303b;color:#c0c5ce;" class="language-text "><code class="language-text" data-lang="text"><span>$ cargo +1.100.0 clippy --all-targets --message-format=short
+</span><span>src/lib.rs:3:5: warning: usage of wildcard import: help: try: `std::collections::HashMap`
+</span><span>src/lib.rs:6:1: warning: exported enums should not be exhaustive
+</span><span>src/lib.rs:12:1: warning: docs for function which may panic missing `# Panics` section
+</span><span>src/lib.rs:13:5: warning: used `unwrap()` on a `Result` value
+</span><span>src/lib.rs:17:1: warning: docs for function which may panic missing `# Panics` section
+</span><span>src/lib.rs:18:5: warning: assert without any message
+</span><span>src/lib.rs:23:5: warning: you added something to a string. Consider using `String::push_str()` instead
+</span><span>src/lib.rs:27:1: warning: docs for function which may panic missing `# Panics` section
+</span><span>src/lib.rs:29:5: warning: unsafe block missing a safety comment
+</span><span>src/lib.rs:34:5: warning: use of a disallowed method `std::panic::catch_unwind`
+</span><span>src/lib.rs:7:5: warning: missing documentation for a variant
+</span><span>src/lib.rs:8:5: warning: missing documentation for a variant
+</span></code></pre>
+<p>Every planted problem shows up, twelve warnings in total, including <code>missing_docs</code> for two undocumented enum variants. Adding <code>-D warnings</code> makes the same run exit with code 101.</p>
+<h2 id="exceptions-with-expect">Exceptions with <code>#[expect]</code></h2>
+<p>Google's rules have exceptions. Two-state enums may stay exhaustive; the guide lists "Enums with two states that could be Booleans" (<a href="https://github.com/google/styleguide/blob/cceb297e93677c31053e5e75de6b701a9204fc03/rustguide.md?plain=1#L1352-L1368">non_exhaustive rule</a>). And <code>catch_unwind</code> is acceptable "as a defense in depth mechanism", as long as nothing relies on it.</p>
+<p>I write these exceptions as <code>#[expect(..., reason = "...")]</code> instead of <code>#[allow]</code>. Here are the <code>Mode</code> enum and a <code>guarded</code> function, each with an expectation and a reason:</p>
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#65737e;">/// How a job runs.
+</span><span>#[</span><span style="color:#bf616a;">expect</span><span>(
+</span><span>    clippy::exhaustive_enums,
+</span><span>    reason = &quot;</span><span style="color:#a3be8c;">two states that could be a bool; the guide allows these to stay exhaustive</span><span>&quot;
+</span><span>)]
+</span><span style="color:#b48ead;">pub enum </span><span>Mode {
+</span><span>    </span><span style="color:#65737e;">/// Skip the slow checks.
+</span><span>    Fast,
+</span><span>    </span><span style="color:#65737e;">/// Run every check.
+</span><span>    Slow,
+</span><span>}
+</span><span>
+</span><span style="color:#65737e;">/// Last-resort guard around a plugin call.
+</span><span>#[</span><span style="color:#bf616a;">expect</span><span>(
+</span><span>    clippy::disallowed_methods,
+</span><span>    reason = &quot;</span><span style="color:#a3be8c;">defense in depth only; the plugin API already returns errors instead of panicking</span><span>&quot;
+</span><span>)]
+</span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">guarded</span><span>(</span><span style="color:#bf616a;">f</span><span>: impl FnOnce() + std::panic::UnwindSafe) -&gt; </span><span style="color:#b48ead;">bool </span><span>{
+</span><span>    std::panic::catch_unwind(f).</span><span style="color:#96b5b4;">is_ok</span><span>()
+</span><span>}
+</span></code></pre>
+<p>The point of <code>#[expect]</code> over <code>#[allow]</code>: if the code changes and the lint no longer fires, the expectation itself fails. To see it happen, I added <code>#[non_exhaustive]</code> to <code>Mode</code>:</p>
+<pre data-lang="text" style="background-color:#2b303b;color:#c0c5ce;" class="language-text "><code class="language-text" data-lang="text"><span>$ cargo +1.100.0 clippy --all-targets -- -D warnings
+</span><span>error: this lint expectation is unfulfilled
+</span><span> --&gt; src/lib.rs:7:5
+</span><span>  |
+</span><span>7 |     clippy::exhaustive_enums,
+</span><span>  |     ^^^^^^^^^^^^^^^^^^^^^^^^
+</span><span>  |
+</span><span>  = note: two states that could be a bool; the guide allows these to stay exhaustive
+</span><span>  = note: `-D unfulfilled-lint-expectations` implied by `-D warnings`
+</span><span>  = help: to override `-D warnings` add `#[allow(unfulfilled_lint_expectations)]`
+</span><span>
+</span><span>error: could not compile `gstyle` (lib) due to 1 previous error
+</span><span>error: could not compile `gstyle` (lib test) due to 1 previous error
+</span></code></pre>
+<p>Clippy stopped with "this lint expectation is unfulfilled" and printed the reason as a note. An exception cannot go stale quietly, and the reason sits right next to it.</p>
+<h2 id="a-ci-job">A CI job</h2>
+<p>GitHub's Ubuntu 24.04 runner image, version 20261111.370, lists Rustup 1.29.3 and Rust 1.99.1 with Rustfmt 1.10.0; Clippy is not in its list (<a href="https://github.com/actions/runner-images/blob/ubuntu24/20261111.370/images/ubuntu/Ubuntu2404-Readme.md?plain=1#L139-L146">runner image readme</a>). So the workflow installs both toolchains itself, with <code>--profile minimal</code>. It has three checks: nightly rustfmt with <code>--check</code>, stable Clippy with <code>-D warnings</code>, and stable tests:</p>
+<pre data-lang="yaml" style="background-color:#2b303b;color:#c0c5ce;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#bf616a;">name</span><span>: </span><span style="color:#a3be8c;">style
+</span><span>
+</span><span style="color:#d08770;">on</span><span>:
+</span><span>  </span><span style="color:#bf616a;">push</span><span>:
+</span><span>    </span><span style="color:#bf616a;">branches</span><span>: [</span><span style="color:#a3be8c;">main</span><span>]
+</span><span>  </span><span style="color:#bf616a;">pull_request</span><span>:
+</span><span>
+</span><span style="color:#bf616a;">env</span><span>:
+</span><span>  </span><span style="color:#bf616a;">STABLE</span><span>: &quot;</span><span style="color:#a3be8c;">1.100.0</span><span>&quot;
+</span><span>  </span><span style="color:#bf616a;">NIGHTLY</span><span>: &quot;</span><span style="color:#a3be8c;">nightly-2026-11-12</span><span>&quot;
+</span><span>
+</span><span style="color:#bf616a;">jobs</span><span>:
+</span><span>  </span><span style="color:#bf616a;">style</span><span>:
+</span><span>    </span><span style="color:#bf616a;">runs-on</span><span>: </span><span style="color:#a3be8c;">ubuntu-24.04
+</span><span>    </span><span style="color:#bf616a;">steps</span><span>:
+</span><span>      - </span><span style="color:#bf616a;">uses</span><span>: </span><span style="color:#a3be8c;">actions/checkout@v7
+</span><span>
+</span><span>      - </span><span style="color:#bf616a;">name</span><span>: </span><span style="color:#a3be8c;">Install toolchains
+</span><span>        </span><span style="color:#bf616a;">run</span><span>: </span><span style="color:#b48ead;">|
+</span><span style="color:#a3be8c;">          rustup toolchain install &quot;$STABLE&quot; --profile minimal --component clippy
+</span><span style="color:#a3be8c;">          rustup toolchain install &quot;$NIGHTLY&quot; --profile minimal --component rustfmt
+</span><span style="color:#a3be8c;">
+</span><span>      - </span><span style="color:#bf616a;">name</span><span>: </span><span style="color:#a3be8c;">Format (nightly rustfmt, for the unstable options)
+</span><span>        </span><span style="color:#bf616a;">run</span><span>: </span><span style="color:#a3be8c;">cargo +&quot;$NIGHTLY&quot; fmt --check
+</span><span>
+</span><span>      - </span><span style="color:#bf616a;">name</span><span>: </span><span style="color:#a3be8c;">Lint (stable clippy)
+</span><span>        </span><span style="color:#bf616a;">run</span><span>: </span><span style="color:#a3be8c;">cargo +&quot;$STABLE&quot; clippy --all-targets -- -D warnings
+</span><span>
+</span><span>      - </span><span style="color:#bf616a;">name</span><span>: </span><span style="color:#a3be8c;">Test (stable)
+</span><span>        </span><span style="color:#bf616a;">run</span><span>: </span><span style="color:#a3be8c;">cargo +&quot;$STABLE&quot; test
+</span></code></pre>
+<p>It uses <code>ubuntu-24.04</code> instead of <code>ubuntu-latest</code>, because the runner-images repo announced that <code>ubuntu-latest</code> will use Ubuntu 26.04 in November 2026 (<a href="https://github.com/actions/runner-images/issues/14748">announcement</a>).</p>
+<p>I first ran the same commands from the <code>run</code> steps locally with bash. On the fixed crate every step passed, and on the rule-breaking one the Clippy step failed with 101. Then I pushed the crate and this exact workflow to the example repo, and the <a href="https://github.com/nooscraft/rustgoogle/actions/runs/43425503473">first run on GitHub</a> passed every step: checkout, installing both toolchains, the nightly format check, Clippy and the tests. It ran on the same image version the readme above describes. Both pins, 1.100.0 and nightly-2026-11-12, have to be bumped by hand now and then.</p>
+<h2 id="what-only-a-reviewer-can-check">What only a reviewer can check</h2>
+<p>Lints check that something is there, not that it is any good. In a small test, Clippy accepted <code>.expect("failed")</code>, an assert whose message only repeats the condition ("port &gt; 1024"), and <code>// SAFETY: trust me</code>. Google's unsafe rule wants a real technical justification, including the question "If the reason is performance, are there benchmarks?" (<a href="https://github.com/google/styleguide/blob/cceb297e93677c31053e5e75de6b701a9204fc03/rustguide.md?plain=1#L1212-L1229">unsafe rule</a>).</p>
+<p>Some rules have no Clippy lint at all, at least none I found after searching the lint list on 1.100.0:</p>
+<ul>
+<li>qualify calls to top-level functions with a module name</li>
+<li>"Import traits within function bodies"</li>
+<li>no combinator chains in the header of a <code>for</code> loop</li>
+<li>"Avoid abbreviations"</li>
+</ul>
+<p>"Prefer enum over bool" comes close: <code>fn_params_excessive_bools</code> exists but is off by default, and in a test it only fired at four bool parameters ("more than 3 bools"). A single confusing bool is for the reviewer.</p>
+<p>For "Don't omit patterns on non_exhaustive enums when matching", rustc has a <code>non_exhaustive_omitted_patterns</code> lint, but on 1.100.0 it reports "the <code>non_exhaustive_omitted_patterns</code> lint is unstable" (<a href="https://github.com/rust-lang/rust/issues/89554">tracking issue</a>). And the guide itself says "Don't use unstable features."</p>
+<p>What is left is the part about judgement. I have only tried all of this on the tiny <code>gstyle</code> crate, not on a real one, so let's see how it holds up once the code fights back.</p>
+
+        
+    </article>
+
+    <!-- Comment section -->
+    
+      
+        
+          <script
+  src="https://giscus.app/client.js"
+  data-repo="nooscraft&#x2F;personal-blog"
+  data-repo-id="R_kgDOQJ_XNg"
+  data-category="General"
+  data-category-id="DIC_kwDOQJ_XNs4CxOmG"
+  data-mapping="pathname"
+  data-strict="0"
+  data-reactions-enabled="1"
+  data-emit-metadata="0"
+  data-input-position="bottom"
+
+  
+  data-theme="https:&#x2F;&#x2F;noos.blog&#x2F;css&#x2F;giscus-theme.css"
+  
+
+  data-lang="en"
+  data-loading="lazy"
+  crossorigin="anonymous"
+  async
+></script>
+
+        
+      
+    
+
+
+    <!-- Page footer -->
+    
+    <footer>
+        <hr>
+        <p>
+            
+            
+                
+                in <a href="https://noos.blog/categories/programming/">Programming</a>
+            
+            
+                and
+                tagged
+                
+                    <a href="https://noos.blog/tags/rust/">rust</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/style-guide/">style-guide</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/rustfmt/">rustfmt</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/clippy/">clippy</a>
+                    
+                        
+                            
+                                and
+                            
+                        
+                    
+                
+                    <a href="https://noos.blog/tags/github-actions/">github-actions</a>
+                    
+                        
+                    
+                
+            
+        </p>
+
+        <!-- Revision history (optional) -->
+        
+          
+            
+              
+            
+          
+        
+
+        
+        
+    </footer>
+
+
+</article>
+
+
+    </main>
+    
+
+  </body>
+</html>

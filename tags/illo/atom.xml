@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Noos - Where Thought, Code, and Craft Converge - illo</title>
+    <subtitle>Personal blog about programming, technology, and engineering insights. Topics include Rust, DevOps, Linux, and software craftsmanship.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://noos.blog/tags/illo/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://noos.blog"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2026-10-07T00:00:00+00:00</updated>
+    <id>https://noos.blog/tags/illo/atom.xml</id>
+    <entry xml:lang="en">
+        <title>Stable Diffusion never gave me off-white</title>
+        <published>2026-10-07T00:00:00+00:00</published>
+        <updated>2026-10-07T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://noos.blog/posts/stable-diffusion-to-illo-covers/"/>
+        <id>https://noos.blog/posts/stable-diffusion-to-illo-covers/</id>
+        
+        <content type="html" xml:base="https://noos.blog/posts/stable-diffusion-to-illo-covers/">&lt;p&gt;My Stable Diffusion prompt asked for an off-white &lt;code&gt;#f6f7f4&lt;&#x2F;code&gt; background on every cover, and none of the three old covers I recovered has one. From October 2025 to July 2026, covers were SDXL through Replicate, built from each post&#x27;s title and tags. &lt;a href=&quot;https:&#x2F;&#x2F;noos.blog&#x2F;posts&#x2F;ai-covers-on-autopilot&#x2F;&quot;&gt;My earlier post&lt;&#x2F;a&gt; covers the pipeline.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;text&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-text &quot;&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&lt;span&gt;Abstract, minimal illustration for a tech blog cover. [...] Vector-like, clean geometric shapes, high contrast, brand accent #d64a48 on subtle background #f6f7f4, no text, no watermark, crisp edges, SDXL
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The old covers were gitignored, cached only by GitHub Actions, so they were gone when I replaced them. I found a few on the Wayback Machine. The three I downloaded have orange or mint green backgrounds. None is off-white. Below is the same post, my uv internals one: first the old Stable Diffusion cover, then the current illo cover.&lt;&#x2F;p&gt;
+&lt;img src=&quot;&#x2F;images&#x2F;sdxl-cover-uv-how-it-works-under-the-hood.png&quot; alt=&quot;Old Stable Diffusion cover for the uv post: abstract pipes and machinery on an orange background&quot; class=&quot;inline&quot; style=&quot;max-width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--color-border-default, #e5e7eb);&quot; &#x2F;&gt;
+&lt;img src=&quot;&#x2F;images&#x2F;covers&#x2F;uv-how-it-works-under-the-hood.png&quot; alt=&quot;Current illo cover for the uv post: the Blip robot next to a delivery truck full of gears, on off-white paper&quot; class=&quot;inline&quot; style=&quot;max-width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--color-border-default, #e5e7eb);&quot; &#x2F;&gt;
+&lt;p&gt;To be fair, I asked for abstract shapes, so that part is my fault. The background colour is what SDXL kept ignoring. In July 2026 I switched to &lt;a href=&quot;https:&#x2F;&#x2F;www.illo-skill.com&#x2F;&quot;&gt;illo&lt;&#x2F;a&gt;, which makes editorial illustrations where a recurring mascot performs the idea of the post. Here that&#x27;s Blip, a small robot with a screen for a face. My new prompt: Blip performs the idea with one or two simple props, large and centered, never a side decoration. All covers have the same robot now. I like that it looks like one blog.&lt;&#x2F;p&gt;
+&lt;p&gt;Let&#x27;s see how it goes.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+</feed>
