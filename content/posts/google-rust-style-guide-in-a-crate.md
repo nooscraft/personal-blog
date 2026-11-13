@@ -1,6 +1,7 @@
 +++
 title = "Setting up a Rust crate for Google's style guide"
 date = 2026-11-13
+updated = 2026-11-13
 description = "A tested setup for Google's Rust style guide on Rust 1.100.0: nightly rustfmt, a Clippy lints table, clippy.toml, a CI job, and the rules only a reviewer can check."
 draft = false
 [taxonomies]
@@ -8,7 +9,9 @@ tags = ["rust", "style-guide", "rustfmt", "clippy", "github-actions"]
 categories = ["Programming"]
 +++
 
-With default Clippy on 1.100.0, my rule-breaking `gstyle` file got no warnings at all. Not one. In my [earlier post](@/posts/google-rust-style-guide-vs-official.md) I read Google's Rust style guide next to the official one, and this post is the practical side: I set up a small crate so that tools check as much of Google's guide as they can. You get a `rustfmt.toml`, a `[lints]` table for `Cargo.toml`, a `clippy.toml`, a CI workflow, and the honest list of what is left for a human. Everything here was tested on 1.100.0, the current stable as of 2026-11-13, and on nightly-2026-11-12, on my Mac; the earlier post used 1.99.0.
+> *Updated 2026-11-13: the example crates are now in a GitHub repo and the CI job has run there.*
+
+With default Clippy on 1.100.0, my rule-breaking `gstyle` file got no warnings at all. Not one. In my [earlier post](@/posts/google-rust-style-guide-vs-official.md) I read Google's Rust style guide next to the official one, and this post is the practical side: I set up a small crate so that tools check as much of Google's guide as they can. You get a `rustfmt.toml`, a `[lints]` table for `Cargo.toml`, a `clippy.toml`, a CI workflow, and the honest list of what is left for a human. The example repo [nooscraft/rustgoogle](https://github.com/nooscraft/rustgoogle) holds the `gstyle` crate from this post at its root, plus the small experiment crates I mention along the way. Everything here was tested on 1.100.0, the current stable as of 2026-11-13, and on nightly-2026-11-12, on my Mac; the earlier post used 1.99.0.
 
 ## Formatting with a pinned nightly
 
@@ -227,7 +230,7 @@ jobs:
 
 It uses `ubuntu-24.04` instead of `ubuntu-latest`, because the runner-images repo announced that `ubuntu-latest` will use Ubuntu 26.04 in November 2026 ([announcement](https://github.com/actions/runner-images/issues/14748)).
 
-Honest limits: I ran the same commands from the `run` steps locally with bash. On the fixed crate every step passed, and on the rule-breaking one the Clippy step failed with 101. I have not pushed this workflow to a real GitHub repository yet, so the checkout step and the runner side are untested. Both pins, 1.100.0 and nightly-2026-11-12, have to be bumped by hand now and then.
+I first ran the same commands from the `run` steps locally with bash. On the fixed crate every step passed, and on the rule-breaking one the Clippy step failed with 101. Then I pushed the crate and this exact workflow to the example repo, and the [first run on GitHub](https://github.com/nooscraft/rustgoogle/actions/runs/43425503473) passed every step: checkout, installing both toolchains, the nightly format check, Clippy and the tests. It ran on the same image version the readme above describes. Both pins, 1.100.0 and nightly-2026-11-12, have to be bumped by hand now and then.
 
 ## What only a reviewer can check
 
